@@ -1,4 +1,4 @@
-import { Box, Container, Space, Tabs } from "@mantine/core"
+import { Box, Container, Tabs } from "@mantine/core"
 import AppCard from "../components/AppCard"
 
 

@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 
-export default function AppBuilder({ children }) {
+export default function AppDashboard({ children }) {
 
     const { query: { appId }, pathname } = useRouter()
 

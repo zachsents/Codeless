@@ -1,10 +1,10 @@
 import React from 'react'
-import AppBuilder from '../../../components/AppBuilder'
+import AppDashboard from '../../../components/AppDashboard'
 
 export default function AppSettings() {
     return (
-        <AppBuilder>
+        <AppDashboard>
 
-        </AppBuilder>
+        </AppDashboard>
     )
 }
