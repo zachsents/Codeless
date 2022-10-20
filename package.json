@@ -20,6 +20,8 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@mantine/form": "^5.5.6"
+  },
   "packageManager": "npm@7.24.0"
 }

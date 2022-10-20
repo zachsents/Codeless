@@ -1,4 +1,4 @@
-import { ActionIcon, AppShell, Group, Navbar, NavLink, Title } from '@mantine/core'
+import { ActionIcon, AppShell, Container, Group, Navbar, NavLink, Title } from '@mantine/core'
 import { FaHome } from "react-icons/fa"
 import { TbReportAnalytics, TbSettings, TbDatabase } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
@@ -45,7 +45,9 @@ export default function AppDashboard({ children }) {
                     <Navbar.Section>{/* Footer with user */}</Navbar.Section>
                 </Navbar>}
         >
-            {children}
+            <Container size="lg" pt={50}>
+                {children}
+            </Container>
         </AppShell>
     )
 }
