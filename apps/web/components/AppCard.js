@@ -3,29 +3,50 @@ import Link from 'next/link'
 import ResourceFraction from './ResourceFraction'
 import { FaTrashAlt, FaPencilAlt } from "react-icons/fa"
 import { useHover } from "@mantine/hooks"
+import { format as timeAgo } from 'timeago.js'
+import { firestore, useAsyncState } from '../modules/firebase'
+import { collection, doc, getCountFromServer, getDoc } from 'firebase/firestore'
 
 
-export default function AppCard() {
+export default function AppCard({ app: { id, name, lastEdited, path, plan: planId } }) {
 
     const { hovered: showEditButton, ref: titleRef } = useHover()
+
+    const [, , flowCount] = useAsyncState(async () => {
+        return (await getCountFromServer(
+            collection(firestore, path, "flows")
+        )).data().count
+    })
+
+    const [, , collectionCount] = useAsyncState(async () => {
+        return (await getCountFromServer(
+            collection(firestore, path, "collections")
+        )).data().count
+    })
+
+    const [, , plan] = useAsyncState(async () => {
+        return (await getDoc(
+            doc(firestore, "plans", planId)
+        )).data()
+    })
 
     return (
         <Card shadow="sm" p="lg" radius="md" withBorder>
             <Card.Section sx={cardTitleContainerStyle} ref={titleRef}>
                 <Group position="apart" mr={20}>
-                    <Title order={3} p={20} color="white">My First App</Title>
+                    <Title order={3} p={20} color="white">{name}</Title>
                     {showEditButton &&
                         <ActionIcon variant="transparent" sx={{ color: "white" }}><FaPencilAlt /></ActionIcon>}
                 </Group>
             </Card.Section>
 
             <Group position="apart" mt="md" mb="xs">
-                <Text size="sm" color="dimmed">Last edited 3 days ago</Text>
+                <Text size="sm" color="dimmed">Last edited {timeAgo(lastEdited.seconds * 1000)}</Text>
                 <Tooltip label="Change Plan" withArrow position="bottom">
                     <Box>
                         <Link href="#">
                             <Badge color="blue" variant="light" component="a" sx={{ cursor: "pointer" }}>
-                                Basic
+                                {plan?.name}
                             </Badge>
                         </Link>
                     </Box>
@@ -33,12 +54,12 @@ export default function AppCard() {
             </Group>
 
             <Group position="center" spacing="xl" mb={30}>
-                <ResourceFraction used={2} total={5} label="Flows" color="indigo" />
-                <ResourceFraction used={1} total={2} label="Collections" color="cyan" />
+                <ResourceFraction used={flowCount} total={plan?.flowCount} label="Flows" color="indigo" />
+                <ResourceFraction used={collectionCount} total={plan?.collectionCount} label="Collections" color="cyan" />
             </Group>
 
             <Group>
-                <Link href="/app/myfirstapp-n23jjh">
+                <Link href={`/app/${id}`}>
                     <Button variant="outline" component="a" sx={{ flexGrow: 1, }}>Open</Button>
                 </Link>
                 <Tooltip label="Delete App" withArrow>

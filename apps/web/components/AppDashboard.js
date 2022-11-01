@@ -4,9 +4,13 @@ import { TbReportAnalytics, TbSettings, TbDatabase } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { firestore, useAsyncState, useAuthState, useMustBeSignedIn } from '../modules/firebase'
+import { doc, getDoc } from 'firebase/firestore'
 
 
 export default function AppDashboard({ children }) {
+
+    const user = useMustBeSignedIn()
 
     const { query: { appId }, pathname } = useRouter()
 

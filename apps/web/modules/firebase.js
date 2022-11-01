@@ -2,7 +2,12 @@
 import { initializeApp } from "firebase/app"
 import { getAnalytics } from "firebase/analytics"
 import { getFirestore } from "firebase/firestore"
-import { getAuth } from "firebase/auth"
+import {
+    getAuth, signInWithPopup, GoogleAuthProvider, sendSignInLinkToEmail, isSignInWithEmailLink,
+    signInWithEmailLink, onAuthStateChanged
+} from "firebase/auth"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,8 +23,117 @@ const firebaseConfig = {
     measurementId: "G-0ZD6KY1LX8"
 }
 
-// Initialize Firebase
-export const app = initializeApp(firebaseConfig)
-export const analytics = getAnalytics(app)
-export const firestore = getFirestore(app)
-export const auth = getAuth(app)
+if (typeof window !== "undefined") {
+    // Initialize Firebase
+    var app = initializeApp(firebaseConfig)
+    var analytics = getAnalytics(app)
+    var firestore = getFirestore(app)
+    var auth = getAuth(app)
+}
+
+export { app, analytics, firestore, auth }
+
+export async function signInWithGoogle() {
+
+    // set up provider
+    const provider = new GoogleAuthProvider()
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+
+    // login
+    try {
+        const result = await signInWithPopup(auth, provider)
+        const credential = GoogleAuthProvider.credentialFromResult(result)
+        const token = credential.accessToken
+        const user = result.user
+        return user
+    }
+    catch (error) {
+        const errorCode = error.code
+        const errorMessage = error.message
+        // The email of the user's account used.
+        const email = error.customData.email
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error)
+        console.error(errorCode, errorMessage, credential)
+    }
+}
+
+export async function sendEmailSignInLink(email) {
+    const actionCodeSettings = {
+        url: `${process.env.NEXT_PUBLIC_APP_HOST}/finishEmailSignIn`,
+        handleCodeInApp: true,
+    }
+
+    try {
+        await sendSignInLinkToEmail(auth, email, actionCodeSettings)
+    }
+    catch (error) {
+        const errorCode = error.code
+        const errorMessage = error.message
+        console.error(errorCode, errorMessage)
+    }
+}
+
+export async function finishEmailSignIn() {
+
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+        let email = window.localStorage.getItem("signInEmail")
+        if (!email)
+            // TO DO: make an interface for this
+            email = window.prompt('Please provide your email for confirmation')
+
+        try {
+            console.log(window.location.href)
+            const result = await signInWithEmailLink(auth, email, window.location.href)
+            // window.localStorage.removeItem("signInEmail")
+            return result
+        }
+        catch (error) {
+            console.error("Encountered an error signing in.", error)
+        }
+        return
+    }
+    console.error("Not a sign in link.")
+}
+
+export function useAuthState() {
+    const [user, setUser] = useState()
+    useEffect(() => {
+        auth && onAuthStateChanged(auth, u => setUser(u))
+    }, [])
+    return user
+}
+
+export function useMustBeSignedIn() {
+    const user = useAuthState()
+    const router = useRouter()
+    useEffect(() => {
+        user === null && router.push("/login")
+    }, [user])
+
+    return user
+}
+
+export function signOut() {
+    auth.signOut()
+}
+
+export function useAsyncState(factory, dependencies = []) {
+    const [state, setState] = useState()
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState()
+    useEffect(() => {
+        setLoading(true)
+        factory?.()
+            .then(results => {
+                setState(results)
+                setLoading(false)
+            })
+            .catch(err => {
+                console.error(err)
+                setError(err)
+                setLoading(false)
+            })
+    }, dependencies)
+    return [loading, error, state]
+}
