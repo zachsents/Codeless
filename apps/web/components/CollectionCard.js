@@ -3,13 +3,13 @@ import { TbEdit, TbCopy, TbTrash, TbRun, TbArrowBigRight, TbEye } from "react-ic
 import { TfiMoreAlt } from "react-icons/tfi"
 
 
-export default function CollectionCard() {
+export default function CollectionCard({ collection }) {
     return (
         <Card shadow="xs" px={30} py="lg" radius="md" withBorder sx={{ overflow: "visible" }}>
             <Group position="apart">
                 <Box>
-                    <Text size="lg" weight={600} mb={5}>Leads</Text>
-                    <Text color="dimmed">482 items</Text>
+                    <Text size="lg" weight={600} mb={5}>{collection.name}</Text>
+                    <Text color="dimmed">{collection.itemCount} items</Text>
                 </Box>
                 <Group spacing="xl">
                     <Tooltip label="View Collection" withArrow>

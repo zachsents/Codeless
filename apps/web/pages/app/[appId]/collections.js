@@ -1,13 +1,23 @@
-import { Box, Button, Container, Group, Stack, Text } from '@mantine/core'
+import { Box, Button, Group, Stack, Text } from '@mantine/core'
+import { collection } from 'firebase/firestore'
 import { TbExternalLink, TbPlus } from 'react-icons/tb'
 import AppDashboard from '../../../components/AppDashboard'
 import CollectionCard from '../../../components/CollectionCard'
-import FlowCard from '../../../components/FlowCard'
 import GradientBox from '../../../components/GradientBox'
 import PageTitle from '../../../components/PageTitle'
+import { firestore, getMappedDocs, useMustBeSignedIn } from '../../../modules/firebase'
+import { useApp, useAsyncState } from '../../../modules/hooks'
 
 
 export default function AppCollections() {
+
+    useMustBeSignedIn()
+    const app = useApp()
+
+    const [collections] = useAsyncState(async () => {
+        return app && await getMappedDocs(collection(firestore, "apps", app.id, "collections"))
+    }, [app])
+
     return (
         <AppDashboard>
             <GradientBox>
@@ -29,10 +39,7 @@ export default function AppCollections() {
             </GradientBox>
 
             <Box sx={gridStyle}>
-                <CollectionCard />
-                <CollectionCard />
-                <CollectionCard />
-                <CollectionCard />
+                {collections?.map(collection => <CollectionCard collection={collection} key={collection.id} />)}
             </Box>
         </AppDashboard>
     )

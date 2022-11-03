@@ -4,6 +4,9 @@ import '../styles/globals.css'
 const theme = {
     fontFamily: "DM Sans",
     primaryColor: "indigo",
+    headings: {
+        fontFamily: "DM Sans",
+    },
 }
 
 function MyApp({ Component, pageProps }) {

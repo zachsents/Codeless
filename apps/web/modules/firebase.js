@@ -1,13 +1,14 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app"
 import { getAnalytics } from "firebase/analytics"
-import { getFirestore } from "firebase/firestore"
+import { getDocs, getFirestore } from "firebase/firestore"
 import {
     getAuth, signInWithPopup, GoogleAuthProvider, sendSignInLinkToEmail, isSignInWithEmailLink,
     signInWithEmailLink, onAuthStateChanged
 } from "firebase/auth"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -118,22 +119,13 @@ export function signOut() {
     auth.signOut()
 }
 
-export function useAsyncState(factory, dependencies = []) {
-    const [state, setState] = useState()
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState()
-    useEffect(() => {
-        setLoading(true)
-        factory?.()
-            .then(results => {
-                setState(results)
-                setLoading(false)
-            })
-            .catch(err => {
-                console.error(err)
-                setError(err)
-                setLoading(false)
-            })
-    }, dependencies)
-    return [loading, error, state]
+export async function getMappedDocs(ref) {
+    return mapSnapshot(await getDocs(ref))
+}
+
+export function mapSnapshot(snapshot) {
+    return snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }))
 }

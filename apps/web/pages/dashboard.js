@@ -1,19 +1,22 @@
-import { ActionIcon, Box, Container, Group, Header, Menu, Tabs } from "@mantine/core"
-import { collection, doc, getDoc, getDocs } from "firebase/firestore"
-import { useEffect } from "react"
+import { Box, Button, Container, Group, Header, Menu, Tabs, Text } from "@mantine/core"
+import { collection, query, where } from "firebase/firestore"
 import { TbUserCircle } from "react-icons/tb"
 import AppCard from "../components/AppCard"
-import { firestore, signOut, useAsyncState, useMustBeSignedIn } from "../modules/firebase"
+import { firestore, getMappedDocs, signOut, useMustBeSignedIn } from "../modules/firebase"
+import { useAsyncState } from "../modules/hooks"
 
 
 export default function Dashboard() {
 
     const user = useMustBeSignedIn()
 
-    const [,, apps] = useAsyncState(async () => {
-        return user && (
-            await getDocs(collection(firestore, "users", user.uid, "apps"))
-        ).docs.map(doc => ({ id: doc.id, path: doc.ref.path, ...doc.data() }))
+    const [apps] = useAsyncState(async () => {
+        return user && await getMappedDocs(
+            query(
+                collection(firestore, "apps"),
+                where("owner", "==", user.uid)
+            )
+        )
     }, [user])
 
     return (
@@ -22,7 +25,9 @@ export default function Dashboard() {
                 <Group position="right">
                     <Menu withArrow position="bottom-end" width={200}>
                         <Menu.Target>
-                            <ActionIcon variant="transparent"><TbUserCircle fontSize={30} /></ActionIcon>
+                            <Button variant="subtle" rightIcon={<TbUserCircle fontSize={30} />}>
+                                <Text color="dimmed">{user?.displayName || user?.email}</Text>
+                            </Button>
                         </Menu.Target>
                         <Menu.Dropdown>
                             <Menu.Item onClick={() => signOut()}>Sign Out</Menu.Item>

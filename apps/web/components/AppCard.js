@@ -4,27 +4,28 @@ import ResourceFraction from './ResourceFraction'
 import { FaTrashAlt, FaPencilAlt } from "react-icons/fa"
 import { useHover } from "@mantine/hooks"
 import { format as timeAgo } from 'timeago.js'
-import { firestore, useAsyncState } from '../modules/firebase'
+import { firestore } from '../modules/firebase'
 import { collection, doc, getCountFromServer, getDoc } from 'firebase/firestore'
+import { useAsyncState } from '../modules/hooks'
 
 
-export default function AppCard({ app: { id, name, lastEdited, path, plan: planId } }) {
+export default function AppCard({ app: { id, name, lastEdited, plan: planId } }) {
 
     const { hovered: showEditButton, ref: titleRef } = useHover()
 
-    const [, , flowCount] = useAsyncState(async () => {
+    const [flowCount] = useAsyncState(async () => {
         return (await getCountFromServer(
-            collection(firestore, path, "flows")
+            collection(firestore, "apps", id, "flows")
         )).data().count
     })
 
-    const [, , collectionCount] = useAsyncState(async () => {
+    const [collectionCount] = useAsyncState(async () => {
         return (await getCountFromServer(
-            collection(firestore, path, "collections")
+            collection(firestore, "apps", id, "collections")
         )).data().count
     })
 
-    const [, , plan] = useAsyncState(async () => {
+    const [plan] = useAsyncState(async () => {
         return (await getDoc(
             doc(firestore, "plans", planId)
         )).data()

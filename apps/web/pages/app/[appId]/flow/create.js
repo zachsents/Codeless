@@ -1,34 +1,91 @@
-import { useEffect } from 'react'
-import { Box, Button, Card, Group, SegmentedControl, Select, Stack, Text, TextInput, Title } from '@mantine/core'
+import { useEffect, useState } from 'react'
+import { Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useRouter } from 'next/router'
-import { TbDatabase, TbWorld, TbHandClick, TbArrowNarrowRight } from 'react-icons/tb'
+import * as TbIcons from "react-icons/tb"
+import { TbArrowNarrowRight } from 'react-icons/tb'
 import AppDashboard from '../../../../components/AppDashboard'
 import GoBackButton from '../../../../components/GoBackButton'
+import { useApp, useAsyncState, useFlows, usePlan } from '../../../../modules/hooks'
+import { addDoc, collection, doc, query, serverTimestamp, where } from 'firebase/firestore'
+import { firestore, getMappedDocs } from '../../../../modules/firebase'
 
 export default function CreateFlow() {
 
-    const { query: { appId } } = useRouter()
+    const { query: { appId }, ...router } = useRouter()
 
+    // check if user is maxed out on flows
+    const app = useApp()
+    const plan = usePlan(app?.plan)
+    const flows = useFlows(appId)
+    useEffect(() => {
+        if (plan && flows)
+            plan.flowCount <= flows.length && router.push(`/app/${appId}/flows`)
+    }, [[plan, flows]])
+
+    // look up trigger types and map to data the SegmentedControl can use
+    const [triggerTypes] = useAsyncState(async () => {
+        const types = await getMappedDocs(collection(firestore, "triggerTypes"))
+        return types.map(type => {
+            const TypeIcon = TbIcons[type.icon]
+            return {
+                label: <TriggerCard label={type.name} icon={<TypeIcon />} />,
+                value: type.id,
+            }
+        })
+    })
+
+    // form hook & handlers
     const form = useForm({
         initialValues: {
-            triggerType: "http"
+            name: "",
+            triggerType: "http",
+            trigger: null,
         },
         validate: {
             name: value => !value,
             triggerType: value => !value,
-            trigger: (value, values) => triggers[values.triggerType] && !value,
+            trigger: value => !value,
         },
     })
+    const [formLoading, setFormLoading] = useState(false)
 
-    const handleSubmit = values => {
-        console.log(values)
+    const handleSubmit = async values => {
+        setFormLoading(true)
+        const newDocRef = await addDoc(collection(firestore, "apps", appId, "flows"), {
+            name: values.name,
+            lastEdited: serverTimestamp(),
+            created: serverTimestamp(),
+            executionCount: 0,
+        })
+        router.push(`/app/${appId}/flow/${newDocRef.id}/edit`)
     }
 
-    // reset trigger value when trigger type is changed
-    useEffect(() => {
+    // when trigger type is changed
+    const [triggers] = useAsyncState(async () => {
+        // reset trigger value
         form.setFieldValue("trigger", null)
+
+        // return empty if triggerType isn't set
+        if (!form.values.triggerType)
+            return
+
+        // load triggers from database
+        const loadedTriggers = await getMappedDocs(query(
+            collection(firestore, "triggers"),
+            where("type", "==", doc(firestore, "triggerTypes", form.values.triggerType))
+        ))
+
+        // if there's only one option, set it
+        loadedTriggers.length == 1 && form.setFieldValue("trigger", loadedTriggers[0].id)
+
+        // return data the Select component can read
+        return loadedTriggers.map(trigger => ({
+            label: trigger.name,
+            value: trigger.id,
+        }))
     }, [form.values.triggerType])
+
 
     return (
         <AppDashboard>
@@ -40,6 +97,7 @@ export default function CreateFlow() {
                     <FormSubsection label="Choose a name for your flow">
                         <TextInput
                             placeholder="Launches a rocket when a link is clicked"
+                            disabled={formLoading}
                             {...form.getInputProps("name")}
                             sx={{ width: 400 }}
                         />
@@ -48,47 +106,35 @@ export default function CreateFlow() {
                 <FormSection title="Trigger">
                     <FormSubsection label="Choose a trigger type">
                         <SegmentedControl
-                            data={triggerTypes}
+                            data={triggerTypes ?? []}
+                            disabled={formLoading}
                             {...form.getInputProps("triggerType")}
                             styles={triggerTypesStyles}
                         />
                     </FormSubsection>
-                    {triggers[form.values.triggerType] &&
+                    {triggers?.length > 1 &&
                         <FormSubsection label="Choose a trigger">
                             <Select
                                 placeholder="When..."
-                                data={triggers[form.values.triggerType] ?? []}
+                                disabled={formLoading}
+                                data={triggers ?? []}
                                 {...form.getInputProps("trigger")}
                                 sx={{ width: 400 }}
                             />
                         </FormSubsection>}
-                    {form.isValid() &&
-                        <Button type="submit" rightIcon={<TbArrowNarrowRight />} mt={30}>Start Building</Button>}
+                    {form.isValid() ?
+                        formLoading ?
+                            <Loader size="sm" mt={30} /> :
+                            <Button type="submit" rightIcon={<TbArrowNarrowRight />} mt={30}>Start Building</Button>
+                        :
+                        <></>
+                    }
                 </FormSection>
-
             </form>
         </AppDashboard>
     )
 }
 
-const triggerTypes = [
-    {
-        value: "http",
-        label: <TriggerCard label="HTTP" icon={<TbWorld />} />
-    },
-    {
-        value: "collection",
-        label: <TriggerCard label="Collection" icon={<TbDatabase />} />
-    },
-    {
-        value: "manual",
-        label: <TriggerCard label="Manual" icon={<TbHandClick />} />
-    },
-]
-
-const triggers = {
-    collection: ["When an item is added", "When an item is changed"],
-}
 
 const triggerTypesStyles = theme => ({
     root: {
