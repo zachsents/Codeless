@@ -1,4 +1,6 @@
 import { Box, Button, Group, Skeleton, Stack, Text } from '@mantine/core'
+import Link from 'next/link'
+import { useState } from 'react'
 import { TbArrowBigUpLines, TbExternalLink, TbPlus } from 'react-icons/tb'
 import AppDashboard from '../../../components/AppDashboard'
 import CollectionCard from '../../../components/CollectionCard'
@@ -19,6 +21,16 @@ export default function AppCollections() {
 
     const collectionsLeft = plan?.collectionCount - collections?.length
 
+    // duplication state & handlers
+    const [creationPending, setCreationPending] = useState(false)
+    const handleDuplicate = async () => {
+        setCreationPending(true)
+        console.log("TO DO: implement collection duplication with firebase function")
+        // TO DO: create firebase function to do the duplication. Shouldn't
+        // handle all of this client-side.
+        setCreationPending(false)
+    }
+
     return (
         <AppDashboard>
             <GradientBox>
@@ -33,7 +45,16 @@ export default function AppCollections() {
                             plan.collectionCount > collections.length ?
                                 <>
                                     <Text color="white" size="sm" mt={20}>You have <b>{collectionsLeft}</b> collection{plural(collectionsLeft)} left.</Text>
-                                    <Button variant="white" mt={15} leftIcon={<TbPlus />}>Create Collection</Button>
+                                    <Link href={`/app/${app?.id}/collection/create`}>
+                                        <Button
+                                            component="a"
+                                            variant="white"
+                                            mt={15}
+                                            leftIcon={<TbPlus />}
+                                        >
+                                            Create Collection
+                                        </Button>
+                                    </Link>
                                 </>
                                 :
                                 <>
@@ -59,7 +80,12 @@ export default function AppCollections() {
 
             <Box sx={gridStyle}>
                 {collections ?
-                    collections.map(collection => <CollectionCard collection={collection} key={collection.id} />)
+                    <>
+                        {collections.map(collection =>
+                            <CollectionCard collection={collection} onDuplicate={handleDuplicate} key={collection.id} />
+                        )}
+                        {creationPending && <Skeleton height={100} />}
+                    </>
                     :
                     <>
                         <Skeleton height={100} />

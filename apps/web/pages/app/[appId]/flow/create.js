@@ -6,9 +6,11 @@ import * as TbIcons from "react-icons/tb"
 import { TbArrowNarrowRight } from 'react-icons/tb'
 import AppDashboard from '../../../../components/AppDashboard'
 import GoBackButton from '../../../../components/GoBackButton'
-import { useApp, useAsyncState, useFlows, usePlan } from '../../../../modules/hooks'
+import { useApp, useAsyncState, useFlowCount, useFlows, usePlan } from '../../../../modules/hooks'
 import { addDoc, collection, doc, query, serverTimestamp, where } from 'firebase/firestore'
 import { firestore, getMappedDocs } from '../../../../modules/firebase'
+import FormSubsection from '../../../../components/forms/FormSubsection'
+import FormSection from '../../../../components/forms/FormSection'
 
 export default function CreateFlow() {
 
@@ -17,11 +19,11 @@ export default function CreateFlow() {
     // check if user is maxed out on flows
     const app = useApp()
     const plan = usePlan(app?.plan)
-    const flows = useFlows(appId)
+    const flowCount = useFlowCount(appId)
     useEffect(() => {
-        if (plan && flows)
-            plan.flowCount <= flows.length && router.push(`/app/${appId}/flows`)
-    }, [[plan, flows]])
+        if (plan && flowCount !== undefined && plan.flowCount <= flowCount)
+            router.push(`/app/${appId}/flows`)
+    }, [plan, flowCount])
 
     // look up trigger types and map to data the SegmentedControl can use
     const [triggerTypes] = useAsyncState(async () => {
@@ -54,6 +56,7 @@ export default function CreateFlow() {
         setFormLoading(true)
         const newDocRef = await addDoc(collection(firestore, "apps", appId, "flows"), {
             name: values.name,
+            trigger: doc(firestore, "triggers", values.trigger),
             lastEdited: serverTimestamp(),
             created: serverTimestamp(),
             executionCount: 0,
@@ -122,10 +125,12 @@ export default function CreateFlow() {
                                 sx={{ width: 400 }}
                             />
                         </FormSubsection>}
+                </FormSection>
+                <FormSection>
                     {form.isValid() ?
                         formLoading ?
-                            <Loader size="sm" mt={30} /> :
-                            <Button type="submit" rightIcon={<TbArrowNarrowRight />} mt={30}>Start Building</Button>
+                            <Loader size="sm" /> :
+                            <Button type="submit" rightIcon={<TbArrowNarrowRight />}>Start Building</Button>
                         :
                         <></>
                     }
@@ -165,21 +170,4 @@ function TriggerCard({ label, icon }) {
             </Stack>
         </Card>
     )
-}
-
-function FormSection({ title, children }) {
-    return (
-        <Stack align="center" mb={30}>
-            <Title order={2} mb={10}>{title}</Title>
-            {children}
-        </Stack>
-    )
-}
-
-function FormSubsection({ label, children }) {
-    return <>
-        <Text color="dimmed">{label}</Text>
-        {children}
-        {/* <Space h={10} /> */}
-    </>
 }

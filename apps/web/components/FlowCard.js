@@ -1,13 +1,14 @@
 import { ActionIcon, Box, Button, Card, Center, Group, Loader, Menu, Modal, Text, Tooltip } from '@mantine/core'
-import { deleteDoc, doc } from 'firebase/firestore'
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError } from "react-icons/tb"
+import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil } from "react-icons/tb"
 import { TfiMoreAlt } from "react-icons/tfi"
 import { firestore } from '../modules/firebase'
 import { useAppId } from '../modules/hooks'
 import DeleteModal from './DeleteModal'
+import RenameModal from './RenameModal'
 
 
 export default function FlowCard({ flow }) {
@@ -17,8 +18,16 @@ export default function FlowCard({ flow }) {
     const error = flow.status?.type == "error"
     const errorMessage = `${flow.status?.message ?? "Uh oh."} Click for more info`
 
+    // deleting state & handlers
     const [deleting, setDeleting] = useState(false)
     const handleDelete = () => deleteDoc(doc(firestore, "apps", appId, "flows", flow.id))
+
+    // renaming state & handlers
+    const [renaming, setRenaming] = useState(false)
+    const handleRename = newName => updateDoc(
+        doc(firestore, "apps", appId, "flows", flow.id),
+        { name: newName }
+    )
 
     return (
         <>
@@ -41,7 +50,7 @@ export default function FlowCard({ flow }) {
                         <Tooltip label="Edit Flow" withArrow>
                             <div>
                                 <Link href={`/app/${appId}/flow/${flow.id}/edit`}>
-                                    <ActionIcon variant="transparent" color=""><TbEdit fontSize={28} /></ActionIcon>
+                                    <ActionIcon component="a" variant="transparent" color=""><TbEdit fontSize={28} /></ActionIcon>
                                 </Link>
                             </div>
                         </Tooltip>
@@ -51,6 +60,7 @@ export default function FlowCard({ flow }) {
                             </Menu.Target>
                             <Menu.Dropdown>
                                 <Menu.Item icon={<TbRun />}>View Runs</Menu.Item>
+                                <Menu.Item onClick={() => setRenaming(true)} icon={<TbPencil />}>Rename Flow</Menu.Item>
                                 <Menu.Item icon={<TbCopy />}>Duplicate Flow</Menu.Item>
                                 <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
                             </Menu.Dropdown>
@@ -59,7 +69,8 @@ export default function FlowCard({ flow }) {
                 </Group>
             </Card>
 
-            <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete}  />
+            <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
+            <RenameModal name={flow.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
         </>
     )
 }

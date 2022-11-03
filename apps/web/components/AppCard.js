@@ -6,25 +6,15 @@ import { useHover } from "@mantine/hooks"
 import { format as timeAgo } from 'timeago.js'
 import { firestore } from '../modules/firebase'
 import { collection, doc, getCountFromServer, getDoc } from 'firebase/firestore'
-import { useAsyncState, usePlan } from '../modules/hooks'
+import { useAsyncState, useCollectionCount, useFlowCount, usePlan } from '../modules/hooks'
 
 
 export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }) {
 
     const { hovered: showEditButton, ref: titleRef } = useHover()
 
-    const [flowCount] = useAsyncState(async () => {
-        return (await getCountFromServer(
-            collection(firestore, "apps", id, "flows")
-        )).data().count
-    })
-
-    const [collectionCount] = useAsyncState(async () => {
-        return (await getCountFromServer(
-            collection(firestore, "apps", id, "collections")
-        )).data().count
-    })
-
+    const flowCount = useFlowCount()
+    const collectionCount = useCollectionCount()
     const plan = usePlan(planRef)
 
     return (

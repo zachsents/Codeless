@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore"
+import { collection, doc, getCountFromServer, getDoc, onSnapshot } from "firebase/firestore"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { firestore, getMappedDocs, mapSnapshot } from "./firebase"
@@ -72,6 +72,15 @@ export function useFlowsRealtime(appId) {
     return flows
 }
 
+export function useFlowCount(appId) {
+    const [flowCount] = useAsyncState(async () =>
+        appId && (await getCountFromServer(
+            collection(firestore, "apps", appId, "flows")
+        )).data().count
+        , [appId])
+    return flowCount
+}
+
 export function useCollections(appId) {
     const [collections] = useAsyncState(async () =>
         appId && await getMappedDocs(collection(firestore, "apps", appId, "collections"))
@@ -85,4 +94,13 @@ export function useCollectionsRealtime(appId) {
         mapSnapshot
     )
     return collections
+}
+
+export function useCollectionCount(appId) {
+    const [collectionCount] = useAsyncState(async () =>
+        appId && (await getCountFromServer(
+            collection(firestore, "apps", appId, "collections")
+        )).data().count
+        , [appId])
+    return collectionCount
 }
