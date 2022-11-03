@@ -1,20 +1,18 @@
-import { ActionIcon, Badge, Box, Button, Card, Group, Text, Title, Tooltip } from '@mantine/core'
+import { ActionIcon, Badge, Box, Button, Card, Group, Skeleton, Text, Title, Tooltip } from '@mantine/core'
 import Link from 'next/link'
 import ResourceFraction from './ResourceFraction'
 import { FaTrashAlt, FaPencilAlt } from "react-icons/fa"
 import { useHover } from "@mantine/hooks"
 import { format as timeAgo } from 'timeago.js'
-import { firestore } from '../modules/firebase'
-import { collection, doc, getCountFromServer, getDoc } from 'firebase/firestore'
-import { useAsyncState, useCollectionCount, useFlowCount, usePlan } from '../modules/hooks'
+import { useCollectionCount, useFlowCount, usePlan } from '../modules/hooks'
 
 
 export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }) {
 
     const { hovered: showEditButton, ref: titleRef } = useHover()
 
-    const flowCount = useFlowCount()
-    const collectionCount = useCollectionCount()
+    const flowCount = useFlowCount(id)
+    const collectionCount = useCollectionCount(id)
     const plan = usePlan(planRef)
 
     return (
@@ -29,20 +27,30 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }
 
             <Group position="apart" mt="md" mb="xs">
                 <Text size="sm" color="dimmed">Last edited {timeAgo(lastEdited.seconds * 1000)}</Text>
-                <Tooltip label="Change Plan" withArrow position="bottom">
-                    <Box>
-                        <Link href="#">
-                            <Badge color="blue" variant="light" component="a" sx={{ cursor: "pointer" }}>
-                                {plan?.name}
-                            </Badge>
-                        </Link>
-                    </Box>
-                </Tooltip>
+                {plan ?
+                    <Tooltip label="Change Plan" withArrow position="bottom">
+                        <Box>
+                            <Link href="#">
+                                <Badge color={plan?.color} variant="light" component="a" sx={{ cursor: "pointer" }}>
+                                    {plan?.name}
+                                </Badge>
+                            </Link>
+                        </Box>
+                    </Tooltip>
+                    :
+                    <Skeleton height={12} width={40} radius="xl" />
+                }
             </Group>
 
             <Group position="center" spacing="xl" mb={30}>
-                <ResourceFraction used={flowCount} total={plan?.flowCount} label="Flows" color="indigo" />
-                <ResourceFraction used={collectionCount} total={plan?.collectionCount} label="Collections" color="cyan" />
+                {flowCount && collectionCount && plan ?
+                    <>
+                        <ResourceFraction used={flowCount} total={plan?.flowCount} label="Flows" color="indigo" />
+                        <ResourceFraction used={collectionCount} total={plan?.collectionCount} label="Collections" color="cyan" />
+                    </>
+                    :
+                    <Skeleton height={12} width={100} mt={10} radius="xl" />
+                }
             </Group>
 
             <Group>

@@ -14,7 +14,7 @@ export default function AppOverview() {
 
     return (
         <AppDashboard>
-            <GradientBox centerAround="blue">
+            <GradientBox>
                 {app && plan ?
                     <Group position="apart" sx={{ alignItems: "stretch" }}>
                         <Box>
@@ -27,7 +27,7 @@ export default function AppOverview() {
                             </Text>
                         </Box>
                         <Box>
-                            <Badge size="xl">{plan?.name}</Badge>
+                            <Badge size="xl" color={plan?.color} sx={badgeStyle}>{plan?.name}</Badge>
                         </Box>
                     </Group>
                     :
@@ -38,3 +38,6 @@ export default function AppOverview() {
     )
 }
 
+const badgeStyle = theme => ({
+    // backgroundColor: "white",
+})

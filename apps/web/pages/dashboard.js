@@ -1,4 +1,4 @@
-import { Box, Button, Container, Group, Header, Menu, Tabs, Text } from "@mantine/core"
+import { Box, Button, Container, Group, Header, Menu, Skeleton, Tabs, Text } from "@mantine/core"
 import { collection, query, where } from "firebase/firestore"
 import { TbUserCircle } from "react-icons/tb"
 import AppCard from "../components/AppCard"
@@ -42,7 +42,15 @@ export default function Dashboard() {
 
                     <Tabs.Panel value="apps" pt="xs">
                         <Box sx={gridStyle}>
-                            {apps?.map(app => <AppCard app={app} key={app.id} />)}
+                            {apps ?
+                                apps.map(app => <AppCard app={app} key={app.id} />)
+                                :
+                                <>
+                                    <Skeleton height={200} />
+                                    <Skeleton height={200} />
+                                    <Skeleton height={200} />
+                                </>
+                            }
                         </Box>
                     </Tabs.Panel>
                 </Tabs>
@@ -54,6 +62,7 @@ export default function Dashboard() {
 const gridStyle = theme => ({
     display: "grid",
     gridTemplateColumns: "repeat(3, 1fr)",
+    gap: 30,
 })
 
 const tabStyles = theme => ({
