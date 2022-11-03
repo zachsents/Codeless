@@ -6,10 +6,10 @@ import { useHover } from "@mantine/hooks"
 import { format as timeAgo } from 'timeago.js'
 import { firestore } from '../modules/firebase'
 import { collection, doc, getCountFromServer, getDoc } from 'firebase/firestore'
-import { useAsyncState } from '../modules/hooks'
+import { useAsyncState, usePlan } from '../modules/hooks'
 
 
-export default function AppCard({ app: { id, name, lastEdited, plan: planId } }) {
+export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }) {
 
     const { hovered: showEditButton, ref: titleRef } = useHover()
 
@@ -25,11 +25,7 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planId } })
         )).data().count
     })
 
-    const [plan] = useAsyncState(async () => {
-        return (await getDoc(
-            doc(firestore, "plans", planId)
-        )).data()
-    })
+    const plan = usePlan(planRef)
 
     return (
         <Card shadow="sm" p="lg" radius="md" withBorder>

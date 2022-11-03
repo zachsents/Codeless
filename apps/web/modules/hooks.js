@@ -71,3 +71,18 @@ export function useFlowsRealtime(appId) {
     )
     return flows
 }
+
+export function useCollections(appId) {
+    const [collections] = useAsyncState(async () =>
+        appId && await getMappedDocs(collection(firestore, "apps", appId, "collections"))
+        , [appId])
+    return collections
+}
+
+export function useCollectionsRealtime(appId) {
+    const [collections] = useRealtimeState(
+        appId && collection(firestore, "apps", appId, "collections"),
+        mapSnapshot
+    )
+    return collections
+}

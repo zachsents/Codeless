@@ -2,22 +2,21 @@ import { Box, Button, Container, Group, Header, Menu, Tabs, Text } from "@mantin
 import { collection, query, where } from "firebase/firestore"
 import { TbUserCircle } from "react-icons/tb"
 import AppCard from "../components/AppCard"
-import { firestore, getMappedDocs, signOut, useMustBeSignedIn } from "../modules/firebase"
-import { useAsyncState } from "../modules/hooks"
+import { firestore, getMappedDocs, mapSnapshot, signOut, useMustBeSignedIn } from "../modules/firebase"
+import { useAsyncState, useRealtimeState } from "../modules/hooks"
 
 
 export default function Dashboard() {
 
     const user = useMustBeSignedIn()
 
-    const [apps] = useAsyncState(async () => {
-        return user && await getMappedDocs(
-            query(
-                collection(firestore, "apps"),
-                where("owner", "==", user.uid)
-            )
-        )
-    }, [user])
+    const [apps] = useRealtimeState(
+        user && query(
+            collection(firestore, "apps"),
+            where("owner", "==", user.uid)
+        ),
+        mapSnapshot
+    )
 
     return (
         <>

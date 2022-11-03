@@ -4,17 +4,18 @@ import GradientBox from '../../../components/GradientBox'
 import LoadingSkeleton from '../../../components/LoadingSkeleton'
 import PageTitle from '../../../components/PageTitle'
 import { useMustBeSignedIn } from '../../../modules/firebase'
-import { useApp } from "../../../modules/hooks"
+import { useApp, usePlan } from "../../../modules/hooks"
 
 export default function AppOverview() {
 
     useMustBeSignedIn()
     const app = useApp()
+    const plan = usePlan(app?.plan)
 
     return (
         <AppDashboard>
             <GradientBox centerAround="blue">
-                {app ?
+                {app && plan ?
                     <Group position="apart" sx={{ alignItems: "stretch" }}>
                         <Box>
                             <PageTitle white mb={20}>{app.name}</PageTitle>
@@ -26,7 +27,7 @@ export default function AppOverview() {
                             </Text>
                         </Box>
                         <Box>
-                            <Badge size="xl">{app.plan}</Badge>
+                            <Badge size="xl">{plan?.name}</Badge>
                         </Box>
                     </Group>
                     :

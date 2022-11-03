@@ -7,6 +7,7 @@ import { TbExternalLink, TbPlus, TbArrowBigUpLines } from "react-icons/tb"
 import Link from 'next/link'
 import { useApp, useAppId, useFlowsRealtime, usePlan } from '../../../modules/hooks'
 import { useMustBeSignedIn } from '../../../modules/firebase'
+import { plural } from '../../../modules/util'
 
 
 export default function AppFlows() {
@@ -16,7 +17,8 @@ export default function AppFlows() {
     const app = useApp()
     const plan = usePlan(app?.plan)
     const flows = useFlowsRealtime(appId)
-    
+
+    const flowsLeft = plan?.flowCount - flows?.length
 
     return (
         <AppDashboard>
@@ -30,19 +32,22 @@ export default function AppFlows() {
                         </Text>
                         {plan && flows ?
                             plan.flowCount > flows.length ?
-                                <Link href={`/app/${app?.id}/flow/create`}>
-                                    <Button
-                                        component="a"
-                                        variant="white"
-                                        leftIcon={<TbPlus />}
-                                        mt={20}
-                                    >
-                                        Create Flow
-                                    </Button>
-                                </Link>
+                                <>
+                                    <Text color="white" size="sm" mt={20}>You have <b>{flowsLeft}</b> flow{plural(flowsLeft)} left.</Text>
+                                    <Link href={`/app/${app?.id}/flow/create`}>
+                                        <Button
+                                            component="a"
+                                            variant="white"
+                                            leftIcon={<TbPlus />}
+                                            mt={15}
+                                        >
+                                            Create Flow
+                                        </Button>
+                                    </Link>
+                                </>
                                 :
                                 <>
-                                    <Text color="white" size="sm" mt={20}>With the <b>{plan.name}</b> plan, you can only make <b>{plan.flowCount}</b> flows.</Text>
+                                    <Text color="white" size="sm" mt={20}>With the <b>{plan.name}</b> plan, you can only make <b>{plan.flowCount}</b> flow{plural(plan.flowCount)}.</Text>
                                     <Button
                                         component="a"
                                         variant="white"
@@ -65,7 +70,11 @@ export default function AppFlows() {
             {flows ?
                 flows?.map(flow => <FlowCard flow={flow} key={flow.id} />)
                 :
-                <Skeleton height={80} />
+                <>
+                    <Skeleton height={80} mt={10} />
+                    <Skeleton height={80} mt={10} />
+                    <Skeleton height={80} mt={10} />
+                </>
             }
         </AppDashboard>
     )

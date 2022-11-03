@@ -6,22 +6,19 @@ import { useState } from 'react'
 import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError } from "react-icons/tb"
 import { TfiMoreAlt } from "react-icons/tfi"
 import { firestore } from '../modules/firebase'
+import { useAppId } from '../modules/hooks'
+import DeleteModal from './DeleteModal'
 
 
 export default function FlowCard({ flow }) {
 
-    const { query: { appId } } = useRouter()
+    const appId = useAppId()
 
     const error = flow.status?.type == "error"
     const errorMessage = `${flow.status?.message ?? "Uh oh."} Click for more info`
 
-    const [deleteModalOpened, setDeleteModalOpened] = useState(false)
-    const [deleteLoading, setDeleteLoading] = useState(false)
-    const handleDelete = async () => {
-        setDeleteLoading(true)
-        await deleteDoc(doc(firestore, "apps", appId, "flows", flow.id))
-        setDeleteModalOpened(false)
-    }
+    const [deleting, setDeleting] = useState(false)
+    const handleDelete = () => deleteDoc(doc(firestore, "apps", appId, "flows", flow.id))
 
     return (
         <>
@@ -55,28 +52,14 @@ export default function FlowCard({ flow }) {
                             <Menu.Dropdown>
                                 <Menu.Item icon={<TbRun />}>View Runs</Menu.Item>
                                 <Menu.Item icon={<TbCopy />}>Duplicate Flow</Menu.Item>
-                                <Menu.Item onClick={() => setDeleteModalOpened(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
+                                <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
                             </Menu.Dropdown>
                         </Menu>
                     </Group>
                 </Group>
             </Card>
 
-            <Modal
-                opened={deleteModalOpened}
-                onClose={() => setDeleteModalOpened(false)}
-                title={`Deleting "${flow.name}"`}
-            >
-                <Text size="sm" mb={20} align="center">Are you sure?</Text>
-                {deleteLoading ?
-                    <Center><Loader size="sm" /></Center>
-                    :
-                    <Group position="apart">
-                        <Button variant="outline" onClick={() => setDeleteModalOpened(false)}>Cancel</Button>
-                        <Button color="red" rightIcon={<TbTrash />} onClick={handleDelete}>Positive.</Button>
-                    </Group>
-                }
-            </Modal>
+            <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete}  />
         </>
     )
 }
