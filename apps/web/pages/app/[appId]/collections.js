@@ -1,9 +1,10 @@
-import { Box, Button, Group, Skeleton, Stack, Text } from '@mantine/core'
+import { Box, Button, Group, SimpleGrid, Skeleton, Stack, Text } from '@mantine/core'
 import Link from 'next/link'
 import { useState } from 'react'
 import { TbArrowBigUpLines, TbExternalLink, TbPlus } from 'react-icons/tb'
 import AppDashboard from '../../../components/AppDashboard'
 import CollectionCard from '../../../components/CollectionCard'
+import GlassButton from '../../../components/GlassButton'
 import GradientBox from '../../../components/GradientBox'
 import PageTitle from '../../../components/PageTitle'
 import { useMustBeSignedIn } from '../../../modules/firebase'
@@ -72,13 +73,13 @@ export default function AppCollections() {
                     </Box>
                     <Box>
                         <Stack>
-                            <Button variant="white" rightIcon={<TbExternalLink />}>Go to Guides</Button>
+                            <GlassButton rightIcon={<TbExternalLink />}>Go to Guides</GlassButton>
                         </Stack>
                     </Box>
                 </Group>
             </GradientBox>
 
-            <Box sx={gridStyle}>
+            <SimpleGrid cols={3} spacing={30} verticalSpacing={30}>
                 {collections ?
                     <>
                         {collections.map(collection =>
@@ -93,13 +94,7 @@ export default function AppCollections() {
                         <Skeleton height={100} />
                     </>
                 }
-            </Box>
+            </SimpleGrid>
         </AppDashboard>
     )
 }
-
-const gridStyle = theme => ({
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: 30,
-})

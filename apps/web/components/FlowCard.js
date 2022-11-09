@@ -1,22 +1,21 @@
-import { ActionIcon, Box, Button, Card, Center, Group, Loader, Menu, Modal, Text, Tooltip } from '@mantine/core'
+import { ActionIcon, Badge, Box, Button, Card, Center, Group, Loader, Menu, Modal, Text, Tooltip, useMantineTheme } from '@mantine/core'
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil } from "react-icons/tb"
+import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil, TbWorldOff, TbPlugConnectedX } from "react-icons/tb"
 import { TfiMoreAlt } from "react-icons/tfi"
 import { firestore } from '../modules/firebase'
 import { useAppId } from '../modules/hooks'
 import DeleteModal from './DeleteModal'
 import RenameModal from './RenameModal'
+import { Sparklines, SparklinesCurve, SparklinesLine } from 'react-sparklines'
+import FloatingMenu from './FloatingMenu'
 
 
 export default function FlowCard({ flow }) {
 
     const appId = useAppId()
-
-    const error = flow.status?.type == "error"
-    const errorMessage = `${flow.status?.message ?? "Uh oh."} Click for more info`
 
     // deleting state & handlers
     const [deleting, setDeleting] = useState(false)
@@ -31,30 +30,42 @@ export default function FlowCard({ flow }) {
 
     return (
         <>
-            <Card shadow="xs" px={30} py="lg" mb={15} radius="md" withBorder sx={{ overflow: "visible" }}>
+            <Card shadow="sm" p="xl" mb={30} radius="lg" sx={{ overflow: "visible" }}>
                 <Group position="apart">
                     <Group spacing="xl">
-                        {error ?
-                            <Tooltip label={errorMessage} withArrow>
+                        {flow.error ?
+                            <Tooltip label={`${flow.error} Click for more info`} withArrow>
                                 <ActionIcon variant="transparent" color="red"><TbFaceIdError fontSize={28} /></ActionIcon>
-                            </Tooltip> :
+                            </Tooltip>
+                            :
                             <Tooltip label="Good to go!" withArrow>
                                 <ActionIcon variant="transparent" color="gray"><TbFaceId fontSize={28} /></ActionIcon>
                             </Tooltip>}
                         <Box>
-                            <Text size="lg" weight={600} mb={5}>{flow.name}</Text>
+                            <Group align="center">
+                                {!flow.published &&
+                                    <Tooltip label="This flow isn't live." withArrow>
+                                        <Badge color="gray">Draft</Badge>
+                                    </Tooltip>}
+                                <Text size="lg" weight={600} mb={5}>{flow.name}</Text>
+                            </Group>
                             <Text color="dimmed">Trigger: Collection Item created</Text>
                         </Box>
                     </Group>
                     <Group spacing="xl">
+                        {/* <Box sx={{ width: "25vw", maxWidth: 400 }}>
+                            <Sparklines data={[0, 0, 0, 20, 5, 0, 3, 4, 15, 20, 0, 2]} max={20} width={120} height={12}>
+                                <SparklinesCurve color={theme.colors.gray[5]} />
+                            </Sparklines>
+                        </Box> */}
                         <Tooltip label="Edit Flow" withArrow>
                             <div>
                                 <Link href={`/app/${appId}/flow/${flow.id}/edit`}>
-                                    <ActionIcon component="a" variant="transparent" color=""><TbEdit fontSize={28} /></ActionIcon>
+                                    <ActionIcon component="a" variant="transparent" color="dark"><TbEdit fontSize={28} /></ActionIcon>
                                 </Link>
                             </div>
                         </Tooltip>
-                        <Menu width={200}>
+                        <FloatingMenu>
                             <Menu.Target>
                                 <ActionIcon variant="transparent" color="dark"><TfiMoreAlt fontSize={20} /></ActionIcon>
                             </Menu.Target>
@@ -64,7 +75,7 @@ export default function FlowCard({ flow }) {
                                 <Menu.Item icon={<TbCopy />}>Duplicate Flow</Menu.Item>
                                 <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
                             </Menu.Dropdown>
-                        </Menu>
+                        </FloatingMenu>
                     </Group>
                 </Group>
             </Card>

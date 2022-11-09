@@ -25,40 +25,42 @@ export default function Login() {
     }
 
     return (
-        <Container size="sm" mt={50}>
-            {!signInMethod &&
-                <Stack>
-                    <Title order={1} align="center">Welcome! 😁</Title>
-                    <Text align="center">Choose a sign-in method</Text>
-                    <Button
-                        onClick={() => setSignInMethod(SignInMethod.Email)}
-                        size="xl"
-                        leftIcon={<TbMail />}
-                    >
-                        Sign in with email
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            setSignInMethod(SignInMethod.Google)
-                            signInWithGoogle().then(handleLogin).catch(() => setSignInMethod(null))
-                        }}
-                        size="xl"
-                        variant="white"
-                        color="dark"
-                        leftIcon={<FcGoogle />}
-                        sx={theme => ({
-                            border: "1px solid " + theme.colors.gray[3]
-                        })}
-                    >
-                        Sign in with Google
-                    </Button>
-                </Stack>
-            }
+        <Center sx={{ width: "100vw", height: "100vh" }} pb={100}>
+            <Container size="sm" sx={{ minWidth: 400 }}>
+                {!signInMethod &&
+                    <Stack>
+                        <Title order={1} align="center">Welcome! 😁</Title>
+                        <Text align="center">Choose a sign-in method</Text>
+                        <Button
+                            onClick={() => setSignInMethod(SignInMethod.Email)}
+                            size="xl"
+                            leftIcon={<TbMail />}
+                        >
+                            Sign in with email
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setSignInMethod(SignInMethod.Google)
+                                signInWithGoogle().then(handleLogin).catch(() => setSignInMethod(null))
+                            }}
+                            size="xl"
+                            variant="white"
+                            color="dark"
+                            leftIcon={<FcGoogle />}
+                            sx={theme => ({
+                                border: "1px solid " + theme.colors.gray[3]
+                            })}
+                        >
+                            Sign in with Google
+                        </Button>
+                    </Stack>
+                }
 
-            {signInMethod == SignInMethod.Email && <EmailLogin goBack={() => setSignInMethod(null)} />}
+                {signInMethod == SignInMethod.Email && <EmailLogin goBack={() => setSignInMethod(null)} />}
 
-            {signInMethod == SignInMethod.Google && <GoogleLogin />}
-        </Container>
+                {signInMethod == SignInMethod.Google && <GoogleLogin />}
+            </Container>
+        </Center>
     )
 }
 
@@ -88,8 +90,8 @@ function EmailLogin({ goBack }) {
         <Stack>
             <GoBackButton onClick={goBack} />
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <Text size="xl" align="center">Log in with your email</Text>
-                <TextInput label="Email" placeholder="mark@facebook.com" size="xl" {...form.getInputProps("email")} mb={20} disabled={!!loadingState} />
+                <Title order={2} align="center" mb={20}>Log in with your email</Title>
+                <TextInput placeholder="mark@facebook.com" size="xl" {...form.getInputProps("email")} mb={20} disabled={!!loadingState} />
                 {/* <PasswordInput label="Password" placeholder="🤫" size="xl" {...form.getInputProps("password")} mb={20} disabled={loading} /> */}
                 <Center>
                     {loadingState == 0 ? <Button type="submit" size="xl">Next</Button> :

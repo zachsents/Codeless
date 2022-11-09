@@ -2,8 +2,8 @@ import { Box, Button, Container, Group, Header, Menu, Skeleton, Tabs, Text } fro
 import { collection, query, where } from "firebase/firestore"
 import { TbUserCircle } from "react-icons/tb"
 import AppCard from "../components/AppCard"
-import { firestore, getMappedDocs, mapSnapshot, signOut, useMustBeSignedIn } from "../modules/firebase"
-import { useAsyncState, useRealtimeState } from "../modules/hooks"
+import { firestore, mapSnapshot, signOut, useMustBeSignedIn } from "../modules/firebase"
+import { useRealtimeState } from "../modules/hooks"
 
 
 export default function Dashboard() {

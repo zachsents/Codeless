@@ -16,7 +16,7 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }
     const plan = usePlan(planRef)
 
     return (
-        <Card shadow="sm" p="lg" radius="md" withBorder>
+        <Card shadow="sm" p="lg" radius="lg">
             <Card.Section sx={cardTitleContainerStyle} ref={titleRef}>
                 <Group position="apart" mr={20}>
                     <Title order={3} p={20} color="white">{name}</Title>

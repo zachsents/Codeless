@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Card, Group, Menu, Text, Tooltip } from '@mantine/core'
+import { ActionIcon, Box, Card, Group, Menu, Stack, Text, Tooltip } from '@mantine/core'
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -7,6 +7,7 @@ import { TfiMoreAlt } from "react-icons/tfi"
 import { firestore } from '../modules/firebase'
 import { useAppId } from '../modules/hooks'
 import DeleteModal from './DeleteModal'
+import FloatingMenu from './FloatingMenu'
 import RenameModal from './RenameModal'
 
 
@@ -27,32 +28,32 @@ export default function CollectionCard({ collection, onDuplicate }) {
 
     return (
         <>
-            <Card shadow="xs" px={30} py="lg" radius="md" withBorder sx={{ overflow: "visible" }}>
-                <Group position="apart">
+            <Card shadow="sm" px={30} py="lg" radius="lg" sx={{ overflow: "visible" }}>
+                <Stack>
                     <Box>
                         <Text size="lg" weight={600} mb={5}>{collection.name}</Text>
                         <Text color="dimmed">{collection.itemCount} items</Text>
                     </Box>
-                    <Group spacing="xl">
+                    <Group spacing="xl" position="right">
                         <Tooltip label="View Collection" withArrow>
                             <div>
                                 <Link href={`/app/${appId}/collection/${collection.id}`}>
-                                    <ActionIcon component="a" variant="transparent" color=""><TbEye fontSize={28} /></ActionIcon>
+                                    <ActionIcon component="a" variant="transparent" color="dark"><TbEye fontSize={28} /></ActionIcon>
                                 </Link>
                             </div>
                         </Tooltip>
-                        <Menu width={200}>
+                        <FloatingMenu>
                             <Menu.Target>
                                 <ActionIcon variant="transparent" color="dark"><TfiMoreAlt fontSize={20} /></ActionIcon>
                             </Menu.Target>
                             <Menu.Dropdown>
                                 <Menu.Item onClick={() => setRenaming(true)} icon={<TbPencil />}>Rename Collection</Menu.Item>
-                                <Menu.Item onClick={() => onDuplicate?.()} icon={<TbCopy />}>Duplicate Collection</Menu.Item>
+                                <Menu.Item disabled onClick={() => onDuplicate?.()} icon={<TbCopy />}>Duplicate Collection</Menu.Item>
                                 <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Collection</Menu.Item>
                             </Menu.Dropdown>
-                        </Menu>
+                        </FloatingMenu>
                     </Group>
-                </Group>
+                </Stack>
             </Card>
 
             <DeleteModal name={collection.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />

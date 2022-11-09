@@ -4,8 +4,7 @@ import { TbReportAnalytics, TbSettings, TbDatabase } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { firestore, useAsyncState, useAuthState, useMustBeSignedIn } from '../modules/firebase'
-import { doc, getDoc } from 'firebase/firestore'
+import { useMustBeSignedIn } from '../modules/firebase'
 
 
 export default function AppDashboard({ children }) {
@@ -19,7 +18,7 @@ export default function AppDashboard({ children }) {
             padding="lg"
             styles={shellStyles}
             navbar={
-                <Navbar width={{ base: 280 }} p="md">
+                <Navbar width={{ base: 280 }} withBorder={false} p="md">
                     <Navbar.Section>
                         <Group position="apart">
                             <Title order={3}>Codeless</Title>
@@ -57,7 +56,9 @@ export default function AppDashboard({ children }) {
 }
 
 const shellStyles = theme => ({
-    main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
+    main: { 
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] 
+    },
 })
 
 const navlinkStyles = theme => ({

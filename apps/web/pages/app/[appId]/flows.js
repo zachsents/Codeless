@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useApp, useAppId, useFlowsRealtime, usePlan } from '../../../modules/hooks'
 import { useMustBeSignedIn } from '../../../modules/firebase'
 import { plural } from '../../../modules/util'
+import GlassButton from '../../../components/GlassButton'
 
 
 export default function AppFlows() {
@@ -61,7 +62,7 @@ export default function AppFlows() {
                     </Box>
                     <Box>
                         <Stack>
-                            <Button variant="white" rightIcon={<TbExternalLink />}>Go to Guides</Button>
+                            <GlassButton rightIcon={<TbExternalLink />}>Go to Guides</GlassButton>
                         </Stack>
                     </Box>
                 </Group>
