@@ -29,7 +29,7 @@ export default function CollectionCard({ collection, onDuplicate }) {
     return (
         <>
             <Card shadow="sm" px={30} py="lg" radius="lg" sx={{ overflow: "visible" }}>
-                <Stack>
+                <Stack justify="space-between" sx={{ height: "100%" }}>
                     <Box>
                         <Text size="lg" weight={600} mb={5}>{collection.name}</Text>
                         <Text color="dimmed">{collection.itemCount} items</Text>
