@@ -1,17 +1,16 @@
 import { Menu } from '@mantine/core'
 
-export default function FloatingMenu({ children, width = 200, radius = "lg", ...props }) {
+export default function FloatingMenu({ children, width = 200, ...props }) {
     return (
-        <Menu 
-        {...props}
-        width={width}
-        radius={radius}
-        styles={{
-            dropdown: {
-                border: "none",
-            }
-        }} 
-        shadow="xl"
+        <Menu
+            {...props}
+            width={width}
+            styles={{
+                dropdown: {
+                    border: "none",
+                }
+            }}
+            shadow="lg"
         >
             {children}
         </Menu>

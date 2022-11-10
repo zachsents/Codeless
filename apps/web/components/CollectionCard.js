@@ -1,7 +1,7 @@
-import { ActionIcon, Box, Card, Group, Menu, Stack, Text, Tooltip } from '@mantine/core'
+import { ActionIcon, Box, Card, Group, Menu, Stack, Text, Tooltip, Transition } from '@mantine/core'
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { TbCopy, TbTrash, TbEye, TbPencil } from "react-icons/tb"
 import { TfiMoreAlt } from "react-icons/tfi"
 import { firestore } from '../modules/firebase'
@@ -9,6 +9,7 @@ import { useAppId } from '../modules/hooks'
 import DeleteModal from './DeleteModal'
 import FloatingMenu from './FloatingMenu'
 import RenameModal from './RenameModal'
+import OurCard from "./OurCard"
 
 
 export default function CollectionCard({ collection, onDuplicate }) {
@@ -28,7 +29,7 @@ export default function CollectionCard({ collection, onDuplicate }) {
 
     return (
         <>
-            <Card shadow="sm" px={30} py="lg" radius="lg" sx={{ overflow: "visible" }}>
+            <OurCard>
                 <Stack justify="space-between" sx={{ height: "100%" }}>
                     <Box>
                         <Text size="lg" weight={600} mb={5}>{collection.name}</Text>
@@ -54,7 +55,7 @@ export default function CollectionCard({ collection, onDuplicate }) {
                         </FloatingMenu>
                     </Group>
                 </Stack>
-            </Card>
+            </OurCard>
 
             <DeleteModal name={collection.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
             <RenameModal name={collection.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />

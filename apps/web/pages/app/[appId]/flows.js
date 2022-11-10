@@ -1,4 +1,4 @@
-import { Box, Button, Group, Skeleton, Stack, Text } from '@mantine/core'
+import { Box, Button, Group, SimpleGrid, Skeleton, Stack, Text } from '@mantine/core'
 import AppDashboard from '../../../components/AppDashboard'
 import PageTitle from '../../../components/PageTitle'
 import FlowCard from '../../../components/FlowCard'
@@ -68,15 +68,17 @@ export default function AppFlows() {
                 </Group>
             </GradientBox>
 
-            {flows ?
-                flows?.map(flow => <FlowCard flow={flow} key={flow.id} />)
-                :
-                <>
-                    <Skeleton height={80} mt={10} />
-                    <Skeleton height={80} mt={10} />
-                    <Skeleton height={80} mt={10} />
-                </>
-            }
+            <SimpleGrid cols={1} verticalSpacing={25}>
+                {flows ?
+                    flows?.map(flow => <FlowCard flow={flow} key={flow.id} />)
+                    :
+                    <>
+                        <Skeleton height={80} />
+                        <Skeleton height={80} />
+                        <Skeleton height={80} />
+                    </>
+                }
+            </SimpleGrid>
         </AppDashboard>
     )
 }

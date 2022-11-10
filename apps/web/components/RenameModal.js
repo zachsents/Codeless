@@ -31,6 +31,7 @@ export default function RenameModal({ name, opened, setOpened, onRename }) {
 
     return (
         <Modal
+            centered
             opened={opened}
             onClose={handleCancel}
             title={`Rename "${name}"`}

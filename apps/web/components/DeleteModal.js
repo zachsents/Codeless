@@ -13,6 +13,7 @@ export default function DeleteModal({ name, opened, setOpened, onDelete }) {
 
     return (
         <Modal
+            centered
             opened={opened}
             onClose={() => setOpened(false)}
             title={`Delete "${name}"`}

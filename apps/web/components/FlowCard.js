@@ -1,7 +1,6 @@
 import { ActionIcon, Badge, Box, Button, Card, Center, Group, Loader, Menu, Modal, Text, Tooltip, useMantineTheme } from '@mantine/core'
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil, TbWorldOff, TbPlugConnectedX } from "react-icons/tb"
 import { TfiMoreAlt } from "react-icons/tfi"
@@ -9,8 +8,8 @@ import { firestore } from '../modules/firebase'
 import { useAppId } from '../modules/hooks'
 import DeleteModal from './DeleteModal'
 import RenameModal from './RenameModal'
-import { Sparklines, SparklinesCurve, SparklinesLine } from 'react-sparklines'
 import FloatingMenu from './FloatingMenu'
+import OurCard from './OurCard'
 
 
 export default function FlowCard({ flow }) {
@@ -28,9 +27,10 @@ export default function FlowCard({ flow }) {
         { name: newName }
     )
 
+
     return (
         <>
-            <Card shadow="sm" p="xl" mb={30} radius="lg" sx={{ overflow: "visible" }}>
+            <OurCard>
                 <Group position="apart">
                     <Group spacing="xl">
                         {flow.error ?
@@ -58,7 +58,7 @@ export default function FlowCard({ flow }) {
                                 <SparklinesCurve color={theme.colors.gray[5]} />
                             </Sparklines>
                         </Box> */}
-                        <Tooltip label="Edit Flow" withArrow>
+                        <Tooltip label="Edit Flow">
                             <div>
                                 <Link href={`/app/${appId}/flow/${flow.id}/edit`}>
                                     <ActionIcon component="a" variant="transparent" color="dark"><TbEdit fontSize={28} /></ActionIcon>
@@ -78,7 +78,7 @@ export default function FlowCard({ flow }) {
                         </FloatingMenu>
                     </Group>
                 </Group>
-            </Card>
+            </OurCard>
 
             <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
             <RenameModal name={flow.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />

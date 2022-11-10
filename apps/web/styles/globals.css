@@ -14,6 +14,7 @@ a {
 
 * {
     box-sizing: border-box;
+    transition: transform 0.1s, box-shadow 0.1s;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,4 +26,8 @@ a {
         color: white;
         background: black;
     }
+}
+
+.hoverScale {
+    transform: scale(1.01);
 }
