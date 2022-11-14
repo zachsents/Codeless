@@ -1,10 +1,10 @@
 import { ActionIcon, Badge, Box, Button, Card, Group, Skeleton, Text, Title, Tooltip } from '@mantine/core'
-import Link from 'next/link'
-import ResourceFraction from './ResourceFraction'
-import { FaTrashAlt, FaPencilAlt } from "react-icons/fa"
 import { useHover } from "@mantine/hooks"
+import Link from 'next/link'
 import { format as timeAgo } from 'timeago.js'
-import { useCollectionCount, useFlowCount, usePlan } from '../modules/hooks'
+import { FaTrashAlt, FaPencilAlt } from "react-icons/fa"
+import ResourceFraction from '../ResourceFraction'
+import { useCollectionCount, useFlowCount, usePlan } from "../../modules/hooks"
 
 
 export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }) {

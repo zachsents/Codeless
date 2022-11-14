@@ -72,6 +72,14 @@ export function useFlowsRealtime(appId) {
     return flows
 }
 
+export function useFlowRealtime(appId, flowId) {
+    const [flow] = useRealtimeState(
+        appId && flowId && doc(firestore, "apps", appId, "flows", flowId),
+        doc => doc.data()
+    )
+    return flow
+}
+
 export function useFlowCount(appId) {
     const [flowCount] = useAsyncState(async () =>
         appId && (await getCountFromServer(

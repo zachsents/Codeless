@@ -63,7 +63,7 @@ const shellStyles = theme => ({
 
 const navlinkStyles = theme => ({
     root: {
-        borderRadius: 6,
+        borderRadius: theme.radius.md,
     },
     label: {
         fontSize: 16,

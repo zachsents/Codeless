@@ -1,14 +1,20 @@
-import { Box, Group } from '@mantine/core'
-import { useRouter } from 'next/router'
-import GoBackButton from '../../../../../components/GoBackButton'
+import { AppShell } from '@mantine/core'
+import Header from '../../../../../components/flow-editor/Header'
+import Sidebar from '../../../../../components/flow-editor/Sidebar'
+import { useAppId } from "../../../../../modules/hooks"
+
 
 export default function EditFlow() {
 
-    const { query: { appId, flowId } } = useRouter()
+    const appId = useAppId()
 
     return (
-        <Box p={20}>
-            <GoBackButton href={`/app/${appId}/flows`} noMargin />
-        </Box>
+        <AppShell
+            header={<Header />}
+            navbar={<Sidebar />}
+        >
+
+        </AppShell>
     )
 }
+

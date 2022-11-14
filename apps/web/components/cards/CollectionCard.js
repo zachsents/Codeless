@@ -1,14 +1,14 @@
-import { ActionIcon, Box, Card, Group, Menu, Stack, Text, Tooltip, Transition } from '@mantine/core'
+import { ActionIcon, Box, Group, Menu, Stack, Text, Tooltip } from '@mantine/core'
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { TbCopy, TbTrash, TbEye, TbPencil } from "react-icons/tb"
 import { TfiMoreAlt } from "react-icons/tfi"
-import { firestore } from '../modules/firebase'
-import { useAppId } from '../modules/hooks'
-import DeleteModal from './DeleteModal'
-import FloatingMenu from './FloatingMenu'
-import RenameModal from './RenameModal'
+import { firestore } from '../../modules/firebase'
+import { useAppId } from '../../modules/hooks'
+import DeleteModal from '../DeleteModal'
+import FloatingMenu from '../FloatingMenu'
+import RenameModal from '../RenameModal'
 import OurCard from "./OurCard"
 
 

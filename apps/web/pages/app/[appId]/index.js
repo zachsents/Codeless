@@ -6,6 +6,7 @@ import AppDashboard from '../../../components/AppDashboard'
 import GradientBox from '../../../components/GradientBox'
 import LoadingSkeleton from '../../../components/LoadingSkeleton'
 import PageTitle from '../../../components/PageTitle'
+import OurCard from "../../../components/cards/OurCard"
 import { useMustBeSignedIn } from '../../../modules/firebase'
 import { useApp, useAppId, useCollectionCount, useFlowCount, usePlan } from "../../../modules/hooks"
 
@@ -101,7 +102,7 @@ export default function AppOverview() {
 
 function OverviewCard({ children, title, href = "#", color = "indigo", loaded, count, planCount, singular, plural }) {
     return (
-        <Card shadow="sm" radius="lg" p="xl" sx={{ overflow: "visible" }}>
+        <OurCard>
             <Group position="apart" mb={20}>
                 <Title order={2}>{title}</Title>
                 <Link href={href}>
@@ -123,6 +124,6 @@ function OverviewCard({ children, title, href = "#", color = "indigo", loaded, c
 
             <Space h={30} />
             {children}
-        </Card>
+        </OurCard>
     )
 }

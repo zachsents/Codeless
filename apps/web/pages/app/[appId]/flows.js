@@ -1,8 +1,8 @@
 import { Box, Button, Group, SimpleGrid, Skeleton, Stack, Text } from '@mantine/core'
 import AppDashboard from '../../../components/AppDashboard'
 import PageTitle from '../../../components/PageTitle'
-import FlowCard from '../../../components/FlowCard'
 import GradientBox from '../../../components/GradientBox'
+import FlowCard from '../../../components/cards/FlowCard'
 import { TbExternalLink, TbPlus, TbArrowBigUpLines } from "react-icons/tb"
 import Link from 'next/link'
 import { useApp, useAppId, useFlowsRealtime, usePlan } from '../../../modules/hooks'
