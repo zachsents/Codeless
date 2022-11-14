@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
-import { ActionIcon, Box, Collapse, Grid, Group, Navbar, NavLink, ScrollArea, SimpleGrid, Space, Stack, Text, TextInput, Title, Tooltip } from '@mantine/core'
+import { ActionIcon, Box, Collapse, Grid, Group, HoverCard, Navbar, NavLink, ScrollArea, SimpleGrid, Space, Stack, Text, TextInput, Title, Tooltip } from '@mantine/core'
 import { useDisclosure } from "@mantine/hooks"
 import { TbArrowLeft, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbMath, TbSearch, TbSettings, TbTypography, TbX } from 'react-icons/tb'
 import LinkIcon from '../LinkIcon'
+import NodeInfoPopover from './NodeInfoPopover'
 
 export default function Sidebar() {
 
@@ -46,6 +47,7 @@ export default function Sidebar() {
                     <Navbar.Section
                         grow
                         component={ScrollArea}
+                        sx={{ overflow: "visible" }}
                     >
                         <>
                             <Space h={10} />
@@ -64,8 +66,12 @@ export default function Sidebar() {
                                         </Grid.Col>
                                     </Grid>
                                     <Stack spacing="xs">
-                                        {nodes[selectedCategory.value].map(node =>
-                                            <NodeTile key={node}>{node}</NodeTile>
+                                        {nodes[selectedCategory.value].map((node, i) =>
+                                            <NodeInfoPopover key={i}>
+                                                <Box>
+                                                    <NodeTile>{node}</NodeTile>
+                                                </Box>
+                                            </NodeInfoPopover>
                                         )}
                                     </Stack>
                                 </>
@@ -105,7 +111,7 @@ export default function Sidebar() {
                         </LinkIcon>
                         <Space h={10} />
                         {categories.map(cat =>
-                            <LinkIcon label={cat.label} position="right" size="xl" radius="lg" onClick={() => {
+                            <LinkIcon label={cat.label} position="right" size="xl" radius="lg" key={cat.value} onClick={() => {
                                 sidebarHandlers.open()
                                 setSelectedCategory(cat)
                             }}>
@@ -120,6 +126,7 @@ export default function Sidebar() {
 
 const navbarStyle = theme => ({
     boxShadow: theme.shadows.sm,
+    border: "none",
 })
 
 

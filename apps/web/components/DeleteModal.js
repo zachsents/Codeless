@@ -23,7 +23,7 @@ export default function DeleteModal({ name, opened, setOpened, onDelete }) {
                 <Center><Loader size="sm" /></Center>
                 :
                 <Group position="apart">
-                    <Button variant="outline" onClick={() => setOpened(false)}>Cancel</Button>
+                    <Button variant="subtle" onClick={() => setOpened(false)}>Cancel</Button>
                     <Button color="red" rightIcon={<TbTrash />} onClick={handleDelete}>Positive.</Button>
                 </Group>
             }
