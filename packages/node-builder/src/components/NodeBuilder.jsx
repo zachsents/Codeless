@@ -325,7 +325,7 @@ export default function NodeBuilder() {
                 onEdgeUpdate={onEdgeUpdate}
                 fitView
             >
-                <MiniMap />
+                {/* <MiniMap /> */}
                 <Controls />
                 <Search />
                 {/* <Execution /> */}

@@ -5,6 +5,8 @@ import Header from '../../../../../components/flow-editor/Header'
 import SettingsDrawer from '../../../../../components/flow-editor/SettingsDrawer'
 import Sidebar from '../../../../../components/flow-editor/Sidebar'
 import { FlowProvider } from '../../../../../modules/context'
+import { NodeBuilder } from "node-builder"
+
 
 
 export default function EditFlow() {
@@ -25,6 +27,8 @@ export default function EditFlow() {
                 }
                 navbar={<Sidebar />}
             >
+                
+                <NodeBuilder />
                 <SettingsDrawer opened={settingsOpened} onClose={settingsHandlers.close} suggestedTab={suggestedTab} />
             </AppShell>
         </FlowProvider>
