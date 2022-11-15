@@ -31,9 +31,12 @@ export default function NodeInfoPopover({ node, children }) {
             <HoverCard.Target>
                 {children}
             </HoverCard.Target>
-            <HoverCard.Dropdown>
+            <HoverCard.Dropdown p="md">
                 <Stack>
-                    <Title order={5}>{node.name}</Title>
+                    <Group position="apart">
+                        <Title order={5}>{node.name}</Title>
+                        <node.icon />
+                    </Group>
                     <Text>
                         {node.description}
                     </Text>

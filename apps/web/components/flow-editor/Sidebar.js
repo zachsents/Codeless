@@ -71,10 +71,10 @@ export default function Sidebar() {
                                         </Grid.Col>
                                     </Grid>
                                     <Stack spacing="xs">
-                                        {Object.entries(selectedCategory.nodes).map(([nodeId, node]) =>
-                                            <NodeInfoPopover node={node} key={nodeId}>
+                                        {Object.values(selectedCategory.nodes).map(node =>
+                                            <NodeInfoPopover node={node} key={node.id}>
                                                 <Box>
-                                                    <NodeTile id={nodeId}>{node.name}</NodeTile>
+                                                    <NodeTile node={node} />
                                                 </Box>
                                             </NodeInfoPopover>
                                         )}
@@ -136,20 +136,21 @@ const navbarStyle = theme => ({
 })
 
 
-function NodeTile({ children, id, ...props }) {
+function NodeTile({ node, ...props }) {
 
     // adding nodes to graph
     const reactFlow = useReactFlow()
     const handleAddNode = () => {
         const center = reactFlow.project({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
-        reactFlow.addNodes(createNode(id, center))
+        reactFlow.addNodes(createNode(node.id, center))
     }
 
     return (
         <NavLink
-            label={children}
+            label={node.name}
             variant="filled"
             onClick={handleAddNode}
+            icon={<node.icon size={16} />}
             {...props}
 
             styles={theme => ({
