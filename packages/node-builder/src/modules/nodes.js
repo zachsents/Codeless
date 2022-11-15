@@ -1,13 +1,13 @@
 import shortUUID from "short-uuid"
 
 
-export function createNode(nodeType, position = [0, 0]) {
+export function createNode(nodeType, position) {
     return {
-        id: `${nodeType.id}_${shortUUID.generate()}`,
-        type: nodeType.id,
+        id: `${nodeType}_${shortUUID.generate()}`,
+        type: nodeType,
         data: { 
             state: {}
         },
-        position: { x: position[0], y: position[1] }
+        position,
     }
 }

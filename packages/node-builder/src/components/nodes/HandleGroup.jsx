@@ -1,5 +1,5 @@
 import { Stack, Group, useMantineTheme, Box } from '@mantine/core'
-import { Handle, Position } from 'react-flow-renderer'
+import { Handle, Position } from 'reactflow'
 import { DataType } from '../../dataTypes'
 
 

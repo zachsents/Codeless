@@ -1,9 +1,14 @@
 import { useRef, useState } from 'react'
-import { ActionIcon, Box, Collapse, Grid, Group, HoverCard, Navbar, NavLink, ScrollArea, SimpleGrid, Space, Stack, Text, TextInput, Title, Tooltip } from '@mantine/core'
+import { ActionIcon, Box, Grid, Group, Navbar, NavLink, ScrollArea, SimpleGrid, Space, Stack, Text, TextInput, Title } from '@mantine/core'
 import { useDisclosure } from "@mantine/hooks"
-import { TbArrowLeft, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbMath, TbSearch, TbSettings, TbTypography, TbX } from 'react-icons/tb'
+import { TbArrowLeft, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from 'react-icons/tb'
+import { useReactFlow } from "reactflow"
+
 import LinkIcon from '../LinkIcon'
 import NodeInfoPopover from './NodeInfoPopover'
+import { NodeCategories } from "../../modules/nodes"
+import { createNode } from 'node-builder'
+
 
 export default function Sidebar() {
 
@@ -66,10 +71,10 @@ export default function Sidebar() {
                                         </Grid.Col>
                                     </Grid>
                                     <Stack spacing="xs">
-                                        {nodes[selectedCategory.value].map((node, i) =>
-                                            <NodeInfoPopover key={i}>
+                                        {Object.entries(selectedCategory.nodes).map(([nodeId, node]) =>
+                                            <NodeInfoPopover node={node} key={nodeId}>
                                                 <Box>
-                                                    <NodeTile>{node}</NodeTile>
+                                                    <NodeTile id={nodeId}>{node.name}</NodeTile>
                                                 </Box>
                                             </NodeInfoPopover>
                                         )}
@@ -79,12 +84,12 @@ export default function Sidebar() {
                                 <>
                                     <Text align="center" color="dimmed" size="xs" mb={10}>Categories</Text>
                                     <SimpleGrid cols={2}>
-                                        {categories.map(cat =>
+                                        {NodeCategories.map((cat, i) =>
                                             <CategoryTile
-                                                icon={<cat.icon />}
-                                                active={cat.value == selectedCategory?.value}
+                                                icon={cat.icon}
+                                                // active={cat == selectedCategory}
                                                 onClick={() => setSelectedCategory(cat)}
-                                                key={cat.value}
+                                                key={cat.label + i}
                                             >
                                                 {cat.label}
                                             </CategoryTile>
@@ -110,8 +115,8 @@ export default function Sidebar() {
                             <TbSearch fontSize={18} />
                         </LinkIcon>
                         <Space h={10} />
-                        {categories.map(cat =>
-                            <LinkIcon label={cat.label} position="right" size="xl" radius="lg" key={cat.value} onClick={() => {
+                        {NodeCategories.map((cat, i) =>
+                            <LinkIcon label={cat.label} position="right" size="xl" radius="lg" key={cat.label + i} onClick={() => {
                                 sidebarHandlers.open()
                                 setSelectedCategory(cat)
                             }}>
@@ -124,29 +129,27 @@ export default function Sidebar() {
     )
 }
 
+
 const navbarStyle = theme => ({
     boxShadow: theme.shadows.sm,
     border: "none",
 })
 
 
-const categories = [
-    { label: "Math", icon: TbMath, value: "math" },
-    { label: "Utility", icon: TbSettings, value: "utility" },
-    { label: "Text", icon: TbTypography, value: "text" },
-]
+function NodeTile({ children, id, ...props }) {
 
-const nodes = {
-    math: ["this", "that"],
-    utility: ["this", "and", "that"],
-    text: ["this", "pr", "or"],
-}
+    // adding nodes to graph
+    const reactFlow = useReactFlow()
+    const handleAddNode = () => {
+        const center = reactFlow.project({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
+        reactFlow.addNodes(createNode(id, center))
+    }
 
-function NodeTile({ children, ...props }) {
     return (
         <NavLink
             label={children}
             variant="filled"
+            onClick={handleAddNode}
             {...props}
 
             styles={theme => ({
@@ -169,12 +172,16 @@ function NodeTile({ children, ...props }) {
 }
 
 
-function CategoryTile({ children, ...props }) {
+function CategoryTile({ children, icon: Icon, ...props }) {
+
+    const iconSize = 32
+
     return (
         <NavLink
             label={children}
             variant="light"
             py={20}
+            icon={<Icon size={iconSize} />}
             {...props}
 
             styles={theme => ({
@@ -191,7 +198,7 @@ function CategoryTile({ children, ...props }) {
                 },
                 icon: {
                     margin: 0,
-                    fontSize: 32
+                    fontSize: iconSize,
                 },
                 label: {
                     fontWeight: 500,

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { getConnectedEdges, useReactFlow } from "react-flow-renderer"
+import { getConnectedEdges, useReactFlow } from "reactflow"
 
 
 export function validateEdgeConnection(connection, edges) {

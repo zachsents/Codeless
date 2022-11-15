@@ -12,11 +12,12 @@
         "@mantine/core": "^5.2.3",
         "@mantine/hooks": "^5.2.3",
         "graph-execution-engine-2": "*",
+        "math-nodes": "*",
         "lunr": "^2.3.9",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
-        "react-flow-renderer": "^10.3.16",
         "react-icons": "^4.4.0",
+        "reactflow": "^11.2.0",
         "short-uuid": "^4.2.0"
     },
     "devDependencies": {

@@ -1,9 +1,17 @@
 import { Button, Group, HoverCard, Skeleton, Stack, Text, Title, useMantineTheme } from '@mantine/core'
+import { createNode } from 'node-builder'
 import { TbBook } from 'react-icons/tb'
+import { useReactFlow } from "reactflow"
 
-export default function NodeInfoPopover({ children }) {
+export default function NodeInfoPopover({ node, children }) {
 
     const theme = useMantineTheme()
+    const reactFlow = useReactFlow()
+
+    const handleAddNode = () => {
+        const center = reactFlow.project({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
+        reactFlow.addNodes(createNode(node.id, center))
+    }
 
     return (
         <HoverCard
@@ -25,14 +33,14 @@ export default function NodeInfoPopover({ children }) {
             </HoverCard.Target>
             <HoverCard.Dropdown>
                 <Stack>
-                    <Title order={5}>Send email with SendGrid</Title>
+                    <Title order={5}>{node.name}</Title>
                     <Text>
-                        This is the description of the node. This tells you what the node does in dept.
+                        {node.description}
                     </Text>
                     <Skeleton height={100} />
                     <Group position="apart" mt={10}>
                         <Button radius="md" variant="subtle" leftIcon={<TbBook />}>View Guides</Button>
-                        <Button radius="md">Add to Flow</Button>
+                        <Button onClick={handleAddNode} radius="md">Add to Flow</Button>
                     </Group>
                 </Stack>
             </HoverCard.Dropdown>

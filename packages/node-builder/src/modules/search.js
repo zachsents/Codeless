@@ -1,8 +1,8 @@
 import lunr from "lunr"
 import { createNode } from "./nodes"
-import NodeTypes from "./nodeTypes"
+// import NodeTypes from "./nodeTypes"
 
-
+const NodeTypes = {}
 const docs = prepDocumentsForSearch(NodeTypes, createNode)
 
 const searchIndex = lunr(function () {

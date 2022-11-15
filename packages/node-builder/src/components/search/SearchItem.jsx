@@ -1,6 +1,6 @@
 import { Badge, Box, Group, HoverCard, Paper, Stack, Text } from '@mantine/core'
 import React, { forwardRef } from 'react'
-import { useReactFlow } from 'react-flow-renderer'
+import { useReactFlow } from 'reactflow'
 
 const SearchItem = forwardRef(({ name, children, badges, createNode }, ref) => {
 

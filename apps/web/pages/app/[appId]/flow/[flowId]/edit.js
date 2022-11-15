@@ -6,7 +6,8 @@ import SettingsDrawer from '../../../../../components/flow-editor/SettingsDrawer
 import Sidebar from '../../../../../components/flow-editor/Sidebar'
 import { FlowProvider } from '../../../../../modules/context'
 import { NodeBuilder } from "node-builder"
-
+import { ReactFlowProvider } from "reactflow"
+import { Nodes } from '../../../../../modules/nodes'
 
 
 export default function EditFlow() {
@@ -16,23 +17,23 @@ export default function EditFlow() {
 
     return (
         <FlowProvider redirectOnNotExist="/dashboard">
-            <AppShell
-                header={
-                    <Header
-                        openSettings={tab => {
-                            settingsHandlers.open()
-                            setSuggestedTab(tab)
-                        }}
-                    />
-                }
-                navbar={<Sidebar />}
-            >
-                
-                <NodeBuilder />
-                <SettingsDrawer opened={settingsOpened} onClose={settingsHandlers.close} suggestedTab={suggestedTab} />
-            </AppShell>
+            <ReactFlowProvider >
+                <AppShell
+                    padding={0}
+                    header={
+                        <Header
+                            openSettings={tab => {
+                                settingsHandlers.open()
+                                setSuggestedTab(tab)
+                            }}
+                        />
+                    }
+                    navbar={<Sidebar />}
+                >
+                    <NodeBuilder nodeTypes={Nodes} />
+                    <SettingsDrawer opened={settingsOpened} onClose={settingsHandlers.close} suggestedTab={suggestedTab} />
+                </AppShell>
+            </ReactFlowProvider>
         </FlowProvider>
     )
 }
-
-

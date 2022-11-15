@@ -1,7 +1,7 @@
 import { Stack } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import { useEffect } from 'react'
-import { useEdges, useNodes } from 'react-flow-renderer'
+import { useEdges, useNodes } from 'reactflow'
 
 export default function Execution() {
 

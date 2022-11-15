@@ -2,7 +2,7 @@ import { ActionIcon, Box, ColorSwatch, Group, HoverCard, Popover, Text, Tooltip,
 import { useState } from 'react'
 import { CgTrash } from "react-icons/cg"
 import { removeNode } from '../../util'
-import { useReactFlow } from 'react-flow-renderer'
+import { useReactFlow } from 'reactflow'
 
 
 export default function NodeInner(props) {
