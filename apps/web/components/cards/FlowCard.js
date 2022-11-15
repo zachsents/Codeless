@@ -62,9 +62,9 @@ export default function FlowCard({ flow }) {
                                 <ActionIcon variant="transparent" color="dark"><TfiMoreAlt fontSize={20} /></ActionIcon>
                             </Menu.Target>
                             <Menu.Dropdown>
-                                <Menu.Item icon={<TbRun />}>View Runs</Menu.Item>
+                                <Menu.Item disabled icon={<TbRun />}>View Runs</Menu.Item>
                                 <Menu.Item onClick={() => setRenaming(true)} icon={<TbPencil />}>Rename Flow</Menu.Item>
-                                <Menu.Item icon={<TbCopy />}>Duplicate Flow</Menu.Item>
+                                <Menu.Item disabled icon={<TbCopy />}>Duplicate Flow</Menu.Item>
                                 <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
                             </Menu.Dropdown>
                         </FloatingMenu>

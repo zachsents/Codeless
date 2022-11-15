@@ -1,0 +1,102 @@
+{
+    "nodes": [
+        {
+            "id": "Number_fjps9kDG18ZuPYVeHLygHL",
+            "type": "Number",
+            "state": {
+                "$": 3000
+            }
+        },
+        {
+            "id": "Interval_7UAnf6BVa18qFPCBDpA9ia",
+            "type": "Interval",
+            "state": {}
+        },
+        {
+            "id": "Bind_ko2s1wqaiKCbm8HH9DC8uk",
+            "type": "Bind",
+            "state": {}
+        },
+        {
+            "id": "Log_jVjB415ZPAukw8rFHwr2dT",
+            "type": "Log",
+            "state": {}
+        },
+        {
+            "id": "Unbind_uteTatNsCujxihYvvzX7m2",
+            "type": "Unbind",
+            "state": {
+                "$": [
+                    500
+                ]
+            }
+        },
+        {
+            "id": "Log_8xsRt2AhDLxYgZV1GjsuYk",
+            "type": "Log",
+            "state": {}
+        },
+        {
+            "id": "Number_d8QLRnCVQyiQ6R9doBN9ZR",
+            "type": "Number",
+            "state": {
+                "$": 500
+            }
+        },
+        {
+            "id": "Delay_gokyGnqoipjb8P16sB8jG5",
+            "type": "Delay",
+            "state": {}
+        }
+    ],
+    "edges": [
+        {
+            "source": "Number_d8QLRnCVQyiQ6R9doBN9ZR",
+            "sourceHandle": " ",
+            "target": "Bind_ko2s1wqaiKCbm8HH9DC8uk",
+            "targetHandle": "value"
+        },
+        {
+            "source": "Number_fjps9kDG18ZuPYVeHLygHL",
+            "sourceHandle": " ",
+            "target": "Interval_7UAnf6BVa18qFPCBDpA9ia",
+            "targetHandle": "period"
+        },
+        {
+            "source": "Interval_7UAnf6BVa18qFPCBDpA9ia",
+            "sourceHandle": " ",
+            "target": "Bind_ko2s1wqaiKCbm8HH9DC8uk",
+            "targetHandle": "signal"
+        },
+        {
+            "source": "Bind_ko2s1wqaiKCbm8HH9DC8uk",
+            "sourceHandle": "out",
+            "target": "Unbind_uteTatNsCujxihYvvzX7m2",
+            "targetHandle": "signal"
+        },
+        {
+            "source": "Bind_ko2s1wqaiKCbm8HH9DC8uk",
+            "sourceHandle": "out",
+            "target": "Log_jVjB415ZPAukw8rFHwr2dT",
+            "targetHandle": " "
+        },
+        {
+            "source": "Unbind_uteTatNsCujxihYvvzX7m2",
+            "sourceHandle": "out",
+            "target": "Delay_gokyGnqoipjb8P16sB8jG5",
+            "targetHandle": "start"
+        },
+        {
+            "source": "Unbind_uteTatNsCujxihYvvzX7m2",
+            "sourceHandle": "value",
+            "target": "Delay_gokyGnqoipjb8P16sB8jG5",
+            "targetHandle": "time"
+        },
+        {
+            "source": "Delay_gokyGnqoipjb8P16sB8jG5",
+            "sourceHandle": " ",
+            "target": "Log_8xsRt2AhDLxYgZV1GjsuYk",
+            "targetHandle": " "
+        }
+    ]
+}
