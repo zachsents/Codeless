@@ -1,7 +1,8 @@
-import { collection, doc, getCountFromServer, getDoc, onSnapshot } from "firebase/firestore"
+import { useDebouncedValue } from "@mantine/hooks"
+import { collection, deleteDoc, doc, getCountFromServer, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import { firestore, getMappedDocs, mapSnapshot } from "./firebase"
+import { useCallback, useEffect, useState } from "react"
+import { firestore, getMappedDocs, mapDoc, mapSnapshot } from "./firebase"
 
 export function useAsyncState(factory, dependencies = []) {
     const [state, setState] = useState()
@@ -75,7 +76,7 @@ export function useFlowsRealtime(appId) {
 export function useFlowRealtime(appId, flowId) {
     const [flow] = useRealtimeState(
         appId && flowId && doc(firestore, "apps", appId, "flows", flowId),
-        doc => doc.data()
+        mapDoc
     )
     return flow
 }
@@ -111,4 +112,53 @@ export function useCollectionCount(appId) {
         )).data().count
         , [appId])
     return collectionCount
+}
+
+export function useRenameFlow(appId, flowId, includeModalState = true) {
+
+    const [renaming, setRenaming] = includeModalState ? useState(false) : []
+
+    const handleRename = useCallback(
+        newName => appId && flowId && updateDoc(
+            doc(firestore, "apps", appId, "flows", flowId),
+            { name: newName }
+        ),
+        [appId, flowId]
+    )
+
+    return [handleRename, renaming, setRenaming]
+}
+
+export function useDeleteFlow(appId, flowId, includeModalState = true) {
+
+    const [deleting, setDeleting] = includeModalState ? useState(false) : []
+
+    const handleDelete = useCallback(
+        () => appId && flowId && deleteDoc(doc(firestore, "apps", appId, "flows", flowId)),
+        [appId, flowId]
+    )
+
+    return [handleDelete, deleting, setDeleting]
+}
+
+
+export function useDebouncedCustomState(remoteValue, remoteSetter, debounceTime = 200) {
+    
+    const [value, setValue] = useState(remoteValue)
+
+    // Note: this could cause problems if the update operation is slow
+    // update value immediately when remote value changes
+    // useEffect(() => {
+    //     setValue(remoteValue)
+    // }, [remoteValue])
+
+    const [debounced] = useDebouncedValue(value, debounceTime)
+
+    // update remote state when debounced state changes
+    useEffect(() => {
+        if (debounced !== undefined && debounced != remoteValue)
+            remoteSetter?.(debounced)
+    }, [debounced])
+
+    return [value, setValue]
 }

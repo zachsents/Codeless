@@ -13,7 +13,7 @@ export default function EditFlow() {
     const [suggestedTab, setSuggestedTab] = useState()
 
     return (
-        <FlowProvider>
+        <FlowProvider redirectOnNotExist="/dashboard">
             <AppShell
                 header={
                     <Header

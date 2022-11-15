@@ -8,6 +8,7 @@ import { firestore } from "../../modules/firebase"
 import RenameModal from "../RenameModal"
 import { SettingsTabs } from "./SettingsDrawer"
 import { useFlowContext } from "../../modules/context"
+import { useRenameFlow } from "../../modules/hooks"
 
 
 export default function Header({ openSettings }) {
@@ -15,12 +16,8 @@ export default function Header({ openSettings }) {
     const { query: { appId, flowId } } = useRouter()
     const flow = useFlowContext()
 
-    // renaming state & handlers
-    const [renaming, setRenaming] = useState(false)
-    const handleRename = newName => updateDoc(
-        doc(firestore, "apps", appId, "flows", flowId),
-        { name: newName }
-    )
+    // renaming & deleting
+    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flowId)
 
     return (
         <>

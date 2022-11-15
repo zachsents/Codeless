@@ -1,13 +1,19 @@
-import { Box, Drawer, Group, Space, Tabs, Text, Title, useMantineTheme } from '@mantine/core'
+import { Box, Button, Drawer, Group, Space, Stack, Tabs, Text, Textarea, ThemeIcon, Title, useMantineTheme } from '@mantine/core'
+import { doc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
-import { TbMoon2 } from 'react-icons/tb'
+import { TbCheck, TbCloud, TbCloudOff, TbCloudUpload, TbCopy, TbMoon2, TbPencil, TbTrash } from 'react-icons/tb'
 import { useFlowContext } from '../../modules/context'
+import { firestore } from '../../modules/firebase'
+import { useAppId, useDebouncedCustomState, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
+import DeleteModal from '../DeleteModal'
 import LinkIcon from '../LinkIcon'
+import RenameModal from '../RenameModal'
 import { HeaderHeight } from './Header'
 
 export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
 
     const theme = useMantineTheme()
+    const appId = useAppId()
     const flow = useFlowContext()
 
     const [activeTab, setActiveTab] = useState(SettingsTabs.General)
@@ -17,68 +23,114 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
         suggestedTab && setActiveTab(suggestedTab)
     }, [suggestedTab])
 
-    return (
-        <Drawer
-            position="right"
-            opened={opened}
-            onClose={() => onClose?.()}
-            padding="sm"
-            size="lg"
-            // withinPortal={false}
-            overlayOpacity={0}
-            shadow="sm"
-            zIndex={100}
-            transitionDuration={150}
-            styles={{
-                drawer: {
-                    marginTop: HeaderHeight,
-                },
-                header: {
-                    flexDirection: "row-reverse",
-                }
-            }}
-        >
-            <Title px="md" order={5}>{flow?.name}</Title>
-            <Space h={10} />
-            <Group
-                spacing="md"
-                px={30}
-                py={8}
-                mx={-theme.spacing.sm}
-                sx={{ backgroundColor: theme.colors.gray[1] }}
-            >
-                <LinkIcon
-                    label="Random Control"
-                    variant="transparent"><TbMoon2 fontSize={24} /></LinkIcon>
-                <LinkIcon
-                    label="Random Control"
-                    variant="transparent"><TbMoon2 fontSize={24} /></LinkIcon>
-                <LinkIcon
-                    label="Random Control"
-                    variant="transparent"><TbMoon2 fontSize={24} /></LinkIcon>
-                <LinkIcon
-                    label="Random Control"
-                    variant="transparent"><TbMoon2 fontSize={24} /></LinkIcon>
-                <LinkIcon
-                    label="Random Control"
-                    variant="transparent"><TbMoon2 fontSize={24} /></LinkIcon>
-            </Group>
-            <Space h={20} />
-            <Tabs value={activeTab} onTabChange={setActiveTab}>
-                <Tabs.List grow>
-                    <Tabs.Tab value={SettingsTabs.General}>General</Tabs.Tab>
-                    <Tabs.Tab value={SettingsTabs.Deployment}>Deployment</Tabs.Tab>
-                </Tabs.List>
-                <Tabs.Panel value={SettingsTabs.General} p="md">
-                    <Text>
-                        Maybe here we can put a description of the flow? I'm not entirely sure what to put.
-                    </Text>
-                </Tabs.Panel>
-                <Tabs.Panel value={SettingsTabs.Deployment} p="md">
+    // description state
+    const [description, setDescription] = useDebouncedCustomState(flow?.description, newDesc => {
+        flow.id && updateDoc(
+            doc(firestore, "apps", appId, "flows", flow.id),
+            { description: newDesc }
+        )
+    }, 1000)
 
-                </Tabs.Panel>
-            </Tabs>
-        </Drawer>
+    // renaming & deleting
+    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow?.id)
+    const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow?.id)
+
+    // deploy
+    const setDeployed = deployed => updateDoc(
+        doc(firestore, "apps", appId, "flows", flow.id),
+        { deployed, }
+    )
+
+    return (
+        <>
+            <Drawer
+                position="right"
+                opened={opened}
+                onClose={() => onClose?.()}
+                padding="sm"
+                size="lg"
+                // withinPortal={false}
+                overlayOpacity={0}
+                shadow="sm"
+                zIndex={100}
+                transitionDuration={150}
+                styles={{
+                    drawer: {
+                        marginTop: HeaderHeight,
+                    },
+                    header: {
+                        flexDirection: "row-reverse",
+                    }
+                }}
+            >
+                <Title px="md" order={5}>{flow?.name}</Title>
+                <Space h={10} />
+                <Text px="md" pb={5} size="xs" color="dimmed">Quick Actions</Text>
+                <Group
+                    spacing="md"
+                    // position="center"
+                    px={30}
+                    py={8}
+                    mx={-theme.spacing.sm}
+                    sx={{ backgroundColor: theme.colors.gray[1] }}
+                >
+                    <LinkIcon
+                        label="Redeploy"
+                        disabled
+                        variant="transparent"><TbCloudUpload fontSize={24} /></LinkIcon>
+                    <LinkIcon
+                        label="Rename Flow"
+                        onClick={() => setRenaming(true)}
+                        variant="transparent"><TbPencil fontSize={24} /></LinkIcon>
+                    <LinkIcon
+                        label="Duplicate Flow"
+                        disabled
+                        variant="transparent"><TbCopy fontSize={24} /></LinkIcon>
+                    <LinkIcon
+                        label="Delete Flow"
+                        onClick={() => setDeleting(true)}
+                        variant="transparent"><TbTrash fontSize={24} /></LinkIcon>
+                </Group>
+                <Space h={20} />
+                <Tabs value={activeTab} onTabChange={setActiveTab}>
+                    <Tabs.List grow>
+                        <Tabs.Tab value={SettingsTabs.General}>General</Tabs.Tab>
+                        <Tabs.Tab value={SettingsTabs.Deployment}>Deployment</Tabs.Tab>
+                    </Tabs.List>
+                    <Tabs.Panel value={SettingsTabs.General} p="md">
+                        <Textarea
+                            label="Description"
+                            labelProps={{ size: "xs", px: "sm", }}
+                            placeholder="Write a description..."
+                            value={description ?? ""}
+                            onChange={event => setDescription(event.currentTarget.value)}
+                        />
+                    </Tabs.Panel>
+                    <Tabs.Panel value={SettingsTabs.Deployment} p="md">
+                        <Space h={20} />
+                        <Stack align="center">
+                            {flow?.deployed ?
+                                <>
+                                    <Group position="center">
+                                        <ThemeIcon radius="md" color="green"><TbCheck /></ThemeIcon>
+                                        <Text color="green" weight={600}>Your flow is live!</Text>
+                                    </Group>
+                                    <Button onClick={() => setDeployed(false)} variant="subtle" color="gray" rightIcon={<TbCloudOff />} mt={10}>Unpublish</Button>
+                                </>
+                                :
+                                <>
+                                    <Text>Your flow is not live.</Text>
+                                    <Button onClick={() => setDeployed(true)} rightIcon={<TbCloudUpload />} size="md" mt={10}>Publish</Button>
+                                </>
+                            }
+                        </Stack>
+                    </Tabs.Panel>
+                </Tabs>
+            </Drawer>
+
+            <RenameModal name={flow?.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
+            <DeleteModal name={flow?.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
+        </>
     )
 }
 

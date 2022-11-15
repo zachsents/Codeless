@@ -5,7 +5,7 @@ import { ActionIcon, Badge, Box, Group, Menu, Text, Tooltip } from '@mantine/cor
 import { TfiMoreAlt } from "react-icons/tfi"
 import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil } from "react-icons/tb"
 import { firestore } from '../../modules/firebase'
-import { useAppId } from '../../modules/hooks'
+import { useAppId, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
 import DeleteModal from '../DeleteModal'
 import RenameModal from '../RenameModal'
 import FloatingMenu from '../FloatingMenu'
@@ -16,17 +16,9 @@ export default function FlowCard({ flow }) {
 
     const appId = useAppId()
 
-    // deleting state & handlers
-    const [deleting, setDeleting] = useState(false)
-    const handleDelete = () => deleteDoc(doc(firestore, "apps", appId, "flows", flow.id))
-
-    // renaming state & handlers
-    const [renaming, setRenaming] = useState(false)
-    const handleRename = newName => updateDoc(
-        doc(firestore, "apps", appId, "flows", flow.id),
-        { name: newName }
-    )
-
+    // renaming & deleting
+    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow.id)
+    const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow.id)
 
     return (
         <>
@@ -80,8 +72,8 @@ export default function FlowCard({ flow }) {
                 </Group>
             </OurCard>
 
-            <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
             <RenameModal name={flow.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
+            <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
         </>
     )
 }

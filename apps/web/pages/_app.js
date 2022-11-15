@@ -1,4 +1,5 @@
 import { MantineProvider } from '@mantine/core'
+import RouterTransition from '../components/RouterTransition'
 import '../styles/globals.css'
 
 
@@ -6,6 +7,7 @@ export default function MyApp({ Component, pageProps }) {
     return (
         <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
             <Component {...pageProps} />
+            <RouterTransition />
         </MantineProvider>
     )
 }

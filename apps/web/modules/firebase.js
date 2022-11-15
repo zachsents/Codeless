@@ -124,8 +124,12 @@ export async function getMappedDocs(ref) {
 }
 
 export function mapSnapshot(snapshot) {
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map(mapDoc)
+}
+
+export function mapDoc(doc) {
+    return doc.exists() && {
         id: doc.id,
-        ...doc.data()
-    }))
+        ...doc.data(),
+    }
 }
