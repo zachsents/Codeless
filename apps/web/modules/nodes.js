@@ -2,6 +2,7 @@ import MathNodes, { PackageTitle as MathPackageTitle, PackageIcon as MathPackage
 import PrimitiveNodes, { PackageTitle as PrimitivePackageTitle, PackageIcon as PrimitivePackageIcon } from "primitive-nodes/display"
 import UtilityNodes, { PackageTitle as UtilityPackageTitle, PackageIcon as UtilityPackageIcon } from "utility-nodes/display"
 
+import TriggerNodes from "triggers/display"
 
 
 export const NodeCategories = [
@@ -25,7 +26,9 @@ export const NodeCategories = [
 export const Nodes = NodeCategories.reduce((accum, current) => ({
     ...accum,
     ...current.nodes,
-}), {})
+}), {
+    ...addIdToNodes(TriggerNodes)
+})
 
 function addIdToNodes(nodesObj) {
     return Object.fromEntries(

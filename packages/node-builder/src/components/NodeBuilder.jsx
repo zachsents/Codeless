@@ -128,14 +128,16 @@ const signalEdgeProps = theme => ({
 })
 
 
-function serializeGraph(nodes, edges) {
+export function serializeGraph(nodes = [], edges = []) {
 
     return JSON.stringify({
 
-        nodes: nodes.map(({ id, type, position, data }) => ({
+        nodes: nodes.map(({ id, type, position, data, draggable, deletable }) => ({
             id,
             type,
             position,
+            draggable,
+            deletable,
             data,
             state: data?.state ?? {}
         })),

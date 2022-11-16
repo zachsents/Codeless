@@ -1,16 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useRouter } from 'next/router'
-import * as TbIcons from "react-icons/tb"
+import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore'
 import { TbArrowNarrowRight } from 'react-icons/tb'
+import * as TablerIcons from "tabler-icons-react"
+
+import Triggers from "triggers/display"
+import { TriggerCategories } from 'triggers'
+import { serializeGraph } from 'node-builder'
+import { firestore } from '../../../../modules/firebase'
+import { useApp, useFlowCount, usePlan } from '../../../../modules/hooks'
 import AppDashboard from '../../../../components/AppDashboard'
 import GoBackButton from '../../../../components/GoBackButton'
-import { useApp, useAsyncState, useFlowCount, useFlows, usePlan } from '../../../../modules/hooks'
-import { addDoc, collection, doc, query, serverTimestamp, where } from 'firebase/firestore'
-import { firestore, getMappedDocs } from '../../../../modules/firebase'
 import FormSubsection from '../../../../components/forms/FormSubsection'
 import FormSection from '../../../../components/forms/FormSection'
+
 
 export default function CreateFlow() {
 
@@ -25,23 +30,22 @@ export default function CreateFlow() {
             router.push(`/app/${appId}/flows`)
     }, [plan, flowCount])
 
+
     // look up trigger types and map to data the SegmentedControl can use
-    const [triggerTypes] = useAsyncState(async () => {
-        const types = await getMappedDocs(collection(firestore, "triggerTypes"))
-        return types.map(type => {
-            const TypeIcon = TbIcons[type.icon]
-            return {
-                label: <TriggerCard label={type.name} icon={<TypeIcon />} />,
-                value: type.id,
-            }
-        })
+    const triggerTypes = Object.entries(TriggerCategories).map(([catId, cat]) => {
+        const TypeIcon = TablerIcons[cat.icon]
+        return {
+            label: <TriggerCard label={cat.name} icon={<TypeIcon />} />,
+            value: catId,
+        }
     })
+
 
     // form hook & handlers
     const form = useForm({
         initialValues: {
             name: "",
-            triggerType: "http",
+            triggerType: "HTTP",
             trigger: null,
         },
         validate: {
@@ -52,20 +56,25 @@ export default function CreateFlow() {
     })
     const [formLoading, setFormLoading] = useState(false)
 
+
+    // submission
     const handleSubmit = async values => {
         setFormLoading(true)
         const newDocRef = await addDoc(collection(firestore, "apps", appId, "flows"), {
             name: values.name,
-            trigger: doc(firestore, "triggers", values.trigger),
+            trigger: values.trigger,
             lastEdited: serverTimestamp(),
             created: serverTimestamp(),
             executionCount: 0,
+            graph: createGraphWithTrigger(values.trigger)
         })
         router.push(`/app/${appId}/flow/${newDocRef.id}/edit`)
     }
 
+
     // when trigger type is changed
-    const [triggers] = useAsyncState(async () => {
+    const triggers = useMemo(() => {
+
         // reset trigger value
         form.setFieldValue("trigger", null)
 
@@ -73,20 +82,15 @@ export default function CreateFlow() {
         if (!form.values.triggerType)
             return
 
-        // load triggers from database
-        const loadedTriggers = await getMappedDocs(query(
-            collection(firestore, "triggers"),
-            where("type", "==", doc(firestore, "triggerTypes", form.values.triggerType))
-        ))
-
         // if there's only one option, set it
-        loadedTriggers.length == 1 && form.setFieldValue("trigger", loadedTriggers[0].id)
+        const triggerList = TriggerCategories[form.values.triggerType].triggers
+        triggerList.length == 1 && form.setFieldValue("trigger", triggerList[0])
 
-        // return data the Select component can read
-        return loadedTriggers.map(trigger => ({
-            label: trigger.name,
-            value: trigger.id,
+        return triggerList.map(triggerId => ({
+            label: Triggers[triggerId].name,
+            value: triggerId,
         }))
+
     }, [form.values.triggerType])
 
 
@@ -170,4 +174,16 @@ function TriggerCard({ label, icon }) {
             </Stack>
         </Card>
     )
+}
+
+function createGraphWithTrigger(trigger) {
+    return serializeGraph([{
+        id: "trigger",
+        type: trigger,
+        position: { x: 0, y: 0 },
+        draggable: false,
+        deletable: false,
+        data: { state: {} },
+        state: {},
+    }])
 }
