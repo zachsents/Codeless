@@ -25,7 +25,7 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
 
     // description state
     const [description, setDescription] = useDebouncedCustomState(flow?.description, newDesc => {
-        flow.id && updateDoc(
+        flow?.id && updateDoc(
             doc(firestore, "apps", appId, "flows", flow.id),
             { description: newDesc }
         )

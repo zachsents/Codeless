@@ -2,6 +2,7 @@ import { Stack } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import { useEffect } from 'react'
 import { useEdges, useNodes } from 'reactflow'
+import { useNodeBuilder } from '../NodeBuilder'
 
 export default function Execution() {
 
@@ -21,7 +22,7 @@ export default function Execution() {
             sourceHandle: edge.sourceHandle,
             target: edge.target,
             targetHandle: edge.targetHandle
-        }))
+        })),
     }
 
     // debounce worker message to use as dep for effect

@@ -4,13 +4,21 @@ import { getConnectedEdges, useReactFlow } from "reactflow"
 
 
 export function validateEdgeConnection(connection, edges) {
+    // ensure edge doesn't already exist
+    const unique = edges.every(edge =>
+        edge.source != connection.source ||
+        edge.sourceHandle != connection.sourceHandle ||
+        edge.target != connection.target ||
+        edge.targetHandle != connection.targetHandle
+    )
+
     // only connect when handles have matching data types
     const sourceHandle = new Handle(connection.sourceHandle)
     const targetHandle = new Handle(connection.targetHandle)
     const sameDataType = sourceHandle.dataType == targetHandle.dataType
 
     // if all tests are passed, make the connection
-    return sameDataType && sourceHandle.dataType
+    return unique && sameDataType && sourceHandle.dataType
 }
 
 
@@ -23,6 +31,11 @@ export function useNodeState(nodeId, initial = {}) {
     const setState = (changes, overwrite = false) => reactFlow.setNodes(nodes =>
         produce(nodes, draft => {
             const node = draft.find(node => node.id == nodeId)
+
+            if (!node) {
+                console.log("Couldn't find node:", nodeId)
+                return
+            }
 
             if (!node.data)
                 node.data = { state: {} }

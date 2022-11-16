@@ -3,6 +3,7 @@ import PrimitiveNodes, { PackageTitle as PrimitivePackageTitle, PackageIcon as P
 import UtilityNodes, { PackageTitle as UtilityPackageTitle, PackageIcon as UtilityPackageIcon } from "utility-nodes/display"
 
 
+
 export const NodeCategories = [
     {
         label: PrimitivePackageTitle,

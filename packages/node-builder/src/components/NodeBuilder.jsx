@@ -1,16 +1,15 @@
 import { useCallback, createContext, useContext, useMemo } from "react"
-import ReactFlow, { useNodesState, useEdgesState, Background, MiniMap, Controls, addEdge, MarkerType } from "reactflow"
+import ReactFlow, { useNodesState, useEdgesState, Background, addEdge, MarkerType, updateEdge } from "reactflow"
 import { useMantineTheme } from "@mantine/core"
 
 import { validateEdgeConnection } from "../util"
 import Node from "./nodes/Node"
 import DeletableEdge from "./DeletableEdge"
-import Search from "./search/Search"
-import Execution from "./execution/Execution"
 
 import 'reactflow/dist/style.css'
 import "../nodeStyles.css"
 import { DataType } from "../dataTypes"
+import { useEffect } from "react"
 
 
 const edgeTypes = {
@@ -18,29 +17,26 @@ const edgeTypes = {
 }
 
 
-export default function NodeBuilder({ nodeTypes = {} }) {
+export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange }) {
 
     const theme = useMantineTheme()
 
+    // deserialize initial state
+    const { nodes: initialNodes, edges: initialEdges } = useMemo(() => deserializeGraph(initialGraph))
+
+    // put node types into a form RF likes
     const rfNodeTypes = useMemo(() =>
         Object.fromEntries(Object.keys(nodeTypes).map(type => [type, Node])),
         [nodeTypes]
     )
 
-    const [nodes, setNodes, onNodesChange] = useNodesState([])
-    const [edges, setEdges, onEdgesChange] = useEdgesState([])
+    // node & edge states
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes ?? [])
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges ?? [])
 
     const removeEdge = id => setEdges(edges => edges.filter(e => e.id != id))
 
-    // const onConnect = useCallback(
-    //     connection => validateEdgeConnection(connection, edges) &&
-    //         setEdges(edges => addEdge({
-    //             ...connection,
-    //             type: "deletable",
-    //         }, edges)),
-    //     [edges]
-    // )
-
+    // validate edge on connection
     const onConnect = useCallback(
         params => {
             const dataType = validateEdgeConnection(params, edges)
@@ -51,7 +47,6 @@ export default function NodeBuilder({ nodeTypes = {} }) {
             setEdges(edges => addEdge(
                 {
                     ...params,
-                    type: "smoothstep",
                     ...(dataType == DataType.Value && valueEdgeProps(theme)),
                     ...(dataType == DataType.Signal && signalEdgeProps(theme)),
                 },
@@ -61,11 +56,18 @@ export default function NodeBuilder({ nodeTypes = {} }) {
         [setEdges]
     )
 
-    // const onEdgeUpdate = useCallback(
-    //     (oldEdge, newConnection) => validateEdgeConnection(newConnection, edges) &&
-    //         setEdges(edges => updateEdge(oldEdge, newConnection, edges)),
-    //     [edges]
-    // )
+    // allow reconnecting edges
+    const onEdgeUpdate = useCallback(
+        (oldEdge, newConnection) => validateEdgeConnection(newConnection, edges) &&
+            setEdges(edges => updateEdge(oldEdge, newConnection, edges)),
+        [edges]
+    )
+
+    // propagate graph changes to parent
+    const serialized = useMemo(() => serializeGraph(nodes, edges), [nodes, edges])
+    useEffect(() => {
+        onChange?.(serialized)
+    }, [serialized])
 
     return (
         <NodeBuilderContext.Provider value={{ nodeTypes }}>
@@ -77,13 +79,9 @@ export default function NodeBuilder({ nodeTypes = {} }) {
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
-            // onEdgeUpdate={onEdgeUpdate}
-            // fitView
+                onEdgeUpdate={onEdgeUpdate}
+                fitView
             >
-                {/* <MiniMap /> */}
-                {/* <Controls /> */}
-                {/* <Search /> */}
-                {/* <Execution /> */}
                 <Background
                     // variant="lines" 
                     gap={40}
@@ -106,20 +104,18 @@ export function useNodeBuilder() {
 
 
 const valueEdgeProps = theme => ({
-    animated: false,
-    // markerEnd: {
-    //     type: MarkerType.ArrowClosed,
-    //     width: 20,
-    //     height: 20,
-    //     color: theme.colors.dark[5]
+    type: "smoothstep",
+    // pathOptions: {
+    //     borderRadius: 30,
     // },
-    // style: {
-    //     stroke: theme.colors.dark[5],
-    // }
 })
 
 const signalEdgeProps = theme => ({
+    type: "smoothstep",
     animated: true,
+    // pathOptions: {
+    //     borderRadius: 20,
+    // },
     markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 20,
@@ -130,3 +126,27 @@ const signalEdgeProps = theme => ({
         stroke: theme.colors.dark[5],
     }
 })
+
+
+function serializeGraph(nodes, edges) {
+
+    return JSON.stringify({
+
+        nodes: nodes.map(({ id, type, position, data }) => ({
+            id,
+            type,
+            position,
+            data,
+            state: data?.state ?? {}
+        })),
+
+        edges: edges.map(({ id, source, sourceHandle, target, targetHandle, type, animated, style }) => ({
+            id, source, sourceHandle, target, targetHandle, type, animated, style
+        })),
+    })
+}
+
+function deserializeGraph(str = "{}") {
+    const { nodes, edges } = JSON.parse(str)
+    return { nodes, edges }
+}
