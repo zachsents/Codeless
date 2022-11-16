@@ -1,10 +1,9 @@
 import { DataType } from "../../dataTypes"
-import NodeInner from "./NodeInner"
-import HandleGroup from "./HandleGroup"
-import { Position } from "reactflow"
+import { Handle, Position } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
-import { Box, Card, Flex, Group, Text } from "@mantine/core"
+import { Box, Card, DEFAULT_THEME, Flex, Group, Stack, Text } from "@mantine/core"
 import { useState } from "react"
+import CustomHandle from "./CustomHandle"
 
 
 export default function Node(props) {
@@ -32,24 +31,27 @@ export default function Node(props) {
     const [size, setSize] = useState("sm")
     const displayComponent = size == "sm" ? small : size == "md" ? med : large
 
+
     return (
         <>
-            <HandleGroup
-                position={Position.Left}
-                type="target"
-                handles={[
-                    // ...createHandleData(nodeType.targets?.values, DataType.Value),
-                    // ...createHandleData(nodeType.targets?.signals, DataType.Signal),
-                ]}
-            />
-            <HandleGroup
-                position={Position.Right}
-                type="source"
-                handles={[
-                    // ...createHandleData(nodeType.sources?.values, DataType.Value),
-                    // ...createHandleData(nodeType.sources?.signals, DataType.Signal),
-                ]}
-            />
+            <HandleStack position={Position.Left}>
+                {nodeType.valueTargets?.map(name =>
+                    <CustomHandle name={name} dataType={DataType.Value} handleType="target" position={Position.Left} key={name} />
+                )}
+                {nodeType.signalTargets?.map(name =>
+                    <CustomHandle name={name} dataType={DataType.Signal} handleType="target" position={Position.Left} key={name} />
+                )}
+
+            </HandleStack>
+
+            <HandleStack position={Position.Right}>
+                {nodeType.valueSources?.map(name =>
+                    <CustomHandle name={name} dataType={DataType.Value} handleType="source" position={Position.Right} key={name} />
+                )}
+                {nodeType.signalSources?.map(name =>
+                    <CustomHandle name={name} dataType={DataType.Signal} handleType="source" position={Position.Right} key={name} />
+                )}
+            </HandleStack>
 
             <Card
                 radius="lg"
@@ -61,18 +63,31 @@ export default function Node(props) {
                     {displayComponent}
                 </Flex>
             </Card>
-
-            {/* <NodeInner
-                label={nodeType.name}
-                {...props}
-            /> */}
         </>
     )
 }
 
-function createHandleData(collection, dataType) {
-    return collection ? Object.keys(collection).map(item => ({
-        name: item,
-        dataType
-    })) : []
+function HandleStack({ children, position }) {
+    return (
+        <Stack justify="space-evenly" align="center" spacing={0} sx={stackStyle(position)}>
+            {children}
+        </Stack>
+    )
 }
+
+
+const stackStyle = position => ({
+    position: "absolute",
+    top: "50%",
+    zIndex: 10,
+    height: "100%",
+
+    ...(position == Position.Left && {
+        left: 0,
+        transform: "translate(-50%, -50%)",
+    }),
+    ...(position == Position.Right && {
+        right: 0,
+        transform: "translate(50%, -50%)",
+    }),
+})

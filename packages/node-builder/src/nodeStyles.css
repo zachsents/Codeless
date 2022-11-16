@@ -1,18 +1,9 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+
+.react-flow__handle:hover {
+    /* background-color: purple !important; */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-.react-flow__handle {
+/* .react-flow__handle {
     --handleSize: 13px;
     width: var(--handleSize);
     height: var(--handleSize);
@@ -28,7 +19,6 @@ code {
     content: attr(data-label);
     font-size: 0.5rem;
     line-height: 0.5rem;
-    /* white-space: nowrap; */
     position: absolute;
     --horizontalSpace: 12px;
     --verticalSpace: 12px;
@@ -55,10 +45,10 @@ code {
     top: 50%;
     left: var(--horizontalSpace);
     transform: translateY(-50%)
-}
+} */
 
 
 
-.react-flow__edge-path:hover + foreignObject button {
+/* .react-flow__edge-path:hover + foreignObject button {
     background-color: yellow;
-}
+} */

@@ -28,6 +28,7 @@ export default function DeletableEdge({
         targetY,
         targetPosition,
     })
+
     // const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     //     sourceX,
     //     sourceY,

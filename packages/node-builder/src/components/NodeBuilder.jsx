@@ -1,6 +1,7 @@
 import { useCallback, createContext, useContext, useMemo } from "react"
+import ReactFlow, { useNodesState, useEdgesState, Background, MiniMap, Controls, addEdge, MarkerType } from "reactflow"
+import { useMantineTheme } from "@mantine/core"
 
-import ReactFlow, { useNodesState, useEdgesState, Background } from "reactflow"
 import { validateEdgeConnection } from "../util"
 import Node from "./nodes/Node"
 import DeletableEdge from "./DeletableEdge"
@@ -8,12 +9,8 @@ import Search from "./search/Search"
 import Execution from "./execution/Execution"
 
 import 'reactflow/dist/style.css'
-import { useMantineTheme } from "@mantine/core"
+import "../nodeStyles.css"
 
-
-// const nodeTypes = Object.fromEntries(
-//     Object.keys(NodeTypes).map(type => [type, Node])
-// )
 
 const edgeTypes = {
     deletable: DeletableEdge
@@ -43,7 +40,22 @@ export default function NodeBuilder({ nodeTypes = {} }) {
     //     [edges]
     // )
 
-    const onConnect = useCallback(params => setEdges(edges => addEdge(params, edges)), [setEdges])
+    const onConnect = useCallback(
+        params => setEdges(edges => addEdge(
+            {
+                ...params,
+                type: "smoothstep",
+                animated: true,
+                markerEnd: {
+                    type: MarkerType.ArrowClosed,
+                    width: 20,
+                    height: 20,
+                }
+            },
+            edges
+        )),
+        [setEdges]
+    )
 
     // const onEdgeUpdate = useCallback(
     //     (oldEdge, newConnection) => validateEdgeConnection(newConnection, edges) &&
@@ -73,7 +85,9 @@ export default function NodeBuilder({ nodeTypes = {} }) {
                     gap={40}
                     size={1}
                     color="transparent"
-                    style={{ backgroundColor: theme.colors.indigo[0] }}
+                    style={{ 
+                        backgroundColor: theme.other.editorBackgroundColor 
+                    }}
                 />
             </ReactFlow>
         </NodeBuilderContext.Provider>

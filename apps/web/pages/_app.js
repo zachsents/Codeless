@@ -1,4 +1,4 @@
-import { MantineProvider } from '@mantine/core'
+import { DEFAULT_THEME, MantineProvider } from '@mantine/core'
 import RouterTransition from '../components/RouterTransition'
 import '../styles/globals.css'
 
@@ -27,5 +27,8 @@ const theme = {
         lg: "rgba(0, 0, 0, 0.05) 0px 5px 4px 0px, rgba(0, 0, 0, 0.1) 0px 10px 30px 0px",
         xl: "rgba(0, 0, 0, 0.05) 0px 20px 40px 0px",
     },
+    other: {
+        editorBackgroundColor: DEFAULT_THEME.colors.yellow[5]
+    }
     // transitionTimingFunction: "steps(5, end)"
 }
