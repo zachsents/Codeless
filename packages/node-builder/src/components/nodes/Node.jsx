@@ -1,9 +1,11 @@
 import { DataType } from "../../dataTypes"
-import { Handle, Position } from "reactflow"
+import { Position } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
-import { Box, Card, DEFAULT_THEME, Flex, Group, Stack, Text } from "@mantine/core"
+import { Card, Text, Flex, Group, Stack, Modal, Title } from "@mantine/core"
+import { useDisclosure } from "@mantine/hooks"
 import { useState } from "react"
 import CustomHandle from "./CustomHandle"
+import { useNodeState } from "../../util"
 
 
 export default function Node(props) {
@@ -11,18 +13,28 @@ export default function Node(props) {
     const { nodeTypes } = useNodeBuilder()
     const nodeType = nodeTypes[props.type]
 
+    // node's interal state
+    const [state, setState] = useNodeState(props.id)
+
+    // modal state
+    const [modalOpened, modalHandlers] = useDisclosure(false)
+
     // small size
-    const small = nodeType.sm ? <nodeType.sm /> : <nodeType.icon />
+    const small = nodeType.sm ?
+        <nodeType.sm state={state} setState={setState} /> :
+        <nodeType.icon />
 
     // medium size
-    const med = nodeType.md ? <nodeType.md /> :
+    const med = nodeType.md ?
+        <nodeType.md state={state} setState={setState} /> :
         <Group>
             <nodeType.icon />
             <Text>{nodeType.name}</Text>
         </Group>
 
     // large size
-    const large = nodeType.lg ? <nodeType.lg /> :
+    const large = nodeType.lg ?
+        <nodeType.lg state={state} setState={setState} /> :
         <Group>
             <nodeType.icon />
             <Text>{nodeType.name}</Text>
@@ -30,7 +42,6 @@ export default function Node(props) {
 
     const [size, setSize] = useState("sm")
     const displayComponent = size == "sm" ? small : size == "md" ? med : large
-
 
     return (
         <>
@@ -57,12 +68,24 @@ export default function Node(props) {
                 radius="lg"
                 p="xl"
                 shadow="sm"
+                onDoubleClick={modalHandlers.open}
             // sx={{ overflow: "visible" }}
             >
                 <Flex>
                     {displayComponent}
                 </Flex>
             </Card>
+
+            {nodeType.options &&
+                <Modal
+                    title={<Title order={4}>{nodeType.name}</Title>}
+                    centered
+                    overlayOpacity={0.2}
+                    opened={modalOpened}
+                    onClose={modalHandlers.close}
+                >
+                    <nodeType.options state={state} setState={setState} />
+                </Modal>}
         </>
     )
 }

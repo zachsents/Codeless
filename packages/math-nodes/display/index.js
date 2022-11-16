@@ -1,4 +1,3 @@
-import { Math } from 'tabler-icons-react'
 import RandomNumber from "./RandomNumber"
 import Sum from "./Sum"
 
@@ -9,4 +8,4 @@ const Nodes = {
 
 export default Nodes
 export const PackageTitle = "Math"
-export const PackageIcon = Math
+export { Math as PackageIcon } from 'tabler-icons-react'

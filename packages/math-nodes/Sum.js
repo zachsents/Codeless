@@ -2,7 +2,6 @@
 export default {
     id: "math:Sum",
     name: "Sum",
-    description: "Sums inputs together.",
     targets: {
         values: {
             in: {}

@@ -10,6 +10,7 @@ import Execution from "./execution/Execution"
 
 import 'reactflow/dist/style.css'
 import "../nodeStyles.css"
+import { DataType } from "../dataTypes"
 
 
 const edgeTypes = {
@@ -41,19 +42,22 @@ export default function NodeBuilder({ nodeTypes = {} }) {
     // )
 
     const onConnect = useCallback(
-        params => setEdges(edges => addEdge(
-            {
-                ...params,
-                type: "smoothstep",
-                animated: true,
-                markerEnd: {
-                    type: MarkerType.ArrowClosed,
-                    width: 20,
-                    height: 20,
-                }
-            },
-            edges
-        )),
+        params => {
+            const dataType = validateEdgeConnection(params, edges)
+
+            if (!dataType)
+                return
+
+            setEdges(edges => addEdge(
+                {
+                    ...params,
+                    type: "smoothstep",
+                    ...(dataType == DataType.Value && valueEdgeProps(theme)),
+                    ...(dataType == DataType.Signal && signalEdgeProps(theme)),
+                },
+                edges
+            ))
+        },
         [setEdges]
     )
 
@@ -85,8 +89,8 @@ export default function NodeBuilder({ nodeTypes = {} }) {
                     gap={40}
                     size={1}
                     color="transparent"
-                    style={{ 
-                        backgroundColor: theme.other.editorBackgroundColor 
+                    style={{
+                        backgroundColor: theme.other.editorBackgroundColor
                     }}
                 />
             </ReactFlow>
@@ -99,3 +103,30 @@ const NodeBuilderContext = createContext()
 export function useNodeBuilder() {
     return useContext(NodeBuilderContext)
 }
+
+
+const valueEdgeProps = theme => ({
+    animated: false,
+    // markerEnd: {
+    //     type: MarkerType.ArrowClosed,
+    //     width: 20,
+    //     height: 20,
+    //     color: theme.colors.dark[5]
+    // },
+    // style: {
+    //     stroke: theme.colors.dark[5],
+    // }
+})
+
+const signalEdgeProps = theme => ({
+    animated: true,
+    markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 20,
+        height: 20,
+        color: theme.colors.dark[5]
+    },
+    style: {
+        stroke: theme.colors.dark[5],
+    }
+})

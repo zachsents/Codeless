@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { produce } from "immer"
 import { getConnectedEdges, useReactFlow } from "reactflow"
 
 
@@ -9,58 +10,39 @@ export function validateEdgeConnection(connection, edges) {
     const sameDataType = sourceHandle.dataType == targetHandle.dataType
 
     // if all tests are passed, make the connection
-    return sameDataType
+    return sameDataType && sourceHandle.dataType
 }
 
-export function useNodeState(nodeId, initial = {}) {
-    const reactFlow = useReactFlow()
 
+
+export function useNodeState(nodeId, initial = {}) {
+
+    const reactFlow = useReactFlow()
     const state = reactFlow.getNode(nodeId).data.state
 
-    const setState = (changes, overwrite = false) => reactFlow.setNodes(nodes => nodes.map(node =>
-        node.id == nodeId ?
-            {
-                ...node,
-                data: {
-                    ...node.data,
-                    state: overwrite ? changes : {
-                        ...node.data.state,
-                        ...changes
-                    }
-                }
-            } : node
-    ))
+    const setState = (changes, overwrite = false) => reactFlow.setNodes(nodes =>
+        produce(nodes, draft => {
+            const node = draft.find(node => node.id == nodeId)
 
+            if (!node.data)
+                node.data = { state: {} }
+
+            if (!node.data.state)
+                node.data.state = {}
+
+            node.data.state = {
+                ...(!overwrite && node.data.state),
+                ...changes,
+            }
+        })
+    )
+
+    // set initial state
     useEffect(() => {
         Object.keys(state) == 0 && setState(initial, true)
     }, [])
 
-    return [state || {}, setState]
-}
-
-export function setNodeState(nodeId, value, reactFlow) {
-    reactFlow.setNodes(nodes => nodes.map(node => {
-        if (node.id == nodeId)
-            node.data.state = value
-        return node
-    }))
-}
-
-export function setNodeProps(nodeId, changeObject, reactFlow) {
-    reactFlow.setNodes(nodes => nodes.map(node => {
-        if (node.id == nodeId)
-            node.data.state = {
-                ...node.data.state,
-                ...changeObject
-            }
-        return node
-    }))
-}
-
-export function setNodeProp(nodeId, propName, propValue, reactFlow) {
-    setNodeProps(nodeId, {
-        [propName]: propValue
-    }, reactFlow)
+    return [state ?? {}, setState]
 }
 
 export function removeNode(nodeId, reactFlow) {
@@ -73,43 +55,6 @@ export function removeNode(nodeId, reactFlow) {
 
 export function removeEdge(edgeId, reactFlow) {
     reactFlow.setEdges(edges => edges.filter(edge => edge.id != edgeId))
-}
-
-export function getInputValues(node, reactFlow, supplementalKeys = []) {
-    return Object.fromEntries([
-        ...supplementalKeys.map(key => [key, undefined]),
-        ...getConnectedEdges([node], reactFlow.getEdges())
-            .filter(edge => edge.target == node.id)
-            .map(edge => {
-                const targetHandle = new Handle(edge.targetHandle)
-                const sourceHandle = new Handle(edge.sourceHandle)
-                const data = reactFlow.getNode(edge.source)?.data[sourceHandle.name]
-                return [
-                    targetHandle.name,
-                    data instanceof Getter ? data.get() : data
-                ]
-            })
-    ])
-}
-
-export function getOutputValues(node, reactFlow) {
-    const outputs = {}
-    getConnectedEdges([node], reactFlow.getEdges())
-        .filter(edge => edge.source == node.id)
-        .forEach(edge => {
-            const targetHandle = new Handle(edge.targetHandle)
-            const sourceHandle = new Handle(edge.sourceHandle)
-            const output = reactFlow.getNode(edge.target)?.data[targetHandle.name]
-
-            outputs[sourceHandle.name]?.push(output) ||
-                (outputs[sourceHandle.name] = [output])
-        })
-    return outputs
-}
-
-export function getActionsFire(node, handle, reactFlow) {
-    const actions = getOutputValues(node, reactFlow)[handle]
-    return _ => actions?.forEach(action => action?.(_))
 }
 
 export class Handle {
