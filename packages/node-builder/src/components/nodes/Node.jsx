@@ -40,7 +40,7 @@ export default function Node(props) {
             <Text>{nodeType.name}</Text>
         </Group>
 
-    const [size, setSize] = useState("sm")
+    const [size, setSize] = useState("md")
     const displayComponent = size == "sm" ? small : size == "md" ? med : large
 
     return (

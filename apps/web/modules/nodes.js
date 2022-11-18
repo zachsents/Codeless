@@ -1,6 +1,7 @@
 import MathNodes, { PackageTitle as MathPackageTitle, PackageIcon as MathPackageIcon } from "math-nodes/display"
 import PrimitiveNodes, { PackageTitle as PrimitivePackageTitle, PackageIcon as PrimitivePackageIcon } from "primitive-nodes/display"
 import UtilityNodes, { PackageTitle as UtilityPackageTitle, PackageIcon as UtilityPackageIcon } from "utility-nodes/display"
+import MailNodes, { PackageTitle as MailPackageTitle, PackageIcon as MailPackageIcon } from "mail-nodes/display"
 
 import TriggerNodes from "triggers/display"
 
@@ -21,7 +22,14 @@ export const NodeCategories = [
         icon: UtilityPackageIcon,
         nodes: addIdToNodes(UtilityNodes),
     },
+    {
+        label: MailPackageTitle,
+        icon: MailPackageIcon,
+        nodes: addIdToNodes(MailNodes),
+    },
 ]
+
+
 
 export const Nodes = NodeCategories.reduce((accum, current) => ({
     ...accum,

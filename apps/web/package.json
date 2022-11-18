@@ -16,6 +16,7 @@
     "math-nodes": "*",
     "primitive-nodes": "*",
     "utility-nodes": "*",
+    "mail-nodes": "*",
     "triggers": "*",
     "next": "12.3.1",
     "next-transpile-modules": "^10.0.0",

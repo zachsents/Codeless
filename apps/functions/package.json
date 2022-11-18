@@ -20,7 +20,8 @@
         "triggers": "*",
         "math-nodes": "*",
         "primitive-nodes": "*",
-        "utility-nodes": "*"
+        "utility-nodes": "*",
+        "mail-nodes": "*"
     },
     "devDependencies": {
         "firebase-functions-test": "^0.2.0"
