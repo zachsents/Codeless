@@ -1,6 +1,6 @@
-import Bind from "./Bind"
-import Unbind from "./Unbind"
-import Print from "./Print"
+import Bind from "./Bind.js"
+import Unbind from "./Unbind.js"
+import Print from "./Print.js"
 
 const nodes = [Bind, Unbind, Print]
 

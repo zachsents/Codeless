@@ -9,7 +9,7 @@ import * as TablerIcons from "tabler-icons-react"
 import Triggers from "triggers/display"
 import { TriggerCategories } from 'triggers'
 import { serializeGraph } from 'node-builder'
-import { firestore } from '../../../../modules/firebase'
+import { firestore, useMustBeSignedIn } from '../../../../modules/firebase'
 import { useApp, useFlowCount, usePlan } from '../../../../modules/hooks'
 import AppDashboard from '../../../../components/AppDashboard'
 import GoBackButton from '../../../../components/GoBackButton'
@@ -19,6 +19,7 @@ import FormSection from '../../../../components/forms/FormSection'
 
 export default function CreateFlow() {
 
+    useMustBeSignedIn()
     const { query: { appId }, ...router } = useRouter()
 
     // check if user is maxed out on flows

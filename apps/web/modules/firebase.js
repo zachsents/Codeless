@@ -6,6 +6,7 @@ import {
     getAuth, signInWithPopup, GoogleAuthProvider, sendSignInLinkToEmail, isSignInWithEmailLink,
     signInWithEmailLink, onAuthStateChanged
 } from "firebase/auth"
+import { getFunctions } from "firebase/functions"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 
@@ -30,9 +31,10 @@ if (typeof window !== "undefined") {
     var analytics = getAnalytics(app)
     var firestore = getFirestore(app)
     var auth = getAuth(app)
+    var functions = getFunctions(app)
 }
 
-export { app, analytics, firestore, auth }
+export { app, analytics, firestore, auth, functions }
 
 export async function signInWithGoogle() {
 

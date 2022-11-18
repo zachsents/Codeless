@@ -1,5 +1,5 @@
-import Number from "./Number"
-import Text from "./Text"
+import Number from "./Number.js"
+import Text from "./Text.js"
 
 const nodes = [Number, Text]
 

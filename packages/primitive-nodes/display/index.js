@@ -5,7 +5,7 @@ import Trigger from "./Trigger"
 const Nodes = {
     "primitive:Number": Number,
     "primitive:Text": Text,
-    "primitive:Trigger": Trigger,
+    // "primitive:Trigger": Trigger,
 }
 
 export default Nodes

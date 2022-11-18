@@ -13,7 +13,6 @@
         "graph-execution-engine-2": "*",
         "immer": "^9.0.16",
         "lunr": "^2.3.9",
-        "math-nodes": "*",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
         "react-icons": "^4.4.0",

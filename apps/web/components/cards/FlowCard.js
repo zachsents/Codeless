@@ -1,15 +1,16 @@
-import { useState } from 'react'
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import { useCallback, useMemo } from 'react'
 import Link from 'next/link'
-import { ActionIcon, Badge, Box, Group, Menu, Text, Tooltip } from '@mantine/core'
+import { ActionIcon, Badge, Box, Button, Group, Menu, Text, Tooltip } from '@mantine/core'
 import { TfiMoreAlt } from "react-icons/tfi"
-import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil } from "react-icons/tb"
-import { firestore } from '../../modules/firebase'
+import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil, TbRotateClockwise2 } from "react-icons/tb"
+import { functions } from '../../modules/firebase'
 import { useAppId, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
 import DeleteModal from '../DeleteModal'
 import RenameModal from '../RenameModal'
 import FloatingMenu from '../FloatingMenu'
 import OurCard from './OurCard'
+import { httpsCallable } from 'firebase/functions'
+import { Trigger } from 'triggers'
 
 
 export default function FlowCard({ flow }) {
@@ -19,6 +20,12 @@ export default function FlowCard({ flow }) {
     // renaming & deleting
     const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow.id)
     const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow.id)
+
+    // run flow manually
+    const runFlowManually = useCallback(() => {
+        appId && flow.id && httpsCallable(functions, "callable")({ appId, flowId: flow.id })
+            .then(response => console.log(response))
+    }, [appId, flow.id])
 
     return (
         <>
@@ -35,7 +42,7 @@ export default function FlowCard({ flow }) {
                             </Tooltip>}
                         <Box>
                             <Group align="center">
-                                {!flow.published &&
+                                {!flow.deployed &&
                                     <Tooltip label="This flow isn't live." withArrow>
                                         <Badge color="gray">Draft</Badge>
                                     </Tooltip>}
@@ -50,6 +57,8 @@ export default function FlowCard({ flow }) {
                                 <SparklinesCurve color={theme.colors.gray[5]} />
                             </Sparklines>
                         </Box> */}
+                        {flow.trigger == Trigger.Manual &&
+                            <Button onClick={runFlowManually} leftIcon={<TbRun />}>Run Flow</Button>}
                         <Tooltip label="Edit Flow">
                             <div>
                                 <Link href={`/app/${appId}/flow/${flow.id}/edit`}>
@@ -62,7 +71,8 @@ export default function FlowCard({ flow }) {
                                 <ActionIcon variant="transparent" color="dark"><TfiMoreAlt fontSize={20} /></ActionIcon>
                             </Menu.Target>
                             <Menu.Dropdown>
-                                <Menu.Item disabled icon={<TbRun />}>View Runs</Menu.Item>
+                                <Menu.Item onClick={runFlowManually} icon={<TbRun />}>Run Manually</Menu.Item>
+                                <Menu.Item disabled icon={<TbRotateClockwise2 />}>View Runs</Menu.Item>
                                 <Menu.Item onClick={() => setRenaming(true)} icon={<TbPencil />}>Rename Flow</Menu.Item>
                                 <Menu.Item disabled icon={<TbCopy />}>Duplicate Flow</Menu.Item>
                                 <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>

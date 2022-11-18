@@ -1,5 +1,5 @@
-import RandomNumber from "./RandomNumber"
-import Sum from "./Sum"
+import RandomNumber from "./RandomNumber.js"
+import Sum from "./Sum.js"
 
 const nodes = [RandomNumber, Sum]
 

@@ -16,3 +16,23 @@ export const TriggerCategories = {
         triggers: [ Trigger.HTTP ],
     },
 }
+
+export default {
+    [Trigger.HTTP]: GenericTrigger(Trigger.HTTP),
+    [Trigger.Manual]: GenericTrigger(Trigger.Manual),
+}
+
+function GenericTrigger(id) {
+    return {
+        id,
+        name: "Trigger",
+        sources: {
+            signals: {
+                " ": { }
+            }
+        },
+        setup() {
+            this[" "]()
+        },
+    }
+}

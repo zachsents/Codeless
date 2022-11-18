@@ -11,7 +11,7 @@ import { Nodes } from '../../../../../modules/nodes'
 import { useAppId, useDebouncedCustomState } from '../../../../../modules/hooks'
 import { useRouter } from 'next/router'
 import { doc, updateDoc } from 'firebase/firestore'
-import { firestore } from '../../../../../modules/firebase'
+import { firestore, useMustBeSignedIn } from '../../../../../modules/firebase'
 
 
 export default function EditFlow() {
@@ -25,6 +25,8 @@ export default function EditFlow() {
 }
 
 function Editor() {
+
+    useMustBeSignedIn()
 
     const appId = useAppId()
     const flow = useFlowContext()

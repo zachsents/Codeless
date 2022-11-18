@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react'
-import { Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput, Title } from '@mantine/core'
+import { Button, Group, Loader, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useRouter } from 'next/router'
-import * as TbIcons from "react-icons/tb"
 import { TbArrowNarrowRight } from 'react-icons/tb'
 import AppDashboard from '../../../../components/AppDashboard'
 import GoBackButton from '../../../../components/GoBackButton'
-import { useApp, useAsyncState, useCollectionCount, useCollections, useFlows, usePlan } from '../../../../modules/hooks'
-import { addDoc, collection, doc, query, serverTimestamp, where } from 'firebase/firestore'
-import { firestore, getMappedDocs } from '../../../../modules/firebase'
+import { useApp, useCollectionCount, usePlan } from '../../../../modules/hooks'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { firestore, useMustBeSignedIn } from '../../../../modules/firebase'
 import FormSection from '../../../../components/forms/FormSection'
 import FormSubsection from '../../../../components/forms/FormSubsection'
 
+
 export default function CreateCollection() {
+
+    useMustBeSignedIn()
 
     const { query: { appId }, ...router } = useRouter()
 
