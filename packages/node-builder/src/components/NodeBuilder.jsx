@@ -10,6 +10,7 @@ import 'reactflow/dist/style.css'
 import "../nodeStyles.css"
 import { DataType } from "../dataTypes"
 import { useEffect } from "react"
+import ActiveToolbar from "./ActiveToolbar"
 
 
 const edgeTypes = {
@@ -91,6 +92,7 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange }) 
                         backgroundColor: theme.other.editorBackgroundColor
                     }}
                 />
+                <ActiveToolbar />
             </ReactFlow>
         </NodeBuilderContext.Provider>
     )

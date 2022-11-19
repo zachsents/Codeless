@@ -1,50 +1,30 @@
 import { DataType } from "../../dataTypes"
 import { Position } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
-import { Card, Text, Flex, Group, Stack, Modal, Title } from "@mantine/core"
+import { Card, Text, Flex, Group, Stack, Modal, Title, Box, Overlay } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useState } from "react"
 import CustomHandle from "./CustomHandle"
 import { useNodeState } from "../../util"
 
 
-export default function Node(props) {
+export default function Node({ id, type, selected }) {
 
     const { nodeTypes } = useNodeBuilder()
-    const nodeType = nodeTypes[props.type]
+    const nodeType = nodeTypes[type]
 
     // node's interal state
-    const [state, setState] = useNodeState(props.id)
+    const [state, setState] = useNodeState(id)
 
     // modal state
     const [modalOpened, modalHandlers] = useDisclosure(false)
 
-    // small size
-    const small = nodeType.sm ?
-        <nodeType.sm state={state} setState={setState} /> :
-        <nodeType.icon />
-
-    // medium size
-    const med = nodeType.md ?
-        <nodeType.md state={state} setState={setState} /> :
-        <Group>
-            <nodeType.icon />
-            <Text>{nodeType.name}</Text>
-        </Group>
-
-    // large size
-    const large = nodeType.lg ?
-        <nodeType.lg state={state} setState={setState} /> :
-        <Group>
-            <nodeType.icon />
-            <Text>{nodeType.name}</Text>
-        </Group>
-
-    const [size, setSize] = useState("md")
-    const displayComponent = size == "sm" ? small : size == "md" ? med : large
+    // different sized nodes
+    const [size, setSize] = useState("lg")
+    const DisplayComponent = nodeType[size] ?? nodeType.default ?? nodeType.icon
 
     return (
-        <>
+        <Box style={{ transition: "all 0.3s" }} sx={selected && { transform: "scale(1.2)" }}>
             <HandleStack position={Position.Left}>
                 {nodeType.valueTargets?.map(name =>
                     <CustomHandle name={name} dataType={DataType.Value} handleType="target" position={Position.Left} key={name} />
@@ -67,12 +47,12 @@ export default function Node(props) {
             <Card
                 radius="lg"
                 p="xl"
-                shadow="sm"
+                shadow={selected ? "lg" : "sm"}
                 onDoubleClick={modalHandlers.open}
-            // sx={{ overflow: "visible" }}
+                sx={cardStyle}
             >
                 <Flex>
-                    {displayComponent}
+                    <DisplayComponent state={state} setState={setState} />
                 </Flex>
             </Card>
 
@@ -86,7 +66,7 @@ export default function Node(props) {
                 >
                     <nodeType.options state={state} setState={setState} />
                 </Modal>}
-        </>
+        </Box>
     )
 }
 
@@ -98,6 +78,9 @@ function HandleStack({ children, position }) {
     )
 }
 
+const cardStyle = theme => ({
+    overflow: "visible",
+})
 
 const stackStyle = position => ({
     position: "absolute",
