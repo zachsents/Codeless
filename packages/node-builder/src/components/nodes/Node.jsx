@@ -1,14 +1,18 @@
-import { DataType } from "../../modules/dataTypes"
+import { useState } from "react"
+import { Card, Flex, Stack, Box, ActionIcon, useMantineTheme } from "@mantine/core"
+import { useDisclosure, useHover } from "@mantine/hooks"
 import { Position } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
-import { Card, Flex, Stack, Box } from "@mantine/core"
-import { useDisclosure } from "@mantine/hooks"
-import { useState } from "react"
+import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
 import { useNodeState } from "../../util"
+import { TbAdjustmentsAlt, TbChecks, TbMinimize, TbMinus, TbPlus } from "react-icons/tb"
+import { AnimatePresence, motion } from "framer-motion"
 
 
 export default function Node({ id, type, selected }) {
+
+    const theme = useMantineTheme()
 
     const { nodeTypes, flowId, appId } = useNodeBuilder()
     const nodeType = nodeTypes[type]
@@ -17,8 +21,9 @@ export default function Node({ id, type, selected }) {
     const [state, setState] = useNodeState(id)
 
     // different sized nodes
-    const [size, setSize] = useState("lg")
+    const [size, setSize] = useState(Size.Large)
     const DisplayComponent = nodeType[size] ?? nodeType.default
+    const hasLarge = !!nodeType[Size.Large]
 
     // props for display components
     const displayProps = {
@@ -28,8 +33,11 @@ export default function Node({ id, type, selected }) {
         appId,
     }
 
+    // hover for expanding
+    const { hovered, ref } = useHover()
+
     return (
-        <Box style={{ transition: "all 0.3s" }} sx={selected && { transform: "scale(1.2)" }}>
+        <Box style={{ transition: "all 0.3s" }} sx={selected && { transform: "scale(1.2)" }} ref={ref}>
             <HandleStack position={Position.Left}>
                 {nodeType.valueTargets?.map(name =>
                     <CustomHandle name={name} dataType={DataType.Value} handleType="target" position={Position.Left} key={name} />
@@ -51,7 +59,7 @@ export default function Node({ id, type, selected }) {
 
             <Card
                 radius="lg"
-                p="xl"
+                p="md"
                 shadow={selected ? "lg" : "sm"}
                 sx={cardStyle(id)}
             >
@@ -61,6 +69,38 @@ export default function Node({ id, type, selected }) {
                         :
                         <nodeType.icon />}
                 </Flex>
+
+                {/* Expand Button */}
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: -theme.spacing.sm,
+                        right: -theme.spacing.sm,
+                        zIndex: 11,
+                    }}
+                >
+                    <AnimatePresence>
+                        {hovered &&
+                            <motion.div initial={{ scale: 0, rotate: -135 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -135 }} transition={{ duration: 0.1 }}>
+                                {size == Size.Small && hasLarge && <ActionIcon
+                                    // size="xs"
+                                    radius="xl"
+                                    variant="filled"
+                                    color="indigo.8"
+                                    onClick={() => setSize(Size.Large)}
+                                ><TbPlus /></ActionIcon>}
+
+                                {size == Size.Large && hasLarge && <ActionIcon
+                                    // size="xs"
+                                    radius="xl"
+                                    variant="filled"
+                                    color="indigo.8"
+                                    onClick={() => setSize(Size.Small)}
+                                ><TbMinus /></ActionIcon>}
+                            </motion.div>
+                        }
+                    </AnimatePresence>
+                </Box>
             </Card>
         </Box>
     )
@@ -94,3 +134,9 @@ const stackStyle = position => ({
         transform: "translate(50%, -50%)",
     }),
 })
+
+const Size = {
+    Small: "sm",
+    Medium: "md",
+    Large: "lg",
+}
