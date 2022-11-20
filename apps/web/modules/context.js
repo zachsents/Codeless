@@ -10,6 +10,9 @@ export function FlowProvider({ children, redirectOnNotExist = false, }) {
     const { query: { appId, flowId }, push } = useRouter()
     const flow = useFlowRealtime(appId, flowId)
 
+    if (flow)
+        flow.appId = appId
+
     // redirect if flow doesn't exist
     useEffect(() => {
         redirectOnNotExist && flow === false && push(redirectOnNotExist)

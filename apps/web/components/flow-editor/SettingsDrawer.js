@@ -1,10 +1,11 @@
-import { Box, Button, Drawer, Group, Space, Stack, Tabs, Text, Textarea, ThemeIcon, Title, useMantineTheme } from '@mantine/core'
+import { Box, Button, Divider, Drawer, Group, Space, Stack, Tabs, Text, Textarea, ThemeIcon, Title, useMantineTheme } from '@mantine/core'
 import { doc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { TbCheck, TbCloud, TbCloudOff, TbCloudUpload, TbCopy, TbMoon2, TbPencil, TbTrash } from 'react-icons/tb'
 import { useFlowContext } from '../../modules/context'
 import { firestore } from '../../modules/firebase'
 import { useAppId, useDebouncedCustomState, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
+import { Nodes } from '../../modules/nodes'
 import DeleteModal from '../DeleteModal'
 import LinkIcon from '../LinkIcon'
 import RenameModal from '../RenameModal'
@@ -40,6 +41,9 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
         doc(firestore, "apps", appId, "flows", flow.id),
         { deployed, }
     )
+
+    // deployment content from trigger node
+    const DeployInfo = Nodes[flow?.trigger]?.deploy
 
     return (
         <>
@@ -124,6 +128,10 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
                                 </>
                             }
                         </Stack>
+                        <Space h={20} />
+                        <Divider />
+                        <Space h={20} />
+                        {DeployInfo && <DeployInfo appId={appId} flowId={flow?.id} />}
                     </Tabs.Panel>
                 </Tabs>
             </Drawer>

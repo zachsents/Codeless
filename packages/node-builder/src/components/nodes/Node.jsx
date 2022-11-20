@@ -1,7 +1,7 @@
 import { DataType } from "../../dataTypes"
 import { Position } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
-import { Card, Text, Flex, Group, Stack, Modal, Title, Box, Overlay } from "@mantine/core"
+import { Card, Flex, Stack, Box } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { useState } from "react"
 import CustomHandle from "./CustomHandle"
@@ -10,18 +10,23 @@ import { useNodeState } from "../../util"
 
 export default function Node({ id, type, selected }) {
 
-    const { nodeTypes } = useNodeBuilder()
+    const { nodeTypes, flowId, appId } = useNodeBuilder()
     const nodeType = nodeTypes[type]
 
     // node's interal state
     const [state, setState] = useNodeState(id)
 
-    // modal state
-    const [modalOpened, modalHandlers] = useDisclosure(false)
-
     // different sized nodes
     const [size, setSize] = useState("lg")
-    const DisplayComponent = nodeType[size] ?? nodeType.default ?? nodeType.icon
+    const DisplayComponent = nodeType[size] ?? nodeType.default
+
+    // props for display components
+    const displayProps = {
+        state,
+        setState,
+        flowId,
+        appId,
+    }
 
     return (
         <Box style={{ transition: "all 0.3s" }} sx={selected && { transform: "scale(1.2)" }}>
@@ -48,24 +53,15 @@ export default function Node({ id, type, selected }) {
                 radius="lg"
                 p="xl"
                 shadow={selected ? "lg" : "sm"}
-                onDoubleClick={modalHandlers.open}
                 sx={cardStyle}
             >
                 <Flex>
-                    <DisplayComponent state={state} setState={setState} />
+                    {DisplayComponent ?
+                        <DisplayComponent {...displayProps} />
+                        :
+                        <nodeType.icon />}
                 </Flex>
             </Card>
-
-            {nodeType.options &&
-                <Modal
-                    title={<Title order={4}>{nodeType.name}</Title>}
-                    centered
-                    overlayOpacity={0.2}
-                    opened={modalOpened}
-                    onClose={modalHandlers.close}
-                >
-                    <nodeType.options state={state} setState={setState} />
-                </Modal>}
         </Box>
     )
 }

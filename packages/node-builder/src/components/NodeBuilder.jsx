@@ -18,7 +18,7 @@ const edgeTypes = {
 }
 
 
-export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange }) {
+export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, flowId, appId }) {
 
     const theme = useMantineTheme()
 
@@ -71,7 +71,7 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange }) 
     }, [serialized])
 
     return (
-        <NodeBuilderContext.Provider value={{ nodeTypes }}>
+        <NodeBuilderContext.Provider value={{ nodeTypes, flowId, appId }}>
             <ReactFlow
                 nodeTypes={rfNodeTypes}
                 // edgeTypes={edgeTypes}

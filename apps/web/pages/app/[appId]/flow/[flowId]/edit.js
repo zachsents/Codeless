@@ -9,7 +9,6 @@ import { NodeBuilder } from "node-builder"
 import { ReactFlowProvider } from "reactflow"
 import { Nodes } from '../../../../../modules/nodes'
 import { useAppId, useDebouncedCustomState } from '../../../../../modules/hooks'
-import { useRouter } from 'next/router'
 import { doc, updateDoc } from 'firebase/firestore'
 import { firestore, useMustBeSignedIn } from '../../../../../modules/firebase'
 
@@ -54,7 +53,7 @@ function Editor() {
             }
             navbar={<Sidebar />}
         >
-            {flow && <NodeBuilder nodeTypes={Nodes} initialGraph={flow.graph} onChange={setGraph} />}
+            {flow && <NodeBuilder nodeTypes={Nodes} initialGraph={flow.graph} onChange={setGraph} flowId={flow.id} appId={appId} />}
             <SettingsDrawer opened={settingsOpened} onClose={settingsHandlers.close} suggestedTab={suggestedTab} />
         </AppShell>
     )
