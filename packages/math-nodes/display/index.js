@@ -1,9 +1,11 @@
 import RandomNumber from "./RandomNumber"
 import Sum from "./Sum"
+import Multiply from "./Multiply"
 
 const Nodes = {
     "math:RandomNumber": RandomNumber,
     "math:Sum": Sum,
+    "math:Multiply": Multiply,
 }
 
 export default Nodes

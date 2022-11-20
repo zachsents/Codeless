@@ -21,7 +21,7 @@ export default function Node({ id, type, selected }) {
     const [state, setState] = useNodeState(id)
 
     // different sized nodes
-    const [size, setSize] = useState(Size.Large)
+    const [size, setSize] = useState(Size.Small)
     const DisplayComponent = nodeType[size] ?? nodeType.default
     const hasLarge = !!nodeType[Size.Large]
 

@@ -69,7 +69,7 @@ function ToolbarContent({ selectedNodes, selectedEdges }) {
                 </Group>
                 <Divider orientation="vertical" />
                 <Group spacing={5}>
-                    <DeleteButton nodes={selectedNodes} edges={selectedEdges} />
+                    <DeleteButton nodes={selectedNodes} edges={selectedEdges} label="Node" />
                 </Group>
             </>
         )
@@ -80,7 +80,7 @@ function ToolbarContent({ selectedNodes, selectedEdges }) {
         return (
             <>
                 <Group spacing={5}>
-                    <DeleteButton nodes={selectedNodes} edges={selectedEdges} />
+                    <DeleteButton nodes={selectedNodes} edges={selectedEdges} label="Connection" />
                 </Group>
             </>
         )
@@ -95,7 +95,7 @@ function ToolbarContent({ selectedNodes, selectedEdges }) {
     )
 }
 
-function DeleteButton({ nodes, edges }) {
+function DeleteButton({ nodes, edges, label }) {
 
     const reactFlow = useReactFlow()
 
@@ -105,7 +105,7 @@ function DeleteButton({ nodes, edges }) {
     }
 
     return (
-        <Tooltip label="Remove Connection">
+        <Tooltip label={label ? `Remove ${label}` : "Remove"}>
             <ActionIcon color="red" size="lg" radius="md" onClick={handleClick}><TbTrash fontSize={18} /></ActionIcon>
         </Tooltip>
     )
