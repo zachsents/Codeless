@@ -28,7 +28,7 @@ const theme = {
         xl: "rgba(0, 0, 0, 0.05) 0px 20px 40px 0px",
     },
     other: {
-        editorBackgroundColor: DEFAULT_THEME.colors.yellow[5]
+        editorBackgroundColor: DEFAULT_THEME.colors.indigo[5]
     }
     // transitionTimingFunction: "steps(5, end)"
 }

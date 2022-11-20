@@ -1,55 +1,6 @@
 
-
-.react-flow__handle:hover {
-    /* background-color: purple !important; */
+.react-flow__edge.selected .react-flow__edge-path {
+    /* stroke: #b1b1b7 !important; */
+    stroke-width: 3px;
 }
 
-/* .react-flow__handle {
-    --handleSize: 13px;
-    width: var(--handleSize);
-    height: var(--handleSize);
-    z-index: 10;
-    position: relative;
-    transform: none;
-    left: 0;
-    top: 0;
-    transition: transform 0.1s;
-}
-
-.react-flow__handle::after {
-    content: attr(data-label);
-    font-size: 0.5rem;
-    line-height: 0.5rem;
-    position: absolute;
-    --horizontalSpace: 12px;
-    --verticalSpace: 12px;
-    text-transform: capitalize;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 0px 2px;
-}
-.react-flow__handle-top::after {
-    top: var(--verticalSpace);
-    left: 50%;
-    transform: translateX(-50%)
-}
-.react-flow__handle-right::after {
-    top: 50%;
-    right: var(--horizontalSpace);
-    transform: translateY(-50%)
-}
-.react-flow__handle-bottom::after {
-    bottom: var(--verticalSpace);
-    left: 50%;
-    transform: translateX(-50%)
-}
-.react-flow__handle-left::after {
-    top: 50%;
-    left: var(--horizontalSpace);
-    transform: translateY(-50%)
-} */
-
-
-
-/* .react-flow__edge-path:hover + foreignObject button {
-    background-color: yellow;
-} */

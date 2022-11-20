@@ -55,6 +55,16 @@ export default function ActiveToolbar() {
                                         </Group>
                                     </>
                                 }
+
+                                {selectedNodes.length == 0 && selectedEdges.length == 1 &&
+                                    <>
+                                        <Group spacing={5}>
+                                            <Tooltip label="Remove Connection">
+                                                <ActionIcon color="red" size="lg" radius="md"><TbTrash fontSize={18} /></ActionIcon>
+                                            </Tooltip>
+                                        </Group>
+                                    </>
+                                }
                             </Group>
                         </Card>
                     </motion.div>
