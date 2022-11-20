@@ -1,29 +1,23 @@
 import { useCallback, createContext, useContext, useMemo } from "react"
-import ReactFlow, { useNodesState, useEdgesState, Background, addEdge, MarkerType, updateEdge } from "reactflow"
+import ReactFlow, { useNodesState, useEdgesState, Background, addEdge, MarkerType, updateEdge, useReactFlow, useNodes, useEdges, useStore, applyEdgeChanges } from "reactflow"
 import { useMantineTheme } from "@mantine/core"
 
-import { validateEdgeConnection } from "../util"
+import { findEdgeFromConnection, validateEdgeConnection } from "../util"
 import Node from "./nodes/Node"
-import DeletableEdge from "./DeletableEdge"
 
 import 'reactflow/dist/style.css'
 import "../nodeStyles.css"
-import { DataType } from "../dataTypes"
+import { DataType } from "../modules/dataTypes"
 import { useEffect } from "react"
 import ActiveToolbar from "./ActiveToolbar"
-
-
-const edgeTypes = {
-    deletable: DeletableEdge
-}
+import { useDebouncedValue } from "@mantine/hooks"
+import produce from "immer"
 
 
 export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, flowId, appId }) {
 
     const theme = useMantineTheme()
-
-    // deserialize initial state
-    const { nodes: initialNodes, edges: initialEdges } = useMemo(() => deserializeGraph(initialGraph))
+    const rf = useReactFlow()
 
     // put node types into a form RF likes
     const rfNodeTypes = useMemo(() =>
@@ -31,57 +25,46 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
         [nodeTypes]
     )
 
-    // node & edge states
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes ?? [])
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges ?? [])
+    // deserialize initial state
+    const { nodes: initialNodes, edges: initialEdges } = useMemo(() => deserializeGraph(initialGraph))
 
-    const removeEdge = id => setEdges(edges => edges.filter(e => e.id != id))
+    // handle connection -- validate and style edges 
+    const handleConnect = connection => {
 
-    // validate edge on connection
-    const onConnect = useCallback(
-        params => {
-            const dataType = validateEdgeConnection(params, edges)
+        const dataType = validateEdgeConnection(connection, rf.getEdges())
 
-            if (!dataType)
-                return
+        // edge isn't validated -- remove it
+        if (!dataType) {
+            rf.setEdges(edges => {
+                const newEdge = findEdgeFromConnection(connection, edges)
+                return applyEdgeChanges([{ id: newEdge.id, type: "remove" }], edges)
+            })
+            return
+        }
 
-            setEdges(edges => addEdge(
-                {
-                    ...params,
-                    ...(dataType == DataType.Value && valueEdgeProps(theme)),
-                    ...(dataType == DataType.Signal && signalEdgeProps(theme)),
-                },
-                edges
-            ))
-        },
-        [setEdges]
-    )
+        // apply edge styles based on data type
+        const edgeProps = (dataType == DataType.Signal ? signalEdgeProps : valueEdgeProps)(theme)
+        rf.setEdges(produce(draft => {
+            const newEdge = findEdgeFromConnection(connection, draft)
+            Object.entries(edgeProps)
+                .forEach(([key, val]) => newEdge[key] = val)
+        }))
+    }
 
-    // allow reconnecting edges
-    const onEdgeUpdate = useCallback(
-        (oldEdge, newConnection) => validateEdgeConnection(newConnection, edges) &&
-            setEdges(edges => updateEdge(oldEdge, newConnection, edges)),
-        [edges]
-    )
-
-    // propagate graph changes to parent
-    const serialized = useMemo(() => serializeGraph(nodes, edges), [nodes, edges])
-    useEffect(() => {
-        onChange?.(serialized)
-    }, [serialized])
 
     return (
         <NodeBuilderContext.Provider value={{ nodeTypes, flowId, appId }}>
             <ReactFlow
                 nodeTypes={rfNodeTypes}
-                // edgeTypes={edgeTypes}
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                onEdgeUpdate={onEdgeUpdate}
+                defaultNodes={initialNodes}
+                defaultEdges={initialEdges}
+                onConnect={handleConnect}
+                // onEdgeUpdate={handleConnect}
                 fitView
+                // connectionLineType="smoothstep"
+                selectionKeyCode={null}
+                multiSelectionKeyCode={"Shift"}
+                zoomActivationKeyCode={null}
             >
                 <Background
                     // variant="lines" 
@@ -92,11 +75,31 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
                         backgroundColor: theme.other.editorBackgroundColor
                     }}
                 />
+                <ChangeWatcher onChange={onChange} />
                 <ActiveToolbar />
             </ReactFlow>
         </NodeBuilderContext.Provider>
     )
 }
+
+function ChangeWatcher({ onChange }) {
+
+    const nodes = useNodes()
+    const edges = useEdges()
+
+    const [debouncedNodes] = useDebouncedValue(nodes, 200)
+    const [debouncedEdges] = useDebouncedValue(edges, 200)
+
+    const serialized = useMemo(() => serializeGraph(nodes, edges), [debouncedNodes, debouncedEdges])
+
+    useEffect(() => {
+        onChange?.(serialized)
+        // console.log(nodes.length, edges.length)
+    }, [serialized])
+
+    return <></>
+}
+
 
 const NodeBuilderContext = createContext()
 
@@ -106,24 +109,26 @@ export function useNodeBuilder() {
 
 
 const valueEdgeProps = theme => ({
-    type: "smoothstep",
+    // type: "smoothstep",
+    focusable: false,
     // pathOptions: {
     //     borderRadius: 30,
     // },
 })
 
 const signalEdgeProps = theme => ({
-    type: "smoothstep",
+    // type: "smoothstep",
     animated: true,
+    focusable: false,
     // pathOptions: {
     //     borderRadius: 20,
     // },
-    markerEnd: {
-        type: MarkerType.ArrowClosed,
-        width: 20,
-        height: 20,
-        color: theme.colors.dark[5]
-    },
+    // markerEnd: {
+    //     type: MarkerType.ArrowClosed,
+    //     width: 20,
+    //     height: 20,
+    //     color: theme.colors.dark[5]
+    // },
     style: {
         stroke: theme.colors.dark[5],
     }
@@ -131,22 +136,9 @@ const signalEdgeProps = theme => ({
 
 
 export function serializeGraph(nodes = [], edges = []) {
-
     return JSON.stringify({
-
-        nodes: nodes.map(({ id, type, position, data, draggable, deletable }) => ({
-            id,
-            type,
-            position,
-            draggable,
-            deletable,
-            data,
-            state: data?.state ?? {}
-        })),
-
-        edges: edges.map(({ id, source, sourceHandle, target, targetHandle, type, animated, style }) => ({
-            id, source, sourceHandle, target, targetHandle, type, animated, style
-        })),
+        nodes: nodes.map(node => ({ ...node, state: node.data.state, })), 
+        edges
     })
 }
 

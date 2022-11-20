@@ -184,6 +184,7 @@ function createGraphWithTrigger(trigger) {
         position: { x: 0, y: 0 },
         draggable: false,
         deletable: false,
+        focusable: false,
         data: { state: {} },
         state: {},
     }])

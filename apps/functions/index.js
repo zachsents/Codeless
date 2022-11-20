@@ -47,7 +47,8 @@ export const trigger = functions.https.onRequest(async (request, response) => {
     try {
         executeFlow(flowData.graph)
     }
-    catch (err) {
+    catch (error) {
+        console.log(error)
         response.status(500).send({ error: "Encountered an error running this flow.", appId, flowId })
         return
     }

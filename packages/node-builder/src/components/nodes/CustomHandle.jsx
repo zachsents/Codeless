@@ -1,6 +1,6 @@
 import { Box, useMantineTheme } from "@mantine/core"
 import { Handle } from "reactflow"
-import { DataType } from "../../dataTypes"
+import { DataType } from "../../modules/dataTypes"
 import { useNodeBuilder } from "../NodeBuilder"
 
 

@@ -12,7 +12,11 @@ export default {
 
 function Input({ state, setState, ...props }) {
     return <TextInput
-        value={state.$}
+        onClick={event => {
+            console.log(event.bubbles)
+            event.stopPropagation()
+        }}
+        value={state.$ ?? ""}
         onChange={event => setState({ $: event.currentTarget.value })}
         placeholder="Type something..."
         {...props}

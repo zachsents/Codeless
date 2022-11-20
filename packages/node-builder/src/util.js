@@ -1,16 +1,24 @@
 import { useEffect } from "react"
 import { produce } from "immer"
-import { getConnectedEdges, useReactFlow } from "reactflow"
+import shortUUID from "short-uuid"
+import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useReactFlow } from "reactflow"
 
+
+export function findEdgeFromConnection(connection, edges) {
+    return edges.find(
+        edge => edge.source == connection.source && edge.sourceHandle == connection.sourceHandle &&
+            edge.target == connection.target && edge.targetHandle == connection.targetHandle
+    )
+}
 
 export function validateEdgeConnection(connection, edges) {
     // ensure edge doesn't already exist
-    const unique = edges.every(edge =>
-        edge.source != connection.source ||
-        edge.sourceHandle != connection.sourceHandle ||
-        edge.target != connection.target ||
-        edge.targetHandle != connection.targetHandle
-    )
+    // const unique = edges.every(edge =>
+    //     edge.source != connection.source ||
+    //     edge.sourceHandle != connection.sourceHandle ||
+    //     edge.target != connection.target ||
+    //     edge.targetHandle != connection.targetHandle
+    // )
 
     // only connect when handles have matching data types
     const sourceHandle = new Handle(connection.sourceHandle)
@@ -18,7 +26,7 @@ export function validateEdgeConnection(connection, edges) {
     const sameDataType = sourceHandle.dataType == targetHandle.dataType
 
     // if all tests are passed, make the connection
-    return unique && sameDataType && sourceHandle.dataType
+    return sameDataType && sourceHandle.dataType
 }
 
 
@@ -59,15 +67,43 @@ export function useNodeState(nodeId, initial = {}) {
 }
 
 export function removeNode(nodeId, reactFlow) {
-    const node = reactFlow.getNode(nodeId)
-    const connectedEdges = getConnectedEdges([node], reactFlow.getEdges())
-        .map(edge => edge.id)
-    reactFlow.setEdges(edges => edges.filter(edge => !connectedEdges.includes(edge.id)))
-    reactFlow.setNodes(nodes => nodes.filter(node => node.id != nodeId))
+    removeNodes([nodeId], reactFlow)
+}
+
+export function removeNodes(nodeIds, reactFlow) {
+    const edgeChanges = getConnectedEdges(
+        nodeIds.map(id => reactFlow.getNode(id)),
+        reactFlow.getEdges()
+    )
+        .map(({ id }) => ({ id, type: "remove", }))
+
+    const nodeChanges = nodeIds
+        .filter(id => id != "trigger")
+        .map(id => ({ id, type: "remove" }))
+
+    reactFlow.setEdges(edges => applyEdgeChanges(edgeChanges, edges))
+    reactFlow.setNodes(nodes => applyNodeChanges(nodeChanges, nodes))
 }
 
 export function removeEdge(edgeId, reactFlow) {
-    reactFlow.setEdges(edges => edges.filter(edge => edge.id != edgeId))
+    removeEdges([edgeId], reactFlow)
+}
+
+export function removeEdges(edgeIds, reactFlow) {
+    const edgeChanges = edgeIds.map(id => ({ id, type: "remove" }))
+    reactFlow.setEdges(edges => applyEdgeChanges(edgeChanges, edges))
+}
+
+export function createNode(nodeType, position) {
+    return {
+        id: `${nodeType}_${shortUUID.generate()}`,
+        type: nodeType,
+        data: {
+            state: {}
+        },
+        position,
+        focusable: false,
+    }
 }
 
 export class Handle {

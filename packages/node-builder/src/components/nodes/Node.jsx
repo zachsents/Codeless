@@ -1,4 +1,4 @@
-import { DataType } from "../../dataTypes"
+import { DataType } from "../../modules/dataTypes"
 import { Position } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import { Card, Flex, Stack, Box } from "@mantine/core"
@@ -53,7 +53,7 @@ export default function Node({ id, type, selected }) {
                 radius="lg"
                 p="xl"
                 shadow={selected ? "lg" : "sm"}
-                sx={cardStyle}
+                sx={cardStyle(id)}
             >
                 <Flex>
                     {DisplayComponent ?
@@ -74,8 +74,9 @@ function HandleStack({ children, position }) {
     )
 }
 
-const cardStyle = theme => ({
+const cardStyle = id => theme => ({
     overflow: "visible",
+    backgroundColor: id == "trigger" && theme.colors.yellow[5],
 })
 
 const stackStyle = position => ({
