@@ -5,11 +5,11 @@ import { TbCheck, TbCloud, TbCloudOff, TbCloudUpload, TbCopy, TbMoon2, TbPencil,
 import { useFlowContext } from '../../modules/context'
 import { firestore } from '../../modules/firebase'
 import { useAppId, useDebouncedCustomState, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
+import { openDeleteModal, openRenameModal } from '../../modules/modals'
 import { Nodes } from '../../modules/nodes'
-import DeleteModal from '../DeleteModal'
 import LinkIcon from '../LinkIcon'
-import RenameModal from '../RenameModal'
 import { HeaderHeight } from './Header'
+
 
 export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
 
@@ -33,8 +33,8 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
     }, 1000)
 
     // renaming & deleting
-    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow?.id)
-    const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow?.id)
+    const [handleRename] = useRenameFlow(appId, flow?.id)
+    const [handleDelete] = useDeleteFlow(appId, flow?.id)
 
     // deploy
     const setDeployed = deployed => updateDoc(
@@ -84,7 +84,7 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
                         variant="transparent"><TbCloudUpload fontSize={24} /></LinkIcon>
                     <LinkIcon
                         label="Rename Flow"
-                        onClick={() => setRenaming(true)}
+                        onClick={() => openRenameModal(flow?.name, handleRename)}
                         variant="transparent"><TbPencil fontSize={24} /></LinkIcon>
                     <LinkIcon
                         label="Duplicate Flow"
@@ -92,7 +92,7 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
                         variant="transparent"><TbCopy fontSize={24} /></LinkIcon>
                     <LinkIcon
                         label="Delete Flow"
-                        onClick={() => setDeleting(true)}
+                        onClick={() => openDeleteModal(flow?.name, handleDelete)}
                         variant="transparent"><TbTrash fontSize={24} /></LinkIcon>
                 </Group>
                 <Space h={20} />
@@ -135,9 +135,6 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
                     </Tabs.Panel>
                 </Tabs>
             </Drawer>
-
-            <RenameModal name={flow?.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
-            <DeleteModal name={flow?.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
         </>
     )
 }

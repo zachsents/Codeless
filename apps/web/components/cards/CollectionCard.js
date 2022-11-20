@@ -6,9 +6,8 @@ import { TbCopy, TbTrash, TbEye, TbPencil } from "react-icons/tb"
 import { TfiMoreAlt } from "react-icons/tfi"
 import { firestore } from '../../modules/firebase'
 import { useAppId } from '../../modules/hooks'
-import DeleteModal from '../DeleteModal'
+import { openDeleteModal, openRenameModal } from '../../modules/modals'
 import FloatingMenu from '../FloatingMenu'
-import RenameModal from '../RenameModal'
 import OurCard from "./OurCard"
 
 
@@ -16,12 +15,8 @@ export default function CollectionCard({ collection, onDuplicate }) {
 
     const appId = useAppId()
 
-    // deleting state & handlers
-    const [deleting, setDeleting] = useState(false)
     const handleDelete = () => deleteDoc(doc(firestore, "apps", appId, "collections", collection.id))
 
-    // renaming state & handlers
-    const [renaming, setRenaming] = useState(false)
     const handleRename = newName => updateDoc(
         doc(firestore, "apps", appId, "collections", collection.id),
         { name: newName }
@@ -48,17 +43,31 @@ export default function CollectionCard({ collection, onDuplicate }) {
                                 <ActionIcon variant="transparent" color="dark"><TfiMoreAlt fontSize={20} /></ActionIcon>
                             </Menu.Target>
                             <Menu.Dropdown>
-                                <Menu.Item onClick={() => setRenaming(true)} icon={<TbPencil />}>Rename Collection</Menu.Item>
-                                <Menu.Item disabled onClick={() => onDuplicate?.()} icon={<TbCopy />}>Duplicate Collection</Menu.Item>
-                                <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Collection</Menu.Item>
+                                <Menu.Item
+                                    icon={<TbPencil />}
+                                    onClick={() => openRenameModal(collection.name, handleRename)}
+                                >
+                                    Rename Collection
+                                </Menu.Item>
+                                <Menu.Item
+                                    disabled
+                                    icon={<TbCopy />}
+                                    onClick={() => onDuplicate?.()}
+                                >
+                                    Duplicate Collection
+                                </Menu.Item>
+                                <Menu.Item
+                                    color="red"
+                                    icon={<TbTrash />}
+                                    onClick={() => openDeleteModal(collection.name, handleDelete)}
+                                >
+                                    Delete Collection
+                                </Menu.Item>
                             </Menu.Dropdown>
                         </FloatingMenu>
                     </Group>
                 </Stack>
             </OurCard>
-
-            <DeleteModal name={collection.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
-            <RenameModal name={collection.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
         </>
     )
 }
