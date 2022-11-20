@@ -5,10 +5,10 @@ import { useRouter } from 'next/router'
 import { useState } from "react"
 import { doc, updateDoc } from "firebase/firestore"
 import { firestore } from "../../modules/firebase"
+import RenameModal from "../RenameModal"
 import { SettingsTabs } from "./SettingsDrawer"
 import { useFlowContext } from "../../modules/context"
 import { useRenameFlow } from "../../modules/hooks"
-import { openRenameModal } from "../../modules/modals"
 
 
 export default function Header({ openSettings }) {
@@ -17,7 +17,7 @@ export default function Header({ openSettings }) {
     const flow = useFlowContext()
 
     // renaming & deleting
-    const [handleRename] = useRenameFlow(appId, flowId)
+    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flowId)
 
     return (
         <>
@@ -44,7 +44,7 @@ export default function Header({ openSettings }) {
                     <Group spacing="xs">
                         <Text>{flow?.name}</Text>
                         <LinkIcon
-                            onClick={() => openRenameModal(flow?.name, handleRename)}
+                            onClick={() => setRenaming(true)}
                             label="Edit Title"
                             variant="transparent"><TbPencil /></LinkIcon>
                     </Group>
@@ -68,6 +68,8 @@ export default function Header({ openSettings }) {
                     </Group>
                 </Group>
             </MantineHeader>
+
+            <RenameModal name={flow?.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
         </>
     )
 }

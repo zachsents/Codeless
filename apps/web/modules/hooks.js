@@ -114,7 +114,9 @@ export function useCollectionCount(appId) {
     return collectionCount
 }
 
-export function useRenameFlow(appId, flowId) {
+export function useRenameFlow(appId, flowId, includeModalState = true) {
+
+    const [renaming, setRenaming] = includeModalState ? useState(false) : []
 
     const handleRename = useCallback(
         newName => appId && flowId && updateDoc(
@@ -124,17 +126,19 @@ export function useRenameFlow(appId, flowId) {
         [appId, flowId]
     )
 
-    return [handleRename]
+    return [handleRename, renaming, setRenaming]
 }
 
-export function useDeleteFlow(appId, flowId) {
+export function useDeleteFlow(appId, flowId, includeModalState = true) {
+
+    const [deleting, setDeleting] = includeModalState ? useState(false) : []
 
     const handleDelete = useCallback(
         () => appId && flowId && deleteDoc(doc(firestore, "apps", appId, "flows", flowId)),
         [appId, flowId]
     )
 
-    return [handleDelete]
+    return [handleDelete, deleting, setDeleting]
 }
 
 

@@ -1,17 +1,13 @@
 import { DEFAULT_THEME, MantineProvider } from '@mantine/core'
-import { ModalsProvider } from "@mantine/modals"
 import RouterTransition from '../components/RouterTransition'
-import RenameModal from '../modules/modals'
 import '../styles/globals.css'
 
 
 export default function MyApp({ Component, pageProps }) {
     return (
         <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
-            <ModalsProvider modals={{ rename: RenameModal }}>
-                <Component {...pageProps} />
-                <RouterTransition />
-            </ModalsProvider>
+            <Component {...pageProps} />
+            <RouterTransition />
         </MantineProvider>
     )
 }

@@ -5,7 +5,8 @@ import { TfiMoreAlt } from "react-icons/tfi"
 import { TbEdit, TbCopy, TbTrash, TbRun, TbFaceId, TbFaceIdError, TbPencil, TbRotateClockwise2 } from "react-icons/tb"
 import { functions } from '../../modules/firebase'
 import { useAppId, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
-import { openDeleteModal, openRenameModal } from '../../modules/modals'
+import DeleteModal from '../DeleteModal'
+import RenameModal from '../RenameModal'
 import FloatingMenu from '../FloatingMenu'
 import OurCard from './OurCard'
 import { httpsCallable } from 'firebase/functions'
@@ -17,8 +18,8 @@ export default function FlowCard({ flow }) {
     const appId = useAppId()
 
     // renaming & deleting
-    const [handleRename] = useRenameFlow(appId, flow.id)
-    const [handleDelete] = useDeleteFlow(appId, flow.id)
+    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow.id)
+    const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow.id)
 
     // run flow manually
     const runFlowManually = useCallback(() => {
@@ -72,14 +73,17 @@ export default function FlowCard({ flow }) {
                             <Menu.Dropdown>
                                 <Menu.Item onClick={runFlowManually} icon={<TbRun />}>Run Manually</Menu.Item>
                                 <Menu.Item disabled icon={<TbRotateClockwise2 />}>View Runs</Menu.Item>
-                                <Menu.Item onClick={() => openRenameModal(flow.name, handleRename)} icon={<TbPencil />}>Rename Flow</Menu.Item>
+                                <Menu.Item onClick={() => setRenaming(true)} icon={<TbPencil />}>Rename Flow</Menu.Item>
                                 <Menu.Item disabled icon={<TbCopy />}>Duplicate Flow</Menu.Item>
-                                <Menu.Item onClick={() => openDeleteModal(flow.name, handleDelete)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
+                                <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
                             </Menu.Dropdown>
                         </FloatingMenu>
                     </Group>
                 </Group>
             </OurCard>
+
+            <RenameModal name={flow.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
+            <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
         </>
     )
 }
