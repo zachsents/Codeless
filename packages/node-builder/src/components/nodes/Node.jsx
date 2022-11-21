@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { Card, Flex, Stack, Box, ActionIcon, useMantineTheme } from "@mantine/core"
+import { Card, Flex, Stack, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
 import { useDisclosure, useHover } from "@mantine/hooks"
 import { getConnectedEdges, Position, useReactFlow } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
@@ -30,7 +30,7 @@ export default function Node({ id, type, selected }) {
         // find connected edges
         const connectedEdges = getConnectedEdges([rf.getNode(id)], rf.getEdges())
             .map(edge => new Handle(edge.targetHandle).name)
-        
+
         // create a map of value target handles to connection state
         const entries = nodeType.valueTargets?.map(vt => [vt, connectedEdges.includes(vt)])
         return entries ? Object.fromEntries(entries) : {}
@@ -97,7 +97,12 @@ export default function Node({ id, type, selected }) {
             >
                 <Flex>
                     {state.expanded ?
-                        <nodeType.expanded {...displayProps} />
+                        <>
+                            <nodeType.expanded {...displayProps} />
+                            <ThemeIcon color="yellow.5" radius="md" size="lg" sx={topIconStyle}>
+                                <nodeType.icon size={18} color="black" />
+                            </ThemeIcon>
+                        </>
                         :
                         nodeType.default ?
                             <nodeType.default {...displayProps} />
@@ -180,4 +185,12 @@ const stackStyle = position => ({
         right: 0,
         transform: "translate(50%, -50%)",
     }),
+})
+
+const topIconStyle = theme => ({
+    position: "absolute",
+    top: -16,
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: 40,
 })
