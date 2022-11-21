@@ -31,10 +31,10 @@ export function validateEdgeConnection(connection, edges) {
 
 
 
-export function useNodeState(nodeId, initial = {}) {
+export function useNodeState(nodeId) {
 
     const reactFlow = useReactFlow()
-    const state = reactFlow.getNode(nodeId).data.state
+    const state = reactFlow.getNode(nodeId)?.data.state
 
     const setState = (changes, overwrite = false) => reactFlow.setNodes(nodes =>
         produce(nodes, draft => {
@@ -59,9 +59,9 @@ export function useNodeState(nodeId, initial = {}) {
     )
 
     // set initial state
-    useEffect(() => {
-        Object.keys(state) == 0 && setState(initial, true)
-    }, [])
+    // useEffect(() => {
+    //     Object.keys(state) == 0 && setState(initial, true)
+    // }, [])
 
     return [state ?? {}, setState]
 }
