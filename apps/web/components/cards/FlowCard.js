@@ -10,6 +10,7 @@ import RenameModal from '../RenameModal'
 import FloatingMenu from '../FloatingMenu'
 import OurCard from './OurCard'
 import { httpsCallable } from 'firebase/functions'
+import Triggers from "triggers/display"
 import { Trigger } from 'triggers'
 
 
@@ -27,19 +28,23 @@ export default function FlowCard({ flow }) {
             .then(response => console.log(response))
     }, [appId, flow.id])
 
+    // trigger icon
+    const TriggerIcon = Triggers[flow.trigger].icon
+
     return (
         <>
             <OurCard>
                 <Group position="apart">
                     <Group spacing="xl">
-                        {flow.error ?
+                        {/* {flow.error ?
                             <Tooltip label={`${flow.error} Click for more info`} withArrow>
                                 <ActionIcon variant="transparent" color="red"><TbFaceIdError fontSize={28} /></ActionIcon>
                             </Tooltip>
                             :
                             <Tooltip label="Good to go!" withArrow>
                                 <ActionIcon variant="transparent" color="gray"><TbFaceId fontSize={28} /></ActionIcon>
-                            </Tooltip>}
+                            </Tooltip>} */}
+                            <ActionIcon color="gray" variant="transparent"><TriggerIcon /></ActionIcon>
                         <Box>
                             <Group align="center">
                                 {!flow.deployed &&
@@ -48,7 +53,7 @@ export default function FlowCard({ flow }) {
                                     </Tooltip>}
                                 <Text size="lg" weight={600} mb={5}>{flow.name}</Text>
                             </Group>
-                            <Text color="dimmed">Trigger: Collection Item created</Text>
+                            <Text color="dimmed">Trigger: {Triggers[flow.trigger]?.name}</Text>
                         </Box>
                     </Group>
                     <Group spacing="xl">
