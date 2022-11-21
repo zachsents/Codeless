@@ -13,7 +13,7 @@ export default {
 function Input({ state, setState, ...props }) {
     return <TextInput
         onClick={event => {
-            console.log(event.bubbles)
+            // console.log(event.bubbles)
             event.stopPropagation()
         }}
         value={state.$ ?? ""}

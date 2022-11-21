@@ -1,11 +1,11 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Card, Flex, Stack, Box, ActionIcon, useMantineTheme } from "@mantine/core"
 import { useDisclosure, useHover } from "@mantine/hooks"
-import { Position } from "reactflow"
+import { getConnectedEdges, Position, useReactFlow } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
-import { useNodeState } from "../../util"
+import { Handle, useNodeState } from "../../util"
 import { TbAdjustmentsAlt, TbChecks, TbMinimize, TbMinus, TbPlus } from "react-icons/tb"
 import { AnimatePresence, motion, AnimateSharedLayout } from "framer-motion"
 
@@ -13,7 +13,9 @@ import { AnimatePresence, motion, AnimateSharedLayout } from "framer-motion"
 export default function Node({ id, type, selected }) {
 
     const theme = useMantineTheme()
+    const rf = useReactFlow()
 
+    // get node type
     const { nodeTypes, flowId, appId } = useNodeBuilder()
     const nodeType = nodeTypes[type]
 
@@ -23,12 +25,24 @@ export default function Node({ id, type, selected }) {
     // expanding nodes
     const canBeExpanded = !!nodeType.expanded
 
+    // pass connection state to node
+    const connections = useMemo(() => {
+        // find connected edges
+        const connectedEdges = getConnectedEdges([rf.getNode(id)], rf.getEdges())
+            .map(edge => new Handle(edge.targetHandle).name)
+        
+        // create a map of value target handles to connection state
+        const entries = nodeType.valueTargets?.map(vt => [vt, connectedEdges.includes(vt)])
+        return entries ? Object.fromEntries(entries) : {}
+    }, [JSON.stringify(rf.getEdges())])
+
     // props for display components
     const displayProps = {
         state,
         setState,
         flowId,
         appId,
+        connections,
     }
 
     // hover for showing expand button
@@ -52,6 +66,7 @@ export default function Node({ id, type, selected }) {
             style={{ transition: "all 0.3s" }}
             sx={selected && { transform: "scale(1.1)" }}
             ref={ref}
+            onClick={() => console.log(connections)}
         >
             <HandleStack position={Position.Left}>
                 {nodeType.valueTargets?.map(name =>

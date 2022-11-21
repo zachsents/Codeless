@@ -8,10 +8,14 @@ export default {
         signals: {
             " ": {
                 action(x) {
-                    const toEmail = this.to
+                    const toEmail = this.state.to ?? this.to
+
+                    if (!toEmail)
+                        return
+
                     admin.firestore().collection("mail")
                         .add({
-                            to: this.to,
+                            to: toEmail,
                             message: {
                                 subject: "♥ from No-Code",
                                 text: `This is an email from the No-Code platform.\n\n${x}`,
