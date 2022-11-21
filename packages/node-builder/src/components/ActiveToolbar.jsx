@@ -1,10 +1,10 @@
 import { ActionIcon, Box, Card, Divider, Group, Text, Tooltip } from '@mantine/core'
 import { useState, useCallback, useMemo } from 'react'
 import { useOnSelectionChange, useReactFlow, useUpdateNodeInternals } from 'reactflow'
-import { TbQuestionMark, TbTrash } from "react-icons/tb"
+import { TbAdjustments, TbAdjustmentsAlt, TbAdjustmentsOff, TbBooks, TbQuestionMark, TbTrash } from "react-icons/tb"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNodeBuilder } from './NodeBuilder'
-import { removeEdges, removeNodes } from '../util'
+import { removeEdges, removeNodes, useNodeState } from '../util'
 
 
 export default function ActiveToolbar() {
@@ -18,7 +18,7 @@ export default function ActiveToolbar() {
     const onSelectionChange = useCallback(({ nodes, edges }) => {
         setSelectedNodes(nodes)
         setSelectedEdges(edges)
-        
+
         // need to update node internals to fix edge positions
         // nodes.forEach(node => console.log("updating") || updateNodeInternals(node.id))
     })
@@ -51,6 +51,8 @@ function ToolbarContent({ selectedNodes, selectedEdges }) {
     // Single node
     if (selectedNodes.length == 1 && selectedEdges.length == 0) {
 
+        const [state, setState] = useNodeState(selectedNodes[0].id)
+
         // grab node type
         const { nodeTypes } = useNodeBuilder()
         const nodeType = useMemo(() => {
@@ -63,13 +65,24 @@ function ToolbarContent({ selectedNodes, selectedEdges }) {
                 <Group spacing="xs">
                     <nodeType.icon />
                     <Text>{nodeType.name}</Text>
-                    <Tooltip label="Need help?">
-                        <ActionIcon size="lg" radius="md"><TbQuestionMark fontSize={18} /></ActionIcon>
+                    <Tooltip label="View Guides">
+                        <ActionIcon size="lg" radius="md"><TbBooks fontSize={22} /></ActionIcon>
                     </Tooltip>
                 </Group>
                 <Divider orientation="vertical" />
                 <Group spacing={5}>
-                    <DeleteButton nodes={selectedNodes} edges={selectedEdges} label="Node" />
+                    {nodeType.expanded &&
+                        (state.expanded ?
+                            <Tooltip label="Hide Configuration">
+                                <ActionIcon onClick={() => setState({ expanded: false })}><TbAdjustmentsOff fontSize={22} /></ActionIcon>
+                            </Tooltip>
+                            :
+                            <Tooltip label="Configure Node">
+                                <ActionIcon onClick={() => setState({ expanded: true })}><TbAdjustments fontSize={22} /></ActionIcon>
+                            </Tooltip>)}
+
+                    {selectedNodes[0].deletable !== false &&
+                        <DeleteButton nodes={selectedNodes} edges={selectedEdges} label="Node" />}
                 </Group>
             </>
         )
@@ -95,6 +108,7 @@ function ToolbarContent({ selectedNodes, selectedEdges }) {
     )
 }
 
+
 function DeleteButton({ nodes, edges, label }) {
 
     const reactFlow = useReactFlow()
@@ -106,7 +120,7 @@ function DeleteButton({ nodes, edges, label }) {
 
     return (
         <Tooltip label={label ? `Remove ${label}` : "Remove"}>
-            <ActionIcon color="red" size="lg" radius="md" onClick={handleClick}><TbTrash fontSize={18} /></ActionIcon>
+            <ActionIcon color="red" size="lg" radius="md" onClick={handleClick}><TbTrash fontSize={22} /></ActionIcon>
         </Tooltip>
     )
 }

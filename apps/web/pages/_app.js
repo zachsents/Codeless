@@ -19,6 +19,9 @@ const theme = {
     headings: {
         fontFamily: "DM Sans",
     },
+    fontSizes: {
+        xs: 12,
+    },
     defaultRadius: "lg",
     shadows: {
         xs: "",

@@ -7,7 +7,7 @@ export default {
     icon: Dice3,
     valueSources: [" "],
 
-    lg: () => <Stack spacing="xs">
+    expanded: () => <Stack spacing="xs">
         <NumberInput placeholder="1" label="Min" size="xs" radius="md" w={80} />
         <NumberInput placeholder="6" label="Max" size="xs" radius="md" w={80} />
     </Stack>
