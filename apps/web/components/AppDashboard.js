@@ -48,7 +48,7 @@ export default function AppDashboard({ children }) {
                     <Navbar.Section>{/* Footer with user */}</Navbar.Section>
                 </Navbar>}
         >
-            <Container size="lg" pt={50}>
+            <Container size="lg" py={50}>
                 {children}
             </Container>
         </AppShell>

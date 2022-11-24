@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { ActionIcon, Box, Grid, Group, Navbar, NavLink, ScrollArea, SimpleGrid, Space, Stack, Text, TextInput, Title } from '@mantine/core'
+import { forwardRef, useEffect, useRef, useState } from 'react'
+import { ActionIcon, Box, Grid, Group, Navbar, NavLink, Portal, ScrollArea, SimpleGrid, Skeleton, Space, Stack, Text, TextInput, Title } from '@mantine/core'
 import { useDisclosure } from "@mantine/hooks"
 import { TbArrowLeft, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from 'react-icons/tb'
 import { useReactFlow } from "reactflow"
@@ -8,6 +8,8 @@ import LinkIcon from '../LinkIcon'
 import NodeInfoPopover from './NodeInfoPopover'
 import { NodeCategories } from "../../modules/nodes"
 import { createNode } from 'node-builder'
+
+import { motion } from 'framer-motion'
 
 
 export default function Sidebar() {
@@ -52,7 +54,19 @@ export default function Sidebar() {
                     <Navbar.Section
                         grow
                         component={ScrollArea}
-                        sx={{ overflow: "visible" }}
+                        mr={-12}
+                        pr={12}
+                        // pl={6}
+                        scrollbarSize={6}
+                        scrollHideDelay={300}
+                        type="scroll"
+                        styles={{
+                            scrollbar: {
+                                '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
+                                    visibility: "hidden",
+                                },
+                            }
+                        }}
                     >
                         <>
                             <Space h={10} />
@@ -73,11 +87,14 @@ export default function Sidebar() {
                                     <Stack spacing="xs">
                                         {Object.values(selectedCategory.nodes).map(node =>
                                             <NodeInfoPopover node={node} key={node.id}>
-                                                <Box>
-                                                    <NodeTile node={node} />
-                                                </Box>
+                                                <NodeTile node={node} />
                                             </NodeInfoPopover>
                                         )}
+                                        <Skeleton height={100} />
+                                        <Skeleton height={100} />
+                                        <Skeleton height={100} />
+                                        <Skeleton height={100} />
+                                        <Skeleton height={100} />
                                     </Stack>
                                 </>
                                 :
@@ -136,41 +153,95 @@ const navbarStyle = theme => ({
 })
 
 
-function NodeTile({ node, ...props }) {
+const NodeTile = forwardRef(({ node, ...props }, ref) => {
 
     // adding nodes to graph
-    const reactFlow = useReactFlow()
-    const handleAddNode = () => {
-        const center = reactFlow.project({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
-        reactFlow.addNodes(createNode(node.id, center))
+    const rf = useReactFlow()
+    const handleAddNode = location => {
+
+        // add node at location
+        if (location) {
+            const canvasLocation = {
+                x: location.x - 240,
+                y: location.y - 60,
+            }
+
+            // make sure it's inbounds
+            if(canvasLocation.x < 0 || canvasLocation.y < 0)
+                return 
+            
+            const proj = rf.project(canvasLocation)
+            proj.x -= 15
+            proj.y -= 15
+            rf.addNodes(createNode(node.id, proj))
+            return
+        }
+
+        // add node at center
+        const proj = rf.project({
+            x: (window.innerWidth - 240) / 2,
+            y: (window.innerHeight - 60) / 2,
+        })
+        proj.x -= 56 / 2
+        proj.y -= 56 / 2
+        rf.addNodes(createNode(node.id, proj))
     }
 
-    return (
-        <NavLink
-            label={node.name}
-            variant="filled"
-            onClick={handleAddNode}
-            icon={<node.icon size={16} />}
-            {...props}
+    // attach ref to object so we can get height
+    const [boxHeight, setBoxHeight] = useState()
+    const buttonRef = useRef()
+    useEffect(() => {
+        buttonRef.current?.offsetHeight && setBoxHeight(buttonRef.current?.offsetHeight)
+    }, [buttonRef.current?.offsetHeight])
 
-            styles={theme => ({
-                root: {
-                    // flexDirection: "column",
-                    // justifyContent: "center",
-                    // alignItems: "center",
-                    backgroundColor: theme.colors.gray[0],
-                    "&:hover": {
-                        backgroundColor: theme.colors.gray[1],
-                    },
-                    borderRadius: theme.radius.md
-                },
-                label: {
-                    fontWeight: 500,
-                },
-            })}
-        />
+    // state for when drag is finished
+    const [finishingDrag, setFinishingDrag] = useState(false)
+    useEffect(() => {
+        finishingDrag && setFinishingDrag(false)
+    }, [finishingDrag])
+
+    return (
+        <Box sx={{ height: boxHeight }} ref={ref}>
+            {!finishingDrag && <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.1 }}
+                drag
+                whileDrag={{ position: "fixed", zIndex: 200 }}
+                dragSnapToOrigin
+                onDragEnd={(event, info) => {
+                    setFinishingDrag(true)
+                    handleAddNode(info.point)
+                }}
+                onTap={() => handleAddNode()}
+            >
+                <NavLink
+                    label={node.name}
+                    variant="filled"
+                    // onClick={handleAddNode}
+                    icon={<node.icon size={16} />}
+                    ref={buttonRef}
+
+                    styles={theme => ({
+                        root: {
+                            // flexDirection: "column",
+                            // justifyContent: "center",
+                            // alignItems: "center",
+                            backgroundColor: theme.colors.gray[0],
+                            "&:hover": {
+                                backgroundColor: theme.colors.gray[1],
+                            },
+                            borderRadius: theme.radius.md
+                        },
+                        label: {
+                            fontWeight: 500,
+                        },
+                    })}
+                />
+            </motion.div>}
+        </Box>
     )
-}
+})
 
 
 function CategoryTile({ children, icon: Icon, ...props }) {

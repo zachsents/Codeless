@@ -27,6 +27,7 @@ export default function NodeInfoPopover({ node, children }) {
                 dropdown: { border: "none" },
                 arrow: { border: "none" },
             }}
+            withinPortal
         >
             <HoverCard.Target>
                 {children}

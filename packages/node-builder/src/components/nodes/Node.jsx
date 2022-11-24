@@ -66,7 +66,6 @@ export default function Node({ id, type, selected }) {
             style={{ transition: "all 0.3s" }}
             sx={selected && { transform: "scale(1.1)" }}
             ref={ref}
-            onClick={() => console.log(connections)}
         >
             <HandleStack position={Position.Left}>
                 {nodeType.valueTargets?.map(name =>
@@ -89,28 +88,29 @@ export default function Node({ id, type, selected }) {
 
             {/* This looks cool, but needs some work. Saving it for the animation overhaul. */}
             {/* <motion.div variants={variants} animate={size == Size.Large ? "expanded" : "notExpanded"}> */}
-            <Card
-                radius="lg"
-                p="md"
-                shadow={selected ? "lg" : "sm"}
-                sx={cardStyle(id)}
-            >
-                <Flex>
-                    {state.expanded ?
-                        <>
-                            <nodeType.expanded {...displayProps} />
-                            <ThemeIcon color="yellow.5" radius="md" size="lg" sx={topIconStyle}>
-                                <nodeType.icon size={18} color="black" />
-                            </ThemeIcon>
-                        </>
-                        :
-                        nodeType.default ?
-                            <nodeType.default {...displayProps} />
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.1 }}>
+                <Card
+                    radius="lg"
+                    p="md"
+                    shadow={selected ? "lg" : "sm"}
+                    sx={cardStyle(id)}
+                >
+                    <Flex>
+                        {state.expanded ?
+                            <>
+                                <nodeType.expanded {...displayProps} />
+                                <ThemeIcon color="yellow.5" radius="md" size="lg" sx={topIconStyle}>
+                                    <nodeType.icon size={18} color="black" />
+                                </ThemeIcon>
+                            </>
                             :
-                            <nodeType.icon />}
-                </Flex>
-            </Card>
-            {/* </motion.div> */}
+                            nodeType.default ?
+                                <nodeType.default {...displayProps} />
+                                :
+                                <nodeType.icon />}
+                    </Flex>
+                </Card>
+            </motion.div>
 
             {canBeExpanded && <ExpandButton
                 show={hovered}

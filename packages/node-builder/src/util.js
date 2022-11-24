@@ -95,6 +95,7 @@ export function removeEdges(edgeIds, reactFlow) {
 }
 
 export function createNode(nodeType, position) {
+    // added this offset because that's how far off RF's project function was -- not sure why
     return {
         id: `${nodeType}_${shortUUID.generate()}`,
         type: nodeType,
