@@ -1,10 +1,8 @@
-import { Group, Header as MantineHeader, Text, TextInput } from "@mantine/core"
+import { Group, Header as MantineHeader, Text } from "@mantine/core"
+import { useReactFlow } from "reactflow"
 import LinkIcon from '../LinkIcon'
-import { TbArrowLeft, TbCloud, TbCloudUpload, TbFileAnalytics, TbIceCream, TbMoon2, TbPencil, TbSettings } from 'react-icons/tb'
+import { TbArrowLeft, TbCloud, TbCloudUpload, TbFileAnalytics, TbIceCream, TbMaximize, TbMoon2, TbPencil, TbSettings } from 'react-icons/tb'
 import { useRouter } from 'next/router'
-import { useState } from "react"
-import { doc, updateDoc } from "firebase/firestore"
-import { firestore } from "../../modules/firebase"
 import RenameModal from "../RenameModal"
 import { SettingsTabs } from "./SettingsDrawer"
 import { useFlowContext } from "../../modules/context"
@@ -15,6 +13,8 @@ export default function Header({ openSettings }) {
 
     const { query: { appId, flowId } } = useRouter()
     const flow = useFlowContext()
+
+    const rf = useReactFlow()
 
     // renaming & deleting
     const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flowId)
@@ -37,8 +37,9 @@ export default function Header({ openSettings }) {
                                 label="Random Control"
                                 variant="light"><TbMoon2 fontSize={24} /></LinkIcon>
                             <LinkIcon
-                                label="Random Control"
-                                variant="light"><TbIceCream fontSize={24} /></LinkIcon>
+                                onClick={() => rf.fitView()}
+                                label="Fit View to Nodes"
+                                variant="light"><TbMaximize fontSize={24} /></LinkIcon>
                         </Group>
                     </Group>
                     <Group spacing="xs">
