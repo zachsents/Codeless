@@ -12,9 +12,9 @@ export default {
 
         useEffect(() => {
             setState({
-                min: 0,
-                max: 6,
-                integer: true,
+                min: state.min ?? 1,
+                max: state.max ?? 7,
+                integer: state.integer ?? true,
             })
         }, [])
 
