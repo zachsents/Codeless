@@ -1,4 +1,5 @@
-import { NumberInput, Stack } from "@mantine/core"
+import { NumberInput, Stack, Switch } from "@mantine/core"
+import { useEffect } from "react"
 import { Dice3 } from "tabler-icons-react"
 
 export default {
@@ -7,8 +8,29 @@ export default {
     icon: Dice3,
     valueSources: [" "],
 
-    expanded: () => <Stack spacing="xs">
-        <NumberInput placeholder="1" label="Min" size="xs" radius="md" w={80} />
-        <NumberInput placeholder="6" label="Max" size="xs" radius="md" w={80} />
-    </Stack>
+    expanded: ({ state, setState }) => {
+
+        useEffect(() => {
+            setState({
+                min: 0,
+                max: 6,
+                integer: true,
+            })
+        }, [])
+
+        return (
+            <Stack spacing="xs" align="center" w={130}>
+                <NumberInput value={state.min ?? 0} onChange={val => setState({ min: val })} {...inputProps} />
+                <NumberInput value={state.max ?? 0} onChange={val => setState({ max: val })} {...inputProps} />
+                <Switch checked={state.integer ?? false} onChange={event => setState({ integer: event.currentTarget.checked })} size="xs" label="Integers only" />
+            </Stack>
+        )
+    }
+}
+
+const inputProps = {
+    placeholder: "1",
+    label: "Min",
+    size: "xs",
+    radius: "md",
 }

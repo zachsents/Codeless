@@ -5,7 +5,10 @@ export default {
     sources: {
         values: {
             " ": {
-                get: () => Math.random()
+                get() {
+                    const rand = Math.random() * (this.state.max - this.state.min) + this.state.min
+                    return this.state.integer ? Math.floor(rand) : rand
+                }
             }
         }
     }

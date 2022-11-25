@@ -1,5 +1,21 @@
 import { prepNode, setupNode, Observable, prepEdge } from "./util.js"
 
+// add a method to Array prototype -- treats single element arrays as
+// that object. only used selectively by certain nodes
+Array.prototype.untype = function () {
+    return this.length == 1 ? this[0] : this
+}
+
+// deep flattening
+Array.prototype.deepFlat = function () {
+    let flattened = this
+    while (flattened[0]?.map) {
+        flattened = flattened.flat()
+    }
+    return flattened
+}
+
+
 export function runFlow({
     nodes,
     edges,

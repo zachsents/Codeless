@@ -2,6 +2,7 @@ import MathNodes from "math-nodes"
 import PrimitiveNodes from "primitive-nodes"
 import UtilityNodes from "utility-nodes"
 import MailNodes from "mail-nodes"
+import ListNodes from "list-nodes"
 
 import TriggerNodes from "triggers"
 import { runFlow } from "graph-execution-engine-2"
@@ -17,6 +18,7 @@ const nodeTypes = {
     ...PrimitiveNodes,
     ...UtilityNodes,
     ...MailNodes,
+    ...ListNodes,
 }
 
 

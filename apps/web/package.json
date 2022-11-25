@@ -28,7 +28,8 @@
     "tabler-icons-react": "^1.55.0",
     "timeago.js": "^4.0.2",
     "triggers": "*",
-    "utility-nodes": "*"
+    "utility-nodes": "*",
+    "list-nodes": "*"
   },
   "devDependencies": {
     "eslint": "8.25.0",

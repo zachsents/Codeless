@@ -11,7 +11,7 @@ export default {
         values: {
             sum: {
                 get() {
-                    return this.in.reduce((accum, cur) => accum + cur, 0)
+                    return this.in?.deepFlat().reduce((accum, cur) => accum + cur, 0)
                 }
             }
         }
