@@ -10,16 +10,15 @@
   },
   "dependencies": {
     "@mantine/core": "^5.6.3",
+    "@mantine/dates": "^5.8.3",
     "@mantine/form": "^5.6.3",
     "@mantine/hooks": "^5.6.3",
     "firebase": "^9.13.0",
     "framer-motion": "^7.6.7",
-    "mail-nodes": "*",
-    "math-nodes": "*",
+    "@zachsents/display-nodes": "*",
     "next": "12.3.1",
     "next-transpile-modules": "^10.0.0",
     "node-builder": "*",
-    "primitive-nodes": "*",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.6.0",
@@ -27,9 +26,7 @@
     "reactflow": "^11.2.0",
     "tabler-icons-react": "^1.55.0",
     "timeago.js": "^4.0.2",
-    "triggers": "*",
-    "utility-nodes": "*",
-    "list-nodes": "*"
+    "triggers": "*"
   },
   "devDependencies": {
     "eslint": "8.25.0",

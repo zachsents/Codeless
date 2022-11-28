@@ -1,100 +1,205 @@
 import functions from "firebase-functions"
 import admin from "firebase-admin"
+import { getFunctions } from "firebase-admin/functions"
+import { FieldValue } from "firebase-admin/firestore"
 import { executeFlow } from "./execution.js"
 import { Trigger } from "triggers"
+import { customAlphabet } from "nanoid"
+import nanoidDict from "nanoid-dictionary"
 
 
 admin.initializeApp()
 const db = admin.firestore()
 
-/**
- *  HTTP Trigger Flows
- */
-export const trigger = functions.https.onRequest(async (request, response) => {
+
+export const runWithUrl = functions.https.onRequest(async (request, response) => {
 
     const [, appId, flowId] = request.path.split("/")
 
-    // make sure appId and flowId were included
-    if (!appId || !flowId) {
-        response.status(400).send({ error: "Must include an app ID and flow ID." })
+    // Validate
+    const validation = await validateCall(appId, flowId, {
+        matchTrigger: Trigger.HTTP,
+    })
+
+    // Catch validation errors and return early
+    if (validation.error) {
+        response.status(validation.status).send(validation)
         return
     }
 
-    // TO DO: sanitize appId and flowId
-    const flowDoc = await db.doc(`apps/${appId}/flows/${flowId}`).get()
-
-    // make sure document exists
-    if (!flowDoc.exists) {
-        response.status(404).send({ error: "That flow doesn't exist.", appId, flowId })
-        return
-    }
-
-    const flowData = flowDoc.data()
-
-    // make sure flow is deloyed
-    if (!flowData.deployed) {
-        response.status(503).send({ error: "This flow isn't deployed.", appId, flowId })
-        return
-    }
-
-    // make sure flow is correct trigger type
-    if (flowData.trigger != Trigger.HTTP) {
-        response.status(503).send({ error: "This flow cannot be triggered via HTTP.", appId, flowId })
-        return
-    }
-
-    // run flow
+    // Run flow
     try {
-        executeFlow(flowData.graph)
+        executeFlow(validation.data.graph, request)
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
         response.status(500).send({ error: "Encountered an error running this flow.", appId, flowId })
         return
     }
+
+    // Log run
+    await validation.docRef.update({
+        runs: FieldValue.arrayUnion({
+            id: generateId(),
+            executedAt: new Date(),
+            method: ExecutionMethod.URL,
+        }),
+    })
 
     response.send({ message: "OK!" })
 })
 
 
-export const callable = functions.https.onCall(async (data, context) => {
+export const runManually = functions.https.onCall(async ({ appId, flowId, ...data }, context) => {
 
-    const { appId, flowId } = data
+    // Validate
+    const validation = await validateCall(appId, flowId, {
+        uid: context.auth.uid,
+    })
 
-    // make sure appId and flowId were included
-    if (!appId || !flowId)
-        return { error: "Must include an app ID and flow ID." }
+    // Catch validation errors and return early
+    if (validation.error)
+        return validation
 
-    // TO DO: sanitize appId and flowId
-    const appDoc = await db.doc(`apps/${appId}`).get()
-    
-    // authenticate user
-    if(context.auth.uid != appDoc.data().owner)
-        return { error: "You are not authorized to run this flow." }
-    
-    const flowDoc = await db.doc(`apps/${appId}/flows/${flowId}`).get()
-    
-    // make sure document exists
-    if (!flowDoc.exists)
-        return { error: "That flow doesn't exist.", appId, flowId }
-
-    const flowData = flowDoc.data()
-
-    // make sure flow is deloyed
-    if (!flowData.deployed)
-        return { error: "This flow isn't deployed.", appId, flowId }
-
-    // make sure flow is correct trigger type
-    if (flowData.trigger != Trigger.Manual)
-        return { error: "This flow cannot be triggered via HTTP.", appId, flowId }
-
-    // run flow
+    // Run flow
     try {
-        executeFlow(flowData.graph)
+        executeFlow(validation.data.graph, data.payload)
     }
     catch (err) {
+        console.error(err)
         return { error: "Encountered an error running this flow.", appId, flowId }
     }
 
+    // Log run
+    await validation.docRef.update({
+        runs: FieldValue.arrayUnion({
+            id: generateId(),
+            executedAt: new Date(),
+            method: ExecutionMethod.Manual,
+        }),
+    })
+
     return { message: "OK!" }
 })
+
+
+export const runLater = functions.https.onCall(async ({ appId, flowId, time }, context) => {
+
+    // Make sure time is attached
+    if (time == null)
+        return { error: "Must include a schedule time." }
+
+    // Validate
+    const validation = await validateCall(appId, flowId, {
+        uid: context.auth.uid,
+    })
+
+    // Catch validation errors and return early
+    if (validation.error)
+        return validation
+
+    // Queue function
+    const runId = generateId()
+    await getFunctions().taskQueue("runFromSchedule").enqueue({
+        appId,
+        flowId,
+        runId,
+        /* TO DO: include payload */
+    }, {
+        scheduleTime: new Date(time),
+    })
+
+    // Add run to list of scheduled runs in database
+    await db.doc(`apps/${appId}/flows/${flowId}`).update({
+        scheduledRuns: FieldValue.arrayUnion({
+            id: runId,
+            scheduledFor: new Date(time),
+            scheduledAt: new Date(),
+        })
+    })
+
+    return {
+        message: `Success! Scheduled for ${new Date(time).toLocaleString()}`
+    }
+})
+
+
+export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ appId, flowId, runId, ...data }) => {
+
+    // Validate
+    const validation = await validateCall(appId, flowId)
+
+    // Catch validation errors and return early
+    if (validation.error)
+        return validation
+
+    // Run flow
+    try {
+        executeFlow(validation.data.graph, data.payload)
+    }
+    catch (err) {
+        console.error(err)
+        return { error: "Encountered an error running this flow.", appId, flowId }
+    }
+
+    // Log run
+    const runItem = validation.data.scheduledRuns.find(run => run.id == runId)
+
+    await validation.docRef.update({
+        scheduledRuns: validation.data.scheduledRuns.filter(run => run != runItem),
+        runs: FieldValue.arrayUnion({ 
+            ...runItem, 
+            executedAt: new Date(), 
+            method: ExecutionMethod.Scheduled,
+        }),
+    })
+
+    return { message: "OK!" }
+})
+
+
+async function validateCall(appId, flowId, { uid, matchTrigger } = {}) {
+
+    // Make sure appId and flowId were included
+    if (!appId || !flowId)
+        return { error: "Must include an app ID and flow ID.", status: 400 }
+
+    // TO DO: sanitize appId and flowId
+
+    // Optional: Authenticate user
+    if (uid) {
+        const appDoc = await db.doc(`apps/${appId}`).get()
+
+        if (uid != appDoc.data().owner)
+            return { error: "You are not authorized to run this flow." }
+    }
+
+    const flowDocRef = db.doc(`apps/${appId}/flows/${flowId}`)
+    const flowDoc = await flowDocRef.get()
+
+    // Make sure document exists
+    if (!flowDoc.exists)
+        return { error: "That flow doesn't exist.", appId, flowId, status: 403 }
+
+    const flowData = flowDoc.data()
+
+    // Make sure flow is deloyed
+    if (!flowData.deployed)
+        return { error: "This flow isn't deployed.", appId, flowId, status: 503 }
+
+    // Optional: Make sure flow is correct trigger type
+    if (matchTrigger && flowData.trigger != matchTrigger)
+        return { error: "This flow cannot be triggered via HTTP.", appId, flowId, status: 503 }
+
+    // All good!
+    return { data: flowData, docRef: flowDocRef }
+}
+
+
+const ExecutionMethod = {
+    Manual: "manual",
+    Scheduled: "scheduled",
+    URL: "url",
+}
+
+const generateId = customAlphabet(nanoidDict.alphanumeric, 20)

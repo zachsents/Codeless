@@ -1,0 +1,20 @@
+{
+    "name": "@zachsents/display-nodes",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "dependencies": {
+        "@mantine/core": "^5.6.3",
+        "@mantine/dates": "^5.8.3",
+        "@mantine/form": "^5.6.3",
+        "@mantine/hooks": "^5.6.3",
+        "tabler-icons-react": "^1.55.0",
+        "react": "18.2.0"
+    }
+}

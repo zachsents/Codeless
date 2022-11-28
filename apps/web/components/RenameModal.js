@@ -41,6 +41,7 @@ export default function RenameModal({ name, opened, setOpened, onRename }) {
             opened={opened}
             onClose={handleCancel}
             title={`Rename "${name}"`}
+            zIndex={1100}
         >
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <TextInput

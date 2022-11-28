@@ -17,6 +17,7 @@ export default function DeleteModal({ name, opened, setOpened, onDelete }) {
             opened={opened}
             onClose={() => setOpened(false)}
             title={`Delete "${name}"`}
+            zIndex={1100}
         >
             <Text size="sm" mb={20} align="center">Are you sure?</Text>
             {deleteLoading ?

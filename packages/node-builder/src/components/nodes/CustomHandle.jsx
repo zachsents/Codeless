@@ -1,7 +1,6 @@
 import { Box, useMantineTheme } from "@mantine/core"
 import { Handle } from "reactflow"
 import { DataType } from "../../modules/dataTypes"
-import { useNodeBuilder } from "../NodeBuilder"
 
 
 export default function CustomHandle({ name, dataType, handleType, position }) {
@@ -28,7 +27,8 @@ const handleStyle = theme => ({
     width: handleSize,
     height: handleSize,
     border: "none",
-    outline: "3px solid " + theme.other.editorBackgroundColor
+    // outline: "3px solid " + (theme.other.editorBackgroundColor ?? theme.colors.gray[2])
+    outline: "3px solid " + theme.other.editorBackgroundColor,
 })
 
 const signalStyle = theme => ({

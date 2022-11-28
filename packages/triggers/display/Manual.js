@@ -1,9 +1,9 @@
-import { HandClick } from "tabler-icons-react"
+import { Alarm } from "tabler-icons-react"
 
 
 export default {
-    name: "Manual",
-    description: "Triggered manually.",
-    icon: HandClick,
+    name: "Scheduled",
+    description: "Can be triggered manually or scheduled to run at a later date.",
+    icon: Alarm,
     signalSources: [" "],
 }

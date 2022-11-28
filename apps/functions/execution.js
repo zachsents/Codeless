@@ -1,25 +1,11 @@
-import MathNodes from "math-nodes"
-import PrimitiveNodes from "primitive-nodes"
-import UtilityNodes from "utility-nodes"
-import MailNodes from "mail-nodes"
-import ListNodes from "list-nodes"
-
-import TriggerNodes from "triggers"
 import { runFlow } from "graph-execution-engine-2"
-
+import TriggerNodes from "triggers"
 
 /*
     In the future, we can put the dependencies in the graph, then dynamically load
     the modules we need.
 */
-const nodeTypes = {
-    ...TriggerNodes,
-    ...MathNodes,
-    ...PrimitiveNodes,
-    ...UtilityNodes,
-    ...MailNodes,
-    ...ListNodes,
-}
+import Nodes from "@zachsents/nodes"
 
 
 export function executeFlow(graph, payload = {}) {
@@ -30,5 +16,13 @@ export function executeFlow(graph, payload = {}) {
         throw new Error("Failed to parse graph.")
     }
 
-    runFlow({ nodes, edges, nodeTypes, setupPayload: payload })
+    runFlow({ 
+        nodes, 
+        edges, 
+        nodeTypes: {
+            ...Nodes,
+            ...TriggerNodes,
+        },
+        setupPayload: payload 
+    })
 }

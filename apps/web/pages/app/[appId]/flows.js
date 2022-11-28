@@ -68,7 +68,7 @@ export default function AppFlows() {
                 </Group>
             </GradientBox>
 
-            <SimpleGrid cols={1} verticalSpacing={25}>
+            <SimpleGrid cols={2} spacing={35} verticalSpacing={25}>
                 {flows ?
                     flows?.map(flow => <FlowCard flow={flow} key={flow.id} />)
                     :

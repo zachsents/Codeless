@@ -1,5 +1,5 @@
 import { ActionIcon, Code, CopyButton, Group, Stack, Text } from "@mantine/core"
-import { World, Copy, Check } from "tabler-icons-react"
+import { World, Copy, Check, ExternalLink } from "tabler-icons-react"
 
 
 export default {
@@ -13,7 +13,7 @@ export default {
 
 function DeployInfo({ appId, flowId }) {
 
-    const deploymentUrl = `http://localhost:5001/nameless-948a8/us-central1/trigger/${appId}/${flowId}`
+    const deploymentUrl = `http://localhost:5001/nameless-948a8/us-central1/runWithUrl/${appId}/${flowId}`
 
     return (
         <Stack>
@@ -28,6 +28,11 @@ function DeployInfo({ appId, flowId }) {
                 </CopyButton>
             </Group>
             <Code p="xl" sx={{ wordWrap: "break-word" }}>{deploymentUrl}</Code>
+            <Group position="right">
+                <ActionIcon radius="md" component="a" href={deploymentUrl} target="_blank" >
+                    <ExternalLink size={18} />
+                </ActionIcon>
+            </Group>
         </Stack>
     )
 }

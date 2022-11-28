@@ -1,18 +1,18 @@
 import { useMemo, useState } from "react"
 import { Card, Flex, Stack, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
-import { useDisclosure, useHover } from "@mantine/hooks"
-import { getConnectedEdges, Position, useReactFlow } from "reactflow"
+import { useHover, useInterval } from "@mantine/hooks"
+import { getConnectedEdges, Position, useReactFlow, useUpdateNodeInternals } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
 import { Handle, useNodeState } from "../../util"
-import { TbAdjustmentsAlt, TbChecks, TbMinimize, TbMinus, TbPlus } from "react-icons/tb"
-import { AnimatePresence, motion, AnimateSharedLayout } from "framer-motion"
+import { TbMinus, TbPlus } from "react-icons/tb"
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect } from "react"
 
 
 export default function Node({ id, type, selected }) {
 
-    const theme = useMantineTheme()
     const rf = useReactFlow()
 
     // get node type
@@ -61,10 +61,20 @@ export default function Node({ id, type, selected }) {
     //     }
     // }
 
+    // smoothly updating edge positions
+    const updateNodeInterals = useUpdateNodeInternals()
+    const nodeUpdateInterval = useInterval(() => {
+        updateNodeInterals(id)
+    }, 20)
+    useEffect(() => {
+        nodeUpdateInterval.start()
+    }, [selected])
+
     return (
-        <Box
-            style={{ transition: "all 0.3s" }}
-            sx={selected && { transform: "scale(1.1)" }}
+        <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: selected ? 1.1 : 1, }}
+            onAnimationComplete={nodeUpdateInterval.stop}
             ref={ref}
         >
             <HandleStack position={Position.Left}>
@@ -88,29 +98,34 @@ export default function Node({ id, type, selected }) {
 
             {/* This looks cool, but needs some work. Saving it for the animation overhaul. */}
             {/* <motion.div variants={variants} animate={size == Size.Large ? "expanded" : "notExpanded"}> */}
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.1 }}>
-                <Card
-                    radius="lg"
-                    p="md"
-                    shadow={selected ? "lg" : "sm"}
-                    sx={cardStyle(id)}
-                >
-                    <Flex>
-                        {state.expanded ?
+            {/* <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.1 }}> */}
+            <Card
+                radius="lg"
+                p="md"
+                shadow={selected ? "lg" : "sm"}
+                sx={cardStyle(id)}
+            >
+                <Flex>
+                    {state.expanded ?
+                        <>
+                            <nodeType.expanded {...displayProps} />
+                            <ThemeIcon color="yellow.5" radius="md" size="lg" sx={topIconStyle()}>
+                                <nodeType.icon size={18} color="black" />
+                            </ThemeIcon>
+                        </>
+                        :
+                        nodeType.default ?
                             <>
-                                <nodeType.expanded {...displayProps} />
-                                <ThemeIcon color="yellow.5" radius="md" size="lg" sx={topIconStyle}>
-                                    <nodeType.icon size={18} color="black" />
+                                <nodeType.default {...displayProps} />
+                                <ThemeIcon color="yellow.5" radius="md" size="sm" sx={topIconStyle(10)}>
+                                    <nodeType.icon size={12} color="black" />
                                 </ThemeIcon>
                             </>
                             :
-                            nodeType.default ?
-                                <nodeType.default {...displayProps} />
-                                :
-                                <nodeType.icon />}
-                    </Flex>
-                </Card>
-            </motion.div>
+                            <nodeType.icon />}
+                </Flex>
+            </Card>
+            {/* </motion.div> */}
 
             {canBeExpanded && <ExpandButton
                 show={hovered}
@@ -118,8 +133,7 @@ export default function Node({ id, type, selected }) {
                 onExpand={() => setState({ expanded: true })}
                 onCollapse={() => setState({ expanded: false })}
             />}
-        </Box>
-
+        </motion.div>
     )
 }
 
@@ -187,9 +201,9 @@ const stackStyle = position => ({
     }),
 })
 
-const topIconStyle = theme => ({
+const topIconStyle = (offset = 16) => theme => ({
     position: "absolute",
-    top: -16,
+    top: -offset,
     left: "50%",
     transform: "translateX(-50%)",
     width: 40,

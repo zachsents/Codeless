@@ -9,6 +9,7 @@
     "dependencies": {
         "@emotion/react": "^11.10.0",
         "@mantine/core": "^5.2.3",
+        "@mantine/dates": "^5.8.3",
         "@mantine/hooks": "^5.2.3",
         "graph-execution-engine-2": "*",
         "immer": "^9.0.16",

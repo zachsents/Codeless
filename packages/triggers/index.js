@@ -6,8 +6,8 @@ export const Trigger = {
 
 export const TriggerCategories = {
     Manual: {
-        name: "Manual",
-        icon: "HandClick",
+        name: "Scheduled",
+        icon: "Clock",
         triggers: [ Trigger.Manual ],
     },
     HTTP: {

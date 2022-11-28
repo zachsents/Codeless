@@ -80,7 +80,7 @@ export default function Sidebar() {
                                         </Grid.Col>
                                         <Grid.Col span={6}>
                                             <Text align="center" color="dimmed" size="xs">
-                                                {selectedCategory.label}
+                                                {selectedCategory.title}
                                             </Text>
                                         </Grid.Col>
                                     </Grid>
@@ -106,9 +106,9 @@ export default function Sidebar() {
                                                 icon={cat.icon}
                                                 // active={cat == selectedCategory}
                                                 onClick={() => setSelectedCategory(cat)}
-                                                key={cat.label + i}
+                                                key={cat.title + i}
                                             >
-                                                {cat.label}
+                                                {cat.title}
                                             </CategoryTile>
                                         )}
                                     </SimpleGrid>
@@ -133,7 +133,7 @@ export default function Sidebar() {
                         </LinkIcon>
                         <Space h={10} />
                         {NodeCategories.map((cat, i) =>
-                            <LinkIcon label={cat.label} position="right" size="xl" radius="lg" key={cat.label + i} onClick={() => {
+                            <LinkIcon label={cat.title} position="right" size="xl" radius="lg" key={cat.title + i} onClick={() => {
                                 sidebarHandlers.open()
                                 setSelectedCategory(cat)
                             }}>

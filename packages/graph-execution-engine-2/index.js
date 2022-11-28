@@ -23,6 +23,11 @@ export function runFlow({
     setupPayload = {},
 }) {
 
+    // ensure that all node types exist
+    const badType = nodes.find(node => !nodeTypes[node.type])?.type
+    if(badType)
+        throw new Error(`Couldn't find node type definition for "${badType}". Did you make sure to export it?`)
+
     // prep the graph for execution
     prepGraph(nodes, edges, nodeTypes)
 

@@ -72,7 +72,7 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
                     size={1}
                     color="transparent"
                     style={{
-                        backgroundColor: theme.other.editorBackgroundColor
+                        backgroundColor: theme.other.editorBackgroundColor ?? theme.colors.gray[2]
                     }}
                 />
                 <ChangeWatcher onChange={onChange} />
