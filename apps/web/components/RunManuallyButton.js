@@ -56,7 +56,7 @@ function JustButton({ flow }) {
             setLoading(true)
             console.debug(`Running "${flow.name}" (${flow.id}) manually...`)
 
-            httpsCallable(functions, "runManually")({ appId, flowId: flow.id })
+            httpsCallable(functions, "runNow")({ appId, flowId: flow.id })
                 .then(({ data: { message, error } }) => {
 
                     setLoading(false)

@@ -8,7 +8,7 @@ import TriggerNodes from "triggers"
 import Nodes from "@zachsents/nodes"
 
 
-export function executeFlow(graph, payload = {}) {
+export function executeFlow(graph, payload) {
     try {
         var { nodes, edges } = JSON.parse(graph)
     }

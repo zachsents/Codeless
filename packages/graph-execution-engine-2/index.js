@@ -20,7 +20,7 @@ export function runFlow({
     nodes,
     edges,
     nodeTypes,
-    setupPayload = {},
+    setupPayload,
 }) {
 
     // ensure that all node types exist

@@ -1,5 +1,5 @@
 {
-    "name": "@zachsents/nodes",
+    "name": "firebase-admin-callable-functions",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
@@ -8,8 +8,5 @@
     },
     "author": "",
     "license": "ISC",
-    "type": "module",
-    "dependencies": {
-        "firebase-admin-callable-functions": "*"
-    }
+    "type": "module"
 }

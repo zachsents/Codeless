@@ -17,6 +17,7 @@ import Memo from "./util/Memo"
 import ScheduleFlow from "./util/ScheduleFlow"
 import Repeat from "./util/Repeat"
 import TestMail from "./util/TestMail"
+import RunFlow from "./util/RunFlow"
 
 export const Nodes = {
     "primitive:Number": Number,
@@ -34,6 +35,7 @@ export const Nodes = {
     "utility:Unbind": Unbind,
     "utility:Memo": Memo,
     "utility:ScheduleFlow": ScheduleFlow,
+    "utility:RunFlow": RunFlow,
     "list:Repeat": Repeat,
     "mail:TestMail": TestMail,
 }
@@ -57,6 +59,7 @@ export const NodeCategories = {
             "utility:Unbind",
             "utility:Memo",
             "utility:ScheduleFlow",
+            "utility:RunFlow",
             "list:Repeat",
             "mail:TestMail",
         ],

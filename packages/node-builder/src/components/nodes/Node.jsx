@@ -16,7 +16,7 @@ export default function Node({ id, type, selected }) {
     const rf = useReactFlow()
 
     // get node type
-    const { nodeTypes, flowId, appId } = useNodeBuilder()
+    const { nodeTypes, flowId, appId, firestore } = useNodeBuilder()
     const nodeType = nodeTypes[type]
 
     // node's interal state
@@ -43,6 +43,7 @@ export default function Node({ id, type, selected }) {
         flowId,
         appId,
         connections,
+        firestore,
     }
 
     // hover for showing expand button

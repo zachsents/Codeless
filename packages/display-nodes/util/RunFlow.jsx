@@ -1,4 +1,4 @@
-import { CalendarTime } from "tabler-icons-react"
+import { Run } from "tabler-icons-react"
 import { NativeSelect, Stack } from "@mantine/core"
 import { collection, documentId, getDocs, query, where } from "firebase/firestore"
 import { useState, useEffect } from "react"
@@ -6,10 +6,9 @@ import { Trigger } from "triggers"
 
 
 export default {
-    name: "Schedule Flow",
-    description: "Schedules a flow",
-    icon: CalendarTime,
-    valueTargets: ["time"],
+    name: "Run Flow",
+    description: "Runs a flow",
+    icon: Run,
     signalTargets: ["signal"],
 
     expanded: ({ state, setState, appId, flowId, firestore }) => {
@@ -52,7 +51,7 @@ export default {
                     size="xs"
                     placeholder="Pick a flow"
                     data={otherFlows}
-                    value={state.flow}
+                    value={state.flow ?? null}
                     onChange={event => setState({ flow: event.currentTarget.value })}
                 />
             </Stack>

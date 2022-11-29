@@ -53,7 +53,7 @@ function Editor() {
             }
             navbar={<Sidebar />}
         >
-            {flow && <NodeBuilder nodeTypes={Nodes} initialGraph={flow.graph} onChange={setGraph} flowId={flow.id} appId={appId} />}
+            {flow && <NodeBuilder nodeTypes={Nodes} initialGraph={flow.graph} onChange={setGraph} flowId={flow.id} appId={appId} firestore={firestore} />}
             <SettingsDrawer opened={settingsOpened} onClose={settingsHandlers.close} suggestedTab={suggestedTab} />
         </AppShell>
     )

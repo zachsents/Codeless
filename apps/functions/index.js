@@ -9,6 +9,7 @@ import nanoidDict from "nanoid-dictionary"
 
 
 admin.initializeApp()
+global.admin = admin
 const db = admin.firestore()
 
 
@@ -50,12 +51,13 @@ export const runWithUrl = functions.https.onRequest(async (request, response) =>
 })
 
 
-export const runManually = functions.https.onCall(async ({ appId, flowId, ...data }, context) => {
+export const runNow = functions.https.onCall(async ({ appId, flowId, payload }, context) => {
 
     // Validate
-    const validation = await validateCall(appId, flowId, {
-        uid: context.auth.uid,
-    })
+    // const validation = await validateCall(appId, flowId, {
+    //     uid: context.auth?.uid,
+    // })
+    const validation = await validateCall(appId, flowId)
 
     // Catch validation errors and return early
     if (validation.error)
@@ -63,7 +65,7 @@ export const runManually = functions.https.onCall(async ({ appId, flowId, ...dat
 
     // Run flow
     try {
-        executeFlow(validation.data.graph, data.payload)
+        executeFlow(validation.data.graph, payload)
     }
     catch (err) {
         console.error(err)
@@ -83,16 +85,17 @@ export const runManually = functions.https.onCall(async ({ appId, flowId, ...dat
 })
 
 
-export const runLater = functions.https.onCall(async ({ appId, flowId, time }, context) => {
+export const runLater = functions.https.onCall(async ({ appId, flowId, time, payload }, context) => {
 
     // Make sure time is attached
     if (time == null)
         return { error: "Must include a schedule time." }
 
     // Validate
-    const validation = await validateCall(appId, flowId, {
-        uid: context.auth.uid,
-    })
+    // const validation = await validateCall(appId, flowId, {
+    //     uid: context.auth?.uid,
+    // })
+    const validation = await validateCall(appId, flowId)
 
     // Catch validation errors and return early
     if (validation.error)
@@ -104,7 +107,7 @@ export const runLater = functions.https.onCall(async ({ appId, flowId, time }, c
         appId,
         flowId,
         runId,
-        /* TO DO: include payload */
+        payload,
     }, {
         scheduleTime: new Date(time),
     })
@@ -124,7 +127,7 @@ export const runLater = functions.https.onCall(async ({ appId, flowId, time }, c
 })
 
 
-export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ appId, flowId, runId, ...data }) => {
+export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ appId, flowId, runId, payload }) => {
 
     // Validate
     const validation = await validateCall(appId, flowId)
@@ -135,7 +138,7 @@ export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ a
 
     // Run flow
     try {
-        executeFlow(validation.data.graph, data.payload)
+        executeFlow(validation.data.graph, payload)
     }
     catch (err) {
         console.error(err)

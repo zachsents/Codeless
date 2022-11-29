@@ -20,7 +20,8 @@
         "@zachsents/nodes": "*",
         "nanoid": "^4.0.0",
         "nanoid-dictionary": "^4.3.0",
-        "triggers": "*"
+        "triggers": "*",
+        "firebase-admin-callable-functions": "*"
     },
     "devDependencies": {
         "firebase-functions-test": "^0.2.0"
