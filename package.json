@@ -20,8 +20,5 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "packageManager": "npm@7.24.0",
-  "dependencies": {
-    "@mantine/nprogress": "^5.7.2"
-  }
+  "packageManager": "npm@7.24.0"
 }

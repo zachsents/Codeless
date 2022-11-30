@@ -3,11 +3,11 @@ import { initializeApp } from "firebase/app"
 import { getAnalytics } from "firebase/analytics"
 import { getDocs, getFirestore } from "firebase/firestore"
 import {
-    getAuth, signInWithPopup, GoogleAuthProvider, sendSignInLinkToEmail, isSignInWithEmailLink,
-    signInWithEmailLink, onAuthStateChanged
+    getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink
 } from "firebase/auth"
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions"
-import { useEffect, useState } from "react"
+import { useAuthState } from "firebase-web-helpers"
+import { useEffect } from "react"
 import { useRouter } from "next/router"
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -34,36 +34,13 @@ if (typeof window !== "undefined") {
     var functions = getFunctions(app)
 
     // connect functions emulator
-    if(process.env.NODE_ENV == "development")
+    if (process.env.NODE_ENV == "development")
         connectFunctionsEmulator(functions, "localhost", 5001)
 }
 
 export { app, analytics, firestore, auth, functions }
 
-export async function signInWithGoogle() {
 
-    // set up provider
-    const provider = new GoogleAuthProvider()
-    provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
-
-    // login
-    try {
-        const result = await signInWithPopup(auth, provider)
-        const credential = GoogleAuthProvider.credentialFromResult(result)
-        const token = credential.accessToken
-        const user = result.user
-        return user
-    }
-    catch (error) {
-        const errorCode = error.code
-        const errorMessage = error.message
-        // The email of the user's account used.
-        const email = error.customData.email
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error)
-        console.error(errorCode, errorMessage, credential)
-    }
-}
 
 export async function sendEmailSignInLink(email) {
     const actionCodeSettings = {
@@ -103,39 +80,13 @@ export async function finishEmailSignIn() {
     console.error("Not a sign in link.")
 }
 
-export function useAuthState() {
-    const [user, setUser] = useState()
-    useEffect(() => {
-        auth && onAuthStateChanged(auth, u => setUser(u))
-    }, [])
-    return user
-}
 
 export function useMustBeSignedIn() {
-    const user = useAuthState()
+    const user = useAuthState(auth)
     const router = useRouter()
     useEffect(() => {
         user === null && router.push("/login")
     }, [user])
 
     return user
-}
-
-export function signOut() {
-    auth.signOut()
-}
-
-export async function getMappedDocs(ref) {
-    return mapSnapshot(await getDocs(ref))
-}
-
-export function mapSnapshot(snapshot) {
-    return snapshot.docs.map(mapDoc)
-}
-
-export function mapDoc(doc) {
-    return doc.exists() && {
-        id: doc.id,
-        ...doc.data(),
-    }
 }

@@ -72,7 +72,7 @@ export default function AppOverview() {
                     </Box>
                 </OverviewCard>
 
-                <OverviewCard
+                {/* <OverviewCard
                     title="Collections"
                     plural="collections"
                     singular="collection"
@@ -93,7 +93,7 @@ export default function AppOverview() {
                             }} />
                         </Sparklines>
                     </Box>
-                </OverviewCard>
+                </OverviewCard> */}
             </SimpleGrid>
         </AppDashboard>
     )

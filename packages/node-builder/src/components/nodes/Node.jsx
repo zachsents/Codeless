@@ -118,7 +118,7 @@ export default function Node({ id, type, selected }) {
                         nodeType.default ?
                             <>
                                 <nodeType.default {...displayProps} />
-                                <ThemeIcon color="yellow.5" radius="md" size="sm" sx={topIconStyle(10)}>
+                                <ThemeIcon color={nodeType.color ?? "yellow.5"} radius="md" size="sm" sx={topIconStyle(10)}>
                                     <nodeType.icon size={12} color="black" />
                                 </ThemeIcon>
                             </>

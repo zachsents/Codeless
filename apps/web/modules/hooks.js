@@ -2,7 +2,9 @@ import { useDebouncedValue } from "@mantine/hooks"
 import { collection, deleteDoc, doc, getCountFromServer, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
 import { useRouter } from "next/router"
 import { useCallback, useEffect, useState } from "react"
-import { firestore, getMappedDocs, mapDoc, mapSnapshot } from "./firebase"
+import { firestore } from "./firebase"
+import { getMappedDocs, mapDoc, mapSnapshot } from "firebase-web-helpers"
+
 
 export function useAsyncState(factory, dependencies = []) {
     const [state, setState] = useState()

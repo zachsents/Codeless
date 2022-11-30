@@ -1,8 +1,9 @@
 import { Box, Button, Container, Group, Header, Menu, Skeleton, Tabs, Text } from "@mantine/core"
+import { signOut, mapSnapshot } from "firebase-web-helpers"
 import { collection, query, where } from "firebase/firestore"
 import { TbUserCircle } from "react-icons/tb"
 import AppCard from "../components/cards/AppCard"
-import { firestore, mapSnapshot, signOut, useMustBeSignedIn } from "../modules/firebase"
+import { auth, firestore, useMustBeSignedIn } from "../modules/firebase"
 import { useRealtimeState } from "../modules/hooks"
 
 
@@ -29,7 +30,7 @@ export default function Dashboard() {
                             </Button>
                         </Menu.Target>
                         <Menu.Dropdown>
-                            <Menu.Item onClick={() => signOut()}>Sign Out</Menu.Item>
+                            <Menu.Item onClick={() => signOut(auth)}>Sign Out</Menu.Item>
                         </Menu.Dropdown>
                     </Menu>
                 </Group>

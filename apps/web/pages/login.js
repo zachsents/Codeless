@@ -1,17 +1,19 @@
-import { Button, Center, Container, Loader, PasswordInput, Stack, Text, TextInput, Title } from "@mantine/core"
-import { useDebouncedValue } from "@mantine/hooks"
+import { Button, Center, Container, Loader, Stack, Text, TextInput, Title } from "@mantine/core"
 import { FcGoogle } from "react-icons/fc"
 import { TbMail } from "react-icons/tb"
-import { sendEmailSignInLink, signInWithGoogle } from "../modules/firebase"
+import { auth, sendEmailSignInLink } from "../modules/firebase"
+import { signInWithGoogle } from "firebase-web-helpers"
 import { useForm } from '@mantine/form'
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useRouter } from 'next/router'
 import GoBackButton from "../components/GoBackButton"
+
 
 const SignInMethod = {
     Email: "email",
     Google: "google",
 }
+
 
 export default function Login() {
 
@@ -19,8 +21,8 @@ export default function Login() {
 
     const router = useRouter()
 
-    const handleLogin = user => {
-        console.debug("Logged in as", user.displayName ?? user.email)
+    const handleLogin = result => {
+        console.debug("Logged in as", result.user.displayName ?? result.user.email)
         router.push("/dashboard")
     }
 
@@ -41,7 +43,7 @@ export default function Login() {
                         <Button
                             onClick={() => {
                                 setSignInMethod(SignInMethod.Google)
-                                signInWithGoogle().then(handleLogin).catch(() => setSignInMethod(null))
+                                signInWithGoogle(auth).then(handleLogin).catch(() => setSignInMethod(null))
                             }}
                             size="xl"
                             variant="white"

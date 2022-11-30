@@ -15,7 +15,9 @@
         "@mantine/form": "^5.6.3",
         "@mantine/hooks": "^5.6.3",
         "tabler-icons-react": "^1.55.0",
+        "react-icons": "^4.6.0",
         "firebase": "^9.13.0",
+        "firebase-web-helpers": "*",
         "react": "18.2.0"
     }
 }

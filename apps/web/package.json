@@ -9,13 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/carousel": "^5.8.4",
     "@mantine/core": "^5.6.3",
     "@mantine/dates": "^5.8.3",
     "@mantine/form": "^5.6.3",
     "@mantine/hooks": "^5.6.3",
+    "@mantine/nprogress": "^5.8.4",
+    "@zachsents/display-nodes": "*",
+    "embla-carousel-react": "^7.0.5",
     "firebase": "^9.13.0",
     "framer-motion": "^7.6.7",
-    "@zachsents/display-nodes": "*",
     "next": "12.3.1",
     "next-transpile-modules": "^10.0.0",
     "node-builder": "*",
@@ -26,7 +29,8 @@
     "reactflow": "^11.2.0",
     "tabler-icons-react": "^1.55.0",
     "timeago.js": "^4.0.2",
-    "triggers": "*"
+    "triggers": "*",
+    "firebase-web-helpers": "*"
   },
   "devDependencies": {
     "eslint": "8.25.0",

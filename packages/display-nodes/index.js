@@ -1,4 +1,5 @@
 import { CircleSquare, Settings, Math, ListSearch } from "tabler-icons-react"
+import { SiGooglesheets } from "react-icons/si"
 
 import DateTime from "./basics/DateTime"
 import Number from "./basics/Number"
@@ -18,6 +19,8 @@ import ScheduleFlow from "./util/ScheduleFlow"
 import Repeat from "./util/Repeat"
 import TestMail from "./util/TestMail"
 import RunFlow from "./util/RunFlow"
+import Range from "./google/sheets/Range"
+import Cell from "./google/sheets/Cell"
 
 export const Nodes = {
     "primitive:Number": Number,
@@ -38,6 +41,9 @@ export const Nodes = {
     "utility:RunFlow": RunFlow,
     "list:Repeat": Repeat,
     "mail:TestMail": TestMail,
+
+    "googlesheets:Range": Range,
+    "googlesheets:Cell": Cell,
 }
 
 export const NodeCategories = {
@@ -79,5 +85,14 @@ export const NodeCategories = {
         title: "Lists",
         icon: ListSearch,
         members: [],
+    },
+
+    GoogleSheets: {
+        title: "Sheets",
+        icon: SiGooglesheets,
+        members: [
+            "googlesheets:Cell",
+            "googlesheets:Range",
+        ],
     },
 }

@@ -1,6 +1,6 @@
 import { ActionIcon, AppShell, Container, Group, Navbar, NavLink, Title } from '@mantine/core'
 import { FaHome } from "react-icons/fa"
-import { TbReportAnalytics, TbSettings, TbDatabase } from "react-icons/tb"
+import { TbReportAnalytics, TbSettings, TbDatabase, TbCode, TbPlugConnected } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -36,9 +36,13 @@ export default function AppDashboard({ children }) {
                             <NavLink label="Flows" variant="filled" icon={<TiFlowMerge />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/flows")} />
                         </Link>
-                        <Link href={`/app/${appId}/collections`}>
+                        {/* <Link href={`/app/${appId}/collections`}>
                             <NavLink label="Collections" variant="filled" icon={<TbDatabase />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/collections")} />
+                        </Link> */}
+                        <Link href={`/app/${appId}/integrations`}>
+                            <NavLink label="Integrations" variant="filled" icon={<TbPlugConnected />}
+                                styles={navlinkStyles} component="a" active={pathname.endsWith("/integrations")} />
                         </Link>
                         <Link href={`/app/${appId}/settings`}>
                             <NavLink label="Settings" variant="filled" icon={<TbSettings />}
