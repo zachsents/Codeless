@@ -10,8 +10,8 @@ export default {
     sources: {
         values: {
             average: {
-                get() {
-                    const flat = this.in?.deepFlat()
+                async get() {
+                    const flat = (await this.in)?.deepFlat()
                     return flat.reduce((accum, cur) => accum + cur, 0) / flat.length
                 }
             }

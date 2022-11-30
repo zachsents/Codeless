@@ -11,7 +11,7 @@ export default {
                         projectId: global.admin.app().options.projectId,
                         local: process.env.FUNCTIONS_EMULATOR,
                     }))({
-                        appId: this.state.appId,
+                        appId: global.info.appId,
                         flowId: this.state.flow,
                         payload: x,
                     })

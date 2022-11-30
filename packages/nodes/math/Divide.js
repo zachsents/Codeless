@@ -11,8 +11,9 @@ export default {
     sources: {
         values: {
             quotient: {
-                get() {
-                    return this.numerator.map(num => num / (this.denominator?.[0] ?? 1))
+                async get() {
+                    const denom = (await this.denominator)?.[0] ?? 1
+                    return (await this.numerator).map(num => num / denom)
                 }
             }
         }

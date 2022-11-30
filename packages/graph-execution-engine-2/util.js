@@ -36,8 +36,12 @@ export function prepValueSources(node, nodeType, nodes, edges) {
     nodeType?.sources?.values &&
         Object.entries(nodeType.sources.values).forEach(([handleName, valueSourceData]) => {
             Object.defineProperty(node, handleName, {
-                get() {
-                    const result = valueSourceData?.get.bind(node)()
+                // get() {
+                //     const result = valueSourceData?.get.bind(node)()
+                //     return result.length == 1 ? result[0] : result
+                // }
+                get: async () => {
+                    const result = await valueSourceData?.get.bind(node)()
                     return result.length == 1 ? result[0] : result
                 }
             })
@@ -53,7 +57,10 @@ export function prepValueTargets(node, nodeType, nodes, edges) {
 
             Object.defineProperty(node, handleName, {
                 get() {
-                    return connectedHandles.map(connected => connected.node[connected.handle])
+                    // return connectedHandles.map(connected => connected.node[connected.handle])
+                    return Promise.all(
+                        connectedHandles.map(connected => connected.node[connected.handle])
+                    )
                 }
             })
         })

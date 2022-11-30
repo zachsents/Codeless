@@ -10,8 +10,8 @@ export default {
     sources: {
         values: {
             product: {
-                get() {
-                    return this.in?.deepFlat().reduce((accum, cur) => accum * cur, 1)
+                async get() {
+                    return (await this.in)?.deepFlat().reduce((accum, cur) => accum * cur, 1)
                 }
             }
         }

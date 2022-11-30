@@ -7,8 +7,8 @@ export default {
     targets: {
         signals: {
             " ": {
-                action(x) {
-                    const toEmail = this.state.to ?? this.to
+                async action(x) {
+                    const toEmail = this.state.to ?? await this.to
 
                     if (!toEmail)
                         return

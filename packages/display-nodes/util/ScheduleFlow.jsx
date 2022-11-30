@@ -13,12 +13,7 @@ export default {
     signalTargets: ["signal"],
 
     expanded: ({ state, setState, appId, flowId, firestore }) => {
-
-        // add appId to internal state
-        useEffect(() => {
-            appId && setState({ appId })
-        }, [appId])
-
+        
         // grab schedulable flows that aren't this one
         const [otherFlows, setOtherFlows] = useState([])
         useEffect(() => {

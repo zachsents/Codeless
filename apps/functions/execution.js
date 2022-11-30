@@ -8,13 +8,15 @@ import TriggerNodes from "triggers"
 import Nodes from "@zachsents/nodes"
 
 
-export function executeFlow(graph, payload) {
+export function executeFlow(graph, payload, globals = {}) {
     try {
         var { nodes, edges } = JSON.parse(graph)
     }
     catch(err) {
         throw new Error("Failed to parse graph.")
     }
+
+    global.info = globals
 
     runFlow({ 
         nodes, 

@@ -9,14 +9,14 @@ export default {
         },
         signals: {
             signal: {
-                action(x) {
+                async action(x) {
                     httpsCallable(url("runLater", {
                         projectId: global.admin.app().options.projectId,
                         local: process.env.FUNCTIONS_EMULATOR,
                     }))({
-                        appId: this.state.appId,
+                        appId: global.info.appId,
                         flowId: this.state.flow,
-                        time: this.time[0]?.getTime(),
+                        time: (await this.time)[0]?.getTime(),
                         payload: x,
                     })
                         .then(r => r.json())

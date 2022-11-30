@@ -12,8 +12,12 @@ export default {
     sources: {
         values: {
             list: {
-                get() {
-                    return Array(this.count?.[0] ?? 1).fill(0).map(() => this.in.untype())
+                async get() {
+                    return Promise.all(
+                        Array((await this.count)?.[0] ?? 1)
+                            .fill(0)
+                            .map(async () => (await this.in).untype())
+                    )
                 }
             }
         }

@@ -53,6 +53,14 @@ export function useApp(appId = useAppId()) {
     return app
 }
 
+export function useAppRealtime(appId = useAppId()) {
+    const [app] = useRealtimeState(
+        appId && doc(firestore, "apps", appId),
+        mapDoc
+    )
+    return app
+}
+
 export function usePlan(planRef) {
     const [plan] = useAsyncState(async () =>
         planRef && await getDoc(planRef)

@@ -10,8 +10,8 @@ export default {
     sources: {
         values: {
             sum: {
-                get() {
-                    return this.in?.deepFlat().reduce((accum, cur) => accum + cur, 0)
+                async get() {
+                    return (await this.in)?.deepFlat().reduce((accum, cur) => accum + cur, 0)
                 }
             }
         }

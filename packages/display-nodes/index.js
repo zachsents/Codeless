@@ -21,6 +21,7 @@ import TestMail from "./util/TestMail"
 import RunFlow from "./util/RunFlow"
 import Range from "./google/sheets/Range"
 import Cell from "./google/sheets/Cell"
+import GetValues from "./google/sheets/GetValues"
 
 export const Nodes = {
     "primitive:Number": Number,
@@ -44,6 +45,7 @@ export const Nodes = {
 
     "googlesheets:Range": Range,
     "googlesheets:Cell": Cell,
+    "googlesheets:GetValues": GetValues,
 }
 
 export const NodeCategories = {
@@ -93,6 +95,7 @@ export const NodeCategories = {
         members: [
             "googlesheets:Cell",
             "googlesheets:Range",
+            "googlesheets:GetValues",
         ],
     },
 }

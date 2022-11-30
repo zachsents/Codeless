@@ -110,7 +110,7 @@ export default function Node({ id, type, selected }) {
                     {state.expanded ?
                         <>
                             <nodeType.expanded {...displayProps} />
-                            <ThemeIcon color="yellow.5" radius="md" size="lg" sx={topIconStyle()}>
+                            <ThemeIcon color={nodeType.color ?? "yellow.5"} radius="md" size="lg" sx={topIconStyle()}>
                                 <nodeType.icon size={18} color="black" />
                             </ThemeIcon>
                         </>

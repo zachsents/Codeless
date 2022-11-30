@@ -8,14 +8,16 @@ import GlassButton from '../../../components/GlassButton'
 import GradientBox from '../../../components/GradientBox'
 import PageTitle from '../../../components/PageTitle'
 import OurCard from "../../../components/cards/OurCard"
-import { auth, useMustBeSignedIn } from '../../../modules/firebase'
+import { auth, firestore, useMustBeSignedIn } from '../../../modules/firebase'
 import { useEffect, useState } from 'react'
 import GoogleSheetsAuth from "@zachsents/display-nodes/google/sheets/auth"
+import { useAppRealtime } from '../../../modules/hooks'
 
 
 export default function AppSettings() {
 
     const user = useMustBeSignedIn()
+    const app = useAppRealtime()
 
     // auto scroll integrations carousel
     const [carousel, setCarousel] = useState()
@@ -71,13 +73,13 @@ export default function AppSettings() {
             </GradientBox>
 
             <SimpleGrid cols={1} spacing={35} verticalSpacing={25}>
-                <IntegrationCard integration={GoogleSheetsAuth} />
+                <IntegrationCard integration={GoogleSheetsAuth} app={app} />
             </SimpleGrid>
         </AppDashboard>
     )
 }
 
-function IntegrationCard({ integration }) {
+function IntegrationCard({ integration, app }) {
 
     return (
         <OurCard>
@@ -86,7 +88,7 @@ function IntegrationCard({ integration }) {
                     <ThemeIcon color={integration.color ?? ""} size="xl"><integration.icon size={22} /></ThemeIcon>
                     <Text size="xl" weight={500}>{integration.title}</Text>
                 </Group>
-                <integration.component firebaseAuth={auth} />
+                <integration.component app={app} firebaseAuth={auth} firestore={firestore} />
             </Group>
         </OurCard>
     )
