@@ -57,11 +57,12 @@ export function prepValueTargets(node, nodeType, nodes, edges) {
             const connectedHandles = getConnectedHandles(node.id, handleName, nodes, edges)
 
             Object.defineProperty(node, handleName, {
-                get() {
+                get: async () => {
                     // return connectedHandles.map(connected => connected.node[connected.handle])
-                    return Promise.all(
+                    const connectedValues = await Promise.all(
                         connectedHandles.map(connected => connected.node[connected.handle])
                     )
+                    return connectedValues.length == 1 ? connectedValues.flat() : connectedValues
                 }
             })
         })
