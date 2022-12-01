@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState, useMemo } from 'react'
 import { ActionIcon, Box, Grid, Group, Navbar, NavLink, Portal, ScrollArea, SimpleGrid, Skeleton, Space, Stack, Text, TextInput, Title } from '@mantine/core'
 import { useDisclosure } from "@mantine/hooks"
 import { TbArrowLeft, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from 'react-icons/tb'
@@ -19,6 +19,17 @@ export default function Sidebar() {
 
     const [searchQuery, setSearchQuery] = useState("")
     const searchBarRef = useRef()
+
+    // make an alphabetical list of all nodes that are in categories
+    // doing this to avoid showing nodes that aren't in categories
+    const AllNodes = useMemo(
+        () => [...new Set(NodeCategories.map(cat => cat.nodes).flat())]
+            .sort((a, b) => {
+                const textA = a.name.toUpperCase(), textB = b.name.toUpperCase()
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+            }),
+        []
+    )
 
     return (
         <Navbar
@@ -96,6 +107,15 @@ export default function Sidebar() {
                                 <>
                                     <Text align="center" color="dimmed" size="xs" mb={10}>Categories</Text>
                                     <SimpleGrid cols={2}>
+                                        <CategoryTile
+                                            onClick={() => setSelectedCategory({
+                                                title: "All",
+                                                nodes: AllNodes,
+                                            })}
+                                            key="all"
+                                        >
+                                            All
+                                        </CategoryTile>
                                         {NodeCategories.map((cat, i) =>
                                             <CategoryTile
                                                 icon={cat.icon}
@@ -162,9 +182,9 @@ const NodeTile = forwardRef(({ node, ...props }, ref) => {
             }
 
             // make sure it's inbounds
-            if(canvasLocation.x < 0 || canvasLocation.y < 0)
-                return 
-            
+            if (canvasLocation.x < 0 || canvasLocation.y < 0)
+                return
+
             const proj = rf.project(canvasLocation)
             proj.x -= 15
             proj.y -= 15
@@ -248,7 +268,7 @@ function CategoryTile({ children, icon: Icon, ...props }) {
             label={children}
             variant="light"
             py={20}
-            icon={<Icon size={iconSize} />}
+            icon={Icon && <Icon size={iconSize} />}
             {...props}
 
             styles={theme => ({
