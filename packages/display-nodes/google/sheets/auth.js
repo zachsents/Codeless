@@ -10,7 +10,7 @@ export default {
     color: "teal.5",
     component: ({ app, firestore, firebaseAuth }) => {
 
-        const isAuthorized = !!app.integrations?.GoogleSheets.idToken
+        const isAuthorized = !!app?.integrations?.GoogleSheets.idToken
 
         const handleClick = async () => {
             const { credential } = await signInWithGoogle(firebaseAuth, ["https://www.googleapis.com/auth/spreadsheets"])

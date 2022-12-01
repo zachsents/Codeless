@@ -90,11 +90,6 @@ export default function Sidebar() {
                                                 <NodeTile node={node} />
                                             </NodeInfoPopover>
                                         )}
-                                        <Skeleton height={100} />
-                                        <Skeleton height={100} />
-                                        <Skeleton height={100} />
-                                        <Skeleton height={100} />
-                                        <Skeleton height={100} />
                                     </Stack>
                                 </>
                                 :

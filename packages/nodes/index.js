@@ -16,10 +16,11 @@ import ScheduleFlow from "./util/ScheduleFlow.js"
 import RunFlow from "./util/RunFlow.js"
 import Repeat from "./util/Repeat.js"
 import TestMail from "./util/TestMail.js"
+import ReadProperty from "./basics/ReadProperty.js"
 
 
 const nodes = [
-    Number, Text, DateTime,
+    Number, Text, DateTime, ReadProperty,
 
     RandomNumber, Sum, Multiply, Divide, Average,
 

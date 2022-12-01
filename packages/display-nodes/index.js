@@ -22,11 +22,13 @@ import RunFlow from "./util/RunFlow"
 import Range from "./google/sheets/Range"
 import Cell from "./google/sheets/Cell"
 import GetValues from "./google/sheets/GetValues"
+import ReadProperty from "./basics/ReadProperty"
 
 export const Nodes = {
     "primitive:Number": Number,
     "primitive:Text": Text,
     "primitive:DateTime": DateTime,
+    "object:ReadProperty": ReadProperty,
 
     "math:RandomNumber": RandomNumber,
     "math:Sum": Sum,
@@ -56,6 +58,7 @@ export const NodeCategories = {
             "primitive:Number",
             "primitive:Text",
             "primitive:DateTime",
+            "object:ReadProperty",
         ],
     },
     Util: {

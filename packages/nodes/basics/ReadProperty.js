@@ -1,0 +1,20 @@
+
+
+export default {
+    id: "object:ReadProperty",
+    name: "Read Property",
+    targets: {
+        values: {
+            object: {}
+        }
+    },
+    sources: {
+        values: {
+            property: {
+                async get() {
+                    return (await this.object).map(obj => obj[this.state.$]).untype()
+                }
+            }
+        }
+    }
+}

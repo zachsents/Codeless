@@ -42,7 +42,8 @@ export function prepValueSources(node, nodeType, nodes, edges) {
                 // }
                 get: async () => {
                     const result = await valueSourceData?.get.bind(node)()
-                    return result.length == 1 ? result[0] : result
+                    result === undefined && console.warn(`Handle "${handleName}" from a ${nodeType.name} node produced undefined. Make sure all the required handles are connected, node is returning, and all input values are awaited.`)
+                    return result?.length == 1 ? result[0] : result
                 }
             })
         })

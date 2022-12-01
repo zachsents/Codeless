@@ -30,7 +30,11 @@ export const runWithUrl = functions.https.onRequest(async (request, response) =>
 
     // Run flow
     try {
-        executeFlow(validation.data.graph, request, { appId, flowId })
+        executeFlow(validation.data.graph, {
+            method: request.method,
+            headers: request.headers,
+            body: request.body,
+        }, { appId, flowId })
     }
     catch (error) {
         console.error(error)
