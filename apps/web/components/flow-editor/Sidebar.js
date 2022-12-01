@@ -165,6 +165,7 @@ export default function Sidebar() {
 const navbarStyle = theme => ({
     boxShadow: theme.shadows.sm,
     border: "none",
+    transition: "width 0.15s",
 })
 
 
