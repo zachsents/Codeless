@@ -32,6 +32,8 @@ import Equal from "./basics/Equal"
 import NotEqual from "./basics/NotEqual"
 import GreaterThan from "./basics/GreaterThan"
 import Switch from "./basics/Switch"
+import CreateObject from "./object/CreateObject"
+import WriteProperty from "./object/WriteProperty"
 
 
 export const Nodes = {
@@ -47,7 +49,9 @@ export const Nodes = {
     "basic:NotEqual": NotEqual,
     "basic:GreaterThan": GreaterThan,
 
+    "object:CreateObject": CreateObject,
     "object:ReadProperty": ReadProperty,
+    "object:WriteProperty": WriteProperty,
 
     "math:RandomNumber": RandomNumber,
     "math:Sum": Sum,
@@ -78,7 +82,6 @@ export const NodeCategories = {
             "primitive:Text",
             "primitive:Switch",
             "primitive:DateTime",
-            "object:ReadProperty",
             "basic:Conditional",
             "basic:And",
             "basic:Or",
@@ -86,13 +89,19 @@ export const NodeCategories = {
             "basic:Equal",
             "basic:NotEqual",
             "basic:GreaterThan",
+
+            "object:CreateObject",
+            "object:ReadProperty",
+            "object:WriteProperty",
         ],
     },
     Object: {
         title: "Objects",
         icon: Icons,
         members: [
+            "object:CreateObject",
             "object:ReadProperty",
+            "object:WriteProperty",
         ],
     },
     Util: {

@@ -1,12 +1,12 @@
-import { ArrowBarRight } from "tabler-icons-react"
+import { ArrowBarToRight } from "tabler-icons-react"
 import { TextInput } from "@mantine/core"
 
 export default {
-    name: "Get Property",
-    description: "Reads a property from an object.",
-    icon: ArrowBarRight,
-    valueTargets: ["object"],
-    valueSources: ["property"],
+    name: "Set Property",
+    description: "Sets a property on an object.",
+    icon: ArrowBarToRight,
+    valueTargets: ["object", "value"],
+    valueSources: ["out"],
 
     default: ({ state, setState }) => {
         return (

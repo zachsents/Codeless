@@ -26,12 +26,14 @@ import Not from "./basics/Not.js"
 import Equal from "./basics/Equal.js"
 import NotEqual from "./basics/NotEqual.js"
 import GreaterThan from "./basics/GreaterThan.js"
+import CreateObject from "./object/CreateObject.js"
+import WriteProperty from "./object/WriteProperty.js"
 
 
 const nodes = [
     Number, Text, Switch, DateTime, Conditional, And, Or, Not, Equal, NotEqual, GreaterThan,
 
-    ReadProperty,
+    CreateObject, ReadProperty, WriteProperty,
 
     RandomNumber, Sum, Multiply, Divide, Average,
 

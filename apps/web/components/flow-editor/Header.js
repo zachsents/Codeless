@@ -1,12 +1,14 @@
-import { Group, Header as MantineHeader, Text } from "@mantine/core"
+import { Group, Header as MantineHeader, Text, Box } from "@mantine/core"
 import { useReactFlow } from "reactflow"
 import LinkIcon from '../LinkIcon'
-import { TbArrowLeft, TbCloud, TbCloudUpload, TbFileAnalytics, TbIceCream, TbMaximize, TbMoon2, TbPencil, TbSettings } from 'react-icons/tb'
+import { TbArrowLeft, TbCloud, TbCloudUpload, TbMaximize, TbPencil, TbSettings } from 'react-icons/tb'
 import { useRouter } from 'next/router'
 import RenameModal from "../RenameModal"
 import { SettingsTabs } from "./SettingsDrawer"
+import RunManuallyButton from "../RunManuallyButton"
 import { useFlowContext } from "../../modules/context"
 import { useRenameFlow } from "../../modules/hooks"
+import { Trigger } from "triggers"
 
 
 export default function Header({ openSettings }) {
@@ -30,12 +32,12 @@ export default function Header({ openSettings }) {
                             variant="light" mr={20}><TbArrowLeft fontSize={24} /></LinkIcon>
 
                         <Group spacing="sm">
-                            <LinkIcon
+                            {/* <LinkIcon
                                 label="Random Control"
                                 variant="light"><TbFileAnalytics fontSize={24} /></LinkIcon>
                             <LinkIcon
                                 label="Random Control"
-                                variant="light"><TbMoon2 fontSize={24} /></LinkIcon>
+                                variant="light"><TbMoon2 fontSize={24} /></LinkIcon> */}
                             <LinkIcon
                                 onClick={() => rf.fitView()}
                                 label="Fit View to Nodes"
@@ -50,6 +52,10 @@ export default function Header({ openSettings }) {
                             variant="transparent"><TbPencil /></LinkIcon>
                     </Group>
                     <Group spacing="sm" position="right" sx={{ flex: "1 0 0" }}>
+                        {flow?.trigger == Trigger.Manual && flow?.deployed &&
+                            <Box mr={30}>
+                                <RunManuallyButton flow={flow} includeScheduling />
+                            </Box>}
                         {flow?.deployed ?
                             <LinkIcon
                                 onClick={() => openSettings?.(SettingsTabs.Deployment)}
