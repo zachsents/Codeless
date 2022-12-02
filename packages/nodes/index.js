@@ -1,5 +1,6 @@
 import Number from "./basics/Number.js"
 import Text from "./basics/Text.js"
+import Switch from "./basics/Switch.js"
 import DateTime from "./basics/DateTime.js"
 
 import RandomNumber from "./math/RandomNumber.js"
@@ -28,7 +29,7 @@ import GreaterThan from "./basics/GreaterThan.js"
 
 
 const nodes = [
-    Number, Text, DateTime, Conditional, And, Or, Not, Equal, NotEqual, GreaterThan,
+    Number, Text, Switch, DateTime, Conditional, And, Or, Not, Equal, NotEqual, GreaterThan,
 
     ReadProperty,
 

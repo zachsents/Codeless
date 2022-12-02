@@ -31,11 +31,13 @@ import Not from "./basics/Not"
 import Equal from "./basics/Equal"
 import NotEqual from "./basics/NotEqual"
 import GreaterThan from "./basics/GreaterThan"
+import Switch from "./basics/Switch"
 
 
 export const Nodes = {
     "primitive:Number": Number,
     "primitive:Text": Text,
+    "primitive:Switch": Switch,
     "primitive:DateTime": DateTime,
     "basic:Conditional": Conditional,
     "basic:And": And,
@@ -74,6 +76,7 @@ export const NodeCategories = {
         members: [
             "primitive:Number",
             "primitive:Text",
+            "primitive:Switch",
             "primitive:DateTime",
             "object:ReadProperty",
             "basic:Conditional",
