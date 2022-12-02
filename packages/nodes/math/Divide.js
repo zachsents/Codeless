@@ -12,8 +12,15 @@ export default {
         values: {
             quotient: {
                 async get() {
-                    const denom = (await this.denominator)?.[0] ?? 1
-                    return (await this.numerator).map(num => num / denom)
+                    const numList = await this.numerator
+                    const denomList = await this.denominator
+
+                    console.log(numList)
+                    console.log(denomList)
+
+                    return denomList.length == 1 ?
+                        numList.map(num => num / denomList[0]) :
+                        numList.map((num, i) => num / denomList[i])
                 }
             }
         }
