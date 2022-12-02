@@ -1,4 +1,4 @@
-import { CircleSquare, Settings, Math, ListSearch } from "tabler-icons-react"
+import { CircleSquare, Settings, Math, ListSearch, Icons } from "tabler-icons-react"
 import { SiGooglesheets } from "react-icons/si"
 
 import DateTime from "./basics/DateTime"
@@ -22,12 +22,29 @@ import RunFlow from "./util/RunFlow"
 import Range from "./google/sheets/Range"
 import Cell from "./google/sheets/Cell"
 import GetValues from "./google/sheets/GetValues"
-import ReadProperty from "./basics/ReadProperty"
+
+import ReadProperty from "./object/ReadProperty"
+import Conditional from "./basics/Conditional"
+import And from "./basics/And"
+import Or from "./basics/Or"
+import Not from "./basics/Not"
+import Equal from "./basics/Equal"
+import NotEqual from "./basics/NotEqual"
+import GreaterThan from "./basics/GreaterThan"
+
 
 export const Nodes = {
     "primitive:Number": Number,
     "primitive:Text": Text,
     "primitive:DateTime": DateTime,
+    "basic:Conditional": Conditional,
+    "basic:And": And,
+    "basic:Or": Or,
+    "basic:Not": Not,
+    "basic:Equal": Equal,
+    "basic:NotEqual": NotEqual,
+    "basic:GreaterThan": GreaterThan,
+
     "object:ReadProperty": ReadProperty,
 
     "math:RandomNumber": RandomNumber,
@@ -58,6 +75,20 @@ export const NodeCategories = {
             "primitive:Number",
             "primitive:Text",
             "primitive:DateTime",
+            "object:ReadProperty",
+            "basic:Conditional",
+            "basic:And",
+            "basic:Or",
+            "basic:Not",
+            "basic:Equal",
+            "basic:NotEqual",
+            "basic:GreaterThan",
+        ],
+    },
+    Object: {
+        title: "Objects",
+        icon: Icons,
+        members: [
             "object:ReadProperty",
         ],
     },

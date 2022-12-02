@@ -85,7 +85,6 @@ export default function Node({ id, type, selected }) {
                 {nodeType.signalTargets?.map(name =>
                     <CustomHandle name={name} dataType={DataType.Signal} handleType="target" position={Position.Left} key={name} />
                 )}
-
             </HandleStack>
 
             <HandleStack position={Position.Right}>

@@ -16,11 +16,21 @@ import ScheduleFlow from "./util/ScheduleFlow.js"
 import RunFlow from "./util/RunFlow.js"
 import Repeat from "./util/Repeat.js"
 import TestMail from "./util/TestMail.js"
-import ReadProperty from "./basics/ReadProperty.js"
+
+import ReadProperty from "./object/ReadProperty.js"
+import Conditional from "./basics/Conditional.js"
+import And from "./basics/And.js"
+import Or from "./basics/Or.js"
+import Not from "./basics/Not.js"
+import Equal from "./basics/Equal.js"
+import NotEqual from "./basics/NotEqual.js"
+import GreaterThan from "./basics/GreaterThan.js"
 
 
 const nodes = [
-    Number, Text, DateTime, ReadProperty,
+    Number, Text, DateTime, Conditional, And, Or, Not, Equal, NotEqual, GreaterThan,
+
+    ReadProperty,
 
     RandomNumber, Sum, Multiply, Divide, Average,
 

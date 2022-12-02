@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useRef, useState, useMemo } from 'react'
 import { ActionIcon, Box, Grid, Group, Navbar, NavLink, Portal, ScrollArea, SimpleGrid, Skeleton, Space, Stack, Text, TextInput, Title } from '@mantine/core'
 import { useDisclosure } from "@mantine/hooks"
-import { TbArrowLeft, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from 'react-icons/tb'
+import { TbArrowLeft, TbGrain, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from 'react-icons/tb'
 import { useReactFlow } from "reactflow"
 
 import LinkIcon from '../LinkIcon'
@@ -156,8 +156,9 @@ export default function Sidebar() {
                             </LinkIcon>
                         )}
                     </Stack>
-                </Navbar.Section>}
-        </Navbar>
+                </Navbar.Section>
+            }
+        </Navbar >
     )
 }
 
