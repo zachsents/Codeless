@@ -29,6 +29,10 @@ import GreaterThan from "./basics/GreaterThan.js"
 import CreateObject from "./object/CreateObject.js"
 import WriteProperty from "./object/WriteProperty.js"
 
+import Cell from "./google/sheets/Cell.js"
+import Range from "./google/sheets/Range.js"
+import ReadValues from "./google/sheets/ReadValues.js"
+
 
 const nodes = [
     Number, Text, Switch, DateTime, Conditional, And, Or, Not, Equal, NotEqual, GreaterThan,
@@ -38,6 +42,8 @@ const nodes = [
     RandomNumber, Sum, Multiply, Divide, Average,
 
     Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail,
+
+    Cell, Range, ReadValues,
 ]
 
 export default Object.fromEntries(nodes.map(node => [node.id, node]))

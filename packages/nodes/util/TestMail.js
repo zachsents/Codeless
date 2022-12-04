@@ -1,5 +1,3 @@
-import admin from "firebase-admin"
-
 
 export default {
     id: "mail:TestMail",
@@ -13,7 +11,7 @@ export default {
                     if (!toEmail)
                         return
 
-                    admin.firestore().collection("mail")
+                    global.admin.firestore().collection("mail")
                         .add({
                             to: toEmail,
                             message: {

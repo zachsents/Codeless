@@ -6,11 +6,17 @@ import { executeFlow } from "./execution.js"
 import { Trigger } from "triggers"
 import { customAlphabet } from "nanoid"
 import nanoidDict from "nanoid-dictionary"
+import { google } from "googleapis"
+import fs from "fs/promises"
 
 
 admin.initializeApp()
 global.admin = admin
 const db = admin.firestore()
+
+// create & globalize OAuth2 client
+const oauthClient = await getOAuth2Client()
+global.oauthClient = oauthClient
 
 
 export const runWithUrl = functions.https.onRequest(async (request, response) => {
@@ -154,15 +160,59 @@ export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ a
 
     await validation.docRef.update({
         scheduledRuns: validation.data.scheduledRuns.filter(run => run != runItem),
-        runs: FieldValue.arrayUnion({ 
-            ...runItem, 
-            executedAt: new Date(), 
+        runs: FieldValue.arrayUnion({
+            ...runItem,
+            executedAt: new Date(),
             method: ExecutionMethod.Scheduled,
         }),
     })
 
     return { message: "OK!" }
 })
+
+
+export const authorizeGoogleApp = functions.https.onCall(async ({ appId, scopes }) => {
+
+    const url = oauthClient.generateAuthUrl({
+        access_type: "offline",
+        scope: scopes,
+        state: appId,
+    })
+
+    return { url }
+})
+
+export const googleAppAuthorizationRedirect = functions.https.onRequest(async (request, response) => {
+    
+    // create tokens from code
+    const { tokens } = await oauthClient.getToken(request.query.code)
+
+    // check granted scopes
+    const grantedScopes = (await oauthClient.getTokenInfo(tokens.access_token)).scopes
+
+    // store refresh token & scopes
+    const appId = request.query.state
+    await db.doc(`apps/${appId}`).update({
+        "integrations.Google.refreshToken": tokens.refresh_token,
+        "integrations.Google.scopes": grantedScopes,
+    })
+
+    console.log(`Succesfully authorized app "${appId}"`)
+
+    // response with JS to close the popup window
+    response.send("<script>window.close()</script>")
+})
+
+
+async function getOAuth2Client() {
+    const { web: { client_id, client_secret, redirect_uris } } = JSON.parse(await fs.readFile("./oauth_client_secret.json", "utf-8"))
+
+    return new google.auth.OAuth2(
+        client_id,
+        client_secret,
+        redirect_uris[process.env.FUNCTIONS_EMULATOR ? 0 : 1]
+    )
+}
 
 
 async function validateCall(appId, flowId, { uid, matchTrigger } = {}) {

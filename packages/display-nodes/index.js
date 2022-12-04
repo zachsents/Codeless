@@ -19,9 +19,6 @@ import ScheduleFlow from "./util/ScheduleFlow"
 import Repeat from "./util/Repeat"
 import TestMail from "./util/TestMail"
 import RunFlow from "./util/RunFlow"
-import Range from "./google/sheets/Range"
-import Cell from "./google/sheets/Cell"
-import GetValues from "./google/sheets/GetValues"
 
 import ReadProperty from "./object/ReadProperty"
 import Conditional from "./basics/Conditional"
@@ -34,6 +31,10 @@ import GreaterThan from "./basics/GreaterThan"
 import Switch from "./basics/Switch"
 import CreateObject from "./object/CreateObject"
 import WriteProperty from "./object/WriteProperty"
+
+import Range from "./google/sheets/Range"
+import Cell from "./google/sheets/Cell"
+import ReadValues from "./google/sheets/ReadValues"
 
 
 export const Nodes = {
@@ -70,7 +71,7 @@ export const Nodes = {
 
     "googlesheets:Range": Range,
     "googlesheets:Cell": Cell,
-    "googlesheets:GetValues": GetValues,
+    "googlesheets:ReadValues": ReadValues,
 }
 
 export const NodeCategories = {
@@ -141,7 +142,7 @@ export const NodeCategories = {
         members: [
             "googlesheets:Cell",
             "googlesheets:Range",
-            "googlesheets:GetValues",
+            "googlesheets:ReadValues",
         ],
     },
 }

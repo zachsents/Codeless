@@ -8,7 +8,7 @@ import GlassButton from '../../../components/GlassButton'
 import GradientBox from '../../../components/GradientBox'
 import PageTitle from '../../../components/PageTitle'
 import OurCard from "../../../components/cards/OurCard"
-import { auth, firestore, useMustBeSignedIn } from '../../../modules/firebase'
+import { auth, firestore, functions, useMustBeSignedIn } from '../../../modules/firebase'
 import { useEffect, useState } from 'react'
 import GoogleSheetsAuth from "@zachsents/display-nodes/google/sheets/auth"
 import { useAppRealtime } from '../../../modules/hooks'
@@ -88,7 +88,7 @@ function IntegrationCard({ integration, app }) {
                     <ThemeIcon color={integration.color ?? ""} size="xl"><integration.icon size={22} /></ThemeIcon>
                     <Text size="xl" weight={500}>{integration.title}</Text>
                 </Group>
-                <integration.component app={app} firebaseAuth={auth} firestore={firestore} />
+                <integration.component app={app} firestore={firestore} functions={functions} />
             </Group>
         </OurCard>
     )

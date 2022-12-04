@@ -9,7 +9,7 @@ import { useEffect, useState } from "react"
 export async function signInWithGoogle(auth, scopes = []) {
 
     // set up provider
-    const provider = new GoogleAuthProvider()
+    const provider = new GoogleAuthProvider()    
 
     // add scopes
     scopes.forEach(scope => provider.addScope(scope))
