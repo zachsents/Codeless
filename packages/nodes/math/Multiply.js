@@ -1,3 +1,4 @@
+import { recurse } from "../arrayUtilities.js"
 
 export default {
     id: "math:Multiply",
@@ -11,10 +12,7 @@ export default {
         values: {
             product: {
                 async get() {
-                    const inputs = await this.in
-                    const twoDimensional = inputs.every(el => el?.map)
-                    
-                    return twoDimensional ? inputs.map(multiply) : multiply(inputs)
+                    return recurse(await this.in, multiply)
                 }
             }
         }

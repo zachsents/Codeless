@@ -1,3 +1,4 @@
+import { recurse } from "../arrayUtilities.js"
 
 export default {
     id: "math:Sum",
@@ -11,10 +12,7 @@ export default {
         values: {
             sum: {
                 async get() {
-                    const inputs = await this.in
-                    const twoDimensional = inputs.every(el => el?.map)
-                    
-                    return twoDimensional ? inputs.map(sum) : sum(inputs)
+                    return recurse(await this.in, sum)
                 }
             }
         }

@@ -1,3 +1,4 @@
+import { delist } from "../arrayUtilities.js"
 
 
 export default {
@@ -14,8 +15,8 @@ export default {
         values: {
             out: {
                 async get() {
-                    const a = (await this.a).untype()
-                    const b = (await this.b).untype()
+                    const a = delist(await this.a)
+                    const b = delist(await this.b)
                     return (await this.condition).map(cond => !!cond ? a : b)
                 }
             }

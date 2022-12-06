@@ -1,3 +1,4 @@
+import "./arrayUtilities.js"
 import Number from "./basics/Number.js"
 import Text from "./basics/Text.js"
 import Switch from "./basics/Switch.js"

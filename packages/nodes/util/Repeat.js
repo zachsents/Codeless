@@ -1,3 +1,4 @@
+import { delist } from "../arrayUtilities.js"
 
 
 export default {
@@ -16,7 +17,7 @@ export default {
                     return Promise.all(
                         Array((await this.count)?.[0] ?? 1)
                             .fill(0)
-                            .map(async () => (await this.in).untype())
+                            .map(async () => delist(await this.in))
                     )
                 }
             }

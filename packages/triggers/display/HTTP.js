@@ -3,7 +3,7 @@ import { World, Copy, Check, ExternalLink } from "tabler-icons-react"
 
 
 export default {
-    name: "URL",
+    name: "Webhook",
     description: "Triggered when URL is accessed.",
     icon: World,
     signalSources: [" "],

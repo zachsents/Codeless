@@ -1,3 +1,4 @@
+import { delist } from "../arrayUtilities.js"
 
 
 export default {
@@ -13,10 +14,13 @@ export default {
         values: {
             out: {
                 async get() {
-                    return (await this.object).map(async obj => ({
-                        ...obj,
-                        [this.state.$]: (await this.value).untype(),
-                    })).untype()
+                    return delist(
+                        (await this.object)
+                            .map(async obj => ({
+                                ...obj,
+                                [this.state.$]: delist(await this.value),
+                            }))
+                    )
                 }
             }
         }

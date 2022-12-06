@@ -1,3 +1,4 @@
+import { delist } from "../arrayUtilities.js"
 
 
 export default {
@@ -12,7 +13,7 @@ export default {
         values: {
             property: {
                 async get() {
-                    return (await this.object).map(obj => obj[this.state.$]).untype()
+                    return delist((await this.object).map(obj => obj[this.state.$]))
                 }
             }
         }

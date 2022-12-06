@@ -1,3 +1,4 @@
+import { recurse } from "../arrayUtilities.js"
 
 
 export default {
@@ -12,7 +13,10 @@ export default {
         values: {
             out: {
                 async get() {
-                    return (await this.in).some(cond => !!cond)
+                    return recurse(
+                        await this.in,
+                        list => list.some(cond => !!cond)
+                    )
                 }
             }
         }
