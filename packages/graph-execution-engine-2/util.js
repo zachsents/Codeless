@@ -36,16 +36,13 @@ export function prepValueSources(node, nodeType, nodes, edges) {
     nodeType?.sources?.values &&
         Object.entries(nodeType.sources.values).forEach(([handleName, valueSourceData]) => {
             Object.defineProperty(node, handleName, {
-                // get() {
-                //     const result = valueSourceData?.get.bind(node)()
-                //     return result.length == 1 ? result[0] : result
-                // }
                 get: async () => {
                     const result = await valueSourceData?.get.bind(node)()
                     result === undefined && console.warn(`Handle "${handleName}" from a ${nodeType.name} node produced undefined. Make sure all the required handles are connected, node is returning, and all input values are awaited.`)
-                    return result?.map ?
-                        (result.length == 1 ? result[0] : Promise.all(result)) :
-                        result
+                    
+                    // console.log(nodeType.name, result)
+                    
+                    return result?.map ? Promise.all(result) : result
                 }
             })
         })
@@ -60,7 +57,6 @@ export function prepValueTargets(node, nodeType, nodes, edges) {
 
             Object.defineProperty(node, handleName, {
                 get: async () => {
-                    // return connectedHandles.map(connected => connected.node[connected.handle])
                     const connectedValues = await Promise.all(
                         connectedHandles.map(connected => connected.node[connected.handle])
                     )

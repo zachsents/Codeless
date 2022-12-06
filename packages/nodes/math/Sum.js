@@ -11,9 +11,16 @@ export default {
         values: {
             sum: {
                 async get() {
-                    return (await this.in)?.deepFlat().reduce((accum, cur) => accum + cur, 0)
+                    const inputs = await this.in
+                    const twoDimensional = inputs.every(el => el?.map)
+                    
+                    return twoDimensional ? inputs.map(sum) : sum(inputs)
                 }
             }
         }
     },
+}
+
+function sum(list) {
+    return list.reduce((accum, cur) => accum + cur, 0)
 }

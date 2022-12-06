@@ -11,9 +11,16 @@ export default {
         values: {
             product: {
                 async get() {
-                    return (await this.in)?.deepFlat().reduce((accum, cur) => accum * cur, 1)
+                    const inputs = await this.in
+                    const twoDimensional = inputs.every(el => el?.map)
+                    
+                    return twoDimensional ? inputs.map(multiply) : multiply(inputs)
                 }
             }
         }
     },
+}
+
+function multiply(list) {
+    return list.reduce((accum, cur) => accum * cur, 1)
 }

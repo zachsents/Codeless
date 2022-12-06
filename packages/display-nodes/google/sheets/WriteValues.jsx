@@ -1,5 +1,5 @@
 import { Group, SegmentedControl, Stack, Text, Tooltip } from "@mantine/core"
-import { BookDownload, InfoCircle } from "tabler-icons-react"
+import { BookUpload, InfoCircle } from "tabler-icons-react"
 
 const Dimension = {
     Rows: "ROWS",
@@ -7,12 +7,12 @@ const Dimension = {
 }
 
 export default {
-    name: "Get Values",
-    description: "Gets values from a Sheet.",
-    icon: BookDownload,
+    name: "Set Values",
+    description: "Sets values in a Sheet.",
+    icon: BookUpload,
     color: "green.5",
     valueTargets: ["spreadsheetId", "range"],
-    valueSources: [" "],
+    signalTargets: [" "],
 
     defaultState: { majorDimension: Dimension.Rows },
 

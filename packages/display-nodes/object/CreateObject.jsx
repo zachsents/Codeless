@@ -11,14 +11,11 @@ export default {
     icon: Vector,
     valueSources: [" "],
 
-    default: ({ state, setState }) => {
+    defaultState: { $: { } },
 
-        const [entries, setEntries] = useState([])
+    default: ({ state, setState, defaultState }) => {
 
-        useEffect(() => {
-            setState({ $: state.$ ?? {} })
-            setEntries(Object.entries(state.$ ?? {}))
-        }, [])
+        const [entries, setEntries] = useState(Object.entries(state.$ || defaultState.$))
 
         const handleKeyChange = (oldKey, newKey) => {
             state.$[newKey] === undefined &&

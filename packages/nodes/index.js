@@ -31,7 +31,11 @@ import WriteProperty from "./object/WriteProperty.js"
 
 import Cell from "./google/sheets/Cell.js"
 import Range from "./google/sheets/Range.js"
+import Column from "./google/sheets/Column.js"
+import Row from "./google/sheets/Row.js"
 import ReadValues from "./google/sheets/ReadValues.js"
+import FilterBlanks from "./lists/FilterBlanks.js"
+import WriteValues from "./google/sheets/WriteValues.js"
 
 
 const nodes = [
@@ -43,7 +47,9 @@ const nodes = [
 
     Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail,
 
-    Cell, Range, ReadValues,
+    Cell, Range, Column, Row, ReadValues, WriteValues,
+
+    FilterBlanks,
 ]
 
 export default Object.fromEntries(nodes.map(node => [node.id, node]))

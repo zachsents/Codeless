@@ -9,11 +9,9 @@ export default {
     icon: CalendarTime,
     valueSources: [" "],
 
-    default: ({ state, setState }) => {
+    defaultState: { $: new Date().getTime() },
 
-        useEffect(() => {
-            setState({ $: state.$ ?? new Date().getTime() })
-        }, [])
+    default: ({ state, setState }) => {
 
         return (
             <Text>{new Date(state.$).toLocaleString(undefined, {

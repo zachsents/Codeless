@@ -11,10 +11,16 @@ export default {
         values: {
             average: {
                 async get() {
-                    const flat = (await this.in)?.deepFlat()
-                    return flat.reduce((accum, cur) => accum + cur, 0) / flat.length
+                    const inputs = await this.in
+                    const twoDimensional = inputs.every(el => el?.map)
+
+                    return twoDimensional ? inputs.map(average) : average(inputs)
                 }
             }
         }
     },
+}
+
+function average(list) {
+    return list.reduce((accum, cur) => accum + cur, 0) / list.length
 }

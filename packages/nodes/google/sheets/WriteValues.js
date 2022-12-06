@@ -1,19 +1,16 @@
 import { google } from "googleapis"
 
 export default {
-    id: "googlesheets:ReadValues",
-    name: "Get Values From Sheets",
+    id: "googlesheets:WriteValues",
+    name: "Set Values In Sheets",
     targets: {
         values: {
             spreadsheetId: {},
             range: {},
-        }
-    },
-    sources: {
-        values: {
+        },
+        signals: {
             " ": {
-                async get() {
-
+                async action(x) {
                     // grab stored refresh token
                     const appSnapshot = await global.admin.firestore().doc(`apps/${global.info.appId}`).get()
                     const refreshToken = appSnapshot.data().integrations?.Google?.refreshToken
@@ -29,19 +26,24 @@ export default {
                     // get Google Sheets API
                     const sheets = google.sheets({ version: "v4", auth: global.oauthClient })
 
+                    // make sure input array is two-dimensional
+                    const twoDimensional = x.every(el => el?.map)
+                    const writeValues = twoDimensional ? x : [x]
+
                     // read values from range
-                    const response = await sheets.spreadsheets.values.get({
+                    await sheets.spreadsheets.values.update({
                         spreadsheetId: (await this.spreadsheetId)?.[0],
                         range: (await this.range)?.[0],
-                        majorDimension: this.state.majorDimension,
-                        valueRenderOption: "UNFORMATTED_VALUE",
+                        valueInputOption: "USER_ENTERED",
+                        requestBody: {
+                            majorDimension: this.state.majorDimension,
+                            values: writeValues,
+                        },
                     })
-
-                    return response.data.values
                 }
             }
         }
-    }
+    },
 }
 
 const AuthorizationError = new Error("Google Sheets service hasn't been authorized.")

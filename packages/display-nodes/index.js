@@ -35,6 +35,11 @@ import WriteProperty from "./object/WriteProperty"
 import Range from "./google/sheets/Range"
 import Cell from "./google/sheets/Cell"
 import ReadValues from "./google/sheets/ReadValues"
+import Column from "./google/sheets/Column"
+import Row from "./google/sheets/Row"
+
+import FilterBlanks from "./lists/FilterBlanks"
+import WriteValues from "./google/sheets/WriteValues"
 
 
 export const Nodes = {
@@ -71,7 +76,12 @@ export const Nodes = {
 
     "googlesheets:Range": Range,
     "googlesheets:Cell": Cell,
+    "googlesheets:Column": Column,
+    "googlesheets:Row": Row,
     "googlesheets:ReadValues": ReadValues,
+    "googlesheets:WriteValues": WriteValues,
+
+    "list:FilterBlanks": FilterBlanks,
 }
 
 export const NodeCategories = {
@@ -133,7 +143,9 @@ export const NodeCategories = {
     Lists: {
         title: "Lists",
         icon: ListSearch,
-        members: [],
+        members: [
+            "list:FilterBlanks",
+        ],
     },
 
     GoogleSheets: {
@@ -142,7 +154,10 @@ export const NodeCategories = {
         members: [
             "googlesheets:Cell",
             "googlesheets:Range",
+            "googlesheets:Column",
+            "googlesheets:Row",
             "googlesheets:ReadValues",
+            "googlesheets:WriteValues",
         ],
     },
 }

@@ -20,7 +20,7 @@ export default function Node({ id, type, selected }) {
     const nodeType = nodeTypes[type]
 
     // node's interal state
-    const [state, setState] = useNodeState(id)
+    const [state, setState] = useNodeState(id, nodeType.defaultState)
 
     // expanding nodes
     const canBeExpanded = !!nodeType.expanded
@@ -40,6 +40,7 @@ export default function Node({ id, type, selected }) {
     const displayProps = {
         state,
         setState,
+        defaultState: nodeType.defaultState,
         flowId,
         appId,
         connections,
