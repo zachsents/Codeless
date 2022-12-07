@@ -13,7 +13,7 @@ export default {
 
     defaultState: { $: { } },
 
-    default: ({ state, setState, defaultState }) => {
+    renderNode: ({ state, setState, defaultState }) => {
 
         const [entries, setEntries] = useState(Object.entries(state.$ || defaultState.$))
 

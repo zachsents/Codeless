@@ -7,7 +7,7 @@ export default {
     icon: AlphabetLatin,
     valueSources: [" "],
 
-    default: ({ state, setState }) => <Input state={state} setState={setState} size="xs" w={160} />,
+    renderNode: ({ state, setState }) => <Input state={state} setState={setState} size="xs" w={160} />,
 }
 
 function Input({ state, setState, ...props }) {

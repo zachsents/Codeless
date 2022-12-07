@@ -7,7 +7,7 @@ export default {
     icon: CircuitSwitchOpen,
     valueSources: [" "],
 
-    default: ({ state, setState }) => {
+    renderNode: ({ state, setState }) => {
         return (
             <Switch
                 mt={-10}

@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react"
-import { Card, Flex, Stack, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
-import { useHover, useInterval } from "@mantine/hooks"
-import { getConnectedEdges, Position, useReactFlow, useUpdateNodeInternals } from "reactflow"
+import { useState } from "react"
+import { Card, Group, Flex, Stack, Portal, Text, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
+import { useClickOutside, useHover, useInterval } from "@mantine/hooks"
+import { Position, useUpdateNodeInternals } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
-import { Handle, useNodeState } from "../../util"
+import { useNodeData, useNodeDisplayProps } from "../../util"
 import { TbMinus, TbPlus } from "react-icons/tb"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect } from "react"
@@ -13,55 +13,25 @@ import { useEffect } from "react"
 
 export default function Node({ id, type, selected }) {
 
-    const rf = useReactFlow()
-
     // get node type
-    const { nodeTypes, flowId, appId, firestore } = useNodeBuilder()
+    const { nodeTypes } = useNodeBuilder()
     const nodeType = nodeTypes[type]
 
-    // node's interal state
-    const [state, setState] = useNodeState(id, nodeType.defaultState)
-
-    // expanding nodes
-    const canBeExpanded = !!nodeType.expanded
-
-    // pass connection state to node
-    const connections = useMemo(() => {
-        // find connected edges
-        const connectedEdges = getConnectedEdges([rf.getNode(id)], rf.getEdges())
-            .map(edge => new Handle(edge.targetHandle).name)
-
-        // create a map of value target handles to connection state
-        const entries = nodeType.valueTargets?.map(vt => [vt, connectedEdges.includes(vt)])
-        return entries ? Object.fromEntries(entries) : {}
-    }, [JSON.stringify(rf.getEdges())])
+    // node's interal state & data
+    const [data, setData] = useNodeData(id)
 
     // props for display components
-    const displayProps = {
-        state,
-        setState,
-        defaultState: nodeType.defaultState,
-        flowId,
-        appId,
-        connections,
-        firestore,
-    }
+    const displayProps = useNodeDisplayProps(id)
+
+    // expanding nodes
+    const canBeExpanded = !!nodeType.configuration
+    // when deselected, close node
+    useEffect(() => {
+        !selected && setData({ expanded: false, focused: false })
+    }, [selected])
 
     // hover for showing expand button
-    const { hovered, ref } = useHover()
-
-    // Card Flip animation -- will be added back in during animation overhaul
-    // const variants = {
-    //     expanded: {
-    //         rotateY: 180,
-    //         transition: { duration: .2 },
-    //     },
-
-    //     notExpanded: {
-    //         rotateY: 0,
-    //         transition: { duration: .2 }
-    //     }
-    // }
+    const { hovered, ref: hoverRef } = useHover()
 
     // smoothly updating edge positions
     const updateNodeInterals = useUpdateNodeInternals()
@@ -77,7 +47,7 @@ export default function Node({ id, type, selected }) {
             initial={{ scale: 0 }}
             animate={{ scale: selected ? 1.1 : 1, }}
             onAnimationComplete={nodeUpdateInterval.stop}
-            ref={ref}
+            ref={hoverRef}
         >
             <HandleStack position={Position.Left}>
                 {nodeType.valueTargets?.map(name =>
@@ -97,43 +67,44 @@ export default function Node({ id, type, selected }) {
                 )}
             </HandleStack>
 
-            {/* This looks cool, but needs some work. Saving it for the animation overhaul. */}
-            {/* <motion.div variants={variants} animate={size == Size.Large ? "expanded" : "notExpanded"}> */}
-            {/* <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.1 }}> */}
             <Card
-                radius="lg"
-                p="md"
+                radius="md"
+                p="sm"
+                px="md"
                 shadow={selected ? "lg" : "sm"}
                 sx={cardStyle(id)}
+                onDoubleClick={() => setData({ expanded: true, focused: true })}
             >
                 <Flex>
-                    {state.expanded ?
+                    {nodeType.renderNode ?
                         <>
-                            <nodeType.expanded {...displayProps} />
-                            <ThemeIcon color={nodeType.color ?? "yellow.5"} radius="md" size="lg" sx={topIconStyle()}>
-                                <nodeType.icon size={18} color="black" />
+                            <nodeType.renderNode {...displayProps} />
+                            <ThemeIcon color={nodeType.color ?? "yellow.5"} radius="md" size="sm" sx={topIconStyle(10)}>
+                                <nodeType.icon size={12} color="black" />
                             </ThemeIcon>
                         </>
                         :
-                        nodeType.default ?
-                            <>
-                                <nodeType.default {...displayProps} />
-                                <ThemeIcon color={nodeType.color ?? "yellow.5"} radius="md" size="sm" sx={topIconStyle(10)}>
-                                    <nodeType.icon size={12} color="black" />
+                        <Group spacing="xs">
+                            {nodeType.color ?
+                                <ThemeIcon color={nodeType.color} size="sm" radius="xl">
+                                    <nodeType.icon size={10} />
                                 </ThemeIcon>
-                            </>
-                            :
-                            <nodeType.icon />}
+                                :
+                                <nodeType.icon size={16} />
+                            }
+                            <Box maw={120}>
+                                <Text lh={1.2} size="xs" ff="DM Sans">{nodeType.renderName?.(displayProps) ?? nodeType.name}</Text>
+                            </Box>
+                        </Group>}
                 </Flex>
             </Card>
-            {/* </motion.div> */}
 
-            {canBeExpanded && <ExpandButton
+            {/* {canBeExpanded && <ExpandButton
                 show={hovered}
-                expanded={state.expanded}
-                onExpand={() => setState({ expanded: true })}
-                onCollapse={() => setState({ expanded: false })}
-            />}
+                expanded={data.expanded}
+                onExpand={() => setData({ expanded: true })}
+                onCollapse={() => setData({ expanded: false })}
+            />} */}
         </motion.div>
     )
 }
@@ -178,9 +149,11 @@ function ExpandButton({ show = false, expanded = false, onExpand, onCollapse }) 
     )
 }
 
+
 const cardStyle = (id, flip = false) => theme => ({
     overflow: "visible",
     backgroundColor: id == "trigger" && theme.colors.yellow[5],
+    // backgroundColor: id == "trigger" ? theme.colors.yellow[5] : theme.colors.blue[6],
     // ...(flip && {
     //     transform: "scaleX(-1)",
     // })
@@ -190,7 +163,7 @@ const stackStyle = position => ({
     position: "absolute",
     top: "50%",
     zIndex: 10,
-    height: "100%",
+    // height: "100%",
 
     ...(position == Position.Left && {
         left: 0,

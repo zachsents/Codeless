@@ -1,5 +1,5 @@
 import { BoxAlignLeft } from "tabler-icons-react"
-import { TextInput, Text, NumberInput, Stack } from "@mantine/core"
+import { TextInput, Group, NumberInput, Stack } from "@mantine/core"
 
 export default {
     name: "Column",
@@ -10,9 +10,9 @@ export default {
 
     defaultState: { $: "A1:A" },
 
-    default: ({ state }) => <Text ff="monospace">{state.$}</Text>,
+    renderName: ({ state }) => state.$,
 
-    expanded: ({ state, setState }) => {
+    configuration: ({ state, setState }) => {
 
         const [, letter, number] = state.$?.match?.(/([A-Za-z]*)([0-9]*):/) ?? []
 
@@ -21,22 +21,20 @@ export default {
         }
 
         return (
-            <Stack w={80}>
+            <Group w={240} grow>
                 <TextInput
                     label="Column"
                     value={letter ?? ""}
                     onChange={event => setRange({ le: event.currentTarget.value })}
-                    size="xs"
                     placeholder="A"
                 />
                 <NumberInput
                     label="Starting Row"
                     value={parseInt(number) ?? null}
                     onChange={val => setRange({ num: val })}
-                    size="xs"
                     placeholder="1"
                 />
-            </Stack>
+            </Group>
         )
     },
 }

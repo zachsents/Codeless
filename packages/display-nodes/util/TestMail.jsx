@@ -9,7 +9,7 @@ export default {
     signalTargets: [" "],
     valueTargets: ["to"],
 
-    expanded: ({ state, setState, connections }) => {
+    configuration: ({ state, setState, connections }) => {
 
         useEffect(() => {
             connections.to && setState({ to: null })
@@ -18,7 +18,6 @@ export default {
         return <TextInput
             disabled={connections.to}
             label="Recipient"
-            size="xs"
             value={state.to ?? ""}
             onChange={event => setState({ to: event.currentTarget.value })}
             placeholder="zach@nocode.com"

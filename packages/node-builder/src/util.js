@@ -1,7 +1,8 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
-import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useReactFlow } from "reactflow"
+import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useNodes, useReactFlow } from "reactflow"
+import { useNodeBuilder } from "./components/NodeBuilder"
 
 
 export function findEdgeFromConnection(connection, edges) {
@@ -72,8 +73,85 @@ export function useNodeState(nodeId, defaultState) {
         }
     }, [defaultState])
 
-    return [state ?? {}, setState]
+    return [state, setState]
 }
+
+
+export function useNodeData(nodeId) {
+
+    const reactFlow = useReactFlow()
+    const data = reactFlow.getNode(nodeId)?.data
+
+    const setData = changes => reactFlow.setNodes(nodes =>
+        produce(nodes, draft => {
+            const node = draft.find(node => node.id == nodeId)
+
+            if (!node) {
+                console.log("Couldn't find node:", nodeId)
+                return
+            }
+
+            if (!node.data)
+                node.data = { state: {} }
+
+            node.data = {
+                ...node.data,
+                ...changes,
+            }
+        })
+    )
+
+    return [data, setData]
+}
+
+
+export function useNodeDisplayProps(id) {
+
+    const rf = useReactFlow()
+    const { nodeTypes, flowId, appId, firestore } = useNodeBuilder()
+
+    const node = rf.getNode(id)
+    const nodeType = nodeTypes[node?.type]
+
+    const [state, setState] = useNodeState(id, nodeType?.defaultState)
+
+    // pass connection state to node
+    const connections = useMemo(() => {
+        if (!node)
+            return {}
+
+        // find connected edges
+        const connectedEdges = getConnectedEdges([node], rf.getEdges())
+            .map(edge => new Handle(edge.targetHandle).name)
+
+        // create a map of value target handles to connection state
+        const entries = nodeType.valueTargets?.map(vt => [vt, connectedEdges.includes(vt)])
+        return entries ? Object.fromEntries(entries) : {}
+    }, [JSON.stringify(rf.getEdges())])
+
+    return {
+        state,
+        setState,
+        defaultState: nodeType?.defaultState,
+        flowId,
+        appId,
+        connections,
+        firestore,
+    }
+}
+
+export function useNodeType({ id, type }) {
+    const { nodeTypes } = useNodeBuilder()
+
+    if (id) {
+        const rf = useReactFlow()
+        return nodeTypes[rf.getNode(id).type]
+    }
+
+    if (type)
+        return nodeTypes[type]
+}
+
 
 export function removeNode(nodeId, reactFlow) {
     removeNodes([nodeId], reactFlow)

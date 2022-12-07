@@ -16,20 +16,19 @@ export default {
 
     defaultState: { majorDimension: Dimension.Rows },
 
-    expanded: ({ state, setState }) => {
+    configuration: ({ state, setState }) => {
 
         return (
-            <Stack mt={5} spacing={3} w={150}>
+            <Stack spacing={5} w={180}>
                 <Group position="apart">
-                    <Text size="xs">Major Dimension</Text>
-                    <Tooltip label={<Text size="xs">Whether values are grouped by row or column.</Text>}>
-                        <Text color="dimmed" size="xs" mb={-4}><InfoCircle size="12" /></Text>
+                    <Text size="sm">Major Dimension</Text>
+                    <Tooltip label="Whether values are grouped by row or column.">
+                        <Text color="dimmed" size="sm" mb={-5}><InfoCircle size={15} /></Text>
                     </Tooltip>
                 </Group>
                 <SegmentedControl
                     value={state.majorDimension ?? Dimension.Rows}
                     onChange={val => setState({ majorDimension: val })}
-                    size="xs"
                     data={Object.keys(Dimension).map(key => ({ label: key, value: Dimension[key] }))}
                 />
             </Stack>

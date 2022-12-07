@@ -9,7 +9,7 @@ import 'reactflow/dist/style.css'
 import "../nodeStyles.css"
 import { DataType } from "../modules/dataTypes"
 import { useEffect } from "react"
-import ActiveToolbar from "./ActiveToolbar"
+import ActiveDetails from "./ActiveDetails"
 import { useDebouncedValue } from "@mantine/hooks"
 import produce from "immer"
 
@@ -76,7 +76,7 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
                     }}
                 />
                 <ChangeWatcher onChange={onChange} />
-                <ActiveToolbar />
+                <ActiveDetails />
             </ReactFlow>
         </NodeBuilderContext.Provider>
     )

@@ -10,9 +10,9 @@ export default {
 
     defaultState: { $: "A1" },
 
-    default: ({ state }) => <Text ff="monospace">{state.$}</Text>,
+    renderName: ({ state }) => state.$,
 
-    expanded: ({ state, setState }) => {
+    configuration: ({ state, setState }) => {
 
         const [, letter, number] = state.$?.match?.(/([A-Za-z]*)([0-9]*)/) ?? []
 
@@ -21,21 +21,20 @@ export default {
         }
 
         return (
-            <Group spacing="xs" mt={5}>
+            <Group spacing="xs">
                 <TextInput
                     value={letter ?? ""}
                     onChange={event => setRange({ le: event.currentTarget.value })}
-                    size="xs"
-                    w={40}
+                    w={60}
                     placeholder="A"
-                    />
+                />
                 <NumberInput
                     value={parseInt(number) ?? null}
                     onChange={val => setRange({ num: val })}
-                    size="xs"
-                    w={60}
+                    // size="xs"
+                    w={80}
                     placeholder="1"
-                    />
+                />
             </Group>
         )
     },

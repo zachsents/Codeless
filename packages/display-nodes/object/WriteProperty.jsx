@@ -8,7 +8,7 @@ export default {
     valueTargets: ["object", "value"],
     valueSources: ["out"],
 
-    default: ({ state, setState }) => {
+    renderNode: ({ state, setState }) => {
         return (
             <TextInput
                 value={state.$ ?? ""}

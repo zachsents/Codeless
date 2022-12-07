@@ -11,17 +11,12 @@ export default {
 
     defaultState: { $: new Date().getTime() },
 
-    default: ({ state, setState }) => {
+    renderName: ({ state }) => new Date(state.$).toLocaleString(undefined, {
+        timeStyle: "short",
+        dateStyle: "short",
+    }),
 
-        return (
-            <Text>{new Date(state.$).toLocaleString(undefined, {
-                timeStyle: "short",
-                dateStyle: "short",
-            })}</Text>
-        )
-    },
-
-    expanded: ({ state, setState }) => {
+    configuration: ({ state, setState }) => {
         const [date, setDate] = useState(state.$ ? new Date(state.$) : null)
         const [time, setTime] = useState(state.$ ? new Date(state.$) : null)
 

@@ -1,9 +1,7 @@
-import { signInWithGoogle } from "firebase-web-helpers"
 import { Button, Group, Loader, ThemeIcon } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
 import { TbCheck } from "react-icons/tb"
 import { httpsCallable } from 'firebase/functions'
-import { doc, updateDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
 
 const REQUIRED_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]

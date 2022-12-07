@@ -10,9 +10,9 @@ export default {
 
     defaultState: { $: "A1:C4" },
 
-    default: ({ state }) => <Text ff="monospace">{state.$}</Text>,
+    renderName: ({ state }) => state.$,
 
-    expanded: ({ state, setState }) => {
+    configuration: ({ state, setState }) => {
 
         const [, start, end] = state.$?.match?.(/([A-Za-z0-9]*):([A-Za-z0-9]*)/) ?? []
 
@@ -21,11 +21,10 @@ export default {
         }
 
         return (
-            <Group spacing="xs" mt={5}>
+            <Group spacing="xs">
                 <TextInput
                     value={start ?? ""}
                     onChange={event => setRange({ s: event.currentTarget.value })}
-                    size="xs"
                     w={60}
                     placeholder="A1"
                 />
@@ -33,7 +32,6 @@ export default {
                 <TextInput
                     value={end ?? ""}
                     onChange={event => setRange({ e: event.currentTarget.value })}
-                    size="xs"
                     w={60}
                     placeholder="C4"
                 />
