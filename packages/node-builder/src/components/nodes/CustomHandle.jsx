@@ -1,10 +1,10 @@
-import { Box, useMantineTheme } from "@mantine/core"
+import { Box, useMantineTheme, Text } from "@mantine/core"
 import { Handle } from "reactflow"
 import { DataType } from "../../modules/dataTypes"
 import { motion } from "framer-motion"
 
 
-export default function CustomHandle({ name, dataType, handleType, position }) {
+export default function CustomHandle({ name, dataType, handleType, position, label, showLabel = false }) {
 
     const theme = useMantineTheme()
 
@@ -12,14 +12,22 @@ export default function CustomHandle({ name, dataType, handleType, position }) {
         hovered: { scale: 2.5 },
     }
 
+    const tooltipLabel = label ?? formatName(name)
+
     return (
-        <motion.div  whileHover="hovered" style={handleWrapperStyle}>
-            <motion.div variants={variants} transition={{duration: 0.1 }}>
+        <motion.div whileHover="hovered" style={handleWrapperStyle}>
+            <motion.div variants={variants} transition={{ duration: 0.05 }}>
                 <Handle {...createHandleProps(theme, name, dataType, {
                     type: handleType,
                     position,
                 })} />
             </motion.div>
+            {showLabel && tooltipLabel &&
+                <Box sx={tooltipContainerStyle(position)}>
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} >
+                        <Text sx={tooltipStyle}>{tooltipLabel}</Text>
+                    </motion.div>
+                </Box>}
         </motion.div>
     )
 }
@@ -62,8 +70,32 @@ function createHandleId(name, dataType) {
     return `<${dataType}>${name}`
 }
 
+function formatName(name) {
+    return name
+        .trim()
+        .match(/[A-Z]?[^A-Z]+/g)
+        ?.map(word => word.slice(0, 1).toUpperCase() + word.slice(1))
+        .join(" ") ?? ""
+}
 
 const handleWrapperStyle = {
     borderRadius: "100%",
     padding: 7,
+    position: "relative",
 }
+
+const tooltipContainerStyle = position => ({
+    position: "absolute",
+    top: "50%",
+    [position]: 0,
+    transform: `translate(${position == "left" ? "-" : ""}100%, -50%)`,
+})
+
+const tooltipStyle = theme => ({
+    fontSize: 10,
+    borderRadius: theme.radius.xl,
+    backgroundColor: theme.colors.dark[4],
+    color: theme.colors.gray[0],
+    padding: "2px 8px",
+    whiteSpace: "nowrap",
+})

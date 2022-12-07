@@ -11,7 +11,10 @@ export default {
     description: "Sets values in a Sheet.",
     icon: BookUpload,
     color: "green.5",
-    valueTargets: ["spreadsheetId", "range"],
+    valueTargets: [
+        { name: "spreadsheetId", label: "Spreadsheet ID" }, 
+        "range"
+    ],
     signalTargets: [" "],
 
     defaultState: { majorDimension: Dimension.Rows },

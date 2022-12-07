@@ -31,8 +31,8 @@ export default function Node({ id, type, selected }) {
         !selected && setData({ expanded: false, focused: false })
     }, [selected])
 
-    // hover for showing expand button
-    // const { hovered, ref: hoverRef } = useHover()
+    // hover for showing handle labels
+    const { hovered, ref: hoverRef } = useHover()
 
     // smoothly updating edge positions
     const updateNodeInterals = useUpdateNodeInternals()
@@ -51,28 +51,36 @@ export default function Node({ id, type, selected }) {
         rightStackRef.current?.offsetHeight ?? 0
     )
 
+    // helper function for rendering custom handles
+    const renderCustomHandles = (handles, dataType, handleType, position) =>
+        handles?.map(handle => {
+            // handle can either be a string or { name, label }
+            const { name, label } = typeof handle === "string" ? { name: handle } : handle
+
+            return <CustomHandle
+                name={name}
+                label={label}
+                showLabel={hovered || selected}
+                {...{ dataType, handleType, position }}
+                key={name}
+            />
+        })
+
     return (
         <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: selected ? 1.1 : 1, }}
             onAnimationComplete={nodeUpdateInterval.stop}
+            ref={hoverRef}
         >
             <HandleStack position={Position.Left} ref={leftStackRef}>
-                {nodeType.valueTargets?.map(name =>
-                    <CustomHandle name={name} dataType={DataType.Value} handleType="target" position={Position.Left} key={name} />
-                )}
-                {nodeType.signalTargets?.map(name =>
-                    <CustomHandle name={name} dataType={DataType.Signal} handleType="target" position={Position.Left} key={name} />
-                )}
+                {renderCustomHandles(nodeType.valueTargets, DataType.Value, "target", Position.Left)}
+                {renderCustomHandles(nodeType.signalTargets, DataType.Signal, "target", Position.Left)}
             </HandleStack>
 
             <HandleStack position={Position.Right} ref={rightStackRef}>
-                {nodeType.valueSources?.map(name =>
-                    <CustomHandle name={name} dataType={DataType.Value} handleType="source" position={Position.Right} key={name} />
-                )}
-                {nodeType.signalSources?.map(name =>
-                    <CustomHandle name={name} dataType={DataType.Signal} handleType="source" position={Position.Right} key={name} />
-                )}
+                {renderCustomHandles(nodeType.valueSources, DataType.Value, "source", Position.Right)}
+                {renderCustomHandles(nodeType.signalSources, DataType.Signal, "source", Position.Right)}
             </HandleStack>
 
             <Card

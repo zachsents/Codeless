@@ -13,7 +13,10 @@ export default {
     description: "Gets values from a Sheet.",
     icon: SiGooglesheets,
     color: "green",
-    valueTargets: ["spreadsheetId", "range"],
+    valueTargets: [
+        { name: "spreadsheetId", label: "Spreadsheet ID" }, 
+        "range"
+    ],
     valueSources: [" "],
 
     defaultState: { majorDimension: Dimension.Rows },
