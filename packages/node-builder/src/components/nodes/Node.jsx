@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { forwardRef, useState } from "react"
 import { Card, Group, Flex, Stack, Portal, Text, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
 import { useClickOutside, useHover, useInterval } from "@mantine/hooks"
 import { Position, useUpdateNodeInternals } from "reactflow"
@@ -9,6 +9,7 @@ import { useNodeData, useNodeDisplayProps } from "../../util"
 import { TbMinus, TbPlus } from "react-icons/tb"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect } from "react"
+import { useRef } from "react"
 
 
 export default function Node({ id, type, selected }) {
@@ -31,7 +32,7 @@ export default function Node({ id, type, selected }) {
     }, [selected])
 
     // hover for showing expand button
-    const { hovered, ref: hoverRef } = useHover()
+    // const { hovered, ref: hoverRef } = useHover()
 
     // smoothly updating edge positions
     const updateNodeInterals = useUpdateNodeInternals()
@@ -42,14 +43,21 @@ export default function Node({ id, type, selected }) {
         nodeUpdateInterval.start()
     }, [selected])
 
+    // calculating min height for stacks
+    const leftStackRef = useRef()
+    const rightStackRef = useRef()
+    const stackHeight = Math.max(
+        leftStackRef.current?.offsetHeight ?? 0,
+        rightStackRef.current?.offsetHeight ?? 0
+    )
+
     return (
         <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: selected ? 1.1 : 1, }}
             onAnimationComplete={nodeUpdateInterval.stop}
-            ref={hoverRef}
         >
-            <HandleStack position={Position.Left}>
+            <HandleStack position={Position.Left} ref={leftStackRef}>
                 {nodeType.valueTargets?.map(name =>
                     <CustomHandle name={name} dataType={DataType.Value} handleType="target" position={Position.Left} key={name} />
                 )}
@@ -58,7 +66,7 @@ export default function Node({ id, type, selected }) {
                 )}
             </HandleStack>
 
-            <HandleStack position={Position.Right}>
+            <HandleStack position={Position.Right} ref={rightStackRef}>
                 {nodeType.valueSources?.map(name =>
                     <CustomHandle name={name} dataType={DataType.Value} handleType="source" position={Position.Right} key={name} />
                 )}
@@ -72,6 +80,7 @@ export default function Node({ id, type, selected }) {
                 p="sm"
                 px="md"
                 shadow={selected ? "lg" : "sm"}
+                mih={stackHeight}
                 sx={cardStyle(id)}
                 onDoubleClick={() => setData({ expanded: true, focused: true })}
             >
@@ -109,13 +118,21 @@ export default function Node({ id, type, selected }) {
     )
 }
 
-function HandleStack({ children, position }) {
+const HandleStack = forwardRef(({ children, position, ...props }, ref) => {
     return (
-        <Stack justify="space-evenly" align="center" spacing={0} sx={stackStyle(position)}>
+        <Stack
+            justify="space-evenly"
+            align="center"
+            spacing={0}
+            sx={stackStyle(position)}
+            ref={ref}
+            {...props}
+        >
             {children}
         </Stack>
     )
-}
+})
+
 
 function ExpandButton({ show = false, expanded = false, onExpand, onCollapse }) {
 
@@ -150,20 +167,16 @@ function ExpandButton({ show = false, expanded = false, onExpand, onCollapse }) 
 }
 
 
-const cardStyle = (id, flip = false) => theme => ({
+const cardStyle = id => theme => ({
     overflow: "visible",
+    display: "flex",
     backgroundColor: id == "trigger" && theme.colors.yellow[5],
-    // backgroundColor: id == "trigger" ? theme.colors.yellow[5] : theme.colors.blue[6],
-    // ...(flip && {
-    //     transform: "scaleX(-1)",
-    // })
 })
 
 const stackStyle = position => ({
     position: "absolute",
     top: "50%",
     zIndex: 10,
-    // height: "100%",
 
     ...(position == Position.Left && {
         left: 0,

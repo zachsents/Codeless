@@ -1,19 +1,26 @@
 import { Box, useMantineTheme } from "@mantine/core"
 import { Handle } from "reactflow"
 import { DataType } from "../../modules/dataTypes"
+import { motion } from "framer-motion"
 
 
 export default function CustomHandle({ name, dataType, handleType, position }) {
-    
+
     const theme = useMantineTheme()
-    
+
+    const variants = {
+        hovered: { scale: 2.5 },
+    }
+
     return (
-        <Box sx={handleWrapperStyle}>
-            <Handle {...createHandleProps(theme, name, dataType, {
-                type: handleType,
-                position,
-            })} />
-        </Box>
+        <motion.div  whileHover="hovered" style={handleWrapperStyle}>
+            <motion.div variants={variants} transition={{duration: 0.1 }}>
+                <Handle {...createHandleProps(theme, name, dataType, {
+                    type: handleType,
+                    position,
+                })} />
+            </motion.div>
+        </motion.div>
     )
 }
 
@@ -28,7 +35,7 @@ const handleStyle = theme => ({
     height: handleSize,
     border: "none",
     // outline: "3px solid " + (theme.other.editorBackgroundColor ?? theme.colors.gray[2])
-    outline: "3px solid " + theme.other.editorBackgroundColor,
+    // outline: "3px solid " + theme.other.editorBackgroundColor,
 })
 
 const signalStyle = theme => ({
@@ -47,7 +54,7 @@ function createHandleProps(theme, name, dataType, props) {
             ...handleStyle(theme),
             ...(dataType == DataType.Value && valueStyle(theme)),
             ...(dataType == DataType.Signal && signalStyle(theme)),
-        }, 
+        },
     }
 }
 
@@ -56,11 +63,7 @@ function createHandleId(name, dataType) {
 }
 
 
-const handleWrapperStyle = theme => ({
+const handleWrapperStyle = {
     borderRadius: "100%",
     padding: 7,
-    "&:hover > *": {
-        transform: "scale(2.5) !important",
-        outlineWidth: "1.5px !important",
-    }
-})
+}
