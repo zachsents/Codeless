@@ -1,8 +1,9 @@
 import { forwardRef, useEffect, useRef, useState, useMemo } from 'react'
-import { ActionIcon, Box, Grid, Group, Navbar, NavLink, Portal, ScrollArea, SimpleGrid, Skeleton, Space, Stack, Text, TextInput, Title } from '@mantine/core'
-import { useDisclosure } from "@mantine/hooks"
-import { TbArrowLeft, TbGrain, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from 'react-icons/tb'
+import { ActionIcon, Box, Button, Group, Navbar, NavLink, ScrollArea, Stack, SimpleGrid, Space, Text, TextInput, Title } from '@mantine/core'
+import { useDisclosure, useDebouncedState } from "@mantine/hooks"
+import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from 'react-icons/tb'
 import { useReactFlow } from "reactflow"
+import fuzzy from "fuzzy"
 
 import LinkIcon from '../LinkIcon'
 import NodeInfoPopover from './NodeInfoPopover'
@@ -15,10 +16,6 @@ import { motion } from 'framer-motion'
 export default function Sidebar() {
 
     const [expanded, sidebarHandlers] = useDisclosure(true)
-    const [selectedCategory, setSelectedCategory] = useState()
-
-    const [searchQuery, setSearchQuery] = useState("")
-    const searchBarRef = useRef()
 
     // make an alphabetical list of all nodes that are in categories
     // doing this to avoid showing nodes that aren't in categories
@@ -31,6 +28,30 @@ export default function Sidebar() {
         []
     )
 
+    // states for searching
+    const [searchQuery, setSearchQuery] = useDebouncedState("", 100)
+
+    // state for which nodes are showing
+    const [selectedCategory, setSelectedCategory] = useState()
+    const [showingNodes, setShowingNodes] = useState(AllNodes)
+    const queriedNodes = useMemo(
+        () => showingNodes.filter(node => fuzzy.test(searchQuery, node.name)),
+        [searchQuery, showingNodes]
+    )
+
+    const handleCategorySelection = cat => {
+        setSelectedCategory(cat.title)
+        setShowingNodes(cat.nodes)
+    }
+
+    const handleClearSelection = () => {
+        setSelectedCategory(null)
+        setShowingNodes(AllNodes)
+    }
+
+    // search bar ref for focusing on it when sidebar is expanded
+    const searchBarRef = useRef()
+
     return (
         <Navbar
             width={{ base: expanded ? 240 : 70 }}
@@ -40,26 +61,30 @@ export default function Sidebar() {
             {expanded ?
                 <>
                     <Navbar.Section>
+                        {/* Section Title & Collapse Control */}
                         <Group position="apart">
                             <Title order={4}>Nodes</Title>
                             <ActionIcon radius="md" onClick={() => sidebarHandlers.close()}>
                                 <TbLayoutSidebarLeftCollapse />
                             </ActionIcon>
                         </Group>
+
+                        {/* Search Bar */}
                         <TextInput
                             my={20}
                             radius="xl"
                             placeholder="Search Nodes"
-                            value={searchQuery}
                             onChange={event => setSearchQuery(event.currentTarget.value)}
                             rightSection={
                                 <ActionIcon onClick={() => {
+                                    searchBarRef.current.value = ""
                                     setSearchQuery("")
                                     searchBarRef.current.focus()
                                 }} radius="xl"><TbX /></ActionIcon>
                             }
                             ref={searchBarRef}
                         />
+
                     </Navbar.Section>
 
                     <Navbar.Section
@@ -79,60 +104,54 @@ export default function Sidebar() {
                             }
                         }}
                     >
-                        <>
-                            <Space h={10} />
-                            {selectedCategory ?
-                                <>
-                                    <Grid align="center" m={0} mb={10}>
-                                        <Grid.Col span={3}>
-                                            <ActionIcon radius="md" onClick={() => setSelectedCategory(null)}>
-                                                <TbArrowLeft />
-                                            </ActionIcon>
-                                        </Grid.Col>
-                                        <Grid.Col span={6}>
-                                            <Text align="center" color="dimmed" size="xs">
-                                                {selectedCategory.title}
-                                            </Text>
-                                        </Grid.Col>
-                                    </Grid>
-                                    <Stack spacing="xs">
-                                        {Object.values(selectedCategory.nodes).map(node =>
-                                            <NodeInfoPopover node={node} key={node.id}>
-                                                <NodeTile node={node} />
-                                            </NodeInfoPopover>
-                                        )}
-                                    </Stack>
-                                </>
-                                :
-                                <>
-                                    <Text align="center" color="dimmed" size="xs" mb={10}>Categories</Text>
-                                    <SimpleGrid cols={2}>
+                        <Space h={10} />
+
+                        {/* Category Tiles */}
+                        {!selectedCategory && !searchQuery &&
+                            <>
+                                <Text align="center" color="dimmed" size="xs" mb={10}>Categories</Text>
+                                <SimpleGrid cols={2}>
+                                    {NodeCategories.map((cat, i) =>
                                         <CategoryTile
-                                            onClick={() => setSelectedCategory({
-                                                title: "All",
-                                                nodes: AllNodes,
-                                            })}
-                                            key="all"
+                                            icon={cat.icon}
+                                            onClick={() => handleCategorySelection(cat)}
+                                            key={cat.title + i}
                                         >
-                                            All
+                                            {cat.title}
                                         </CategoryTile>
-                                        {NodeCategories.map((cat, i) =>
-                                            <CategoryTile
-                                                icon={cat.icon}
-                                                // active={cat == selectedCategory}
-                                                onClick={() => setSelectedCategory(cat)}
-                                                key={cat.title + i}
-                                            >
-                                                {cat.title}
-                                            </CategoryTile>
-                                        )}
-                                    </SimpleGrid>
-                                </>
-                            }
-                        </>
+                                    )}
+                                </SimpleGrid>
+                                <Space h="xl" />
+                            </>}
+
+                        {/* Nodes */}
+                        {selectedCategory ?
+                            <Group position="center">
+                                <Text color="dimmed" size="xs">Nodes</Text>
+                                <Button
+                                    variant="outline"
+                                    radius="xl"
+                                    size="sm"
+                                    compact
+                                    leftIcon={<TbX size={10} />}
+                                    onClick={handleClearSelection}
+                                >
+                                    {selectedCategory}
+                                </Button>
+                            </Group> :
+                            <Text align="center" color="dimmed" size="xs">Nodes</Text>
+                        }
+                        <Stack spacing="xs" mt={10}>
+                            {queriedNodes.map(node =>
+                                <NodeInfoPopover node={node} key={node.id}>
+                                    <NodeTile node={node} />
+                                </NodeInfoPopover>
+                            )}
+                        </Stack>
                     </Navbar.Section>
                 </>
                 :
+                // Collapsed Sidebar
                 <Navbar.Section>
                     <Stack align="center" spacing="xs">
                         <LinkIcon label="Expand" position="right" size="xl" radius="lg" onClick={() => sidebarHandlers.open()}>
@@ -150,7 +169,7 @@ export default function Sidebar() {
                         {NodeCategories.map((cat, i) =>
                             <LinkIcon label={cat.title} position="right" size="xl" radius="lg" key={cat.title + i} onClick={() => {
                                 sidebarHandlers.open()
-                                setSelectedCategory(cat)
+                                handleCategorySelection(cat)
                             }}>
                                 <cat.icon fontSize={18} />
                             </LinkIcon>

@@ -1,5 +1,6 @@
 import { Group, SegmentedControl, Stack, Text, Tooltip } from "@mantine/core"
 import { BookUpload, InfoCircle } from "tabler-icons-react"
+import { SiGooglesheets } from "react-icons/si"
 
 const Dimension = {
     Rows: "ROWS",
@@ -9,8 +10,8 @@ const Dimension = {
 export default {
     name: "Set Values",
     description: "Sets values in a Sheet.",
-    icon: BookUpload,
-    color: "green.5",
+    icon: SiGooglesheets,
+    color: "green",
     valueTargets: [
         { name: "spreadsheetId", label: "Spreadsheet ID" }, 
         "range"

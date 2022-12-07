@@ -18,7 +18,9 @@
     "@zachsents/display-nodes": "*",
     "embla-carousel-react": "^7.0.5",
     "firebase": "^9.13.0",
+    "firebase-web-helpers": "*",
     "framer-motion": "^7.6.7",
+    "fuzzy": "^0.1.3",
     "next": "12.3.1",
     "next-transpile-modules": "^10.0.0",
     "node-builder": "*",
@@ -29,8 +31,7 @@
     "reactflow": "^11.2.0",
     "tabler-icons-react": "^1.55.0",
     "timeago.js": "^4.0.2",
-    "triggers": "*",
-    "firebase-web-helpers": "*"
+    "triggers": "*"
   },
   "devDependencies": {
     "eslint": "8.25.0",
