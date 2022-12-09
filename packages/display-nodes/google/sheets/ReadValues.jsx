@@ -1,12 +1,13 @@
 import { Stack } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
+import { BoxAlignTopLeft } from "tabler-icons-react"
 import { Dimension, MajorDimensionControl } from "./shared"
 
 
 export default {
     name: "Get Range",
     description: "Gets values from a range in a Google Sheet.",
-    icon: SiGooglesheets,
+    icon: BoxAlignTopLeft,
     color: "green",
     valueTargets: [
         { name: "spreadsheetId", label: "Spreadsheet ID" },

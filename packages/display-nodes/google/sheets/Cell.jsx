@@ -1,12 +1,12 @@
-import { BoxPadding } from "tabler-icons-react"
+import { SortAscendingLetters } from "tabler-icons-react"
 import { TextInput, NumberInput, Grid, Text } from "@mantine/core"
 import { parseRange } from "./util"
 
 export default {
-    name: "Cell",
+    name: "Cell Range",
     description: "A range selectin a single cell.",
-    icon: BoxPadding,
-    color: "green.5",
+    icon: SortAscendingLetters,
+    color: "green",
     valueSources: [" "],
 
     defaultState: { $: "A1" },

@@ -1,12 +1,13 @@
 import { Stack } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
+import { TableExport } from "tabler-icons-react"
 import { Dimension, MajorDimensionControl } from "./shared"
 
 
 export default {
     name: "Get Sheet",
     description: "Gets the data from an entire Sheet.",
-    icon: SiGooglesheets,
+    icon: TableExport,
     color: "green",
     valueTargets: [
         { name: "spreadsheetId", label: "Spreadsheet ID" },

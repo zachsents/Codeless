@@ -60,7 +60,8 @@ export default function Node({ id, type, selected }) {
             return <CustomHandle
                 name={name}
                 label={label}
-                showLabel={hovered || selected}
+                // showLabel={hovered || selected}
+                showLabel={hovered}
                 {...{ dataType, handleType, position }}
                 key={name}
             />

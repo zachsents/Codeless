@@ -1,12 +1,12 @@
-import { BoxAlignTopLeft } from "tabler-icons-react"
+import { SortAscendingLetters } from "tabler-icons-react"
 import { TextInput, Text, Group, Stack, Grid } from "@mantine/core"
 import { parseRange } from "./util"
 
 export default {
     name: "Range",
     description: "Define a range.",
-    icon: BoxAlignTopLeft,
-    color: "green.5",
+    icon: SortAscendingLetters,
+    color: "green",
     valueSources: [" "],
 
     defaultState: { $: "A1:C4" },

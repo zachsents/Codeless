@@ -10,7 +10,7 @@ export default {
     color: "green",
     valueTargets: [
         { name: "spreadsheetId", label: "Spreadsheet ID" }, 
-        "range",
+        { name: "range", label: "Table Range" }, 
         "values",
     ],
     signalTargets: [" "],
