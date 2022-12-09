@@ -1,9 +1,9 @@
-import { Plus } from 'tabler-icons-react'
+import { Sum } from 'tabler-icons-react'
 
 export default {
-    name: "Add",
-    description: "Adds inputs together.",
-    icon: Plus,
+    name: "Sum",
+    description: "Adds all items in a list.",
+    icon: Sum,
     valueTargets: ["in"],
     valueSources: ["sum"],
 }

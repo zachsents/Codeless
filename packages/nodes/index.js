@@ -41,6 +41,11 @@ import Clear from "./google/sheets/Clear.js"
 import ConditionalSignal from "./basics/ConditionalSignal.js"
 import AppendValues from "./google/sheets/AppendValues.js"
 import Delay from "./util/Delay.js"
+import GetSheet from "./google/sheets/GetSheet.js"
+import GetTableColumn from "./google/sheets/GetTableColumn.js"
+import Transpose from "./lists/Transpose.js"
+import Size from "./lists/Size.js"
+import SetTableColumn from "./google/sheets/SetTableColumn.js"
 
 
 const nodes = [
@@ -52,9 +57,9 @@ const nodes = [
 
     Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail, Delay,
 
-    Cell, Range, Column, Row, ReadValues, WriteValues, Clear, AppendValues,
+    Cell, Range, Column, Row, ReadValues, WriteValues, Clear, AppendValues, GetSheet, GetTableColumn, SetTableColumn,
 
-    FilterBlanks,
+    FilterBlanks, Transpose, Size,
 ]
 
 export default Object.fromEntries(nodes.map(node => [node.id, node]))

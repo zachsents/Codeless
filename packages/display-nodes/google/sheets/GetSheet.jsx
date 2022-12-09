@@ -4,17 +4,15 @@ import { Dimension, MajorDimensionControl } from "./shared"
 
 
 export default {
-    name: "Set Range",
-    description: "Sets values in a range in a Google Sheet.",
+    name: "Get Sheet",
+    description: "Gets the data from an entire Sheet.",
     icon: SiGooglesheets,
     color: "green",
     valueTargets: [
         { name: "spreadsheetId", label: "Spreadsheet ID" },
-        "range",
-        "values",
+        "sheetName",
     ],
-    signalTargets: [" "],
-    signalSources: ["  "],
+    valueSources: [" "],
 
     defaultState: { majorDimension: Dimension.Rows },
 

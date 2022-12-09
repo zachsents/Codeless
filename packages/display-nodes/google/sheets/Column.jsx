@@ -2,7 +2,7 @@ import { BoxAlignLeft } from "tabler-icons-react"
 import { TextInput, Group, NumberInput, Stack } from "@mantine/core"
 
 export default {
-    name: "Column",
+    name: "Column Range",
     description: "A range selecting a column.",
     icon: BoxAlignLeft,
     color: "green.5",

@@ -2,7 +2,7 @@ import { BoxAlignTop } from "tabler-icons-react"
 import { TextInput, Group, NumberInput, Stack } from "@mantine/core"
 
 export default {
-    name: "Row",
+    name: "Row Range",
     description: "A range selecting a row.",
     icon: BoxAlignTop,
     color: "green.5",

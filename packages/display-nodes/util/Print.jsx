@@ -4,5 +4,7 @@ export default {
     name: "Print",
     description: "Prints to console.",
     icon: Terminal,
+    valueTargets: ["value"],
     signalTargets: [" "],
+    signalSources: ["  "],
 }

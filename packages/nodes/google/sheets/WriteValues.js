@@ -12,7 +12,7 @@ export default {
         },
         signals: {
             " ": {
-                async action() {
+                async action(x) {
                     // get Google Sheets API
                     const sheets = await authorizeGoogleSheetsAPI()
 
@@ -30,8 +30,15 @@ export default {
                             values: writeValues,
                         },
                     })
+
+                    this["  "](x)
                 }
             }
         }
     },
+    sources: {
+        signals: {
+            "  ": {}
+        }
+    }
 }

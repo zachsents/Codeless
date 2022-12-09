@@ -4,8 +4,8 @@ import { Dimension, MajorDimensionControl } from "./shared"
 
 
 export default {
-    name: "Get Values",
-    description: "Gets values from a Sheet.",
+    name: "Get Range",
+    description: "Gets values from a range in a Google Sheet.",
     icon: SiGooglesheets,
     color: "green",
     valueTargets: [
