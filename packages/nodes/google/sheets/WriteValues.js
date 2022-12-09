@@ -1,4 +1,5 @@
 import { google } from "googleapis"
+import { isDeeper } from "../../arrayUtilities.js"
 
 export default {
     id: "googlesheets:WriteValues",
@@ -7,10 +8,11 @@ export default {
         values: {
             spreadsheetId: {},
             range: {},
+            values: {},
         },
         signals: {
             " ": {
-                async action(x) {
+                async action() {
                     // grab stored refresh token
                     const appSnapshot = await global.admin.firestore().doc(`apps/${global.info.appId}`).get()
                     const refreshToken = appSnapshot.data().integrations?.Google?.refreshToken
@@ -27,8 +29,8 @@ export default {
                     const sheets = google.sheets({ version: "v4", auth: global.oauthClient })
 
                     // make sure input array is two-dimensional
-                    const twoDimensional = x.every(el => el?.map)
-                    const writeValues = twoDimensional ? x : [x]
+                    const inputs = await this.values
+                    const writeValues = isDeeper(inputs) ? inputs : [inputs]
 
                     // read values from range
                     await sheets.spreadsheets.values.update({

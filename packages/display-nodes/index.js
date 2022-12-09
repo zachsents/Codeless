@@ -106,27 +106,12 @@ export const NodeCategories = {
             "object:WriteProperty",
         ],
     },
-    Object: {
-        title: "Objects",
-        icon: Icons,
+    Lists: {
+        title: "Lists",
+        icon: ListSearch,
         members: [
-            "object:CreateObject",
-            "object:ReadProperty",
-            "object:WriteProperty",
-        ],
-    },
-    Util: {
-        title: "Utility",
-        icon: Settings,
-        members: [
-            "utility:Print",
-            "utility:Bind",
-            "utility:Unbind",
-            "utility:Memo",
-            "utility:ScheduleFlow",
-            "utility:RunFlow",
             "list:Repeat",
-            "mail:TestMail",
+            "list:FilterBlanks",
         ],
     },
     Math: {
@@ -140,14 +125,15 @@ export const NodeCategories = {
             "math:Average",
         ],
     },
-    Lists: {
-        title: "Lists",
-        icon: ListSearch,
+    Object: {
+        title: "Objects",
+        icon: Icons,
         members: [
-            "list:FilterBlanks",
+            "object:CreateObject",
+            "object:ReadProperty",
+            "object:WriteProperty",
         ],
     },
-
     GoogleSheets: {
         title: "Sheets",
         icon: SiGooglesheets,
@@ -158,6 +144,19 @@ export const NodeCategories = {
             "googlesheets:Row",
             "googlesheets:ReadValues",
             "googlesheets:WriteValues",
+        ],
+    },
+    Util: {
+        title: "Utility",
+        icon: Settings,
+        members: [
+            "utility:Print",
+            "utility:Bind",
+            "utility:Unbind",
+            "utility:Memo",
+            "utility:RunFlow",
+            "utility:ScheduleFlow",
+            "mail:TestMail",
         ],
     },
 }
