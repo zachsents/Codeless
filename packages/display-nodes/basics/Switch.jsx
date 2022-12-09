@@ -7,6 +7,8 @@ export default {
     icon: CircuitSwitchOpen,
     valueSources: [" "],
 
+    defaultState: { $: false },
+
     renderNode: ({ state, setState }) => {
         return (
             <Switch

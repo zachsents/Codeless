@@ -31,3 +31,7 @@ a {
 .hoverScale {
     transform: scale(1.01);
 }
+
+* {
+    font-family: "DM Sans" !important;
+}

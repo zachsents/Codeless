@@ -4,15 +4,16 @@ import { Dimension, MajorDimensionControl } from "./shared"
 
 
 export default {
-    name: "Get Values",
-    description: "Gets values from a Sheet.",
+    name: "Append Values",
+    description: "Appends values to a table in a Sheet.",
     icon: SiGooglesheets,
     color: "green",
     valueTargets: [
-        { name: "spreadsheetId", label: "Spreadsheet ID" },
-        "range"
+        { name: "spreadsheetId", label: "Spreadsheet ID" }, 
+        "range",
+        "values",
     ],
-    valueSources: [" "],
+    signalTargets: [" "],
 
     defaultState: { majorDimension: Dimension.Rows },
 

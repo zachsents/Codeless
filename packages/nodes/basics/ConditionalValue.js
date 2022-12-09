@@ -2,8 +2,8 @@ import { delist } from "../arrayUtilities.js"
 
 
 export default {
-    id: "basic:Conditional",
-    name: "Conditional",
+    id: "basic:ConditionalValue",
+    name: "Conditional Value",
     targets: {
         values: {
             condition: {},

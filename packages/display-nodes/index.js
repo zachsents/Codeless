@@ -21,7 +21,8 @@ import TestMail from "./util/TestMail"
 import RunFlow from "./util/RunFlow"
 
 import ReadProperty from "./object/ReadProperty"
-import Conditional from "./basics/Conditional"
+import ConditionalValue from "./basics/ConditionalValue"
+import ConditionalSignal from "./basics/ConditionalSignal"
 import And from "./basics/And"
 import Or from "./basics/Or"
 import Not from "./basics/Not"
@@ -40,6 +41,8 @@ import Row from "./google/sheets/Row"
 
 import FilterBlanks from "./lists/FilterBlanks"
 import WriteValues from "./google/sheets/WriteValues"
+import Clear from "./google/sheets/Clear"
+import AppendValues from "./google/sheets/AppendValues"
 
 
 export const Nodes = {
@@ -47,7 +50,8 @@ export const Nodes = {
     "primitive:Text": Text,
     "primitive:Switch": Switch,
     "primitive:DateTime": DateTime,
-    "basic:Conditional": Conditional,
+    "basic:ConditionalValue": ConditionalValue,
+    "basic:ConditionalSignal": ConditionalSignal,
     "basic:And": And,
     "basic:Or": Or,
     "basic:Not": Not,
@@ -80,6 +84,8 @@ export const Nodes = {
     "googlesheets:Row": Row,
     "googlesheets:ReadValues": ReadValues,
     "googlesheets:WriteValues": WriteValues,
+    "googlesheets:Append": AppendValues,
+    "googlesheets:Clear": Clear,
 
     "list:FilterBlanks": FilterBlanks,
 }
@@ -93,7 +99,8 @@ export const NodeCategories = {
             "primitive:Text",
             "primitive:Switch",
             "primitive:DateTime",
-            "basic:Conditional",
+            "basic:ConditionalValue",
+            "basic:ConditionalSignal",
             "basic:And",
             "basic:Or",
             "basic:Not",
@@ -144,6 +151,8 @@ export const NodeCategories = {
             "googlesheets:Row",
             "googlesheets:ReadValues",
             "googlesheets:WriteValues",
+            "googlesheets:Append",
+            "googlesheets:Clear",
         ],
     },
     Util: {

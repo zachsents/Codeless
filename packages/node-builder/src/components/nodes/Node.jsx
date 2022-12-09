@@ -66,6 +66,22 @@ export default function Node({ id, type, selected }) {
             />
         })
 
+    // custom component for rendering inner node content
+    const ContentWithIcon = ({ children }) => (
+        <Group spacing="xs">
+            {nodeType.color ?
+                <ThemeIcon color={nodeType.color} size="sm" radius="xl">
+                    <nodeType.icon size={10} />
+                </ThemeIcon>
+                :
+                <nodeType.icon size={16} />
+            }
+            <Box>
+                {children}
+            </Box>
+        </Group>
+    )
+
     return (
         <motion.div
             initial={{ scale: 0 }}
@@ -94,25 +110,12 @@ export default function Node({ id, type, selected }) {
             >
                 <Flex>
                     {nodeType.renderNode ?
-                        <>
-                            <nodeType.renderNode {...displayProps} />
-                            <ThemeIcon color={nodeType.color ?? "yellow.5"} radius="md" size="sm" sx={topIconStyle(10)}>
-                                <nodeType.icon size={12} color="black" />
-                            </ThemeIcon>
-                        </>
+                        <nodeType.renderNode {...displayProps} containerComponent={ContentWithIcon} />
                         :
-                        <Group spacing="xs">
-                            {nodeType.color ?
-                                <ThemeIcon color={nodeType.color} size="sm" radius="xl">
-                                    <nodeType.icon size={10} />
-                                </ThemeIcon>
-                                :
-                                <nodeType.icon size={16} />
-                            }
-                            <Box maw={120}>
-                                <Text lh={1.2} size="xs" ff="DM Sans">{nodeType.renderName?.(displayProps) ?? nodeType.name}</Text>
-                            </Box>
-                        </Group>}
+                        <ContentWithIcon>
+                            <Text maw={120} lh={1.2} size="xs" ff="DM Sans">{nodeType.renderName?.(displayProps) ?? nodeType.name}</Text>
+                        </ContentWithIcon>
+                    }
                 </Flex>
             </Card>
 

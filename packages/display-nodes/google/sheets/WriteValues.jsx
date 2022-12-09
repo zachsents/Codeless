@@ -1,11 +1,7 @@
-import { Group, SegmentedControl, Stack, Text, Tooltip } from "@mantine/core"
-import { BookUpload, InfoCircle } from "tabler-icons-react"
+import { Stack } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
+import { Dimension, MajorDimensionControl } from "./shared"
 
-const Dimension = {
-    Rows: "ROWS",
-    Columns: "COLUMNS",
-}
 
 export default {
     name: "Set Values",
@@ -13,7 +9,7 @@ export default {
     icon: SiGooglesheets,
     color: "green",
     valueTargets: [
-        { name: "spreadsheetId", label: "Spreadsheet ID" }, 
+        { name: "spreadsheetId", label: "Spreadsheet ID" },
         "range",
         "values",
     ],
@@ -25,17 +21,7 @@ export default {
 
         return (
             <Stack spacing={5} w={180}>
-                <Group position="apart">
-                    <Text size="sm">Major Dimension</Text>
-                    <Tooltip label="Whether values are grouped by row or column.">
-                        <Text color="dimmed" size="sm" mb={-5}><InfoCircle size={15} /></Text>
-                    </Tooltip>
-                </Group>
-                <SegmentedControl
-                    value={state.majorDimension ?? Dimension.Rows}
-                    onChange={val => setState({ majorDimension: val })}
-                    data={Object.keys(Dimension).map(key => ({ label: key, value: Dimension[key] }))}
-                />
+                <MajorDimensionControl state={state} setState={setState} />
             </Stack>
         )
     }

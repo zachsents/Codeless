@@ -20,7 +20,7 @@ import Repeat from "./util/Repeat.js"
 import TestMail from "./util/TestMail.js"
 
 import ReadProperty from "./object/ReadProperty.js"
-import Conditional from "./basics/Conditional.js"
+import ConditionalValue from "./basics/ConditionalValue.js"
 import And from "./basics/And.js"
 import Or from "./basics/Or.js"
 import Not from "./basics/Not.js"
@@ -37,10 +37,13 @@ import Row from "./google/sheets/Row.js"
 import ReadValues from "./google/sheets/ReadValues.js"
 import FilterBlanks from "./lists/FilterBlanks.js"
 import WriteValues from "./google/sheets/WriteValues.js"
+import Clear from "./google/sheets/Clear.js"
+import ConditionalSignal from "./basics/ConditionalSignal.js"
+import AppendValues from "./google/sheets/AppendValues.js"
 
 
 const nodes = [
-    Number, Text, Switch, DateTime, Conditional, And, Or, Not, Equal, NotEqual, GreaterThan,
+    Number, Text, Switch, DateTime, ConditionalValue, ConditionalSignal, And, Or, Not, Equal, NotEqual, GreaterThan,
 
     CreateObject, ReadProperty, WriteProperty,
 
@@ -48,7 +51,7 @@ const nodes = [
 
     Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail,
 
-    Cell, Range, Column, Row, ReadValues, WriteValues,
+    Cell, Range, Column, Row, ReadValues, WriteValues, Clear, AppendValues,
 
     FilterBlanks,
 ]

@@ -38,7 +38,7 @@ function Editor() {
             doc(firestore, "apps", appId, "flows", flow.id),
             { graph: newGraph }
         )
-    }, 1000)
+    }, 500)
 
     return (
         <AppShell

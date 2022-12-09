@@ -1,5 +1,6 @@
 import { BoxAlignTopLeft } from "tabler-icons-react"
-import { TextInput, Text, Group, NumberInput } from "@mantine/core"
+import { TextInput, Text, Group, Stack, Grid } from "@mantine/core"
+import { parseRange } from "./util"
 
 export default {
     name: "Range",
@@ -10,32 +11,51 @@ export default {
 
     defaultState: { $: "A1:C4" },
 
-    renderName: ({ state }) => state.$,
+    renderNode: ({ state, containerComponent: ContainerComponent }) => {
+
+        const { sheet, start, end } = parseRange(state.$)
+
+        return <ContainerComponent>
+            <Text size={8} lh={1.2}>{sheet}</Text>    
+            <Text size="xs" lh={1.2}>{start}:{end}</Text>    
+        </ContainerComponent>
+    },
 
     configuration: ({ state, setState }) => {
 
-        const [, start, end] = state.$?.match?.(/([A-Za-z0-9]*):([A-Za-z0-9]*)/) ?? []
+        const { sheet, start, end } = parseRange(state.$)
 
-        const setRange = ({ s = start, e = end }) => {
-            setState({ $: `${s}:${e}` })
+        const setRange = ({ start: newStart = start, end: newEnd = end, sheet: newSheet = sheet }) => {
+            setState({ $: `${newSheet ? `'${newSheet}'!` : ""}${newStart}:${newEnd}` })
         }
 
         return (
-            <Group spacing="xs">
-                <TextInput
-                    value={start ?? ""}
-                    onChange={event => setRange({ s: event.currentTarget.value })}
-                    w={60}
-                    placeholder="A1"
-                />
-                <Text>:</Text>
-                <TextInput
-                    value={end ?? ""}
-                    onChange={event => setRange({ e: event.currentTarget.value })}
-                    w={60}
-                    placeholder="C4"
-                />
-            </Group>
+            <Grid w={160} gutter="xs">
+                <Grid.Col span={12}>
+                    <TextInput
+                        value={sheet ?? ""}
+                        onChange={event => setRange({ sheet: event.currentTarget.value })}
+                        placeholder="Sheet Name"
+                    />
+                </Grid.Col>
+                <Grid.Col span="auto">
+                    <TextInput
+                        value={start ?? ""}
+                        onChange={event => setRange({ start: event.currentTarget.value })}
+                        placeholder="A1"
+                    />
+                </Grid.Col>
+                <Grid.Col span={1}>
+                    <Text>:</Text>
+                </Grid.Col>
+                <Grid.Col span="auto">
+                    <TextInput
+                        value={end ?? ""}
+                        onChange={event => setRange({ end: event.currentTarget.value })}
+                        placeholder="C4"
+                    />
+                </Grid.Col>
+            </Grid>
         )
     },
 }
