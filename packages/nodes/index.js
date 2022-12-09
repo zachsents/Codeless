@@ -40,6 +40,7 @@ import WriteValues from "./google/sheets/WriteValues.js"
 import Clear from "./google/sheets/Clear.js"
 import ConditionalSignal from "./basics/ConditionalSignal.js"
 import AppendValues from "./google/sheets/AppendValues.js"
+import Delay from "./util/Delay.js"
 
 
 const nodes = [
@@ -49,7 +50,7 @@ const nodes = [
 
     RandomNumber, Sum, Multiply, Divide, Average,
 
-    Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail,
+    Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail, Delay,
 
     Cell, Range, Column, Row, ReadValues, WriteValues, Clear, AppendValues,
 

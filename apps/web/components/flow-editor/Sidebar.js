@@ -255,7 +255,7 @@ const NodeTile = forwardRef(({ node, ...props }, ref) => {
                     label={node.name}
                     variant="filled"
                     // onClick={handleAddNode}
-                    icon={<node.icon size={16} />}
+                    icon={node.icon && <node.icon size={16} />}
                     ref={buttonRef}
 
                     styles={theme => ({

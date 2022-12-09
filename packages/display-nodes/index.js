@@ -19,6 +19,7 @@ import ScheduleFlow from "./util/ScheduleFlow"
 import Repeat from "./util/Repeat"
 import TestMail from "./util/TestMail"
 import RunFlow from "./util/RunFlow"
+import Delay from "./util/Delay"
 
 import ReadProperty from "./object/ReadProperty"
 import ConditionalValue from "./basics/ConditionalValue"
@@ -38,11 +39,11 @@ import Cell from "./google/sheets/Cell"
 import ReadValues from "./google/sheets/ReadValues"
 import Column from "./google/sheets/Column"
 import Row from "./google/sheets/Row"
-
-import FilterBlanks from "./lists/FilterBlanks"
 import WriteValues from "./google/sheets/WriteValues"
 import Clear from "./google/sheets/Clear"
 import AppendValues from "./google/sheets/AppendValues"
+
+import FilterBlanks from "./lists/FilterBlanks"
 
 
 export const Nodes = {
@@ -77,6 +78,7 @@ export const Nodes = {
     "utility:RunFlow": RunFlow,
     "list:Repeat": Repeat,
     "mail:TestMail": TestMail,
+    "utility:Delay": Delay,
 
     "googlesheets:Range": Range,
     "googlesheets:Cell": Cell,
@@ -166,6 +168,7 @@ export const NodeCategories = {
             "utility:RunFlow",
             "utility:ScheduleFlow",
             "mail:TestMail",
+            "utility:Delay",
         ],
     },
 }

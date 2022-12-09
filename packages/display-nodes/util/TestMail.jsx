@@ -22,5 +22,5 @@ export default {
             onChange={event => setState({ to: event.currentTarget.value })}
             placeholder="zach@nocode.com"
         />
-    }
+    },
 }
