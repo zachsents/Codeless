@@ -2,12 +2,12 @@ import { authorizeGoogleSheetsAPI } from "./auth.js"
 import { getEntireSheetValues } from "./shared.js"
 
 export default {
-    id: "googlesheets:GetTableColumn",
-    name: "Get Table Column",
+    id: "googlesheets:GetNamedColumn",
+    name: "Get Named Column",
     targets: {
         values: {
-            spreadsheetId: {},
-            sheetName: {},
+            // spreadsheetId: {},
+            // sheetName: {},
             columnName: {},
         }
     },
@@ -15,8 +15,8 @@ export default {
         values: {
             data: {
                 async get() {
-                    const spreadsheetId = (await this.spreadsheetId)?.[0]
-                    const sheetName = (await this.sheetName)?.[0]
+                    // const spreadsheetId = (await this.spreadsheetId)?.[0]
+                    // const sheetName = (await this.sheetName)?.[0]
                     const columnName = (await this.columnName)?.[0]
 
                     // get Google Sheets API
@@ -24,8 +24,8 @@ export default {
 
                     // get values for entire sheet (column-wise)
                     const table = await getEntireSheetValues(sheets, {
-                        spreadsheetId,
-                        sheetName,
+                        spreadsheetId: this.state.spreadsheetId,
+                        sheetName: this.state.sheetName,
                         majorDimension: "COLUMNS",
                     })
                     

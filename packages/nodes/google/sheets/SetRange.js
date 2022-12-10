@@ -2,11 +2,11 @@ import { isDeeper } from "../../arrayUtilities.js"
 import { authorizeGoogleSheetsAPI } from "./auth.js"
 
 export default {
-    id: "googlesheets:WriteValues",
-    name: "Set Values In Sheets",
+    id: "googlesheets:SetRange",
+    name: "Set Range In Sheets",
     targets: {
         values: {
-            spreadsheetId: {},
+            // spreadsheetId: {},
             range: {},
             values: {},
         },
@@ -22,7 +22,8 @@ export default {
 
                     // read values from range
                     await sheets.spreadsheets.values.update({
-                        spreadsheetId: (await this.spreadsheetId)?.[0],
+                        // spreadsheetId: (await this.spreadsheetId)?.[0],
+                        spreadsheetId: this.state.spreadsheetId,
                         range: (await this.range)?.[0],
                         valueInputOption: "USER_ENTERED",
                         requestBody: {

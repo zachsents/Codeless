@@ -1,24 +1,24 @@
 import { SiGooglesheets } from "react-icons/si"
-import { TableExport } from "tabler-icons-react"
+import { BoxAlignLeft } from "tabler-icons-react"
 import { ControlStack } from "../../components"
-import { Dimension, MajorDimensionControl, SheetNameControl, SpreadsheetIDControl } from "./shared"
+import { SheetNameControl, SpreadsheetIDControl } from "./shared"
 
 
 export default {
-    name: "Get Sheet",
-    description: "Gets the data from an entire Sheet.",
-    icon: TableExport,
+    name: "Get Named Column",
+    description: "Gets the data from a named column in a table.",
+    icon: BoxAlignLeft,
     color: "green",
     valueTargets: [
         // { name: "spreadsheetId", label: "Spreadsheet ID" },
         // "sheetName",
+        "columnName",
     ],
-    valueSources: [" "],
+    valueSources: ["data"],
 
     defaultState: { 
         spreadsheetId: "",
         sheetName: "",
-        majorDimension: Dimension.Rows,
     },
 
     configuration: props => {
@@ -26,7 +26,6 @@ export default {
             <ControlStack>
                 <SpreadsheetIDControl {...props} />
                 <SheetNameControl {...props} />
-                <MajorDimensionControl {...props} />
             </ControlStack>
         )
     }

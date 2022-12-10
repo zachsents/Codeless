@@ -1,11 +1,11 @@
 import { authorizeGoogleSheetsAPI } from "./auth.js"
 
 export default {
-    id: "googlesheets:ReadValues",
-    name: "Get Values From Sheets",
+    id: "googlesheets:GetRange",
+    name: "Get Range From Sheets",
     targets: {
         values: {
-            spreadsheetId: {},
+            // spreadsheetId: {},
             range: {},
         }
     },
@@ -18,7 +18,8 @@ export default {
 
                     // read values from range
                     const response = await sheets.spreadsheets.values.get({
-                        spreadsheetId: (await this.spreadsheetId)?.[0],
+                        // spreadsheetId: (await this.spreadsheetId)?.[0],
+                        spreadsheetId: this.state.spreadsheetId,
                         range: (await this.range)?.[0],
                         majorDimension: this.state.majorDimension,
                         valueRenderOption: "UNFORMATTED_VALUE",

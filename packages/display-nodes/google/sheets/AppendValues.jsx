@@ -1,6 +1,7 @@
 import { Stack } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
-import { Dimension, MajorDimensionControl } from "./shared"
+import { ControlStack } from "../../components"
+import { Dimension, MajorDimensionControl, SpreadsheetIDControl } from "./shared"
 
 
 export default {
@@ -9,20 +10,23 @@ export default {
     icon: SiGooglesheets,
     color: "green",
     valueTargets: [
-        { name: "spreadsheetId", label: "Spreadsheet ID" }, 
+        // { name: "spreadsheetId", label: "Spreadsheet ID" }, 
         { name: "range", label: "Table Range" }, 
         "values",
     ],
     signalTargets: [" "],
 
-    defaultState: { majorDimension: Dimension.Rows },
+    defaultState: { 
+        spreadsheetId: "",
+        majorDimension: Dimension.Rows,
+    },
 
-    configuration: ({ state, setState }) => {
-
+    configuration: props => {
         return (
-            <Stack spacing={5} w={180}>
-                <MajorDimensionControl state={state} setState={setState} />
-            </Stack>
+            <ControlStack>
+                <SpreadsheetIDControl {...props} />
+                <MajorDimensionControl {...props} />
+            </ControlStack>
         )
     }
 }

@@ -1,23 +1,24 @@
+import { BoxAlignTopLeft } from "tabler-icons-react"
 import { SiGooglesheets } from "react-icons/si"
-import { TableExport } from "tabler-icons-react"
+import { Dimension, MajorDimensionControl, SpreadsheetIDControl } from "./shared"
 import { ControlStack } from "../../components"
-import { Dimension, MajorDimensionControl, SheetNameControl, SpreadsheetIDControl } from "./shared"
 
 
 export default {
-    name: "Get Sheet",
-    description: "Gets the data from an entire Sheet.",
-    icon: TableExport,
+    name: "Set Range",
+    description: "Sets values in a range in a Google Sheet.",
+    icon: BoxAlignTopLeft,
     color: "green",
     valueTargets: [
         // { name: "spreadsheetId", label: "Spreadsheet ID" },
-        // "sheetName",
+        "range",
+        "values",
     ],
-    valueSources: [" "],
+    signalTargets: [" "],
+    signalSources: ["  "],
 
     defaultState: { 
         spreadsheetId: "",
-        sheetName: "",
         majorDimension: Dimension.Rows,
     },
 
@@ -25,7 +26,6 @@ export default {
         return (
             <ControlStack>
                 <SpreadsheetIDControl {...props} />
-                <SheetNameControl {...props} />
                 <MajorDimensionControl {...props} />
             </ControlStack>
         )

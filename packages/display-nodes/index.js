@@ -35,16 +35,16 @@ import CreateObject from "./object/CreateObject"
 import WriteProperty from "./object/WriteProperty"
 
 import Range from "./google/sheets/Range"
-import Cell from "./google/sheets/Cell"
-import ReadValues from "./google/sheets/ReadValues"
-import Column from "./google/sheets/Column"
-import Row from "./google/sheets/Row"
-import WriteValues from "./google/sheets/WriteValues"
-import Clear from "./google/sheets/Clear"
+import CellRange from "./google/sheets/CellRange"
+import RowRange from "./google/sheets/RowRange"
+import ColumnRange from "./google/sheets/ColumnRange"
+import GetRange from "./google/sheets/GetRange"
+import SetRange from "./google/sheets/SetRange"
+import ClearRange from "./google/sheets/ClearRange"
 import AppendValues from "./google/sheets/AppendValues"
 import GetSheet from "./google/sheets/GetSheet"
-import GetTableColumn from "./google/sheets/GetTableColumn"
-import SetTableColumn from "./google/sheets/SetTableColumn"
+import GetNamedColumn from "./google/sheets/GetNamedColumn"
+import SetNamedColumn from "./google/sheets/SetNamedColumn"
 
 import FilterBlanks from "./lists/FilterBlanks"
 import Transpose from "./lists/Transpose"
@@ -86,16 +86,16 @@ export const Nodes = {
     "utility:Delay": Delay,
 
     "googlesheets:Range": Range,
-    "googlesheets:Cell": Cell,
-    "googlesheets:Column": Column,
-    "googlesheets:Row": Row,
-    "googlesheets:ReadValues": ReadValues,
-    "googlesheets:WriteValues": WriteValues,
+    "googlesheets:CellRange": CellRange,
+    "googlesheets:RowRange": RowRange,
+    "googlesheets:ColumnRange": ColumnRange,
+    "googlesheets:GetRange": GetRange,
+    "googlesheets:SetRange": SetRange,
+    "googlesheets:ClearRange": ClearRange,
     "googlesheets:Append": AppendValues,
-    "googlesheets:Clear": Clear,
     "googlesheets:GetSheet": GetSheet,
-    "googlesheets:GetTableColumn": GetTableColumn,
-    "googlesheets:SetTableColumn": SetTableColumn,
+    "googlesheets:GetNamedColumn": GetNamedColumn,
+    "googlesheets:SetNamedColumn": SetNamedColumn,
 
     "list:FilterBlanks": FilterBlanks,
     "list:Transpose": Transpose,
@@ -160,16 +160,16 @@ export const NodeCategories = {
         icon: SiGooglesheets,
         members: [
             "googlesheets:Range",
-            "googlesheets:Cell",
-            "googlesheets:Row",
-            "googlesheets:Column",
-            "googlesheets:ReadValues",
-            "googlesheets:WriteValues",
+            "googlesheets:CellRange",
+            "googlesheets:RowRange",
+            "googlesheets:ColumnRange",
+            "googlesheets:GetRange",
+            "googlesheets:SetRange",
             "googlesheets:GetSheet",
-            "googlesheets:GetTableColumn",
-            "googlesheets:SetTableColumn",
+            "googlesheets:GetNamedColumn",
+            "googlesheets:SetNamedColumn",
             "googlesheets:Append",
-            "googlesheets:Clear",
+            "googlesheets:ClearRange",
         ],
     },
     Util: {

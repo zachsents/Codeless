@@ -18,8 +18,16 @@ import ScheduleFlow from "./util/ScheduleFlow.js"
 import RunFlow from "./util/RunFlow.js"
 import Repeat from "./util/Repeat.js"
 import TestMail from "./util/TestMail.js"
+import Delay from "./util/Delay.js"
 
+import FilterBlanks from "./lists/FilterBlanks.js"
+import Transpose from "./lists/Transpose.js"
+import Size from "./lists/Size.js"
+
+import CreateObject from "./object/CreateObject.js"
 import ReadProperty from "./object/ReadProperty.js"
+import WriteProperty from "./object/WriteProperty.js"
+
 import ConditionalValue from "./basics/ConditionalValue.js"
 import And from "./basics/And.js"
 import Or from "./basics/Or.js"
@@ -27,25 +35,19 @@ import Not from "./basics/Not.js"
 import Equal from "./basics/Equal.js"
 import NotEqual from "./basics/NotEqual.js"
 import GreaterThan from "./basics/GreaterThan.js"
-import CreateObject from "./object/CreateObject.js"
-import WriteProperty from "./object/WriteProperty.js"
-
-import Cell from "./google/sheets/Cell.js"
-import Range from "./google/sheets/Range.js"
-import Column from "./google/sheets/Column.js"
-import Row from "./google/sheets/Row.js"
-import ReadValues from "./google/sheets/ReadValues.js"
-import FilterBlanks from "./lists/FilterBlanks.js"
-import WriteValues from "./google/sheets/WriteValues.js"
-import Clear from "./google/sheets/Clear.js"
 import ConditionalSignal from "./basics/ConditionalSignal.js"
+
+import Range from "./google/sheets/Range.js"
+import CellRange from "./google/sheets/CellRange.js"
+import RowRange from "./google/sheets/RowRange.js"
+import ColumnRange from "./google/sheets/ColumnRange.js"
+import GetRange from "./google/sheets/GetRange.js"
+import SetRange from "./google/sheets/SetRange.js"
+import ClearRange from "./google/sheets/ClearRange.js"
 import AppendValues from "./google/sheets/AppendValues.js"
-import Delay from "./util/Delay.js"
 import GetSheet from "./google/sheets/GetSheet.js"
-import GetTableColumn from "./google/sheets/GetTableColumn.js"
-import Transpose from "./lists/Transpose.js"
-import Size from "./lists/Size.js"
-import SetTableColumn from "./google/sheets/SetTableColumn.js"
+import GetNamedColumn from "./google/sheets/GetNamedColumn.js"
+import SetNamedColumn from "./google/sheets/SetNamedColumn.js"
 
 
 const nodes = [
@@ -57,7 +59,7 @@ const nodes = [
 
     Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail, Delay,
 
-    Cell, Range, Column, Row, ReadValues, WriteValues, Clear, AppendValues, GetSheet, GetTableColumn, SetTableColumn,
+    CellRange, Range, ColumnRange, RowRange, GetRange, SetRange, ClearRange, AppendValues, GetSheet, GetNamedColumn, SetNamedColumn,
 
     FilterBlanks, Transpose, Size,
 ]

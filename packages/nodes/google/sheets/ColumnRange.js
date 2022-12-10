@@ -1,8 +1,8 @@
 
 
 export default {
-    id: "googlesheets:Cell",
-    name: "Cell",
+    id: "googlesheets:ColumnRange",
+    name: "Column Range",
     sources: {
         values: {
             " ": {

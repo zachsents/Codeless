@@ -3,20 +3,20 @@ import { authorizeGoogleSheetsAPI } from "./auth.js"
 import { getEntireSheetValues } from "./shared.js"
 
 export default {
-    id: "googlesheets:SetTableColumn",
+    id: "googlesheets:SetNamedColumn",
     name: "Set Named Column",
     targets: {
         values: {
-            spreadsheetId: {},
-            sheetName: {},
+            // spreadsheetId: {},
+            // sheetName: {},
             columnName: {},
             data: {},
         },
         signals: {
             " ": {
                 async action(x) {
-                    const spreadsheetId = (await this.spreadsheetId)?.[0]
-                    const sheetName = (await this.sheetName)?.[0]
+                    // const spreadsheetId = (await this.spreadsheetId)?.[0]
+                    // const sheetName = (await this.sheetName)?.[0]
                     const columnName = (await this.columnName)?.[0]
                     const data = await this.data
 
@@ -25,8 +25,8 @@ export default {
 
                     // get values for entire sheet (column-wise)
                     const table = await getEntireSheetValues(sheets, {
-                        spreadsheetId,
-                        sheetName,
+                        spreadsheetId: this.state.spreadsheetId,
+                        sheetName: this.state.sheetName,
                         majorDimension: "COLUMNS",
                     })
                     
@@ -40,8 +40,8 @@ export default {
 
                     // set values in range
                     await sheets.spreadsheets.values.update({
-                        spreadsheetId,
-                        range: `'${sheetName}'!R${rowIndex}C${columnIndex}:R${rowIndex + data.length}C${columnIndex}`,
+                        spreadsheetId: this.state.spreadsheetId,
+                        range: `'${this.state.sheetName}'!R${rowIndex}C${columnIndex}:R${rowIndex + data.length}C${columnIndex}`,
                         valueInputOption: "USER_ENTERED",
                         requestBody: {
                             majorDimension: "COLUMNS",

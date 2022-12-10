@@ -6,7 +6,7 @@ export default {
     name: "Appends Values to a Table in Sheets",
     targets: {
         values: {
-            spreadsheetId: {},
+            // spreadsheetId: {},
             range: {},
             values: {},
         },
@@ -22,7 +22,8 @@ export default {
 
                     // read values from range
                     await sheets.spreadsheets.values.append({
-                        spreadsheetId: (await this.spreadsheetId)?.[0],
+                        // spreadsheetId: (await this.spreadsheetId)?.[0],
+                        spreadsheetId: this.state.spreadsheetId,
                         range: (await this.range)?.[0],
                         valueInputOption: "USER_ENTERED",
                         insertDataOption: "INSERT_ROWS",
