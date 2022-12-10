@@ -16,4 +16,6 @@ const OurCard = forwardRef(({ children, ...props }, ref) => {
     )
 })
 
+OurCard.displayName = "OurCard"
+
 export default OurCard

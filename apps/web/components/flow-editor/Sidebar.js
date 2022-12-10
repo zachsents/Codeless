@@ -279,6 +279,8 @@ const NodeTile = forwardRef(({ node, ...props }, ref) => {
     )
 })
 
+NodeTile.displayName = "NodeTile"
+
 
 function CategoryTile({ children, icon: Icon, ...props }) {
 
