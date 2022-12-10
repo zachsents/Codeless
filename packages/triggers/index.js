@@ -6,12 +6,12 @@ export const Trigger = {
 
 export const TriggerCategories = {
     Manual: {
-        name: "Default",
-        icon: "Run",
+        name: "Time",
+        icon: "Clock",
         triggers: [ Trigger.Manual ],
     },
     HTTP: {
-        name: "Webhook",
+        name: "Link",
         icon: "World",
         triggers: [ Trigger.HTTP ],
     },
