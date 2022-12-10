@@ -1,29 +1,71 @@
 {
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "functions": {
-    "source": "apps/functions",
-    "ignore": [
-      "node_modules",
-      ".git",
-      "firebase-debug.log",
-      "firebase-debug.*.log"
-    ]
-  },
-  "hosting": {
-    "public": "apps/web/public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
+    "firestore": {
+        "rules": "firestore.rules",
+        "indexes": "firestore.indexes.json"
+    },
+    "functions": {
+        "source": "apps/functions",
+        "ignore": [
+            "node_modules",
+            ".git",
+            "firebase-debug.log",
+            "firebase-debug.*.log",
+            "buildDeps.js",
+            "cleanupBuild.js"
+        ]
+    },
+    "hosting": {
+        "public": "apps/web/out",
+        "ignore": [
+            "firebase.json",
+            "**/.*",
+            "**/node_modules/**"
+        ],
+        "cleanUrls": true,
+        "rewrites": [
+            {
+                "regex": "^/app/([^/]+?)(?:/)?$",
+                "destination": "/app/[appId].html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/collection/create(?:/)?$",
+                "destination": "/app/[appId]/collection/create.html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/collection/([^/]+?)(?:/)?$",
+                "destination": "/app/[appId]/collection/[collectionId].html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/collections(?:/)?$",
+                "destination": "/app/[appId]/collections.html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/flow/create(?:/)?$",
+                "destination": "/app/[appId]/flow/create.html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/flow/([^/]+?)/edit(?:/)?$",
+                "destination": "/app/[appId]/flow/[flowId]/edit.html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/flows(?:/)?$",
+                "destination": "/app/[appId]/flows.html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/integrations(?:/)?$",
+                "destination": "/app/[appId]/integrations.html"
+            },
+            {
+                "regex": "^/app/([^/]+?)/settings(?:/)?$",
+                "destination": "/app/[appId]/settings.html"
+            }
+        ],
+        "redirects": [
+            {
+                "source": "/",
+                "destination": "/dashboard",
+                "type": 301
+            }
+        ]
+    }
 }

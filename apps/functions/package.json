@@ -6,22 +6,23 @@
         "dev": "firebase emulators:start --only functions",
         "shell": "firebase functions:shell",
         "start": "npm run shell",
-        "deploy": "firebase deploy --only functions",
-        "logs": "firebase functions:log"
+        "logs": "firebase functions:log",
+
+        "deploy": "node ./buildDeps.js && firebase deploy --only functions && node ./cleanupBuild.js"
     },
     "engines": {
         "node": "16"
     },
     "main": "index.js",
     "dependencies": {
-        "@zachsents/nodes": "*",
         "firebase-admin": "^11.3.0",
-        "firebase-admin-callable-functions": "*",
         "firebase-functions": "^4.1.0",
         "googleapis": "^109.0.1",
-        "graph-execution-engine-2": "*",
         "nanoid": "^4.0.0",
         "nanoid-dictionary": "^4.3.0",
+        "graph-execution-engine-2": "*",
+        "@zachsents/nodes": "*",
+        "firebase-admin-callable-functions": "*",
         "triggers": "*"
     },
     "devDependencies": {
