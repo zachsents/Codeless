@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from "react"
+import shallow from "zustand/shallow"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
-import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useNodes, useReactFlow } from "reactflow"
+import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useNodes, useReactFlow, useStore } from "reactflow"
 import { useNodeBuilder } from "./components/NodeBuilder"
 
 
@@ -34,10 +35,10 @@ export function validateEdgeConnection(connection, edges) {
 
 export function useNodeState(nodeId, defaultState) {
 
-    const reactFlow = useReactFlow()
-    const state = reactFlow.getNode(nodeId)?.data.state
+    const rf = useReactFlow()
+    const state = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.state)
 
-    const setState = (changes, overwrite = false) => reactFlow.setNodes(nodes =>
+    const setState = (changes, overwrite = false) => rf.setNodes(nodes =>
         produce(nodes, draft => {
             const node = draft.find(node => node.id == nodeId)
 
@@ -79,10 +80,10 @@ export function useNodeState(nodeId, defaultState) {
 
 export function useNodeData(nodeId) {
 
-    const reactFlow = useReactFlow()
-    const data = reactFlow.getNode(nodeId)?.data
+    const rf = useReactFlow()
+    const data = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data)
 
-    const setData = changes => reactFlow.setNodes(nodes =>
+    const setData = changes => rf.setNodes(nodes =>
         produce(nodes, draft => {
             const node = draft.find(node => node.id == nodeId)
 
@@ -115,19 +116,21 @@ export function useNodeDisplayProps(id) {
 
     const [state, setState] = useNodeState(id, nodeType?.defaultState)
 
+    const connectedEdges = useConnectedEdges(id)
+
     // pass connection state to node
     const connections = useMemo(() => {
         if (!node)
             return {}
 
         // find connected edges
-        const connectedEdges = getConnectedEdges([node], rf.getEdges())
-            .map(edge => new Handle(edge.targetHandle).name)
+        const connectedHandles = connectedEdges.map(edge => new Handle(edge.targetHandle).name)
 
         // create a map of value target handles to connection state
-        const entries = nodeType.valueTargets?.map(vt => [vt, connectedEdges.includes(vt)])
+        const entries = nodeType.valueTargets?.map(vt => [vt, connectedHandles.includes(vt)])
+
         return entries ? Object.fromEntries(entries) : {}
-    }, [JSON.stringify(rf.getEdges())])
+    }, [connectedEdges])
 
     return {
         state,
@@ -138,6 +141,16 @@ export function useNodeDisplayProps(id) {
         connections,
         firestore,
     }
+}
+
+export function useConnectedEdges(id) {
+    return useStore(
+        s => s.edges.filter(edge => edge.target == id || edge.source == id),
+        (a, b) => shallow(
+            a.map(edge => edge.id),
+            b.map(edge => edge.id)
+        )
+    )
 }
 
 export function useNodeType({ id, type }) {

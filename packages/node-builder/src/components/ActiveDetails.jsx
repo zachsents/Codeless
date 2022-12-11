@@ -1,12 +1,9 @@
 import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space } from '@mantine/core'
-import { useState, useCallback } from 'react'
-import { useNodes, useOnSelectionChange, useReactFlow, useStore, useStoreApi } from 'reactflow'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { useOnSelectionChange, useReactFlow, useStore, useStoreApi } from 'reactflow'
 import { TbAdjustments, TbBooks, TbTrash } from "react-icons/tb"
 import { motion, AnimatePresence } from "framer-motion"
 import { removeEdges, removeNodes, useNodeData, useNodeDisplayProps, useNodeType } from '../util'
-import { useEffect } from 'react'
-import { useRef } from 'react'
-import { useWindowScroll } from '@mantine/hooks'
 
 
 export default function ActiveDetails() {
@@ -29,7 +26,7 @@ export default function ActiveDetails() {
             {!emptySelection &&
                 <Box sx={containerStyle}>
                     {singleNodeSelected ?
-                        <SingleNodeToolbar node={selectedNodes[0]} /> :
+                        <SingleNodeToolbar node={selectedNodes[0]} key={selectedNodes[0].id} /> :
                         <DefaultToolbar selectedEdges={selectedEdges} selectedNodes={selectedNodes} />}
                 </Box>}
         </AnimatePresence>
@@ -46,9 +43,6 @@ function SingleNodeToolbar({ node }) {
     const nodeType = useNodeType({ type: node.type })
 
     const hasConfiguration = !!nodeType.configuration
-
-    // re-render when node changes 
-    useStore(s => Object.fromEntries(s.nodeInternals)[node.id]?.data)
 
     // animation stuff
     const underScreen = { y: 40 }
