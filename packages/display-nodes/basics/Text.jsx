@@ -7,18 +7,13 @@ export default {
     icon: AlphabetLatin,
     valueSources: [" "],
 
-    renderNode: ({ state, setState }) => <Input state={state} setState={setState} size="xs" w={160} />,
-}
-
-function Input({ state, setState, ...props }) {
-    return <TextInput
-        onClick={event => {
-            // console.log(event.bubbles)
-            event.stopPropagation()
-        }}
-        value={state.$ ?? ""}
-        onChange={event => setState({ $: event.currentTarget.value })}
-        placeholder="Type something..."
-        {...props}
-    />
+    renderNode: ({ state, setState }) => (
+        <TextInput
+            value={state.$ ?? ""}
+            onChange={event => setState({ $: event.currentTarget.value })}
+            placeholder="Type something..."
+            m={-5}
+            size="xs" w={160}
+        />
+    ),
 }

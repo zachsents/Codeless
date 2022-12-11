@@ -7,15 +7,14 @@ export default {
     icon: Numbers,
     valueSources: [" "],
 
-    renderNode: ({ state, setState }) => <Input state={state} setState={setState} size="xs" w={80} /> ,
-}
-
-function Input({ state, setState, ...props }) {
-    return <NumberInput
-        value={state.$}
-        onChange={val => setState({ $: val })}
-        placeholder="25"
-        radius="md"
-        {...props}
-    />
+    renderNode: ({ state, setState }) => (
+        <NumberInput
+            value={state.$}
+            onChange={val => setState({ $: val })}
+            placeholder="25"
+            m={-5}
+            size="xs"
+            w={80}
+        />
+    ),
 }
