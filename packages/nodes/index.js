@@ -6,6 +6,7 @@ import DateTime from "./basics/DateTime.js"
 
 import RandomNumber from "./math/RandomNumber.js"
 import Sum from "./math/Sum.js"
+import Add from "./math/Add.js"
 import Multiply from "./math/Multiply.js"
 import Divide from "./math/Divide.js"
 import Average from "./math/Average.js"
@@ -55,7 +56,7 @@ const nodes = [
 
     CreateObject, ReadProperty, WriteProperty,
 
-    RandomNumber, Sum, Multiply, Divide, Average,
+    RandomNumber, Sum, Add, Multiply, Divide, Average,
 
     Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail, Delay,
 

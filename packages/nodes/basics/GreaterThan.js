@@ -1,3 +1,4 @@
+import { elementWise } from "../arrayUtilities.js"
 
 
 export default {
@@ -13,12 +14,11 @@ export default {
         values: {
             out: {
                 async get() {
-                    const aList = await this.a
-                    const bList = await this.b
-
-                    return bList.length == 1 ?
-                        aList.map(a => a > bList[0]) :
-                        aList.map((a, i) => a > bList[i])
+                    return elementWise(
+                        await this.a,
+                        await this.b,
+                        (a, b) => a > b
+                    )
                 }
             }
         }

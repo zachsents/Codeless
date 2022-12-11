@@ -17,3 +17,12 @@ export function isDeeper(list) {
 export function recurse(list, operation) {
     return isDeeper(list) ? list.map(el => recurse(el, operation)) : operation?.(list)
 }
+
+// Does an operation either scalar-wise or element-wise
+// If a = [1, 2, 3, ...] and b = [1] -> scalar-wise
+// If a = [1, 2, 3, ...] and b = [1, 2, ...] -> element-wise
+export function elementWise(aList, bList, operation) {
+    return bList.length == 1 ?
+        aList.map(a => operation(a, bList[0])) :
+        aList.map((a, i) => operation(a, bList[i]))
+}

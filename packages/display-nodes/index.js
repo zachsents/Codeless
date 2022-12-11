@@ -7,6 +7,7 @@ import Text from "./basics/Text"
 
 import RandomNumber from "./math/RandomNumber"
 import Sum from "./math/Sum"
+import Add from "./math/Add"
 import Multiply from "./math/Multiply"
 import Divide from "./math/Divide"
 import Average from "./math/Average"
@@ -71,6 +72,7 @@ export const Nodes = {
 
     "math:RandomNumber": RandomNumber,
     "math:Sum": Sum,
+    "math:Add": Add,
     "math:Multiply": Multiply,
     "math:Divide": Divide,
     "math:Average": Average,
@@ -141,6 +143,7 @@ export const NodeCategories = {
         members: [
             "math:RandomNumber",
             "math:Sum",
+            "math:Add",
             "math:Multiply",
             "math:Divide",
             "math:Average",

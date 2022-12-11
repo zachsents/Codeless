@@ -2,11 +2,12 @@ import { elementWise } from "../arrayUtilities.js"
 
 
 export default {
-    id: "basic:NotEqual",
-    name: "Not Equal",
+    id: "math:Add",
+    name: "Add",
     targets: {
         values: {
-            in: {}
+            a: {},
+            b: {},
         }
     },
     sources: {
@@ -16,7 +17,7 @@ export default {
                     return elementWise(
                         await this.a,
                         await this.b,
-                        (a, b) => a != b
+                        (a, b) => a + b
                     )
                 }
             }
