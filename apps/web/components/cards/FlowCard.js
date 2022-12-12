@@ -9,7 +9,7 @@ import FloatingMenu from '../FloatingMenu'
 import LinkIcon from "../LinkIcon"
 import OurCard from './OurCard'
 import Triggers from "@minus/triggers/display"
-import { Trigger } from 'triggers'
+import { Trigger } from '@minus/triggers'
 import ScheduleModal from '../ScheduleModal'
 import { useClickOutside, useDisclosure } from '@mantine/hooks'
 import RunManuallyButton from '../RunManuallyButton'

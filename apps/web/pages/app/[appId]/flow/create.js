@@ -7,7 +7,7 @@ import { TbArrowNarrowRight } from 'react-icons/tb'
 import * as TablerIcons from "tabler-icons-react"
 
 import Triggers from "@minus/triggers/display"
-import { TriggerCategories } from 'triggers'
+import { TriggerCategories } from '@minus/triggers'
 import { serializeGraph } from '@minus/node-builder'
 import { firestore, useMustBeSignedIn } from '../../../../modules/firebase'
 import { useApp, useFlowCount, usePlan } from '../../../../modules/hooks'
