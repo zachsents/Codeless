@@ -20,10 +20,10 @@
         "googleapis": "^109.0.1",
         "nanoid": "^4.0.0",
         "nanoid-dictionary": "^4.3.0",
-        "graph-execution-engine-2": "*",
-        "@zachsents/nodes": "*",
+        "@minus/gee2": "*",
+        "@minus/server-nodes": "*",
         "firebase-admin-callable-functions": "*",
-        "triggers": "*"
+        "@minus/triggers": "*"
     },
     "devDependencies": {
         "firebase-functions-test": "^0.2.0"

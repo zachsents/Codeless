@@ -5,7 +5,7 @@ import Header from '../../../../../components/flow-editor/Header'
 import SettingsDrawer from '../../../../../components/flow-editor/SettingsDrawer'
 import Sidebar from '../../../../../components/flow-editor/Sidebar'
 import { FlowProvider, useFlowContext } from '../../../../../modules/context'
-import { NodeBuilder } from "node-builder"
+import { NodeBuilder } from "@minus/node-builder"
 import { ReactFlowProvider } from "reactflow"
 import { Nodes } from '../../../../../modules/nodes'
 import { useAppId, useDebouncedCustomState } from '../../../../../modules/hooks'

@@ -1,5 +1,5 @@
 import { Button, Group, HoverCard, Skeleton, Stack, Text, Title, useMantineTheme } from '@mantine/core'
-import { createNode } from 'node-builder'
+import { createNode } from '@minus/node-builder'
 import { TbBook } from 'react-icons/tb'
 import { useReactFlow } from "reactflow"
 

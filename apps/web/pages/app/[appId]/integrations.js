@@ -10,7 +10,7 @@ import PageTitle from '../../../components/PageTitle'
 import OurCard from "../../../components/cards/OurCard"
 import { auth, firestore, functions, useMustBeSignedIn } from '../../../modules/firebase'
 import { useEffect, useState } from 'react'
-import GoogleSheetsAuth from "@zachsents/display-nodes/google/sheets/auth"
+import GoogleSheetsAuth from "@minus/client-nodes/google/sheets/auth"
 import { useAppRealtime } from '../../../modules/hooks'
 
 

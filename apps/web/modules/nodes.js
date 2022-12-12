@@ -1,5 +1,5 @@
-import { Nodes as DisplayNodes, NodeCategories as DisplayNodeCategories } from "@zachsents/display-nodes"
-import TriggerNodes from "triggers/display"
+import { Nodes as DisplayNodes, NodeCategories as DisplayNodeCategories } from "@minus/client-nodes"
+import TriggerNodes from "@minus/triggers/display"
 
 
 export const Nodes = addIdToNodes({

@@ -8,7 +8,7 @@ import fuzzy from "fuzzy"
 import LinkIcon from '../LinkIcon'
 import NodeInfoPopover from './NodeInfoPopover'
 import { NodeCategories } from "../../modules/nodes"
-import { createNode } from 'node-builder'
+import { createNode } from '@minus/node-builder'
 
 import { motion } from 'framer-motion'
 

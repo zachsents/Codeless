@@ -1,11 +1,11 @@
-import { runFlow } from "graph-execution-engine-2"
-import TriggerNodes from "triggers"
+import { runFlow } from "@minus/gee2"
+import TriggerNodes from "@minus/triggers"
 
 /*
     In the future, we can put the dependencies in the graph, then dynamically load
     the modules we need.
 */
-import Nodes from "@zachsents/nodes"
+import Nodes from "@minus/server-nodes"
 
 
 export function executeFlow(graph, payload, globals = {}) {

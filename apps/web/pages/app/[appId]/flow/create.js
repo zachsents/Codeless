@@ -6,9 +6,9 @@ import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore'
 import { TbArrowNarrowRight } from 'react-icons/tb'
 import * as TablerIcons from "tabler-icons-react"
 
-import Triggers from "triggers/display"
+import Triggers from "@minus/triggers/display"
 import { TriggerCategories } from 'triggers'
-import { serializeGraph } from 'node-builder'
+import { serializeGraph } from '@minus/node-builder'
 import { firestore, useMustBeSignedIn } from '../../../../modules/firebase'
 import { useApp, useFlowCount, usePlan } from '../../../../modules/hooks'
 import AppDashboard from '../../../../components/AppDashboard'

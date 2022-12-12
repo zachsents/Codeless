@@ -8,7 +8,7 @@ import { SettingsTabs } from "./SettingsDrawer"
 import RunManuallyButton from "../RunManuallyButton"
 import { useFlowContext } from "../../modules/context"
 import { useRenameFlow } from "../../modules/hooks"
-import { Trigger } from "triggers"
+import { Trigger } from "@minus/triggers"
 
 
 export default function Header({ openSettings }) {

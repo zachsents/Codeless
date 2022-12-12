@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 
 const withTM = require("next-transpile-modules")([
-    "node-builder",
-    "triggers",
-    "@zachsents/display-nodes",
+    "@minus/node-builder",
+    "@minus/triggers",
+    "@minus/client-nodes",
 ])
 
 const nextConfig = {

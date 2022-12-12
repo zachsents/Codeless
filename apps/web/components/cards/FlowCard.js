@@ -8,7 +8,7 @@ import RenameModal from '../RenameModal'
 import FloatingMenu from '../FloatingMenu'
 import LinkIcon from "../LinkIcon"
 import OurCard from './OurCard'
-import Triggers from "triggers/display"
+import Triggers from "@minus/triggers/display"
 import { Trigger } from 'triggers'
 import ScheduleModal from '../ScheduleModal'
 import { useClickOutside, useDisclosure } from '@mantine/hooks'

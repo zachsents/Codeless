@@ -1,5 +1,5 @@
 {
-    "name": "@zachsents/nodes",
+    "name": "@minus/server-nodes",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",

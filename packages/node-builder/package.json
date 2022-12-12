@@ -1,5 +1,5 @@
 {
-    "name": "node-builder",
+    "name": "@minus/node-builder",
     "version": "0.0.0",
     "main": "./index.js",
     "scripts": {
@@ -11,7 +11,7 @@
         "@mantine/core": "^5.2.3",
         "@mantine/dates": "^5.8.3",
         "@mantine/hooks": "^5.2.3",
-        "graph-execution-engine-2": "*",
+        "@minus/gee2": "*",
         "immer": "^9.0.16",
         "lunr": "^2.3.9",
         "react": "^18.0.0",
