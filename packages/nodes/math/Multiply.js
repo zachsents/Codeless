@@ -1,24 +1,25 @@
-import { recurse } from "../arrayUtilities.js"
+import { elementWise } from "../arrayUtilities.js"
 
 export default {
     id: "math:Multiply",
     name: "Multiply",
     targets: {
         values: {
-            in: {}
+            a: {},
+            b: {},
         }
     },
     sources: {
         values: {
             product: {
                 async get() {
-                    return recurse(await this.in, multiply)
+                    return elementWise(
+                        await this.a,
+                        await this.b,
+                        (a, b) => a * b
+                    )
                 }
             }
         }
     },
-}
-
-function multiply(list) {
-    return list.reduce((accum, cur) => accum * cur, 1)
 }

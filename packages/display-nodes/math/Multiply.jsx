@@ -4,6 +4,6 @@ export default {
     name: "Multiply",
     description: "Multiplies numbers.",
     icon: X,
-    valueTargets: ["in"],
+    valueTargets: ["a", "b"],
     valueSources: ["product"],
 }

@@ -11,6 +11,7 @@ import Add from "./math/Add"
 import Multiply from "./math/Multiply"
 import Divide from "./math/Divide"
 import Average from "./math/Average"
+import Product from "./math/Product"
 
 import Bind from "./util/Bind"
 import Print from "./util/Print"
@@ -76,6 +77,7 @@ export const Nodes = {
     "math:Multiply": Multiply,
     "math:Divide": Divide,
     "math:Average": Average,
+    "math:Product": Product,
 
     "utility:Print": Print,
     "utility:Bind": Bind,
@@ -147,6 +149,7 @@ export const NodeCategories = {
             "math:Multiply",
             "math:Divide",
             "math:Average",
+            "math:Product",
         ],
     },
     Object: {

@@ -1,7 +1,7 @@
 import { forwardRef, useState } from "react"
 import { Card, Group, Flex, Stack, Portal, Text, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
 import { useClickOutside, useHover, useInterval } from "@mantine/hooks"
-import { Position, useUpdateNodeInternals } from "reactflow"
+import { Position, useKeyPress, useUpdateNodeInternals } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
@@ -24,8 +24,6 @@ export default function Node({ id, type, selected }) {
     // props for display components
     const displayProps = useNodeDisplayProps(id)
 
-    // expanding nodes
-    const canBeExpanded = !!nodeType.configuration
     // when deselected, close node
     useEffect(() => {
         !selected && setData({ expanded: false, focused: false })
@@ -50,6 +48,9 @@ export default function Node({ id, type, selected }) {
         leftStackRef.current?.offsetHeight ?? 0,
         rightStackRef.current?.offsetHeight ?? 0
     )
+
+    // alt-dragging for duplication -- TO DO: implement this
+    const duplicating = useKeyPress("Alt") && hovered
 
     // helper function for rendering custom handles
     const renderCustomHandles = (handles, dataType, handleType, position) =>
@@ -106,7 +107,7 @@ export default function Node({ id, type, selected }) {
                 px="md"
                 shadow={selected ? "lg" : "sm"}
                 mih={stackHeight}
-                sx={cardStyle(id)}
+                sx={cardStyle(id, { copyCursor: duplicating })}
                 onDoubleClick={() => setData({ expanded: true, focused: true })}
             >
                 <Flex>
@@ -180,10 +181,11 @@ function ExpandButton({ show = false, expanded = false, onExpand, onCollapse }) 
 }
 
 
-const cardStyle = id => theme => ({
+const cardStyle = (id, { copyCursor }) => theme => ({
     overflow: "visible",
     display: "flex",
     backgroundColor: id == "trigger" && theme.colors.yellow[5],
+    cursor: copyCursor ? "copy" : undefined,
 })
 
 const stackStyle = position => ({
@@ -199,12 +201,4 @@ const stackStyle = position => ({
         right: 0,
         transform: "translate(50%, -50%)",
     }),
-})
-
-const topIconStyle = (offset = 16) => theme => ({
-    position: "absolute",
-    top: -offset,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 40,
 })

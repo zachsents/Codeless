@@ -10,6 +10,7 @@ import Add from "./math/Add.js"
 import Multiply from "./math/Multiply.js"
 import Divide from "./math/Divide.js"
 import Average from "./math/Average.js"
+import Product from "./math/Product.js"
 
 import Bind from "./util/Bind.js"
 import Unbind from "./util/Unbind.js"
@@ -56,7 +57,7 @@ const nodes = [
 
     CreateObject, ReadProperty, WriteProperty,
 
-    RandomNumber, Sum, Add, Multiply, Divide, Average,
+    RandomNumber, Sum, Add, Multiply, Divide, Average, Product,
 
     Bind, Unbind, Print, Memo, ScheduleFlow, RunFlow, Repeat, TestMail, Delay,
 
