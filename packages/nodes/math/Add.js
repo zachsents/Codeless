@@ -12,7 +12,7 @@ export default {
     },
     sources: {
         values: {
-            out: {
+            sum: {
                 async get() {
                     return elementWise(
                         await this.a,
