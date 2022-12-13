@@ -31,10 +31,8 @@ function GenericTrigger(id) {
                 " ": { }
             }
         },
-        setup(setupObservable) {
-            setupObservable?.subscribe(setupPayload => {
-                this[" "](setupPayload)
-            })
+        async setup(setupPayload) {
+            await this[" "](setupPayload)
         },
     }
 }

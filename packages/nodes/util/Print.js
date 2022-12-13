@@ -11,7 +11,7 @@ export default {
             " ": {
                 async action(x) {
                     console.log(await this.value)
-                    this["  "](x)
+                    await this["  "](x)
                 }
             }
         }

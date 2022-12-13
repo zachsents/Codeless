@@ -11,7 +11,7 @@ export default {
                     if (!toEmail)
                         return
 
-                    global.admin.firestore().collection("mail")
+                    await global.admin.firestore().collection("mail")
                         .add({
                             to: toEmail,
                             message: {
@@ -19,9 +19,8 @@ export default {
                                 text: `This is an email from the No-Code platform.\n\n${x}`,
                             },
                         })
-                        .then(() => {
-                            console.log(`Mail queued to ${toEmail}.`)
-                        })
+
+                    console.log(`Mail queued to ${toEmail}.`)
                 }
             }
         },

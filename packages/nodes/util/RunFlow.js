@@ -6,8 +6,8 @@ export default {
     targets: {
         signals: {
             signal: {
-                action(x) {
-                    httpsCallable(url("runNow", {
+                async action(x) {
+                    const response = await httpsCallable(url("runNow", {
                         projectId: global.admin.app().options.projectId,
                         local: process.env.FUNCTIONS_EMULATOR,
                     }))({
@@ -15,8 +15,9 @@ export default {
                         flowId: this.state.flow,
                         payload: x,
                     })
-                        .then(r => r.json())
-                        .then(r => r.result.error && console.log(r.result))
+                    const { result } = await response.json()
+
+                    result.error && console.log(result)
                 }
             },
         }

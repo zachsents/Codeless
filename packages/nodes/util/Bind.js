@@ -10,7 +10,7 @@ export default {
         signals: {
             signal: {
                 async action() {
-                    this.out(await this.value)
+                    await this.out(await this.value)
                 }
             }
         }

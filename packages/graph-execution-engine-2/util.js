@@ -20,8 +20,8 @@ function getConnectedHandles(nodeId, handleName, nodes, edges) {
         )
 }
 
-export function setupNode(node, nodeType, setupObservable) {
-    nodeType.setup?.bind(node)(setupObservable)
+export function setupNode(node, nodeType) {
+    return nodeType.setup?.bind(node)
 }
 
 export function prepNode(node, nodeType, nodes, edges) {
@@ -39,9 +39,9 @@ export function prepValueSources(node, nodeType, nodes, edges) {
                 get: async () => {
                     const result = await valueSourceData?.get.bind(node)()
                     result === undefined && console.warn(`Handle "${handleName}" from a ${nodeType.name} node produced undefined. Make sure all the required handles are connected, node is returning, and all input values are awaited.`)
-                    
+
                     // console.log(nodeType.name, result)
-                    
+
                     return result?.map ? Promise.all(result) : result
                 }
             })
@@ -63,7 +63,7 @@ export function prepValueTargets(node, nodeType, nodes, edges) {
 
                     // console.log(`\n${nodeType.name} - ${handleName}`)
                     // console.log(connectedValues)
-                    
+
                     return connectedValues.length == 1 ? connectedValues.flat() : connectedValues
                 }
             })
@@ -85,11 +85,11 @@ export function prepSignalSources(node, nodeType, nodes, edges) {
 
             const connectedHandles = getConnectedHandles(node.id, handleName, nodes, edges)
 
-            node[handleName] = signal => {
-                connectedHandles.forEach(
+            node[handleName] = signal => Promise.all(
+                connectedHandles.map(
                     connected => connected.node[connected.handle](signal)
                 )
-            }
+            )
         })
 }
 

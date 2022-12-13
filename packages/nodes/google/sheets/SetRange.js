@@ -32,7 +32,7 @@ export default {
                         },
                     })
 
-                    this["  "](x)
+                    await this["  "](x)
                 }
             }
         }

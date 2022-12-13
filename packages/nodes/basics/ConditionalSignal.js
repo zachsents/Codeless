@@ -9,12 +9,11 @@ export default {
         signals: {
             in: {
                 async action(x) {
-                    (await this.condition).forEach(cond => {
-                        if(!!cond) 
-                            this.a(x)
-                        else
-                            this.b(x)
-                    })
+                    await Promise.all(
+                        (await this.condition).map(
+                            async cond => !!cond ? this.a(x) : this.b(x)
+                        )
+                    )
                 }
             }
         }

@@ -10,7 +10,7 @@ export default {
         signals: {
             signal: {
                 async action(x) {
-                    httpsCallable(url("runLater", {
+                    const response = await httpsCallable(url("runLater", {
                         projectId: global.admin.app().options.projectId,
                         local: process.env.FUNCTIONS_EMULATOR,
                     }))({
@@ -19,8 +19,9 @@ export default {
                         time: (await this.time)[0]?.getTime(),
                         payload: x,
                     })
-                        .then(r => r.json())
-                        .then(r => r.result.error && console.log(r.result))
+                    const { result } = await response.json()
+
+                    result.error && console.log(result)
                 }
             },
         }

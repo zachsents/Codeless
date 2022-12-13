@@ -9,13 +9,13 @@ export default {
         },
         signals: {
             in: {
-                async action() {
+                async action(x) {
                     const times = this.state.time == null ? await this.time : [this.state.time]
-                    times.forEach(time => {
-                        setTimeout(() => {
-                            this.out()
-                        }, time * 1000)
-                    })
+                    await Promise.all(
+                        times.map(
+                            time => setAsyncTimeout(() => this.out(x), time * 1000)
+                        )
+                    )
                 }
             }
         }
@@ -25,4 +25,13 @@ export default {
             out: {}
         }
     },
+}
+
+function setAsyncTimeout(func, delay) {
+    return new Promise((resolve) => {
+        setTimeout(async () => {
+            await func?.()
+            resolve()
+        }, delay)
+    })
 }

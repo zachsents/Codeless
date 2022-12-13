@@ -6,9 +6,9 @@ export default {
     targets: {
         signals: {
             signal: {
-                action(x) {
+                async action(x) {
                     this.state.$ = x
-                    this.out()
+                    await this.out()
                 }
             }
         },

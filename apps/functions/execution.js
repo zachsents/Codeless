@@ -8,7 +8,7 @@ import TriggerNodes from "@minus/triggers"
 import Nodes from "@minus/server-nodes"
 
 
-export function executeFlow(graph, payload, globals = {}) {
+export async function executeFlow(graph, payload, globals = {}) {
     try {
         var { nodes, edges } = JSON.parse(graph)
     }
@@ -18,7 +18,7 @@ export function executeFlow(graph, payload, globals = {}) {
 
     global.info = globals
 
-    runFlow({ 
+    await runFlow({ 
         nodes, 
         edges, 
         nodeTypes: {

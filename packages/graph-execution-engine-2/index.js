@@ -1,7 +1,7 @@
-import { prepNode, setupNode, Observable, prepEdge } from "./util.js"
+import { prepNode, setupNode, prepEdge } from "./util.js"
 
 
-export function runFlow({
+export async function runFlow({
     nodes,
     edges,
     nodeTypes,
@@ -10,20 +10,20 @@ export function runFlow({
 
     // ensure that all node types exist
     const badType = nodes.find(node => !nodeTypes[node.type])?.type
-    if(badType)
+    if (badType)
         throw new Error(`Couldn't find node type definition for "${badType}". Did you make sure to export it?`)
 
     // prep the graph for execution
     prepGraph(nodes, edges, nodeTypes)
 
-    // create observable to track when setup is done
-    const setupObservable = new Observable()
-
-    // setup nodes
-    nodes.forEach(node => setupNode(node, nodeTypes[node.type], setupObservable))
-
-    // fire setup observable
-    setupObservable.fire(setupPayload)
+    // wait for graph to finish executing
+    await Promise.all(
+        nodes
+            // prep setup functions
+            .map(node => setupNode(node, nodeTypes[node.type]))
+            // call setup functions
+            .map(setupFunction => setupFunction?.(setupPayload))
+    )
 }
 
 
