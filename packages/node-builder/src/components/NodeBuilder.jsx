@@ -14,7 +14,7 @@ import { useDebouncedValue } from "@mantine/hooks"
 import produce from "immer"
 
 
-export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, flowId, appId, firestore }) {
+export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, flowId, appId, firestore, lastRun, openSettings }) {
 
     const theme = useMantineTheme()
     const rf = useReactFlow()
@@ -53,7 +53,7 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
 
 
     return (
-        <NodeBuilderContext.Provider value={{ nodeTypes, flowId, appId, firestore }}>
+        <NodeBuilderContext.Provider value={{ nodeTypes, flowId, appId, firestore, lastRun, openSettings }}>
             <ReactFlow
                 nodeTypes={rfNodeTypes}
                 defaultNodes={initialNodes}

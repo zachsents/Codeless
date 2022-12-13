@@ -47,7 +47,7 @@ function JustButton({ flow }) {
 
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
-    const [errors, setErrors] = useState(false)
+    const [error, setError] = useState(false)
 
     // run flow manually
     const runFlowManually = useCallback(() => {
@@ -62,7 +62,7 @@ function JustButton({ flow }) {
                     setLoading(false)
 
                     if (Object.keys(data.errors ?? {}).length > 0) {
-                        setErrors(data.errors)
+                        setError(true)
                         console.debug("😢 Returned errors:\n", data.errors)
                     }
                     else
@@ -72,7 +72,7 @@ function JustButton({ flow }) {
                     console.debug(data)
 
                     setTimeout(() => {
-                        setErrors(false)
+                        setError(false)
                         setSuccess(false)
                     }, 2000)
                 })
@@ -84,13 +84,13 @@ function JustButton({ flow }) {
             label="Run Now"
             loading={loading}
             disabled={!(appId && flow.id)}
-            onClick={success || errors ? undefined : runFlowManually}
-            color={success ? "green" : errors ? "red" : ""}
+            onClick={success || error ? undefined : runFlowManually}
+            color={success ? "green" : error ? "red" : ""}
             radius="lg"
             variant="light"
             size="lg"
         >
-            {success ? <TbCheck /> : errors ? <TbMoodSad /> : <TbRun />}
+            {success ? <TbCheck /> : error ? <TbMoodSad /> : <TbRun />}
         </LinkIcon>
     )
 }

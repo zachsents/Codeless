@@ -1,12 +1,12 @@
-import { forwardRef, useState } from "react"
-import { Card, Group, Flex, Stack, Portal, Text, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
+import { forwardRef, useMemo, useState } from "react"
+import { Card, Group, Flex, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
 import { useClickOutside, useHover, useInterval } from "@mantine/hooks"
 import { Position, useKeyPress, useUpdateNodeInternals } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
 import { useNodeData, useNodeDisplayProps } from "../../util"
-import { TbMinus, TbPlus } from "react-icons/tb"
+import { TbExclamationMark, TbMinus, TbPlus } from "react-icons/tb"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect } from "react"
 import { useRef } from "react"
@@ -15,7 +15,7 @@ import { useRef } from "react"
 export default function Node({ id, type, selected }) {
 
     // get node type
-    const { nodeTypes } = useNodeBuilder()
+    const { nodeTypes, lastRun, openSettings } = useNodeBuilder()
     const nodeType = nodeTypes[type]
 
     // node's interal state & data
@@ -51,6 +51,9 @@ export default function Node({ id, type, selected }) {
 
     // alt-dragging for duplication -- TO DO: implement this
     const duplicating = useKeyPress("Alt") && hovered
+
+    // look at our errors from the last run
+    const errors = lastRun?.errors?.[id] ?? []
 
     // helper function for rendering custom handles
     const renderCustomHandles = (handles, dataType, handleType, position) =>
@@ -121,12 +124,7 @@ export default function Node({ id, type, selected }) {
                 </Flex>
             </Card>
 
-            {/* {canBeExpanded && <ExpandButton
-                show={hovered}
-                expanded={data.expanded}
-                onExpand={() => setData({ expanded: true })}
-                onCollapse={() => setData({ expanded: false })}
-            />} */}
+            <ErrorIcon show={!!errors.length} errors={errors} onClick={() => openSettings("errors")} />
         </motion.div>
     )
 }
@@ -148,7 +146,7 @@ const HandleStack = forwardRef(({ children, position, ...props }, ref) => {
 })
 
 
-function ExpandButton({ show = false, expanded = false, onExpand, onCollapse }) {
+function ErrorIcon({ show = false, errors, onClick }) {
 
     const theme = useMantineTheme()
 
@@ -156,23 +154,25 @@ function ExpandButton({ show = false, expanded = false, onExpand, onCollapse }) 
         <Box
             sx={{
                 position: "absolute",
-                top: -theme.spacing.sm,
-                right: -theme.spacing.sm,
+                top: -8,
+                right: -8,
                 zIndex: 11,
             }}
         >
             <AnimatePresence>
                 {show &&
                     <motion.div initial={{ scale: 0, rotate: -135 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -135 }} transition={{ duration: 0.1 }}>
-                        <ActionIcon
-                            // size="xs"
-                            radius="xl"
-                            variant="filled"
-                            color="indigo.8"
-                            onClick={() => (expanded ? onCollapse : onExpand)?.()}
-                        >
-                            {expanded ? <TbMinus /> : <TbPlus />}
-                        </ActionIcon>
+                        <Tooltip label="View Error" size="xs">
+                            <ActionIcon
+                                size="xs"
+                                radius="xl"
+                                variant="filled"
+                                color="red.7"
+                                onClick={onClick}
+                            >
+                                <TbExclamationMark />
+                            </ActionIcon>
+                        </Tooltip>
                     </motion.div>
                 }
             </AnimatePresence>

@@ -41,16 +41,16 @@ export default function ScheduleModal({ opened, onClose, flow }) {
             flowId: flow.id,
             time: values.date.getTime()
         })
-            .then(({ data }) => {
+            .then(({ data: { message, error } }) => {
                 handleCancel()
 
-                if (Object.keys(data.errors ?? {}).length > 0) {
-                    setErrors(data.errors)
-                    console.debug("😢 Returned errors:\n", data.errors)
+                if (error) {
+                    console.debug(`😢 Returned an error:\n${error}`)
+                    return
                 }
 
                 console.debug("Done. Here's the response:")
-                    console.debug(data)
+                console.debug(message)
             })
             .catch(error => {
                 console.error(error)

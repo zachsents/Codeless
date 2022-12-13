@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Drawer, Group, Space, Stack, Tabs, Text, Textarea, ThemeIcon, Title, useMantineTheme } from '@mantine/core'
 import { doc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
-import { TbCheck, TbCloud, TbCloudOff, TbCloudUpload, TbCopy, TbMoon2, TbPencil, TbTrash } from 'react-icons/tb'
+import { TbCheck, TbCloud, TbCloudOff, TbCloudUpload, TbCopy, TbExclamationMark, TbMoon2, TbPencil, TbTrash } from 'react-icons/tb'
 import { useFlowContext } from '../../modules/context'
 import { firestore } from '../../modules/firebase'
 import { useAppId, useDebouncedCustomState, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
@@ -11,7 +11,7 @@ import LinkIcon from '../LinkIcon'
 import RenameModal from '../RenameModal'
 import { HeaderHeight } from './Header'
 
-export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
+export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpenedSuggestedTab }) {
 
     const theme = useMantineTheme()
     const appId = useAppId()
@@ -21,7 +21,10 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
 
     // select suggested tab whenever it changes
     useEffect(() => {
-        suggestedTab && setActiveTab(suggestedTab)
+        if(suggestedTab) {
+            setActiveTab(suggestedTab)
+            onOpenedSuggestedTab?.()
+        }
     }, [suggestedTab])
 
     // description state
@@ -44,6 +47,9 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
 
     // deployment content from trigger node
     const DeployInfo = Nodes[flow?.trigger]?.deploy
+
+    // prep errors
+    const errors = Object.values(flow?.runs?.[0]?.errors ?? {}).flat()
 
     return (
         <>
@@ -100,7 +106,9 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
                     <Tabs.List grow>
                         <Tabs.Tab value={SettingsTabs.General}>General</Tabs.Tab>
                         <Tabs.Tab value={SettingsTabs.Deployment}>Deployment</Tabs.Tab>
+                        <Tabs.Tab value={SettingsTabs.Errors}>Errors</Tabs.Tab>
                     </Tabs.List>
+
                     <Tabs.Panel value={SettingsTabs.General} p="md">
                         <Textarea
                             label="Description"
@@ -110,6 +118,7 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
                             onChange={event => setDescription(event.currentTarget.value)}
                         />
                     </Tabs.Panel>
+
                     <Tabs.Panel value={SettingsTabs.Deployment} p="md">
                         <Space h={20} />
                         <Stack align="center">
@@ -133,6 +142,32 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
                         <Space h={20} />
                         {DeployInfo && <DeployInfo appId={appId} flowId={flow?.id} />}
                     </Tabs.Panel>
+
+                    <Tabs.Panel value={SettingsTabs.Errors} p="md">
+                        {errors.length > 0 ?
+                            <>
+                                <Space h="lg" />
+                                <Text align="center" color="dimmed">Errors were encountered while running your flow.</Text>
+                                <Space h="lg" />
+                                {errors.map((error, i) =>
+                                    <Group noWrap spacing="lg" p="sm" mx={-10} sx={errorStyle} key={"err" + i}>
+                                        <ThemeIcon color="red.7" size="sm">
+                                            <TbExclamationMark />
+                                        </ThemeIcon>
+                                        <Box>
+                                            <Text size="sm" weight={500}>{error.type}</Text>
+                                            <Text size="sm" color="dimmed">{error.message}</Text>
+                                        </Box>
+                                    </Group>
+                                )}
+                            </>
+                            :
+                            <Group>
+
+                                <Text>No errors.</Text>
+                            </Group>
+                        }
+                    </Tabs.Panel>
                 </Tabs>
             </Drawer>
 
@@ -146,5 +181,14 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab }) {
 export const SettingsTabs = {
     General: "general",
     Deployment: "deployment",
+    Errors: "errors",
 }
 
+
+const errorStyle = theme => ({
+    borderRadius: theme.radius.lg,
+    cursor: "pointer",
+    "&:hover": {
+        backgroundColor: theme.colors.gray[1],
+    },
+})

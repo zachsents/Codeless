@@ -49,12 +49,8 @@ export const runWithUrl = functions.https.onRequest(async (request, response) =>
     }
 
     // Log run
-    await validation.docRef.update({
-        runs: FieldValue.arrayUnion({
-            id: generateId(),
-            executedAt: new Date(),
-            method: ExecutionMethod.URL,
-        }),
+    await logRun(validation.docRef, result, {
+        executionMethod: ExecutionMethod.Manual,
     })
 
     response.send(result ?? { message: "OK!" })
@@ -83,12 +79,8 @@ export const runNow = functions.https.onCall(async ({ appId, flowId, payload }, 
     }
 
     // Log run
-    await validation.docRef.update({
-        runs: FieldValue.arrayUnion({
-            id: generateId(),
-            executedAt: new Date(),
-            method: ExecutionMethod.Manual,
-        }),
+    await logRun(validation.docRef, result, {
+        executionMethod: ExecutionMethod.Manual,
     })
 
     return result ?? { message: "OK!" }
@@ -158,13 +150,13 @@ export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ a
     // Log run
     const runItem = validation.data.scheduledRuns.find(run => run.id == runId)
 
-    await validation.docRef.update({
-        scheduledRuns: validation.data.scheduledRuns.filter(run => run != runItem),
-        runs: FieldValue.arrayUnion({
-            ...runItem,
-            executedAt: new Date(),
-            method: ExecutionMethod.Scheduled,
-        }),
+    await logRun(validation.docRef, result, {
+        genId: false,
+        executionMethod: ExecutionMethod.Scheduled,
+        additionalRunFields: runItem,
+        additionalUpdateFields: {
+            scheduledRuns: validation.data.scheduledRuns.filter(run => run != runItem),
+        }
     })
 
     return result ?? { message: "OK!" }
@@ -183,7 +175,7 @@ export const authorizeGoogleApp = functions.https.onCall(async ({ appId, scopes 
 })
 
 export const googleAppAuthorizationRedirect = functions.https.onRequest(async (request, response) => {
-    
+
     // create tokens from code
     const { tokens } = await oauthClient.getToken(request.query.code)
 
@@ -202,6 +194,27 @@ export const googleAppAuthorizationRedirect = functions.https.onRequest(async (r
     // response with JS to close the popup window
     response.send("<script>window.close()</script>")
 })
+
+
+function logRun(docRef, result, { genId = true, executionMethod, additionalRunFields = {}, additionalUpdateFields = {} } = {}) {
+
+    // remove fullError field so we can store
+    Object.values(result.errors).forEach(errList => errList.forEach(err => delete err.fullError))
+
+    return docRef.update({
+        runs: FieldValue.arrayUnion({
+            // optionally generate run ID
+            ...(genId && { id: generateId() }),
+
+            executedAt: new Date(),
+            method: executionMethod,
+            ...result,
+            
+            ...additionalRunFields,
+        }),
+        ...additionalUpdateFields,
+    })
+}
 
 
 async function getOAuth2Client() {

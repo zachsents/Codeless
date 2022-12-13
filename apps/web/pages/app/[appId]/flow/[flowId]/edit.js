@@ -9,7 +9,7 @@ import { NodeBuilder } from "@minus/node-builder"
 import { ReactFlowProvider } from "reactflow"
 import { Nodes } from '../../../../../modules/nodes'
 import { useAppId, useDebouncedCustomState } from '../../../../../modules/hooks'
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { firestore, useMustBeSignedIn } from '../../../../../modules/firebase'
 
 
@@ -36,25 +36,44 @@ function Editor() {
     const [, setGraph] = useDebouncedCustomState(flow?.graph, newGraph => {
         appId && flow?.id && updateDoc(
             doc(firestore, "apps", appId, "flows", flow.id),
-            { graph: newGraph }
+            {
+                graph: newGraph,
+                lastEdited: serverTimestamp(),
+            }
         )
     }, 500)
+
+    const openSettings = tab => {
+        settingsHandlers.open()
+        setSuggestedTab(tab)
+    }
 
     return (
         <AppShell
             padding={0}
             header={
                 <Header
-                    openSettings={tab => {
-                        settingsHandlers.open()
-                        setSuggestedTab(tab)
-                    }}
+                    openSettings={openSettings}
                 />
             }
             navbar={<Sidebar />}
         >
-            {flow && <NodeBuilder nodeTypes={Nodes} initialGraph={flow.graph} onChange={setGraph} flowId={flow.id} appId={appId} firestore={firestore} />}
-            <SettingsDrawer opened={settingsOpened} onClose={settingsHandlers.close} suggestedTab={suggestedTab} />
+            {flow && <NodeBuilder
+                nodeTypes={Nodes}
+                initialGraph={flow.graph}
+                onChange={setGraph}
+                flowId={flow.id}
+                appId={appId}
+                firestore={firestore}
+                lastRun={flow.runs?.[0]}
+                openSettings={openSettings}
+            />}
+            <SettingsDrawer
+                opened={settingsOpened}
+                onClose={settingsHandlers.close}
+                suggestedTab={suggestedTab}
+                onOpenedSuggestedTab={() => setSuggestedTab(null)}
+            />
         </AppShell>
     )
 }
