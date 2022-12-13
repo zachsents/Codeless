@@ -1,3 +1,5 @@
+import { reportError } from "./errors.js"
+
 
 function getNode(nodeId, nodes) {
     return nodes.find(node => node.id == nodeId)
@@ -74,7 +76,20 @@ export function prepSignalTargets(node, nodeType, nodes, edges) {
     // create actions for signal targets
     nodeType?.targets?.signals &&
         Object.entries(nodeType.targets.signals).forEach(([handleName, signalTargetData]) => {
-            node[handleName] = signalTargetData.action.bind(node)
+            node[handleName] = async x => {
+                // surround in try/catch so we can report errors
+                try {
+                    return await signalTargetData.action.bind(node)(x)
+                }
+                catch(err) {
+                    console.error(`Encountered an error in ${nodeType.name}. See response for details.`)
+                    reportError(node.id, {
+                        type: nodeType.name,
+                        message: err.message,
+                        fullError: err,
+                    })
+                }
+            }
         })
 }
 
@@ -115,3 +130,4 @@ export function prepEdge(edge) {
 function parseHandleId(id) {
     return id.match(/\<([\w\W]*?)\>(.*)/)?.[2] ?? id
 }
+

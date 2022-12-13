@@ -1,3 +1,4 @@
+import { clearErrors, getErrors } from "./errors.js"
 import { prepNode, setupNode, prepEdge } from "./util.js"
 
 
@@ -7,6 +8,9 @@ export async function runFlow({
     nodeTypes,
     setupPayload,
 }) {
+
+    // clear errors
+    clearErrors()
 
     // ensure that all node types exist
     const badType = nodes.find(node => !nodeTypes[node.type])?.type
@@ -24,6 +28,8 @@ export async function runFlow({
             // call setup functions
             .map(setupFunction => setupFunction?.(setupPayload))
     )
+
+    return { errors: getErrors() }
 }
 
 

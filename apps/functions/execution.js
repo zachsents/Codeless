@@ -12,19 +12,19 @@ export async function executeFlow(graph, payload, globals = {}) {
     try {
         var { nodes, edges } = JSON.parse(graph)
     }
-    catch(err) {
+    catch (err) {
         throw new Error("Failed to parse graph.")
     }
 
     global.info = globals
 
-    await runFlow({ 
-        nodes, 
-        edges, 
+    return await runFlow({
+        nodes,
+        edges,
         nodeTypes: {
             ...Nodes,
             ...TriggerNodes,
         },
-        setupPayload: payload 
+        setupPayload: payload
     })
 }

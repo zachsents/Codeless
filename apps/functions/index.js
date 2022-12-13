@@ -36,7 +36,7 @@ export const runWithUrl = functions.https.onRequest(async (request, response) =>
 
     // Run flow
     try {
-        await executeFlow(validation.data.graph, {
+        var result = await executeFlow(validation.data.graph, {
             method: request.method,
             headers: request.headers,
             body: request.body,
@@ -57,7 +57,7 @@ export const runWithUrl = functions.https.onRequest(async (request, response) =>
         }),
     })
 
-    response.send({ message: "OK!" })
+    response.send(result ?? { message: "OK!" })
 })
 
 
@@ -75,7 +75,7 @@ export const runNow = functions.https.onCall(async ({ appId, flowId, payload }, 
 
     // Run flow
     try {
-        await executeFlow(validation.data.graph, payload, { appId, flowId })
+        var result = await executeFlow(validation.data.graph, payload, { appId, flowId })
     }
     catch (err) {
         console.error(err)
@@ -91,7 +91,7 @@ export const runNow = functions.https.onCall(async ({ appId, flowId, payload }, 
         }),
     })
 
-    return { message: "OK!" }
+    return result ?? { message: "OK!" }
 })
 
 
@@ -148,7 +148,7 @@ export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ a
 
     // Run flow
     try {
-        await executeFlow(validation.data.graph, payload, { appId, flowId })
+        var result = await executeFlow(validation.data.graph, payload, { appId, flowId })
     }
     catch (err) {
         console.error(err)
@@ -167,7 +167,7 @@ export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ a
         }),
     })
 
-    return { message: "OK!" }
+    return result ?? { message: "OK!" }
 })
 
 
