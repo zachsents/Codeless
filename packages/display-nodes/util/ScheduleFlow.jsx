@@ -2,7 +2,6 @@ import { CalendarTime } from "tabler-icons-react"
 import { Select } from "@mantine/core"
 import { collection, documentId, getDocs, query, where } from "firebase/firestore"
 import { useState, useEffect } from "react"
-import { Trigger } from "@minus/triggers"
 
 
 export default {
@@ -22,7 +21,7 @@ export default {
                     query(
                         collection(firestore, `apps/${appId}/flows`),
                         where(documentId(), "!=", flowId),
-                        where("trigger", "==", Trigger.Manual)
+                        where("trigger", "==", "trigger:manual")
                     )
                 )
                     .then(result => {

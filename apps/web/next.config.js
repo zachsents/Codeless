@@ -2,7 +2,6 @@
 
 const withTM = require("next-transpile-modules")([
     "@minus/node-builder",
-    "@minus/triggers",
     "@minus/client-nodes",
 ])
 

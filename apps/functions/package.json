@@ -22,8 +22,7 @@
         "nanoid-dictionary": "^4.3.0",
         "@minus/gee2": "*",
         "@minus/server-nodes": "*",
-        "firebase-admin-callable-functions": "*",
-        "@minus/triggers": "*"
+        "firebase-admin-callable-functions": "*"
     },
     "devDependencies": {
         "firebase-functions-test": "^0.2.0"

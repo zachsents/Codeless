@@ -6,8 +6,6 @@ import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore'
 import { TbArrowNarrowRight } from 'react-icons/tb'
 import * as TablerIcons from "tabler-icons-react"
 
-import Triggers from "@minus/triggers/display"
-import { TriggerCategories } from '@minus/triggers'
 import { serializeGraph } from '@minus/node-builder'
 import { firestore, useMustBeSignedIn } from '../../../../modules/firebase'
 import { useApp, useFlowCount, usePlan } from '../../../../modules/hooks'
@@ -15,6 +13,7 @@ import AppDashboard from '../../../../components/AppDashboard'
 import GoBackButton from '../../../../components/GoBackButton'
 import FormSubsection from '../../../../components/forms/FormSubsection'
 import FormSection from '../../../../components/forms/FormSection'
+import { Triggers, TriggerCategories } from '@minus/client-nodes'
 
 
 export default function CreateFlow() {
@@ -34,9 +33,8 @@ export default function CreateFlow() {
 
     // look up trigger types and map to data the SegmentedControl can use
     const triggerTypes = Object.entries(TriggerCategories).map(([catId, cat]) => {
-        const TypeIcon = TablerIcons[cat.icon]
         return {
-            label: <TriggerCard label={cat.name} icon={<TypeIcon />} />,
+            label: <TriggerCard label={cat.name} icon={<cat.icon />} />,
             value: catId,
         }
     })
@@ -84,7 +82,7 @@ export default function CreateFlow() {
             return
 
         // if there's only one option, set it
-        const triggerList = TriggerCategories[form.values.triggerType].triggers
+        const triggerList = TriggerCategories[form.values.triggerType].members
         triggerList.length == 1 && form.setFieldValue("trigger", triggerList[0])
 
         return triggerList.map(triggerId => ({

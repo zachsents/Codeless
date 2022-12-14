@@ -1,20 +1,17 @@
 import Link from 'next/link'
-import { ActionIcon, Badge, Box, Button, Divider, Group, Menu, Overlay, SimpleGrid, Skeleton, Space, Stack, Text, Title, Tooltip } from '@mantine/core'
-import { TfiMoreAlt } from "react-icons/tfi"
-import { TbEditCircle, TbCopy, TbTrash, TbPencil, TbRotateClockwise2, TbClock, TbListDetails, TbChartDots3, TbX, TbRun, TbChevronUp } from "react-icons/tb"
+import { ActionIcon, Badge, Box, Button, Divider, Group, Overlay, Stack, Text, Tooltip } from '@mantine/core'
+import { TbTrash, TbPencil, TbClock, TbListDetails, TbChartDots3, TbX, TbRun } from "react-icons/tb"
 import { useAppId, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
 import DeleteModal from '../DeleteModal'
 import RenameModal from '../RenameModal'
-import FloatingMenu from '../FloatingMenu'
-import LinkIcon from "../LinkIcon"
 import OurCard from './OurCard'
-import Triggers from "@minus/triggers/display"
-import { Trigger } from '@minus/triggers'
-import ScheduleModal from '../ScheduleModal'
-import { useClickOutside, useDisclosure } from '@mantine/hooks'
+import { Triggers } from "@minus/client-nodes"
+import { useClickOutside } from '@mantine/hooks'
 import RunManuallyButton from '../RunManuallyButton'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from "framer-motion"
+import { Run } from 'tabler-icons-react'
+import FlowControlButton from '../FlowControlButton'
 
 
 export default function FlowCard({ flow }) {
@@ -26,7 +23,7 @@ export default function FlowCard({ flow }) {
     const [expanded, setExpanded] = useState(false)
     const clickOutsideRef = useClickOutside(() => setExpanded(false))
 
-    // keep track of height
+    // keep track of height for animations
     const [boxHeight, setBoxHeight] = useState()
     const heightRef = useRef()
     useEffect(() => {
@@ -38,7 +35,7 @@ export default function FlowCard({ flow }) {
     const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow.id)
 
     // trigger icon
-    const TriggerIcon = Triggers[flow.trigger].icon
+    const TriggerIcon = Triggers[flow.trigger]?.icon
 
     const expandedStyle = {
         position: "fixed",
@@ -65,8 +62,8 @@ export default function FlowCard({ flow }) {
                                     </Group>
                                     <Group position="apart" align="flex-start" >
                                         <Stack sx={{ flexBasis: 0, flexGrow: 1 }}>
-                                            {flowHasScheduledRuns && 
-                                            <ScheduledRuns runs={flow.scheduledRuns} />}
+                                            {flowHasScheduledRuns &&
+                                                <ScheduledRuns runs={flow.scheduledRuns} />}
                                         </Stack>
                                         <Stack spacing={5} w={200} justify="flex-start">
                                             <Button {...leftButtonProps} variant="filled" leftIcon={<TbChartDots3 />}>Open Designer</Button>
@@ -93,7 +90,8 @@ export default function FlowCard({ flow }) {
                                                 <Tooltip label="Good to go!" withArrow>
                                                     <ActionIcon variant="transparent" color="gray"><TbFaceId fontSize={28} /></ActionIcon>
                                                 </Tooltip>} */}
-                                            <ActionIcon color="gray" variant="transparent"><TriggerIcon /></ActionIcon>
+                                            {TriggerIcon &&
+                                                <ActionIcon color="gray" variant="transparent"><TriggerIcon /></ActionIcon>}
                                             <Box>
                                                 <Group align="center">
                                                     {!flow.deployed &&
@@ -112,31 +110,16 @@ export default function FlowCard({ flow }) {
                                                 </Sparklines>
                                             </Box> */}
 
-                                            {flow.trigger == Trigger.Manual &&
-                                                <Box mr={30}>
-                                                    <RunManuallyButton flow={flow} includeScheduling />
-                                                </Box>}
-
-
-
-                                            {/* <Tooltip label="Edit Flow">
-                                                <div>
-                                                    <Link >
-                                                        <ActionIcon component="a" variant="transparent" color="dark"><TbEditCircle fontSize={28} /></ActionIcon>
-                                                    </Link>
-                                                </div>
-                                            </Tooltip> */}
-                                            {/* <FloatingMenu>
-                                                <Menu.Target>
-                                                    <ActionIcon variant="transparent" color="dark"><TfiMoreAlt fontSize={20} /></ActionIcon>
-                                                </Menu.Target>
-                                                <Menu.Dropdown>
-                                                    <Menu.Item disabled icon={<TbRotateClockwise2 />}>View Runs</Menu.Item>
-                                                    <Menu.Item onClick={() => setRenaming(true)} icon={<TbPencil />}>Rename Flow</Menu.Item>
-                                                    <Menu.Item disabled icon={<TbCopy />}>Duplicate Flow</Menu.Item>
-                                                    <Menu.Item onClick={() => setDeleting(true)} icon={<TbTrash />} color="red">Delete Flow</Menu.Item>
-                                                </Menu.Dropdown>
-                                            </FloatingMenu> */}
+                                            <Group spacing="xs">
+                                                {Triggers[flow.trigger]?.controls?.map((control, i) =>
+                                                    <FlowControlButton
+                                                        {...control}
+                                                        appId={appId}
+                                                        flow={flow}
+                                                        key={i}
+                                                    />
+                                                )}
+                                            </Group>
                                         </Group>
                                     </Group>
                                     <Group position="apart" grow>

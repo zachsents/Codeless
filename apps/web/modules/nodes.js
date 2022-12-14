@@ -1,23 +1,16 @@
-import { Nodes as DisplayNodes, NodeCategories as DisplayNodeCategories } from "@minus/client-nodes"
-import TriggerNodes from "@minus/triggers/display"
+import { 
+    Nodes as OtherNodes, 
+    NodeCategories as OtherNodeCategories,
+    Triggers
+} from "@minus/client-nodes"
 
 
-export const Nodes = addIdToNodes({
-    ...DisplayNodes,
-    ...TriggerNodes,
-})
+export const Nodes = {
+    ...OtherNodes,
+    ...Triggers,
+}
 
-
-export const NodeCategories = Object.values(DisplayNodeCategories).map(cat => ({
+export const NodeCategories = Object.values(OtherNodeCategories).map(cat => ({
     ...cat,
     nodes: cat.members.map(member => Nodes[member]),
 }))
-
-
-function addIdToNodes(nodesObj) {
-    return Object.fromEntries(
-        Object.entries(nodesObj).map(
-            ([id, data]) => [id, { ...data, id, }]
-        )
-    )
-}

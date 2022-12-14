@@ -3,7 +3,6 @@ import admin from "firebase-admin"
 import { getFunctions } from "firebase-admin/functions"
 import { FieldValue } from "firebase-admin/firestore"
 import { executeFlow } from "./execution.js"
-import { Trigger } from "@minus/triggers"
 import { customAlphabet } from "nanoid"
 import nanoidDict from "nanoid-dictionary"
 import { google } from "googleapis"
@@ -23,68 +22,29 @@ export const runWithUrl = functions.https.onRequest(async (request, response) =>
 
     const [, appId, flowId] = request.path.split("/")
 
-    // Validate
-    const validation = await validateCall(appId, flowId, {
-        matchTrigger: Trigger.HTTP,
-    })
-
-    // Catch validation errors and return early
-    if (validation.error) {
-        response.status(validation.status).send(validation)
-        return
-    }
-
-    // Run flow
-    try {
-        var result = await executeFlow(validation.data.graph, {
+    const result = await run({
+        appId,
+        flowId,
+        payload: {
             method: request.method,
             headers: request.headers,
             body: request.body,
-        }, { appId, flowId })
-    }
-    catch (error) {
-        console.error(error)
-        response.status(500).send({ error: "Encountered an error running this flow.", appId, flowId })
+        },
+        logOptions: {
+            executionMethod: ExecutionMethod.URL,
+        },
+    })
+
+    if (result.error) {
+        response.status(result.status ?? 500).send(result)
         return
     }
 
-    // Log run
-    await logRun(validation.docRef, result, {
-        executionMethod: ExecutionMethod.Manual,
-    })
-
-    response.send(result ?? { message: "OK!" })
+    response.status(200).send(result)
 })
 
 
-export const runNow = functions.https.onCall(async ({ appId, flowId, payload }, context) => {
-
-    // Validate
-    // const validation = await validateCall(appId, flowId, {
-    //     uid: context.auth?.uid,
-    // })
-    const validation = await validateCall(appId, flowId)
-
-    // Catch validation errors and return early
-    if (validation.error)
-        return validation
-
-    // Run flow
-    try {
-        var result = await executeFlow(validation.data.graph, payload, { appId, flowId })
-    }
-    catch (err) {
-        console.error(err)
-        return { error: "Encountered an error running this flow.", appId, flowId }
-    }
-
-    // Log run
-    await logRun(validation.docRef, result, {
-        executionMethod: ExecutionMethod.Manual,
-    })
-
-    return result ?? { message: "OK!" }
-})
+export const runNow = functions.https.onCall((data, context) => run({ ...data, context }))
 
 
 export const runLater = functions.https.onCall(async ({ appId, flowId, time, payload }, context) => {
@@ -129,37 +89,36 @@ export const runLater = functions.https.onCall(async ({ appId, flowId, time, pay
 })
 
 
-export const runFromSchedule = functions.tasks.taskQueue().onDispatch(async ({ appId, flowId, runId, payload }) => {
+export const runFromSchedule = functions.tasks.taskQueue().onDispatch(
 
-    // Validate
-    const validation = await validateCall(appId, flowId)
+    ({ appId, flowId, runId, payload }) =>
+        run({
+            appId,
+            flowId,
+            payload,
+            logOptions: validation => {
+                const runItem = validation.data.scheduledRuns.find(run => run.id == runId)
+                return {
+                    genId: false,
+                    executionMethod: ExecutionMethod.Scheduled,
+                    additionalRunFields: runItem,
+                    additionalUpdateFields: {
+                        scheduledRuns: validation.data.scheduledRuns.filter(run => run != runItem),
+                    }
+                }
+            }
+        })
+)
 
-    // Catch validation errors and return early
-    if (validation.error)
-        return validation
 
-    // Run flow
-    try {
-        var result = await executeFlow(validation.data.graph, payload, { appId, flowId })
-    }
-    catch (err) {
-        console.error(err)
-        return { error: "Encountered an error running this flow.", appId, flowId }
-    }
+export const runFromGmailEvent = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
 
-    // Log run
-    const runItem = validation.data.scheduledRuns.find(run => run.id == runId)
+    const messageData = message.data &&
+        JSON.parse(
+            Buffer.from(message.data, 'base64').toString()
+        )
 
-    await logRun(validation.docRef, result, {
-        genId: false,
-        executionMethod: ExecutionMethod.Scheduled,
-        additionalRunFields: runItem,
-        additionalUpdateFields: {
-            scheduledRuns: validation.data.scheduledRuns.filter(run => run != runItem),
-        }
-    })
-
-    return result ?? { message: "OK!" }
+    console.log(messageData)
 })
 
 
@@ -169,10 +128,12 @@ export const authorizeGoogleApp = functions.https.onCall(async ({ appId, scopes 
         access_type: "offline",
         scope: scopes,
         state: appId,
+        include_granted_scopes: true,
     })
 
     return { url }
 })
+
 
 export const googleAppAuthorizationRedirect = functions.https.onRequest(async (request, response) => {
 
@@ -196,6 +157,43 @@ export const googleAppAuthorizationRedirect = functions.https.onRequest(async (r
 })
 
 
+
+async function run({ appId, flowId, payload, context, logOptions, validationOptions }) {
+
+    // Validate
+    // const validation = await validateCall(appId, flowId, {
+    //     uid: context.auth?.uid,
+    // })
+    const validation = await validateCall(appId, flowId, validationOptions)
+
+    // Catch validation errors and return early
+    if (validation.error)
+        return validation
+
+    // Run flow
+    try {
+        var result = await executeFlow(validation.data.graph, payload, { appId, flowId })
+    }
+    catch (err) {
+        console.error(err)
+        return { error: "Encountered an error running this flow.", appId, flowId }
+    }
+
+    // Log run
+    await logRun(
+        validation.docRef,
+        result,
+        logOptions ?
+            (typeof logOptions === "function" ? logOptions(validation) : logOptions) :
+            {
+                executionMethod: ExecutionMethod.Manual,
+            }
+    )
+
+    return result ?? { message: "OK!" }
+}
+
+
 function logRun(docRef, result, { genId = true, executionMethod, additionalRunFields = {}, additionalUpdateFields = {} } = {}) {
 
     // remove fullError field so we can store
@@ -209,7 +207,7 @@ function logRun(docRef, result, { genId = true, executionMethod, additionalRunFi
             executedAt: new Date(),
             method: executionMethod,
             ...result,
-            
+
             ...additionalRunFields,
         }),
         ...additionalUpdateFields,

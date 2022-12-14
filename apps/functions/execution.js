@@ -1,6 +1,4 @@
 import { runFlow } from "@minus/gee2"
-import TriggerNodes from "@minus/triggers"
-
 /*
     In the future, we can put the dependencies in the graph, then dynamically load
     the modules we need.
@@ -21,10 +19,7 @@ export async function executeFlow(graph, payload, globals = {}) {
     return await runFlow({
         nodes,
         edges,
-        nodeTypes: {
-            ...Nodes,
-            ...TriggerNodes,
-        },
+        nodeTypes: Nodes,
         setupPayload: payload
     })
 }

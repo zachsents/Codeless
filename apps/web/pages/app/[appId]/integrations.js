@@ -11,6 +11,7 @@ import OurCard from "../../../components/cards/OurCard"
 import { auth, firestore, functions, useMustBeSignedIn } from '../../../modules/firebase'
 import { useEffect, useState } from 'react'
 import GoogleSheetsAuth from "@minus/client-nodes/google/sheets/auth"
+import GmailAuth from "@minus/client-nodes/google/gmail/auth"
 import { useAppRealtime } from '../../../modules/hooks'
 
 
@@ -74,6 +75,7 @@ export default function AppSettings() {
 
             <SimpleGrid cols={1} spacing={35} verticalSpacing={25}>
                 <IntegrationCard integration={GoogleSheetsAuth} app={app} />
+                <IntegrationCard integration={GmailAuth} app={app} />
             </SimpleGrid>
         </AppDashboard>
     )

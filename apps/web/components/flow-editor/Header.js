@@ -5,10 +5,10 @@ import { TbArrowLeft, TbCloud, TbCloudUpload, TbMaximize, TbPencil, TbSettings }
 import { useRouter } from 'next/router'
 import RenameModal from "../RenameModal"
 import { SettingsTabs } from "./SettingsDrawer"
-import RunManuallyButton from "../RunManuallyButton"
 import { useFlowContext } from "../../modules/context"
 import { useRenameFlow } from "../../modules/hooks"
-import { Trigger } from "@minus/triggers"
+import { Triggers } from "@minus/client-nodes"
+import FlowControlButton from "../FlowControlButton"
 
 
 export default function Header({ openSettings }) {
@@ -52,10 +52,19 @@ export default function Header({ openSettings }) {
                             variant="transparent"><TbPencil /></LinkIcon>
                     </Group>
                     <Group spacing="sm" position="right" sx={{ flex: "1 0 0" }}>
-                        {flow?.trigger == Trigger.Manual && flow?.deployed &&
-                            <Box mr={30}>
-                                <RunManuallyButton flow={flow} includeScheduling />
-                            </Box>}
+
+                        {flow &&
+                            <Group spacing="xs" mr={30}>
+                                {Triggers[flow.trigger]?.controls?.map((control, i) =>
+                                    <FlowControlButton
+                                        {...control}
+                                        appId={appId}
+                                        flow={flow}
+                                        key={i}
+                                    />
+                                )}
+                            </Group>}
+
                         {flow?.deployed ?
                             <LinkIcon
                                 onClick={() => openSettings?.(SettingsTabs.Deployment)}

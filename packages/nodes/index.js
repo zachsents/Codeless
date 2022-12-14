@@ -1,4 +1,8 @@
 import "./arrayUtilities.js"
+
+import DefaultTrigger from "./triggers/Default.js"
+import LinkTrigger from "./triggers/Link.js"
+
 import Number from "./basics/Number.js"
 import Text from "./basics/Text.js"
 import Switch from "./basics/Switch.js"
@@ -53,6 +57,8 @@ import SetNamedColumn from "./google/sheets/SetNamedColumn.js"
 
 
 const nodes = [
+    DefaultTrigger, LinkTrigger,
+
     Number, Text, Switch, DateTime, ConditionalValue, ConditionalSignal, And, Or, Not, Equal, NotEqual, GreaterThan,
 
     CreateObject, ReadProperty, WriteProperty,

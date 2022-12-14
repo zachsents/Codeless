@@ -1,5 +1,8 @@
-import { CircleSquare, Settings, Math, ListSearch, Icons } from "tabler-icons-react"
+import { CircleSquare, Settings, Math, ListSearch, Icons, Link, Run, BrandGmail } from "tabler-icons-react"
 import { SiGooglesheets } from "react-icons/si"
+
+import DefaultTrigger from "./triggers/Default"
+import LinkTrigger from "./triggers/Link"
 
 import DateTime from "./basics/DateTime"
 import Number from "./basics/Number"
@@ -52,8 +55,10 @@ import FilterBlanks from "./lists/FilterBlanks"
 import Transpose from "./lists/Transpose"
 import Size from "./lists/Size"
 
+import TriggerEmailReceived from "./google/gmail/TriggerEmailReceived"
 
-export const Nodes = {
+
+export const Nodes = addIdToNodes({
     "primitive:Number": Number,
     "primitive:Text": Text,
     "primitive:Switch": Switch,
@@ -104,7 +109,7 @@ export const Nodes = {
     "list:FilterBlanks": FilterBlanks,
     "list:Transpose": Transpose,
     "list:Size": Size,
-}
+})
 
 export const NodeCategories = {
     Basic: {
@@ -192,4 +197,43 @@ export const NodeCategories = {
             "utility:Delay",
         ],
     },
+}
+
+export const Triggers = addIdToNodes({
+    "trigger:manual": DefaultTrigger,
+    "trigger:http": LinkTrigger,
+    "trigger:gmail:EmailReceived": TriggerEmailReceived,
+})
+
+export const TriggerCategories = {
+    Default: {
+        title: "Default",
+        icon: Run,
+        members: [
+            "trigger:manual",
+        ],
+    },
+    Link: {
+        title: "Link",
+        icon: Link,
+        members: [
+            "trigger:http",
+        ]
+    },
+    Gmail: {
+        title: "Gmail",
+        icon: BrandGmail,
+        members: [
+            "trigger:gmail:EmailReceived",
+        ],
+    },
+}
+
+
+function addIdToNodes(nodesObj) {
+    return Object.fromEntries(
+        Object.entries(nodesObj).map(
+            ([id, data]) => [id, { ...data, id, }]
+        )
+    )
 }
