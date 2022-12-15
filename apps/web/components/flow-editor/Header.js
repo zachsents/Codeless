@@ -1,7 +1,7 @@
 import { Group, Header as MantineHeader, Text, Box } from "@mantine/core"
 import { useReactFlow } from "reactflow"
 import LinkIcon from '../LinkIcon'
-import { TbArrowLeft, TbCloud, TbCloudUpload, TbMaximize, TbPencil, TbSettings } from 'react-icons/tb'
+import { TbArrowLeft, TbCloud, TbCloudUpload, TbMaximize, TbPencil, TbSettings, TbExclamationMark, TbCheck } from 'react-icons/tb'
 import { useRouter } from 'next/router'
 import RenameModal from "../RenameModal"
 import { SettingsTabs } from "./SettingsDrawer"
@@ -20,6 +20,9 @@ export default function Header({ openSettings }) {
 
     // renaming & deleting
     const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flowId)
+
+    // displaying if there's errors
+    const hasErrors = Object.keys(flow?.runs?.[0]?.errors ?? {}).length > 0
 
     return (
         <>
@@ -65,6 +68,19 @@ export default function Header({ openSettings }) {
                                 )}
                             </Group>}
 
+                        {hasErrors ?
+                            <LinkIcon
+                                onClick={() => openSettings?.(SettingsTabs.Errors)}
+                                label="Click to view errors."
+                                variant="filled"
+                                color="red"><TbExclamationMark fontSize={24} /></LinkIcon>
+                            :
+                            <LinkIcon
+                                onClick={() => openSettings?.(SettingsTabs.Errors)}
+                                label="No errors!"
+                                variant="light"><TbCheck fontSize={24} /></LinkIcon>
+                        }
+
                         {flow?.deployed ?
                             <LinkIcon
                                 onClick={() => openSettings?.(SettingsTabs.Deployment)}
@@ -78,7 +94,7 @@ export default function Header({ openSettings }) {
                                 variant="light"><TbCloudUpload fontSize={24} /></LinkIcon>
                         }
                         <LinkIcon
-                            onClick={() => openSettings?.(SettingsTabs.General)}
+                            onClick={() => openSettings?.()}
                             label="Settings"
                             variant="light"><TbSettings fontSize={24} /></LinkIcon>
                     </Group>

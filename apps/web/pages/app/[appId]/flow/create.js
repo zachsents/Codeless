@@ -34,7 +34,7 @@ export default function CreateFlow() {
     // look up trigger types and map to data the SegmentedControl can use
     const triggerTypes = Object.entries(TriggerCategories).map(([catId, cat]) => {
         return {
-            label: <TriggerCard label={cat.name} icon={<cat.icon />} />,
+            label: <TriggerCard label={cat.title} icon={<cat.icon />} />,
             value: catId,
         }
     })
@@ -44,7 +44,7 @@ export default function CreateFlow() {
     const form = useForm({
         initialValues: {
             name: "",
-            triggerType: "HTTP",
+            triggerType: "Link",
             trigger: null,
         },
         validate: {

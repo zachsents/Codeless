@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Drawer, Group, Space, Stack, Tabs, Text, Textarea, ThemeIcon, Title, useMantineTheme } from '@mantine/core'
+import { Box, Button, Center, Divider, Drawer, Group, Loader, Space, Stack, Tabs, Text, Textarea, ThemeIcon, Title, useMantineTheme } from '@mantine/core'
 import { doc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { TbCheck, TbCloud, TbCloudOff, TbCloudUpload, TbCopy, TbExclamationMark, TbMoon2, TbPencil, TbTrash } from 'react-icons/tb'
@@ -10,6 +10,9 @@ import DeleteModal from '../DeleteModal'
 import LinkIcon from '../LinkIcon'
 import RenameModal from '../RenameModal'
 import { HeaderHeight } from './Header'
+import { functions } from '../../modules/firebase'
+import { useFlowPublishing } from '../../modules/publishing'
+
 
 export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpenedSuggestedTab }) {
 
@@ -17,33 +20,22 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
     const appId = useAppId()
     const flow = useFlowContext()
 
-    const [activeTab, setActiveTab] = useState(SettingsTabs.General)
+    const [activeTab, setActiveTab] = useState(SettingsTabs.Deployment)
 
     // select suggested tab whenever it changes
     useEffect(() => {
-        if(suggestedTab) {
+        if (suggestedTab) {
             setActiveTab(suggestedTab)
             onOpenedSuggestedTab?.()
         }
     }, [suggestedTab])
 
-    // description state
-    const [description, setDescription] = useDebouncedCustomState(flow?.description, newDesc => {
-        flow?.id && updateDoc(
-            doc(firestore, "apps", appId, "flows", flow.id),
-            { description: newDesc }
-        )
-    }, 1000)
-
     // renaming & deleting
     const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow?.id)
     const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow?.id)
 
-    // deploy
-    const setDeployed = deployed => updateDoc(
-        doc(firestore, "apps", appId, "flows", flow.id),
-        { deployed, }
-    )
+    // publishing
+    const publishing = useFlowPublishing(flow, appId)
 
     // deployment content from trigger node
     const DeployInfo = Nodes[flow?.trigger]?.deploy
@@ -76,6 +68,8 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                 <Title px="md" order={5}>{flow?.name}</Title>
                 <Space h={10} />
                 <Text px="md" pb={5} size="xs" color="dimmed">Quick Actions</Text>
+
+                {/* Quick Actions */}
                 <Group
                     spacing="md"
                     // position="center"
@@ -84,10 +78,10 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                     mx={-theme.spacing.sm}
                     sx={{ backgroundColor: theme.colors.gray[1] }}
                 >
-                    <LinkIcon
+                    {/* <LinkIcon
                         label="Redeploy"
                         disabled
-                        variant="transparent"><TbCloudUpload fontSize={24} /></LinkIcon>
+                        variant="transparent"><TbCloudUpload fontSize={24} /></LinkIcon> */}
                     <LinkIcon
                         label="Rename Flow"
                         onClick={() => setRenaming(true)}
@@ -102,39 +96,51 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                         variant="transparent"><TbTrash fontSize={24} /></LinkIcon>
                 </Group>
                 <Space h={20} />
+
                 <Tabs value={activeTab} onTabChange={setActiveTab}>
                     <Tabs.List grow>
-                        <Tabs.Tab value={SettingsTabs.General}>General</Tabs.Tab>
                         <Tabs.Tab value={SettingsTabs.Deployment}>Deployment</Tabs.Tab>
                         <Tabs.Tab value={SettingsTabs.Errors}>Errors</Tabs.Tab>
                     </Tabs.List>
 
-                    <Tabs.Panel value={SettingsTabs.General} p="md">
-                        <Textarea
-                            label="Description"
-                            labelProps={{ size: "xs", px: "sm", }}
-                            placeholder="Write a description..."
-                            value={description ?? ""}
-                            onChange={event => setDescription(event.currentTarget.value)}
-                        />
-                    </Tabs.Panel>
-
+                    {/* Deployment Panel */}
                     <Tabs.Panel value={SettingsTabs.Deployment} p="md">
                         <Space h={20} />
                         <Stack align="center">
-                            {flow?.deployed ?
-                                <>
-                                    <Group position="center">
-                                        <ThemeIcon radius="md" color="green"><TbCheck /></ThemeIcon>
-                                        <Text color="green" weight={600}>Your flow is live!</Text>
-                                    </Group>
-                                    <Button onClick={() => setDeployed(false)} variant="subtle" color="gray" rightIcon={<TbCloudOff />} mt={10}>Unpublish</Button>
-                                </>
-                                :
-                                <>
-                                    <Text>Your flow is not live.</Text>
-                                    <Button onClick={() => setDeployed(true)} rightIcon={<TbCloudUpload />} size="md" mt={10}>Publish</Button>
-                                </>
+                            {
+                                publishing.loading ?
+                                    <Center>
+                                        <Loader />
+                                    </Center>
+                                    :
+                                    publishing.published ?
+                                        <>
+                                            <Group position="center">
+                                                <ThemeIcon radius="md" color="green"><TbCheck /></ThemeIcon>
+                                                <Text color="green" weight={600}>Your flow is live!</Text>
+                                            </Group>
+                                            <Button
+                                                onClick={publishing.unpublish}
+                                                rightIcon={<TbCloudOff />}
+                                                variant="subtle"
+                                                color="gray"
+                                                mt={10}
+                                            >
+                                                Unpublish
+                                            </Button>
+                                        </>
+                                        :
+                                        <>
+                                            <Text>Your flow is not live.</Text>
+                                            <Button
+                                                onClick={publishing.publish}
+                                                rightIcon={<TbCloudUpload />}
+                                                size="md"
+                                                mt={10}
+                                            >
+                                                Publish
+                                            </Button>
+                                        </>
                             }
                         </Stack>
                         <Space h={20} />
@@ -143,6 +149,7 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                         {DeployInfo && <DeployInfo appId={appId} flowId={flow?.id} />}
                     </Tabs.Panel>
 
+                    {/* Errors Panel */}
                     <Tabs.Panel value={SettingsTabs.Errors} p="md">
                         {errors.length > 0 ?
                             <>
@@ -162,9 +169,9 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                                 )}
                             </>
                             :
-                            <Group>
-
-                                <Text>No errors.</Text>
+                            <Group position="center" mt={20}>
+                                <ThemeIcon radius="md" color="green"><TbCheck /></ThemeIcon>
+                                <Text color="green" weight={600}>No errors!</Text>
                             </Group>
                         }
                     </Tabs.Panel>
@@ -179,7 +186,6 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
 
 
 export const SettingsTabs = {
-    General: "general",
     Deployment: "deployment",
     Errors: "errors",
 }

@@ -55,6 +55,8 @@ import GetSheet from "./google/sheets/GetSheet.js"
 import GetNamedColumn from "./google/sheets/GetNamedColumn.js"
 import SetNamedColumn from "./google/sheets/SetNamedColumn.js"
 
+import TriggerEmailReceived from "./google/gmail/TriggerEmailReceived.js"
+
 
 const nodes = [
     DefaultTrigger, LinkTrigger,
@@ -70,6 +72,8 @@ const nodes = [
     CellRange, Range, ColumnRange, RowRange, GetRange, SetRange, ClearRange, AppendValues, GetSheet, GetNamedColumn, SetNamedColumn,
 
     FilterBlanks, Transpose, Size,
+
+    TriggerEmailReceived,
 ]
 
 export default Object.fromEntries(nodes.map(node => [node.id, node]))

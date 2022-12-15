@@ -45,7 +45,7 @@ function Editor() {
 
     const openSettings = tab => {
         settingsHandlers.open()
-        setSuggestedTab(tab)
+        setSuggestedTab(tab ?? null)
     }
 
     return (

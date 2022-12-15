@@ -5,17 +5,7 @@ import { FieldValue } from "firebase-admin/firestore"
 import { executeFlow } from "./execution.js"
 import { customAlphabet } from "nanoid"
 import nanoidDict from "nanoid-dictionary"
-import { google } from "googleapis"
-import fs from "fs/promises"
-
-
-admin.initializeApp()
-global.admin = admin
-const db = admin.firestore()
-
-// create & globalize OAuth2 client
-const oauthClient = await getOAuth2Client()
-global.oauthClient = oauthClient
+import { oauthClient, db } from "./init.js"
 
 
 export const runWithUrl = functions.https.onRequest(async (request, response) => {
@@ -111,17 +101,6 @@ export const runFromSchedule = functions.tasks.taskQueue().onDispatch(
 )
 
 
-export const runFromGmailEvent = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
-
-    const messageData = message.data &&
-        JSON.parse(
-            Buffer.from(message.data, 'base64').toString()
-        )
-
-    console.log(messageData)
-})
-
-
 export const authorizeGoogleApp = functions.https.onCall(async ({ appId, scopes }) => {
 
     const url = oauthClient.generateAuthUrl({
@@ -157,8 +136,11 @@ export const googleAppAuthorizationRedirect = functions.https.onRequest(async (r
 })
 
 
+export * as gmail from "./gmail.js"
 
-async function run({ appId, flowId, payload, context, logOptions, validationOptions }) {
+
+
+export async function run({ appId, flowId, payload, context, logOptions, validationOptions }) {
 
     // Validate
     // const validation = await validateCall(appId, flowId, {
@@ -215,17 +197,6 @@ function logRun(docRef, result, { genId = true, executionMethod, additionalRunFi
 }
 
 
-async function getOAuth2Client() {
-    const { web: { client_id, client_secret, redirect_uris } } = JSON.parse(await fs.readFile("./oauth_client_secret.json", "utf-8"))
-
-    return new google.auth.OAuth2(
-        client_id,
-        client_secret,
-        redirect_uris[process.env.FUNCTIONS_EMULATOR ? 0 : 1]
-    )
-}
-
-
 async function validateCall(appId, flowId, { uid, matchTrigger } = {}) {
 
     // Make sure appId and flowId were included
@@ -264,10 +235,11 @@ async function validateCall(appId, flowId, { uid, matchTrigger } = {}) {
 }
 
 
-const ExecutionMethod = {
+export const ExecutionMethod = {
     Manual: "manual",
     Scheduled: "scheduled",
     URL: "url",
+    PubSub: "pubsub",
 }
 
 const generateId = customAlphabet(nanoidDict.alphanumeric, 20)

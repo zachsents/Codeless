@@ -12,7 +12,7 @@ export default {
     renderNode: ({ state, setState }) => {
         return (
             <Switch
-                mt={-10}
+                mt={5}
                 // size="xl"
                 checked={state.$ ?? false}
                 onChange={event => setState({ $: event.currentTarget.checked })}
