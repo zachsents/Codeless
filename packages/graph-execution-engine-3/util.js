@@ -1,0 +1,134 @@
+
+const promises = []
+
+
+export function startGraph(nodes, setupPayload) {
+    nodes.forEach(node => {
+        trackPromise(
+            node.type.onStart?.bind(node)(setupPayload)
+        )
+    })
+}
+
+
+export function prepGraph(nodes, edges, nodeTypes) {
+    // edges.forEach(
+    //     edge => prepEdge(edge)
+    // )
+    nodes.forEach(
+        node => prepNode(node, nodeTypes[node.type], nodes, edges)
+    )
+}
+
+
+function prepNode(node, nodeType, nodes, edges) {
+
+    // attach node type def
+    node.type = nodeType
+
+    // establish map of outgoing connections
+    node.outgoingConnections = Object.fromEntries(
+        nodeType.outputs.map(output => [
+            output.name ?? output,
+            getConnectedHandles(node.id, output, nodes, edges)
+        ])
+    )
+
+    // establish map of expected number of incoming connections
+    node.expectedInputs = Object.fromEntries(
+        nodeType.inputs.map(input => [
+            input.name ?? input,
+            input.expectSingleValue ? 1 : getConnectedHandles(node.id, input, nodes, edges).length
+        ])
+    )
+
+    // create publish function -- pushes output values to connected input
+    node.publish = function publish(valuesObject) {
+        Object.entries(valuesObject).forEach(([output, value]) => {
+            node.outgoingConnections[output].forEach(conn => {
+                // ensure what we need exists
+                conn.node.inputs ??= {}
+                conn.node.inputs[conn.handle] ??= []
+
+                // push in our value
+                conn.node.inputs[conn.handle].push(value)
+
+                // check if all inputs are satisfied
+                const inputsSatisfied = Object.entries(conn.node.expectedInputs).every(
+                    ([input, expected]) => conn.node.inputs[input]?.length >= expected
+                )
+                if (inputsSatisfied) {
+
+                    // Here is where we can transform our data
+                    conn.node.type.inputs?.forEach(input => {
+                        const passedInputs = conn.node.inputs
+                        const inputName = input.name ?? input
+
+                        // if a single array is passed, flatten it
+                        if (passedInputs[inputName].length == 1)
+                            passedInputs[inputName] = passedInputs[inputName].flat()
+
+                        // pass a single value instead of an array
+                        if (input.expectSingleValue)
+                            passedInputs[inputName] = passedInputs[inputName][0]
+                    })
+
+                    // call node's input ready function
+                    trackPromise(
+                        conn.node.type.onInputsReady?.bind(conn.node)(conn.node.inputs)
+                    )
+                }
+            })
+        })
+    }
+}
+
+
+function prepEdge(edge) {
+    // TO DO: parse edge names for variable-length handle lists
+}
+
+
+export function findUnknownTypes(nodes, nodeTypes) {
+    const badTypes = nodes.filter(node => !nodeTypes[node.type]).map(node => `\t- ${node.type}`)
+    if (badTypes.length > 0)
+        throw new Error(
+            `Couldn't find node type definition for the following types:
+${badTypes.join("\n")}
+Did you make sure to export them?`
+        )
+}
+
+
+function trackPromise(promise) {
+    promises.push(promise)
+}
+
+export function getExecutionPromise() {
+    return Promise.all(
+        promises
+    )
+}
+
+
+function getConnectedHandles(nodeId, handleName, nodes, edges) {
+    return edges
+        .filter(edge =>
+            (edge.target == nodeId && edge.targetHandle == handleName) ||
+            (edge.source == nodeId && edge.sourceHandle == handleName)
+        )
+        .map(edge =>
+            edge.target == nodeId ? {
+                node: getNode(edge.source, nodes),
+                handle: edge.sourceHandle
+            } : {
+                node: getNode(edge.target, nodes),
+                handle: edge.targetHandle
+            }
+        )
+}
+
+
+function getNode(nodeId, nodes) {
+    return nodes.find(node => node.id == nodeId)
+}
