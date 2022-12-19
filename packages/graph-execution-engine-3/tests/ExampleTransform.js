@@ -12,13 +12,15 @@ export default {
     outputs: ["result"],
 
     onInputsReady({ base, power }) {
-
-        const doMath = function() {
-            this.publish({
-                result: base?.map(b => Math.pow(b, power))
-            })
-        }
-
-        setTimeout(doMath.bind(this), 1000)
+        const This = this
+        
+        return new Promise(resolve => {
+            setTimeout(() => {
+                This.publish({
+                    result: base?.map(b => Math.pow(b, power))
+                })
+                resolve()
+            }, 1000)
+        })
     },
 }
