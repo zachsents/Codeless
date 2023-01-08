@@ -1,5 +1,6 @@
 import { clearErrors, getErrors } from "./errors.js"
-import { findUnknownTypes, getExecutionPromise, prepGraph, startGraph } from "./util.js"
+import { subscribe } from "./promiseStream.js"
+import { findUnknownTypes, prepGraph, startGraph } from "./util.js"
 
 
 export async function runFlow({
@@ -22,7 +23,7 @@ export async function runFlow({
     startGraph(nodes, setupPayload)
 
     // wait for graph to finish executing
-    await getExecutionPromise()
+    await subscribe()
 
     return { errors: getErrors() }
 }

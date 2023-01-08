@@ -6,7 +6,7 @@ export default {
     outputs: ["_"],
 
     onInputsReady({ $ }) {
-        console.log($)
+        console.log("printing", $)
         this.publish({ _: $ })
     },
 }

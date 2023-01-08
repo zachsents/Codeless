@@ -1,10 +1,10 @@
-
-const promises = []
+import { reportError } from "./errors.js"
+import { watch } from "./promiseStream.js"
 
 
 export function startGraph(nodes, setupPayload) {
     nodes.forEach(node => {
-        trackPromise(
+        watch(
             node.type.onStart?.bind(node)(setupPayload)
         )
     })
@@ -42,6 +42,9 @@ function prepNode(node, nodeType, nodes, edges) {
         ])
     )
 
+    // set up other node properties
+    node.timesRan = 0
+
     // create publish function -- pushes output values to connected input
     node.publish = function publish(valuesObject) {
         Object.entries(valuesObject).forEach(([output, value]) => {
@@ -51,6 +54,7 @@ function prepNode(node, nodeType, nodes, edges) {
                 conn.node.inputs[conn.handle] ??= []
 
                 // push in our value
+                // console.log(conn.node.inputs)
                 conn.node.inputs[conn.handle].push(value)
 
                 // check if all inputs are satisfied
@@ -59,24 +63,40 @@ function prepNode(node, nodeType, nodes, edges) {
                 )
                 if (inputsSatisfied) {
 
+                    // Make a mutable copy of our inputs
+                    const nodeInputs = { ...conn.node.inputs }
+
                     // Here is where we can transform our data
-                    conn.node.type.inputs?.forEach(input => {
-                        const passedInputs = conn.node.inputs
-                        const inputName = input.name ?? input
+                    conn.node.type.inputs?.forEach(inputDef => {
+                        const inputName = inputDef.name ?? inputDef
 
                         // if a single array is passed, flatten it
-                        if (passedInputs[inputName].length == 1)
-                            passedInputs[inputName] = passedInputs[inputName].flat()
+                        if (nodeInputs[inputName].length == 1)
+                            nodeInputs[inputName] = nodeInputs[inputName].flat()
 
-                        // pass a single value instead of an array
-                        if (input.expectSingleValue)
-                            passedInputs[inputName] = passedInputs[inputName][0]
+                        // option: pass a single value instead of an array
+                        if (inputDef.expectSingleValue)
+                            // use last value in array
+                            nodeInputs[inputName] = nodeInputs[inputName][nodeInputs[inputName].length - 1]
                     })
 
-                    // call node's input ready function
-                    trackPromise(
-                        conn.node.type.onInputsReady?.bind(conn.node)(conn.node.inputs)
-                    )
+                    // increment run counter
+                    node.timesRan++
+
+                    // error tracking
+                    try {
+                        // call node's input ready function
+                        watch(
+                            conn.node.type.onInputsReady?.bind(conn.node)(nodeInputs)
+                        )
+                    }
+                    catch (error) {
+                        reportError(conn.node.id, {
+                            type: conn.node.type.id,
+                            message: error.message,
+                            // fullError: error,
+                        })
+                    }
                 }
             })
         })
@@ -97,17 +117,6 @@ export function findUnknownTypes(nodes, nodeTypes) {
 ${badTypes.join("\n")}
 Did you make sure to export them?`
         )
-}
-
-
-function trackPromise(promise) {
-    promises.push(promise)
-}
-
-export function getExecutionPromise() {
-    return Promise.all(
-        promises
-    )
 }
 
 

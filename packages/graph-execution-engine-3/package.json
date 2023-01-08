@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "devtest": "npx nodemon ./tests/dev.js",
+    "test": "node ./tests/dev.js"
   },
   "author": "",
   "license": "ISC",

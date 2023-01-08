@@ -10,5 +10,14 @@ export default {
         this.publish({
             $: this.state.integer ? Math.floor(rand) : rand
         })
+
+        // publish another value later
+        const This = this
+        return new Promise(resolve => {
+            setTimeout(() => {
+                This.publish({ $: 5 })
+                resolve()
+            }, 3000)
+        })
     },
 }
