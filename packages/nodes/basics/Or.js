@@ -1,24 +1,14 @@
-import { recurse } from "../arrayUtilities.js"
 
 
 export default {
     id: "basic:Or",
     name: "Or",
-    targets: {
-        values: {
-            in: {}
-        }
+
+    inputs: ["$condition"],
+    outputs: ["$"],
+
+    onInputsReady({ $condition }) {
+        $condition.setElementWisePredicate((a, b) => a || b)        
+        this.publish({ $: $condition })
     },
-    sources: {
-        values: {
-            out: {
-                async get() {
-                    return recurse(
-                        await this.in,
-                        list => list.some(cond => !!cond)
-                    )
-                }
-            }
-        }
-    }
 }

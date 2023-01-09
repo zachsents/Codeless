@@ -1,26 +1,14 @@
-import { elementWise } from "../arrayUtilities.js"
 
 
 export default {
     id: "basic:GreaterThan",
     name: "Greater Than",
-    targets: {
-        values: {
-            a: {},
-            b: {},
-        }
+
+    inputs: ["$condition"],
+    outputs: ["$"],
+
+    onInputsReady({ $condition }) {
+        $condition.setElementWisePredicate((a, b) => a > b)        
+        this.publish({ $: $condition })
     },
-    sources: {
-        values: {
-            out: {
-                async get() {
-                    return elementWise(
-                        await this.a,
-                        await this.b,
-                        (a, b) => a > b
-                    )
-                }
-            }
-        }
-    }
 }
