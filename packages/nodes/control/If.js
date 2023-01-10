@@ -1,14 +1,16 @@
-import { Condition, ExecutionSignal } from "../types/index.js"
+import { ExecutionSignal } from "../types/index.js"
 
 
 export default {
     id: "control:If",
     name: "If",
 
-    inputs: ["$ex"],
-    outputs: ["$"],
+    inputs: ["$ex", "condition"],
+    outputs: ["then", "otherwise"],
 
-    onInputsReady({ $ex }) {
-        this.publish({ $: new Condition($ex ?? new ExecutionSignal()) })
+    onInputsReady({ $ex, condition }) {
+        this.publish({
+            [condition ? "then" : "otherwise"]: $ex ?? new ExecutionSignal(),
+        })
     },
 }
