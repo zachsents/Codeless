@@ -1,8 +1,8 @@
 
 
 export default {
-    id: "control:Loop",
-    name: "Loop",
+    id: "control:NumberedLoop",
+    name: "Numbered Loop",
 
     inputs: ["$ex", "times"],
     outputs: ["$"],
