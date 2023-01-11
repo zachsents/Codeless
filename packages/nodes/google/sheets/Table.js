@@ -4,11 +4,11 @@ import { Range } from "./types.js"
 
 
 export default {
-    id: "googlesheets:Range",
-    name: "Range",
+    id: "googlesheets:Table",
+    name: "Table",
 
     inputs: ["sheet"],
-    outputs: ["data"],
+    outputs: ["table"],
 
     async onInputsReady({ sheet }) {
         // get Google Sheets API
@@ -26,16 +26,13 @@ export default {
         })
         const values = response.data.values
 
-        // return the values straight up if it's 1D or a single value
-        if(values.length == 1) {
-            if(values[0].length == 1)
-                return values[0][0]
-            return values[0]
-        }
+        // split up headers from the actual data
+        const headers = values[this.state.headerRow]
+        const tableData = values.slice(this.state.startRow)
 
-        // otherwise, return in Table form
+        // return in Table form
         const table = new Table()
-        table.loadFrom2DArray(values)
-        this.publish({ data: table })
+        table.loadFrom2DArray(tableData, { headers })
+        this.publish({ table })
     },
 }
