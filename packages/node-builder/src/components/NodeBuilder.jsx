@@ -1,13 +1,12 @@
-import { useCallback, createContext, useContext, useMemo } from "react"
-import ReactFlow, { useNodesState, useEdgesState, Background, addEdge, MarkerType, updateEdge, useReactFlow, useNodes, useEdges, useStore, applyEdgeChanges } from "reactflow"
+import { createContext, useContext, useMemo } from "react"
+import ReactFlow, { Background, useReactFlow, useNodes, useEdges } from "reactflow"
 import { useMantineTheme } from "@mantine/core"
 
-import { findEdgeFromConnection, validateEdgeConnection } from "../util"
+import { findEdgeFromConnection } from "../util"
 import Node from "./nodes/Node"
 
 import 'reactflow/dist/style.css'
 import "../nodeStyles.css"
-import { DataType } from "../modules/dataTypes"
 import { useEffect } from "react"
 import ActiveDetails from "./ActiveDetails"
 import { useDebouncedValue } from "@mantine/hooks"
@@ -31,19 +30,25 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
     // handle connection -- validate and style edges 
     const handleConnect = connection => {
 
-        const dataType = validateEdgeConnection(connection, rf.getEdges())
+        /**
+         * No longer need to verify edge type with GEE 3, but
+         * leaving this here in case we need other forms of verification
+         * in the future (types, etc.).
+         */
+        // const dataType = validateEdgeConnection(connection, rf.getEdges())
 
-        // edge isn't validated -- remove it
-        if (!dataType) {
-            rf.setEdges(edges => {
-                const newEdge = findEdgeFromConnection(connection, edges)
-                return applyEdgeChanges([{ id: newEdge.id, type: "remove" }], edges)
-            })
-            return
-        }
+        // // edge isn't validated -- remove it
+        // if (!dataType) {
+        //     rf.setEdges(edges => {
+        //         const newEdge = findEdgeFromConnection(connection, edges)
+        //         return applyEdgeChanges([{ id: newEdge.id, type: "remove" }], edges)
+        //     })
+        //     return
+        // }
 
         // apply edge styles based on data type
-        const edgeProps = (dataType == DataType.Signal ? signalEdgeProps : valueEdgeProps)(theme)
+        // const edgeProps = (dataType == DataType.Signal ? signalEdgeProps : valueEdgeProps)(theme)
+        const edgeProps = valueEdgeProps(theme)
         rf.setEdges(produce(draft => {
             const newEdge = findEdgeFromConnection(connection, draft)
             Object.entries(edgeProps)

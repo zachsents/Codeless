@@ -1,9 +1,11 @@
 import { Equal } from "tabler-icons-react"
 
 export default {
-    name: "Equal",
+    id: "basic:Equals",
+    name: "Equals",
     description: "Tests if things are equal.",
     icon: Equal,
-    valueTargets: ["a", "b"],
-    valueSources: ["out"],
+    
+    inputs: ["_a", "_b"],
+    outputs: ["$"],
 }

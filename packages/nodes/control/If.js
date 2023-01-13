@@ -5,12 +5,14 @@ export default {
     id: "control:If",
     name: "If",
 
-    inputs: ["$ex", "condition"],
+    inputs: ["$condition", "_then", "_otherwise"],
     outputs: ["then", "otherwise"],
 
-    onInputsReady({ $ex, condition }) {
-        this.publish({
-            [condition ? "then" : "otherwise"]: $ex ?? new ExecutionSignal(),
-        })
+    onInputsReady({ $condition, _then, _otherwise }) {
+        this.publish(
+            $condition ?
+                { then: _then } :
+                { otherwise: _otherwise }
+        )
     },
 }

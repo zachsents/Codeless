@@ -2,9 +2,10 @@ import { Box, useMantineTheme, Text } from "@mantine/core"
 import { Handle } from "reactflow"
 import { DataType } from "../../modules/dataTypes"
 import { motion } from "framer-motion"
+import { useRef } from "react"
 
 
-export default function CustomHandle({ name, dataType, handleType, position, label, showLabel = false }) {
+export default function CustomHandle({ name, dataType, handleType, position, label, align, showLabel = false }) {
 
     const theme = useMantineTheme()
 
@@ -14,8 +15,14 @@ export default function CustomHandle({ name, dataType, handleType, position, lab
 
     const tooltipLabel = label ?? formatName(name)
 
+    // calculate alignment
+    const wrapperRef = useRef()
+    const alignHeight = align && (
+        align.offsetTop + align.offsetHeight / 2 - wrapperRef.current?.offsetHeight / 2
+    )
+
     return (
-        <motion.div whileHover="hovered" style={handleWrapperStyle}>
+        <motion.div whileHover="hovered" style={handleWrapperStyle(alignHeight)} ref={wrapperRef}>
             <motion.div variants={variants} transition={{ duration: 0.05 }}>
                 <Handle {...createHandleProps(theme, name, dataType, {
                     type: handleType,
@@ -56,12 +63,14 @@ const valueStyle = theme => ({
 
 function createHandleProps(theme, name, dataType, props) {
     return {
-        id: createHandleId(name, dataType),
+        // id: createHandleId(name, dataType),
+        id: name,
         ...props,
         style: {
             ...handleStyle(theme),
-            ...(dataType == DataType.Value && valueStyle(theme)),
-            ...(dataType == DataType.Signal && signalStyle(theme)),
+            ...valueStyle(theme),
+            // ...(dataType == DataType.Value && valueStyle(theme)),
+            // ...(dataType == DataType.Signal && signalStyle(theme)),
         },
     }
 }
@@ -71,18 +80,26 @@ function createHandleId(name, dataType) {
 }
 
 function formatName(name) {
+
+    if(name.startsWith("_"))
+        return ""
+
     return name
+        .replace("$", "")
         .trim()
         .match(/[A-Z]?[^A-Z]+/g)
         ?.map(word => word.slice(0, 1).toUpperCase() + word.slice(1))
         .join(" ") ?? ""
 }
 
-const handleWrapperStyle = {
+const handleWrapperStyle = align => ({
     borderRadius: "100%",
     padding: 7,
-    position: "relative",
-}
+    position: align ? "absolute" : "relative",
+    ...(align && {
+        top: align,
+    })
+})
 
 const tooltipContainerStyle = position => ({
     position: "absolute",

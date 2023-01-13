@@ -1,9 +1,11 @@
 import { Divide } from "tabler-icons-react"
 
 export default {
+    id: "math:Divide",
     name: "Divide",
     description: "Divides numbers.",
     icon: Divide,
-    valueTargets: ["numerator", "denominator"],
-    valueSources: ["quotient"],
+    
+    inputs: ["_a", "_b"],
+    outputs: ["$"],
 }

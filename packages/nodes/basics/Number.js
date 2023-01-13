@@ -1,8 +1,8 @@
-import { Primitive } from "./templates"
+import { Primitive } from "./templates.js"
 
 
 export default {
-    id: "primitive:Number",
+    id: "basic:Number",
     name: "Number",
 
     ...Primitive(),

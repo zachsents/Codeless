@@ -2,10 +2,13 @@ import { AlphabetLatin } from "tabler-icons-react"
 import { TextInput } from "@mantine/core"
 
 export default {
+    id: "basic:Text",
     name: "Text",
     description: "Just a plain ol' text.",
     icon: AlphabetLatin,
-    valueSources: [" "],
+
+    inputs: [],
+    outputs: ["$"],
 
     renderNode: ({ state, setState }) => (
         <TextInput

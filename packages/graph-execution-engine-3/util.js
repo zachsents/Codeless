@@ -8,6 +8,9 @@ export function startGraph(nodes, setupPayload) {
             node.type.onStart?.bind(node)(setupPayload)
         )
     })
+
+    // watch empty promise to indicate starting finished
+    watch(Promise.resolve())
 }
 
 

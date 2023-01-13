@@ -1,7 +1,7 @@
 
 
 export default {
-    id: "primitive:DateTime",
+    id: "basic:DateTime",
     name: "Date & Time",
 
     inputs: [],

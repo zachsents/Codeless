@@ -3,10 +3,13 @@ import { Copy, Check, ExternalLink, Link } from "tabler-icons-react"
 
 
 export default {
+    id: "basic:LinkTrigger",
     name: "Link",
     description: "Triggered when URL is accessed.",
     icon: Link,
-    signalSources: [" "],
+
+    inputs: [],
+    outputs: ["$"],
 
     deploy: ({ appId, flowId }) => {
 

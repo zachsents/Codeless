@@ -9,10 +9,13 @@ import { Run, Clock } from "tabler-icons-react"
 
 
 export default {
+    id: "basic:DefaultTrigger",
     name: "Trigger",
     description: "Can be triggered manually, triggered by other flows, or scheduled to run later.",
     icon: Run,
-    signalSources: [" "],
+    
+    inputs: [],
+    outputs: ["$"],
 
     controls: [
         {

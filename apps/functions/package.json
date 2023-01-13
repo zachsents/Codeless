@@ -20,7 +20,7 @@
         "googleapis": "^109.0.1",
         "nanoid": "^4.0.0",
         "nanoid-dictionary": "^4.3.0",
-        "@minus/gee2": "*",
+        "@minus/gee3": "*",
         "@minus/server-nodes": "*",
         "firebase-admin-callable-functions": "*"
     },
