@@ -1,6 +1,7 @@
-import { Box, Divider, Flex, Space, Skeleton, Stack, Text } from "@mantine/core"
-import { forwardRef, useRef } from "react"
+import { Space, Stack, Text } from "@mantine/core"
 import { ArrowsSplit } from "tabler-icons-react"
+import { SkeletonWithHandle } from "../components"
+
 
 export default {
     id: "control:If",
@@ -14,42 +15,15 @@ export default {
     renderNode({ alignHandles }) {
 
         return <Stack align="center" w={100} spacing={0}>
-            <Text>If</Text>
+            <Text size="xs">If</Text>
             <SkeletonWithHandle align="left" ref={el => alignHandles("$condition", el)} />
             <Space h="xs" />
-            <Text>Then</Text>
+            <Text size="xs">Then</Text>
             <SkeletonWithHandle align="both" ref={el => alignHandles(["then", "_then"], el)} />
             <Space h="xs" />
-            <Text>Otherwise</Text>
+            <Text size="xs">Otherwise</Text>
             <SkeletonWithHandle align="both" ref={el => alignHandles(["otherwise", "_otherwise"], el)} />
         </Stack>
     },
 }
 
-const SkeletonWithHandle = forwardRef(({ align = "left", h = 20, ...props }, ref) => {
-
-    return (
-        <Box
-            w="100%"
-            justify="center"
-            align="center"
-            sx={{ position: "relative" }}
-            ref={ref}
-        >
-            <Skeleton h={h} animate={false} {...props} />
-            <Box
-                sx={theme => ({
-                    width: align == "both" ? `calc(100% + ${theme.spacing.md * 2}px)` : theme.spacing.md + 10,
-                    height: 3,
-                    position: "absolute",
-                    top: "50%",
-                    [align == "right" ? "right" : "left"]: -theme.spacing.md,
-                    transform: "translateY(-50%)",
-                    background: theme.colors.gray[3],
-                })}
-            >
-
-            </Box>
-        </Box>
-    )
-})
