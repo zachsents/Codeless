@@ -1,70 +1,70 @@
-import { ActionIcon, Badge, Box, Button, Card, Group, Skeleton, Text, Title, Tooltip } from '@mantine/core'
+import { ActionIcon, Badge, Box, Button, Card, Grid, Group, Indicator, Menu, Skeleton, Stack, Text, Title, Tooltip } from '@mantine/core'
 import { useHover } from "@mantine/hooks"
 import Link from 'next/link'
 import { format as timeAgo } from 'timeago.js'
 import { FaTrashAlt, FaPencilAlt } from "react-icons/fa"
 import ResourceFraction from '../ResourceFraction'
 import { useCollectionCount, useFlowCount, usePlan } from "../../modules/hooks"
+import { TbCrown, TbDots, TbTrophy } from 'react-icons/tb'
 
 
 export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }) {
 
-    const { hovered: showEditButton, ref: titleRef } = useHover()
-
     const flowCount = useFlowCount(id)
-    const collectionCount = useCollectionCount(id)
     const plan = usePlan(planRef)
 
     return (
-        <Card shadow="sm" p="lg" radius="lg">
-            <Card.Section sx={cardTitleContainerStyle} ref={titleRef}>
-                <Group position="apart" mr={20}>
-                    <Title order={3} p={20} color="white">{name}</Title>
-                    {showEditButton &&
-                        <ActionIcon variant="transparent" sx={{ color: "white" }}><FaPencilAlt /></ActionIcon>}
-                </Group>
-            </Card.Section>
-
-            <Group position="apart" mt="md" mb="xs">
-                <Text size="sm" color="dimmed">Last edited {timeAgo(lastEdited.seconds * 1000)}</Text>
-                {plan ?
-                    <Tooltip label="Change Plan" withArrow position="bottom">
-                        <Box>
-                            <Link href="#">
-                                <Badge color={plan?.color} variant="light" component="a" sx={{ cursor: "pointer" }}>
-                                    {plan?.name}
-                                </Badge>
-                            </Link>
-                        </Box>
-                    </Tooltip>
-                    :
-                    <Skeleton height={12} width={40} radius="xl" />
-                }
-            </Group>
-
-            <Group position="center" spacing="xl" mb={30}>
-                {flowCount && collectionCount && plan ?
-                    <>
-                        <ResourceFraction used={flowCount} total={plan?.flowCount} label="Flows" color="indigo" />
-                        <ResourceFraction used={collectionCount} total={plan?.collectionCount} label="Collections" color="cyan" />
-                    </>
-                    :
-                    <Skeleton height={12} width={100} mt={10} radius="xl" />
-                }
-            </Group>
-
-            <Group>
+        <Stack>
+            <Indicator
+                disabled={!plan}
+                color={plan?.color}
+                size={30}
+                withBorder
+                label={<TbCrown />}
+            >
                 <Link href={`/app/${id}`}>
-                    <Button variant="outline" component="a" sx={{ flexGrow: 1, }}>Open</Button>
+                    <Box p="lg" sx={cardTitleContainerStyle}>
+                        <Group position="apart">
+                            <Text size={24} weight={500} color="white">{name}</Text>
+                            <Box>
+                                <Text size="sm" weight={500} align="right" color="white">{flowCount} flows</Text>
+                                <Text size="sm" weight={500} align="right" color="white">3 integrations</Text>
+                            </Box>
+                        </Group>
+                    </Box>
                 </Link>
-                <Tooltip label="Delete App" withArrow>
-                    <ActionIcon variant="transparent"><FaTrashAlt /></ActionIcon>
-                </Tooltip>
-            </Group>
-        </Card>
+            </Indicator>
+
+            <Grid px="md">
+                <Grid.Col span="auto">
+                    <Text size="xs" color="dimmed">Last edited {timeAgo(lastEdited.seconds * 1000)}</Text>
+                </Grid.Col>
+
+                <Grid.Col span="content">
+                    <Menu position="bottom-end" shadow="lg" styles={{ dropdown: { border: "none" } }}>
+                        <Menu.Target>
+                            <ActionIcon color="gray" variant="light" radius="sm">
+                                <TbDots />
+                            </ActionIcon>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item>
+                                Rename
+                            </Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                </Grid.Col>
+            </Grid>
+        </Stack>
     )
 }
 
 const cardTitleContainerStyle = theme => ({
-    background: `linear-gradient(45deg, ${theme.colors.indigo[5]} 0%, ${theme.colors.cyan[5]} 100%)`
+    background: `linear-gradient(45deg, ${theme.colors.indigo[5]} 0%, ${theme.colors.cyan[5]} 100%)`,
+    borderRadius: theme.radius.lg,
+    cursor: "pointer",
+    transition: "transform 0.15s",
+    "&:hover": {
+        transform: "scale(1.02)",
+    },
 })

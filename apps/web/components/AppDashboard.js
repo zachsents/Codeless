@@ -21,7 +21,7 @@ export default function AppDashboard({ children }) {
                 <Navbar width={{ base: 280 }} withBorder={false} p="md">
                     <Navbar.Section>
                         <Group position="apart">
-                            <Title order={3}>Codeless</Title>
+                            <Title order={3}>minus</Title>
                             <Link href="/dashboard">
                                 <ActionIcon color="dark" component="a"><FaHome /></ActionIcon>
                             </Link>

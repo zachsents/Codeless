@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 386 198">
+  <defs>
+    <linearGradient id="a" y1="99" x2="386" y2="99" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff6b6b"/>
+      <stop offset="0.5" stop-color="#ff922b"/>
+      <stop offset="1" stop-color="#fcc419"/>
+    </linearGradient>
+  </defs>
+  <title>article-placeholder-2</title>
+  <g>
+    <rect width="386" height="198" rx="22.2" fill="url(#a)"/>
+    <rect x="59" y="69" width="164" height="105" rx="8.37" fill="#fff" opacity="0.55"/>
+    <rect x="74" y="108.26" width="72" height="16.74" rx="8.37" fill="#fff" opacity="0.55"/>
+    <rect x="74" y="130.26" width="72" height="16.74" rx="8.37" fill="#fff" opacity="0.55"/>
+    <rect x="71" y="81" width="131" height="8.94" rx="4.47" fill="#fff" opacity="0.55"/>
+    <rect x="289" y="82.26" width="62" height="16.74" rx="8.37" fill="#fff" opacity="0.55"/>
+    <rect x="289" y="61.26" width="62" height="16.74" rx="8.37" fill="#fff" opacity="0.55"/>
+    <rect x="289" y="40.26" width="62" height="16.74" rx="8.37" fill="#fff" opacity="0.55"/>
+  </g>
+</svg>

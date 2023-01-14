@@ -1,8 +1,10 @@
-import { Box, Button, Container, Group, Header, Menu, Skeleton, Tabs, Text } from "@mantine/core"
+import { Box, Button, Container, Grid, Group, Header, Menu, SimpleGrid, Skeleton, Space, Stack, Tabs, Text, TextInput, Title } from "@mantine/core"
 import { signOut, mapSnapshot } from "firebase-web-helpers"
 import { collection, query, where } from "firebase/firestore"
-import { TbUserCircle } from "react-icons/tb"
+import Link from "next/link"
+import { TbSearch, TbUser, TbUserCircle } from "react-icons/tb"
 import AppCard from "../components/cards/AppCard"
+import ArticleCard from "../components/cards/ArticleCard"
 import { auth, firestore, useMustBeSignedIn } from "../modules/firebase"
 import { useRealtimeState } from "../modules/hooks"
 
@@ -21,54 +23,82 @@ export default function Dashboard() {
 
     return (
         <>
-            <Header px={40} py={15}>
-                <Group position="right">
-                    <Menu withArrow position="bottom-end" width={200}>
-                        <Menu.Target>
-                            <Button variant="subtle" rightIcon={<TbUserCircle fontSize={30} />}>
-                                <Text color="dimmed">{user?.displayName || user?.email}</Text>
-                            </Button>
-                        </Menu.Target>
-                        <Menu.Dropdown>
-                            <Menu.Item onClick={() => signOut(auth)}>Sign Out</Menu.Item>
-                        </Menu.Dropdown>
-                    </Menu>
-                </Group>
-            </Header>
-            <Container size="lg">
-                <Tabs defaultValue="apps" styles={tabStyles} mt={40}>
-                    <Tabs.List mb={30}>
-                        <Tabs.Tab value="apps">Apps</Tabs.Tab>
-                    </Tabs.List>
+            <Header px="xl" py="sm" sx={headerStyle} withBorder={false}>
+                <Grid align="center">
+                    <Grid.Col span="content">
+                        <Text size="xl" weight="bold">minus</Text>
+                    </Grid.Col>
 
-                    <Tabs.Panel value="apps" pt="xs">
-                        <Box sx={gridStyle}>
-                            {apps ?
-                                apps.map(app => <AppCard app={app} key={app.id} />)
-                                :
-                                <>
-                                    <Skeleton height={200} />
-                                    <Skeleton height={200} />
-                                    <Skeleton height={200} />
-                                </>
-                            }
-                        </Box>
-                    </Tabs.Panel>
-                </Tabs>
+                    <Grid.Col span="auto">
+                        <Group position="right">
+                            <Link href="#">
+                                <Button variant="subtle" radius="md">Product</Button>
+                            </Link>
+                            <Link href="#">
+                                <Button variant="subtle" radius="md">Pricing</Button>
+                            </Link>
+                            <Link href="#">
+                                <Button variant="subtle" radius="md">Resources</Button>
+                            </Link>
+                        </Group>
+                    </Grid.Col>
+
+                    <Grid.Col span="content" ml={40}>
+                        <Menu position="bottom-end" width={200} shadow="lg" styles={{ dropdown: { border: "none" } }}>
+                            <Menu.Target>
+                                <Button color="gray" radius="md" variant="light" rightIcon={<TbUser fontSize={18} />}>
+                                    <Text color="dimmed">Hey, {user?.displayName || user?.email}</Text>
+                                </Button>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                                <Menu.Item onClick={() => signOut(auth)}>Sign Out</Menu.Item>
+                            </Menu.Dropdown>
+                        </Menu>
+                    </Grid.Col>
+                </Grid>
+            </Header>
+
+            <Container size="lg" mt={60}>
+                <Grid gutter={100}>
+                    <Grid.Col span="auto">
+                        <Stack spacing="xl">
+                            <Title>Your Apps</Title>
+
+                            <TextInput
+                                size="lg"
+                                placeholder={`Search ${apps?.length ?? ""} apps...`}
+                                icon={<TbSearch />}
+                            />
+                            <Space h="xs" />
+
+                            <SimpleGrid cols={2}>
+                                {apps ?
+                                    apps.map(app => <AppCard app={app} key={app.id} />)
+                                    :
+                                    <>
+                                        <Skeleton height={200} />
+                                        <Skeleton height={200} />
+                                    </>
+                                }
+                            </SimpleGrid>
+                        </Stack>
+                    </Grid.Col>
+
+                    <Grid.Col span={4}>
+                        <Stack spacing="xl">
+                            <Title order={2}>Need inspiration?</Title>
+
+                            <ArticleCard title="Connect your app to AirTable" />
+                            <ArticleCard title="Minus + Webflow = Full Stack app" placeholder={2} />
+                        </Stack>
+                    </Grid.Col>
+                </Grid>
             </Container>
         </>
     )
 }
 
-const gridStyle = theme => ({
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: 30,
-})
 
-const tabStyles = theme => ({
-    tabLabel: {
-        fontSize: 18,
-        fontWeight: 500,
-    }
+const headerStyle = theme => ({
+    backgroundColor: theme.colors.gray[1],
 })
