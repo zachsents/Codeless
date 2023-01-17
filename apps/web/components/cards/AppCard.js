@@ -1,17 +1,30 @@
-import { ActionIcon, Badge, Box, Button, Card, Grid, Group, Indicator, Menu, Skeleton, Stack, Text, Title, Tooltip } from '@mantine/core'
-import { useHover } from "@mantine/hooks"
+import { ActionIcon, Box, ColorSwatch, Grid, Group, Indicator, Menu, Stack, Text, useMantineTheme } from '@mantine/core'
 import Link from 'next/link'
 import { format as timeAgo } from 'timeago.js'
-import { FaTrashAlt, FaPencilAlt } from "react-icons/fa"
-import ResourceFraction from '../ResourceFraction'
-import { useCollectionCount, useFlowCount, usePlan } from "../../modules/hooks"
-import { TbCrown, TbDots, TbTrophy } from 'react-icons/tb'
+import { useFlowCount, usePlan, useUpdateApp } from "../../modules/hooks"
+import { TbCrown, TbDots } from 'react-icons/tb'
+import { createLinearGradient } from '../../modules/colors'
 
 
-export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }) {
+export default function AppCard({ app: { id, name, lastEdited, plan: planRef, color = "blue" } }) {
 
     const flowCount = useFlowCount(id)
     const plan = usePlan(planRef)
+    const [updateApp] = useUpdateApp(id)
+
+    const handleColorChange = newColor => {
+        updateApp({ color: newColor })
+    }
+
+    const cardTitleContainerStyle = theme => ({
+        background: createLinearGradient(theme.colors, color),
+        borderRadius: theme.radius.lg,
+        cursor: "pointer",
+        transition: "transform 0.15s",
+        "&:hover": {
+            transform: "scale(1.02)",
+        },
+    })
 
     return (
         <Stack>
@@ -48,6 +61,11 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }
                             </ActionIcon>
                         </Menu.Target>
                         <Menu.Dropdown>
+                            <SwatchArray
+                                colors={["red", "teal", "blue", "grape"]}
+                                onChange={handleColorChange}
+                                value={color}
+                            />
                             <Menu.Item>
                                 Rename
                             </Menu.Item>
@@ -59,12 +77,29 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef } }
     )
 }
 
-const cardTitleContainerStyle = theme => ({
-    background: `linear-gradient(45deg, ${theme.colors.indigo[5]} 0%, ${theme.colors.cyan[5]} 100%)`,
-    borderRadius: theme.radius.lg,
+function SwatchArray({ colors, shade = 5, onChange, value }) {
+
+    const theme = useMantineTheme()
+
+    return <Group spacing="xs" px="md" py="xs">
+        {colors.map(color =>
+            <ColorSwatch
+                size={15}
+                color={theme.colors[color][shade]}
+                onClick={() => onChange?.(color)}
+                sx={swatchStyle(color == value)}
+                key={color}
+            />
+        )}
+    </Group>
+}
+
+const swatchStyle = (active = false) => theme => ({
     cursor: "pointer",
-    transition: "transform 0.15s",
+    transform: `scale(${active ? 1.3 : 1})`,
+    transition: "transform 0.1s",
+
     "&:hover": {
-        transform: "scale(1.02)",
-    },
+        transform: "scale(1.3)",
+    }
 })

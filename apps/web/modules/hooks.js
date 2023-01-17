@@ -61,6 +61,18 @@ export function useAppRealtime(appId = useAppId()) {
     return app
 }
 
+export function useUpdateApp(appId = useAppId()) {
+    return [
+        useCallback(
+            (changes = {}) => appId && updateDoc(
+                doc(firestore, "apps", appId),
+                changes
+            ),
+            [appId]
+        )
+    ]
+}
+
 export function usePlan(planRef) {
     const [plan] = useAsyncState(async () =>
         planRef && await getDoc(planRef)
