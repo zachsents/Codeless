@@ -2,7 +2,8 @@ import { ActionIcon, Box, ColorSwatch, Grid, Group, Indicator, Menu, Stack, Text
 import Link from 'next/link'
 import { format as timeAgo } from 'timeago.js'
 import { useFlowCount, usePlan, useUpdateApp } from "../../modules/hooks"
-import { TbCrown, TbDots } from 'react-icons/tb'
+import { TbDots } from 'react-icons/tb'
+import * as TbIcons from 'react-icons/tb'
 import { createLinearGradient } from '../../modules/colors'
 
 
@@ -26,14 +27,16 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
         },
     })
 
+    const PlanIcon = TbIcons[plan?.icon]
+
     return (
         <Stack>
             <Indicator
-                disabled={!plan}
+                disabled={!plan?.icon}
                 color={plan?.color}
                 size={30}
                 withBorder
-                label={<TbCrown />}
+                label={<PlanIcon />}
             >
                 <Link href={`/app/${id}`}>
                     <Box p="lg" sx={cardTitleContainerStyle}>

@@ -86,7 +86,7 @@ export default function Dashboard() {
                             />
                             <Space h="xs" />
 
-                            <SimpleGrid cols={2}>
+                            <SimpleGrid cols={2} verticalSpacing="xl" spacing="xl">
                                 {apps ?
                                     apps.map(app => <AppCard app={app} key={app.id} />)
                                     :
