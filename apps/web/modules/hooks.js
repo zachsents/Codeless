@@ -1,9 +1,9 @@
 import { useDebouncedValue } from "@mantine/hooks"
-import { collection, deleteDoc, doc, getCountFromServer, getDoc, onSnapshot, updateDoc } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore"
 import { useRouter } from "next/router"
 import { useCallback, useEffect, useState } from "react"
-import { firestore } from "./firebase"
-import { getMappedDocs, mapDoc, mapSnapshot } from "firebase-web-helpers"
+import { auth, firestore } from "./firebase"
+import { getMappedDocs, mapDoc, mapSnapshot, useAuthState } from "firebase-web-helpers"
 
 
 export function useAsyncState(factory, dependencies = []) {
@@ -69,6 +69,24 @@ export function useUpdateApp(appId = useAppId()) {
                 changes
             ),
             [appId]
+        )
+    ]
+}
+
+export function useCreateApp() {
+    
+    const user = useAuthState(auth)
+
+    return [
+        useCallback(
+            async name =>
+                name && user && await addDoc(collection(firestore, "apps"), {
+                    name,
+                    lastEdited: serverTimestamp(),
+                    created: serverTimestamp(),
+                    owner: user.uid,
+                    plan: doc(firestore, "plans", "free"),
+                })
         )
     ]
 }
@@ -165,7 +183,7 @@ export function useDeleteFlow(appId, flowId, includeModalState = true) {
 
 
 export function useDebouncedCustomState(remoteValue, remoteSetter, debounceTime = 200) {
-    
+
     const [value, setValue] = useState(remoteValue)
 
     // Note: this could cause problems if the update operation is slow

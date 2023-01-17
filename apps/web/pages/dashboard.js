@@ -2,11 +2,12 @@ import { Box, Button, Container, Grid, Group, Header, Menu, SimpleGrid, Skeleton
 import { signOut, mapSnapshot } from "firebase-web-helpers"
 import { collection, query, where } from "firebase/firestore"
 import Link from "next/link"
-import { TbSearch, TbUser, TbUserCircle } from "react-icons/tb"
+import { TbPlus, TbSearch, TbUser, TbUserCircle } from "react-icons/tb"
 import AppCard from "../components/cards/AppCard"
 import ArticleCard from "../components/cards/ArticleCard"
 import { auth, firestore, useMustBeSignedIn } from "../modules/firebase"
 import { useRealtimeState } from "../modules/hooks"
+import { openContextModal } from '@mantine/modals'
 
 
 export default function Dashboard() {
@@ -20,6 +21,15 @@ export default function Dashboard() {
         ),
         mapSnapshot
     )
+
+    const handleCreateApp = () => {
+        openContextModal({
+            modal: "CreateApp",
+            innerProps: {},
+            title: <Title order={3}>Name your new app 🔥</Title>,
+            size: "lg",
+        })
+    }
 
     return (
         <>
@@ -62,7 +72,12 @@ export default function Dashboard() {
                 <Grid gutter={100}>
                     <Grid.Col span="auto">
                         <Stack spacing="xl">
-                            <Title>Your Apps</Title>
+                            <Group position="apart">
+                                <Title>Your Apps</Title>
+                                <Button onClick={handleCreateApp} radius="md" variant="light" leftIcon={<TbPlus />}>
+                                    New App
+                                </Button>
+                            </Group>
 
                             <TextInput
                                 size="lg"

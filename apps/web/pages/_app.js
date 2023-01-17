@@ -1,5 +1,6 @@
 import { DEFAULT_THEME, MantineProvider } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals'
+import CreateAppModal from '../components/CreateAppModal'
 import RouterTransition from '../components/RouterTransition'
 import '../styles/globals.css'
 
@@ -7,7 +8,7 @@ import '../styles/globals.css'
 export default function MyApp({ Component, pageProps }) {
     return (
         <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
-            <ModalsProvider>
+            <ModalsProvider modals={{ CreateApp: CreateAppModal }}>
                 <Component {...pageProps} />
                 <RouterTransition />
             </ModalsProvider>

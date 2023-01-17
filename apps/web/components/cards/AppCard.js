@@ -50,7 +50,8 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
 
             <Grid px="md">
                 <Grid.Col span="auto">
-                    <Text size="xs" color="dimmed">Last edited {timeAgo(lastEdited.seconds * 1000)}</Text>
+                    {lastEdited &&
+                        <Text size="xs" color="dimmed">Last edited {timeAgo(lastEdited.seconds * 1000)}</Text>}
                 </Grid.Col>
 
                 <Grid.Col span="content">
