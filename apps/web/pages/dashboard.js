@@ -91,8 +91,8 @@ export default function Dashboard() {
                                     apps.map(app => <AppCard app={app} key={app.id} />)
                                     :
                                     <>
-                                        <Skeleton height={200} />
-                                        <Skeleton height={200} />
+                                        <Skeleton height={100} />
+                                        <Skeleton height={100} />
                                     </>
                                 }
                             </SimpleGrid>

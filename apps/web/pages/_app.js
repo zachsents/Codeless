@@ -1,6 +1,7 @@
 import { DEFAULT_THEME, MantineProvider } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals'
 import CreateAppModal from '../components/CreateAppModal'
+import DeleteAppModal from '../components/DeleteAppModal'
 import RouterTransition from '../components/RouterTransition'
 import '../styles/globals.css'
 
@@ -8,7 +9,7 @@ import '../styles/globals.css'
 export default function MyApp({ Component, pageProps }) {
     return (
         <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
-            <ModalsProvider modals={{ CreateApp: CreateAppModal }}>
+            <ModalsProvider modals={modals}>
                 <Component {...pageProps} />
                 <RouterTransition />
             </ModalsProvider>
@@ -16,6 +17,10 @@ export default function MyApp({ Component, pageProps }) {
     )
 }
 
+const modals = { 
+    CreateApp: CreateAppModal,
+    DeleteApp: DeleteAppModal,
+}
 
 const theme = {
     fontFamily: "DM Sans",

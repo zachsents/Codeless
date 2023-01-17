@@ -2,9 +2,9 @@ import { ActionIcon, Box, ColorSwatch, Grid, Group, Indicator, Menu, Stack, Text
 import Link from 'next/link'
 import { format as timeAgo } from 'timeago.js'
 import { useFlowCount, usePlan, useUpdateApp } from "../../modules/hooks"
-import { TbDots } from 'react-icons/tb'
 import * as TbIcons from 'react-icons/tb'
 import { createLinearGradient } from '../../modules/colors'
+import { openContextModal } from '@mantine/modals'
 
 
 export default function AppCard({ app: { id, name, lastEdited, plan: planRef, color = "blue" } }) {
@@ -15,6 +15,14 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
 
     const handleColorChange = newColor => {
         updateApp({ color: newColor })
+    }
+
+    const handleDelete = () => {
+        openContextModal({
+            modal: "DeleteApp",
+            title: "Delete " + name,
+            innerProps: { appId: id },
+        })
     }
 
     const cardTitleContainerStyle = theme => ({
@@ -61,7 +69,7 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
                     <Menu position="bottom-end" shadow="lg" styles={{ dropdown: { border: "none" } }}>
                         <Menu.Target>
                             <ActionIcon color="gray" variant="light" radius="sm">
-                                <TbDots />
+                                <TbIcons.TbDots />
                             </ActionIcon>
                         </Menu.Target>
                         <Menu.Dropdown>
@@ -72,6 +80,9 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
                             />
                             <Menu.Item>
                                 Rename
+                            </Menu.Item>
+                            <Menu.Item onClick={handleDelete} color="red" icon={<TbIcons.TbTrash />}>
+                                Delete
                             </Menu.Item>
                         </Menu.Dropdown>
                     </Menu>

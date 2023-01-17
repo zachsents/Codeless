@@ -74,21 +74,34 @@ export function useUpdateApp(appId = useAppId()) {
 }
 
 export function useCreateApp() {
-    
+
     const user = useAuthState(auth)
 
     return [
         useCallback(
-            async name =>
-                name && user && await addDoc(collection(firestore, "apps"), {
+            name =>
+                name && user && addDoc(collection(firestore, "apps"), {
                     name,
                     lastEdited: serverTimestamp(),
                     created: serverTimestamp(),
                     owner: user.uid,
                     plan: doc(firestore, "plans", "free"),
-                })
+                }),
+            [user]
         )
     ]
+}
+
+export function useDeleteApp(appId, { includeModalState = true } = {}) {
+
+    const [deleting, setDeleting] = includeModalState ? useState(false) : []
+
+    const handleDelete = useCallback(
+        () => appId && deleteDoc(doc(firestore, "apps", appId)),
+        [appId]
+    )
+
+    return [handleDelete, deleting, setDeleting]
 }
 
 export function usePlan(planRef) {
