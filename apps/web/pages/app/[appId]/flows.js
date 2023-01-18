@@ -1,14 +1,16 @@
-import { Box, Button, Group, SimpleGrid, Skeleton, Stack, Text } from '@mantine/core'
+import { ActionIcon, Box, Button, Group, SimpleGrid, Skeleton, Space, Stack, Text, TextInput } from '@mantine/core'
 import AppDashboard from '../../../components/AppDashboard'
 import PageTitle from '../../../components/PageTitle'
 import GradientBox from '../../../components/GradientBox'
 import FlowCard from '../../../components/cards/FlowCard'
-import { TbExternalLink, TbPlus, TbArrowBigUpLines } from "react-icons/tb"
+import { TbExternalLink, TbPlus, TbArrowBigUpLines, TbX, TbSearch } from "react-icons/tb"
 import Link from 'next/link'
 import { useApp, useAppId, useFlowsRealtime, usePlan } from '../../../modules/hooks'
 import { useMustBeSignedIn } from '../../../modules/firebase'
 import { plural } from '../../../modules/util'
 import GlassButton from '../../../components/GlassButton'
+import { useMemo, useState } from 'react'
+import fuzzy from "fuzzy"
 
 
 export default function AppFlows() {
@@ -21,65 +23,91 @@ export default function AppFlows() {
 
     const flowsLeft = plan?.flowCount - flows?.length
 
+    // handle searching flows
+    const [searchQuery, setSearchQuery] = useState("")
+    const filteredFlows = useMemo(
+        () => flows?.filter(flow => fuzzy.test(searchQuery, flow.name)),
+        [flows, searchQuery]
+    )
+
+
     return (
         <AppDashboard>
-            <GradientBox centerAround={app?.color ?? null}>
-                <Group position="apart" sx={{ alignItems: "stretch" }}>
-                    <Box sx={{ width: "60%", maxWidth: 500, minWidth: 250 }}>
-                        <PageTitle white mb={20}>Flows</PageTitle>
-                        <Text color="white">
-                            Flows are blocks of logic that are triggered by different events. If you're having
-                            trouble, check out the guides for a quick run-down.
-                        </Text>
-                        {plan && flows ?
-                            plan.flowCount > flows.length ?
-                                <>
-                                    <Text color="white" size="sm" mt={20}>You have <b>{flowsLeft}</b> flow{plural(flowsLeft)} left.</Text>
-                                    <Link href={`/app/${app?.id}/flow/create`}>
+            <Stack spacing="xl">
+                <GradientBox centerAround={app?.color ?? null}>
+                    <Group position="apart" sx={{ alignItems: "stretch" }}>
+                        <Box sx={{ width: "60%", maxWidth: 500, minWidth: 250 }}>
+                            <PageTitle white mb={20}>Flows</PageTitle>
+                            <Text color="white">
+                                Flows are blocks of logic that are triggered by different events. If you're having
+                                trouble, check out the guides for a quick run-down.
+                            </Text>
+                            {plan && flows ?
+                                plan.flowCount > flows.length ?
+                                    <>
+                                        <Text color="white" size="sm" mt={20}>You have <b>{flowsLeft}</b> flow{plural(flowsLeft)} left.</Text>
+                                        <Link href={`/app/${app?.id}/flow/create`}>
+                                            <Button
+                                                component="a"
+                                                variant="white"
+                                                leftIcon={<TbPlus />}
+                                                mt={15}
+                                                radius="md"
+                                            >
+                                                Create Flow
+                                            </Button>
+                                        </Link>
+                                    </>
+                                    :
+                                    <>
+                                        <Text color="white" size="sm" mt={20}>With the <b>{plan.name}</b> plan, you can only make <b>{plan.flowCount}</b> flow{plural(plan.flowCount)}.</Text>
                                         <Button
                                             component="a"
                                             variant="white"
-                                            leftIcon={<TbPlus />}
+                                            rightIcon={<TbArrowBigUpLines />}
                                             mt={15}
-                                            radius="md"
-                                        >
-                                            Create Flow
-                                        </Button>
-                                    </Link>
-                                </>
+                                        >Upgrade Plan</Button>
+                                    </>
                                 :
-                                <>
-                                    <Text color="white" size="sm" mt={20}>With the <b>{plan.name}</b> plan, you can only make <b>{plan.flowCount}</b> flow{plural(plan.flowCount)}.</Text>
-                                    <Button
-                                        component="a"
-                                        variant="white"
-                                        rightIcon={<TbArrowBigUpLines />}
-                                        mt={15}
-                                    >Upgrade Plan</Button>
-                                </>
-                            :
-                            <></>
-                        }
-                    </Box>
-                    <Box>
-                        <Stack>
-                            <GlassButton rightIcon={<TbExternalLink />}>Go to Guides</GlassButton>
-                        </Stack>
-                    </Box>
-                </Group>
-            </GradientBox>
+                                <></>
+                            }
+                        </Box>
+                        <Box>
+                            <Stack>
+                                <GlassButton rightIcon={<TbExternalLink />}>Go to Guides</GlassButton>
+                            </Stack>
+                        </Box>
+                    </Group>
+                </GradientBox>
 
-            <SimpleGrid cols={2} spacing={35} verticalSpacing={25}>
-                {flows ?
-                    flows?.map(flow => <FlowCard flow={flow} key={flow.id} />)
-                    :
-                    <>
-                        <Skeleton height={80} />
-                        <Skeleton height={80} />
-                        <Skeleton height={80} />
-                    </>
-                }
-            </SimpleGrid>
+                <TextInput
+                    value={searchQuery}
+                    onChange={event => setSearchQuery(event.currentTarget.value)}
+                    size="lg"
+                    placeholder={`Search ${flows?.length ?? ""} flow${flows?.length == 1 ? "" : "s"}...`}
+                    icon={<TbSearch />}
+                    rightSection={searchQuery &&
+                        <ActionIcon radius="md" mr="xl" onClick={() => setSearchQuery("")}>
+                            <TbX />
+                        </ActionIcon>
+                    }
+                />
+
+                {filteredFlows?.length == 0 &&
+                    <Text align="center" size="lg" color="dimmed">No flows found.</Text>}
+
+                <SimpleGrid cols={2} spacing={35} verticalSpacing={25}>
+                    {flows ?
+                        filteredFlows?.map(flow => <FlowCard flow={flow} key={flow.id} />)
+                        :
+                        <>
+                            <Skeleton height={80} />
+                            <Skeleton height={80} />
+                            <Skeleton height={80} />
+                        </>
+                    }
+                </SimpleGrid>
+            </Stack>
         </AppDashboard>
     )
 }

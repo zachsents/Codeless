@@ -10,7 +10,7 @@ export default function GradientBox({ children, from = "indigo", to = "cyan", ce
         `linear-gradient(45deg, ${theme.colors[from][shade]} 0%, ${theme.colors[to][shade]} 100%)`
 
     return (
-        <Card p={40} mb={30} radius="lg" sx={{ background }}>
+        <Card p={40} radius="lg" sx={{ background }}>
             {children}
         </Card>
     )

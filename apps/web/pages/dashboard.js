@@ -92,7 +92,7 @@ export default function Dashboard() {
                                 value={searchQuery}
                                 onChange={event => setSearchQuery(event.currentTarget.value)}
                                 size="lg"
-                                placeholder={`Search ${apps?.length ?? ""} apps...`}
+                                placeholder={`Search ${apps?.length ?? ""} app${apps?.length == 1 ? "" : "s"}...`}
                                 icon={<TbSearch />}
                                 rightSection={searchQuery &&
                                     <ActionIcon radius="md" mr="xl" onClick={() => setSearchQuery("")}>
