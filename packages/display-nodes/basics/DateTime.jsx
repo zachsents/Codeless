@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react"
 import { CalendarTime, Clock } from "tabler-icons-react"
-import { Stack, Text } from "@mantine/core"
+import { Stack } from "@mantine/core"
 import { Calendar, TimeInput } from "@mantine/dates"
 
 export default {
+    id: "basic:DateTime",
     name: "Date & Time",
     description: "Giving you the time of day.",
     icon: CalendarTime,
-    valueSources: [" "],
+    
+    inputs: [],
+    outputs: ["$"],
 
     defaultState: { $: new Date().getTime() },
 

@@ -1,15 +1,9 @@
+import { Primitive } from "./templates.js"
 
 
 export default {
-    id: "primitive:Text",
+    id: "basic:Text",
     name: "Text",
-    sources: {
-        values: {
-            " ": {
-                get() {
-                    return this.state.$
-                }
-            }
-        }
-    }
+    
+    ...Primitive(),
 }

@@ -1,147 +1,90 @@
-import { CircleSquare, Settings, Math, ListSearch, Icons, Link, Run, BrandGmail } from "tabler-icons-react"
-import { SiGooglesheets } from "react-icons/si"
-
-import DefaultTrigger from "./triggers/Default"
-import LinkTrigger from "./triggers/Link"
+import DefaultTrigger from "./basics/triggers/Default"
+import LinkTrigger from "./basics/triggers/Link"
 
 import DateTime from "./basics/DateTime"
 import Number from "./basics/Number"
+import Switch from "./basics/Switch"
 import Text from "./basics/Text"
 
+import Print from "./basics/actions/Print"
+import RunFlow from "./basics/actions/RunFlow"
+import ScheduleFlow from "./basics/actions/ScheduleFlow"
+
+import And from "./basics/transforms/And"
+import Or from "./basics/transforms/Or"
+import Equals from "./basics/transforms/Equals"
+import NotEqual from "./basics/transforms/NotEqual"
+import Not from "./basics/transforms/Not"
+import GreaterThan from "./basics/transforms/GreaterThan"
+
+import If from "./control/If"
+
+import Add from "./math/transforms/Add"
+import Subtract from "./math/transforms/Subtract"
+import Multiply from "./math/transforms/Multiply"
+import Divide from "./math/transforms/Divide"
+
+import Average from "./math/aggregations/Average"
+import Sum from "./math/aggregations/Sum"
+import Product from "./math/aggregations/Product"
 import RandomNumber from "./math/RandomNumber"
-import Sum from "./math/Sum"
-import Add from "./math/Add"
-import Multiply from "./math/Multiply"
-import Divide from "./math/Divide"
-import Average from "./math/Average"
-import Product from "./math/Product"
 
-import Bind from "./util/Bind"
-import Print from "./util/Print"
-import Unbind from "./util/Unbind"
-import Memo from "./util/Memo"
-import ScheduleFlow from "./util/ScheduleFlow"
-import Repeat from "./util/Repeat"
-import TestMail from "./util/TestMail"
-import RunFlow from "./util/RunFlow"
-import Delay from "./util/Delay"
-
-import ReadProperty from "./object/ReadProperty"
-import ConditionalValue from "./basics/ConditionalValue"
-import ConditionalSignal from "./basics/ConditionalSignal"
-import And from "./basics/And"
-import Or from "./basics/Or"
-import Not from "./basics/Not"
-import Equal from "./basics/Equal"
-import NotEqual from "./basics/NotEqual"
-import GreaterThan from "./basics/GreaterThan"
-import Switch from "./basics/Switch"
-import CreateObject from "./object/CreateObject"
-import WriteProperty from "./object/WriteProperty"
-
-import Range from "./google/sheets/Range"
-import CellRange from "./google/sheets/CellRange"
-import RowRange from "./google/sheets/RowRange"
-import ColumnRange from "./google/sheets/ColumnRange"
-import GetRange from "./google/sheets/GetRange"
-import SetRange from "./google/sheets/SetRange"
-import ClearRange from "./google/sheets/ClearRange"
-import AppendValues from "./google/sheets/AppendValues"
-import GetSheet from "./google/sheets/GetSheet"
-import GetNamedColumn from "./google/sheets/GetNamedColumn"
-import SetNamedColumn from "./google/sheets/SetNamedColumn"
-
-import FilterBlanks from "./lists/FilterBlanks"
-import Transpose from "./lists/Transpose"
-import Size from "./lists/Size"
-
-import TriggerEmailReceived from "./google/gmail/TriggerEmailReceived"
+import { Run as RunIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
 
 
-export const Nodes = addIdToNodes({
-    "primitive:Number": Number,
-    "primitive:Text": Text,
-    "primitive:Switch": Switch,
-    "primitive:DateTime": DateTime,
-    "basic:ConditionalValue": ConditionalValue,
-    "basic:ConditionalSignal": ConditionalSignal,
-    "basic:And": And,
-    "basic:Or": Or,
-    "basic:Not": Not,
-    "basic:Equal": Equal,
-    "basic:NotEqual": NotEqual,
-    "basic:GreaterThan": GreaterThan,
+export const Nodes = createObject([
 
-    "object:CreateObject": CreateObject,
-    "object:ReadProperty": ReadProperty,
-    "object:WriteProperty": WriteProperty,
+    // ===== Basics =====
 
-    "math:RandomNumber": RandomNumber,
-    "math:Sum": Sum,
-    "math:Add": Add,
-    "math:Multiply": Multiply,
-    "math:Divide": Divide,
-    "math:Average": Average,
-    "math:Product": Product,
+    // Data
+    Number, Text, Switch, DateTime,
+    // Actions
+    Print, RunFlow, ScheduleFlow,
+    // Transforms
+    And, Or, Equals, NotEqual, Not, GreaterThan,
 
-    "utility:Print": Print,
-    "utility:Bind": Bind,
-    "utility:Unbind": Unbind,
-    "utility:Memo": Memo,
-    "utility:ScheduleFlow": ScheduleFlow,
-    "utility:RunFlow": RunFlow,
-    "list:Repeat": Repeat,
-    "mail:TestMail": TestMail,
-    "utility:Delay": Delay,
 
-    "googlesheets:Range": Range,
-    "googlesheets:CellRange": CellRange,
-    "googlesheets:RowRange": RowRange,
-    "googlesheets:ColumnRange": ColumnRange,
-    "googlesheets:GetRange": GetRange,
-    "googlesheets:SetRange": SetRange,
-    "googlesheets:ClearRange": ClearRange,
-    "googlesheets:Append": AppendValues,
-    "googlesheets:GetSheet": GetSheet,
-    "googlesheets:GetNamedColumn": GetNamedColumn,
-    "googlesheets:SetNamedColumn": SetNamedColumn,
+    // ===== Control =====
+    If,
 
-    "list:FilterBlanks": FilterBlanks,
-    "list:Transpose": Transpose,
-    "list:Size": Size,
-})
+
+    // ===== Math =====
+
+    // Data
+    RandomNumber,
+    // Operations / Transforms
+    Add, Subtract, Multiply, Divide,
+    // Aggregations
+    Average, Sum, Product,
+])
 
 export const NodeCategories = {
     Basic: {
         title: "Basic",
         icon: CircleSquare,
         members: [
-            "primitive:Number",
-            "primitive:Text",
-            "primitive:Switch",
-            "primitive:DateTime",
-            "basic:ConditionalValue",
-            "basic:ConditionalSignal",
+            "basic:Number",
+            "basic:Text",
+            "basic:Switch",
+            "basic:DateTime",
+
+            "basic:Print", 
+            "basic:RunFlow", 
+            "basic:ScheduleFlow",
+
             "basic:And",
             "basic:Or",
             "basic:Not",
-            "basic:Equal",
+            "basic:Equals",
             "basic:NotEqual",
             "basic:GreaterThan",
-
-            "object:CreateObject",
-            "object:ReadProperty",
-            "object:WriteProperty",
         ],
     },
-    Lists: {
-        title: "Lists",
-        icon: ListSearch,
+    Control: {
+        title: "Control",
+        icon: ArrowsSplit,
         members: [
-            "list:Repeat",
-            "list:FilterBlanks",
-            "list:Transpose",
-            "list:Size",
+            "control:If",
         ],
     },
     Math: {
@@ -149,91 +92,66 @@ export const NodeCategories = {
         icon: Math,
         members: [
             "math:RandomNumber",
-            "math:Sum",
+
             "math:Add",
+            "math:Subtract",
             "math:Multiply",
             "math:Divide",
+
             "math:Average",
+            "math:Sum",
             "math:Product",
         ],
     },
-    Object: {
-        title: "Objects",
-        icon: Icons,
-        members: [
-            "object:CreateObject",
-            "object:ReadProperty",
-            "object:WriteProperty",
-        ],
-    },
-    GoogleSheets: {
-        title: "Sheets",
-        icon: SiGooglesheets,
-        members: [
-            "googlesheets:Range",
-            "googlesheets:CellRange",
-            "googlesheets:RowRange",
-            "googlesheets:ColumnRange",
-            "googlesheets:GetRange",
-            "googlesheets:SetRange",
-            "googlesheets:GetSheet",
-            "googlesheets:GetNamedColumn",
-            "googlesheets:SetNamedColumn",
-            "googlesheets:Append",
-            "googlesheets:ClearRange",
-        ],
-    },
-    Util: {
-        title: "Utility",
-        icon: Settings,
-        members: [
-            "utility:Print",
-            "utility:Bind",
-            "utility:Unbind",
-            "utility:Memo",
-            "utility:RunFlow",
-            "utility:ScheduleFlow",
-            "mail:TestMail",
-            "utility:Delay",
-        ],
-    },
+    // GoogleSheets: {
+    //     title: "Sheets",
+    //     icon: SiGooglesheets,
+    //     members: [
+    //         "googlesheets:Range",
+    //         "googlesheets:CellRange",
+    //         "googlesheets:RowRange",
+    //         "googlesheets:ColumnRange",
+    //         "googlesheets:GetRange",
+    //         "googlesheets:SetRange",
+    //         "googlesheets:GetSheet",
+    //         "googlesheets:GetNamedColumn",
+    //         "googlesheets:SetNamedColumn",
+    //         "googlesheets:Append",
+    //         "googlesheets:ClearRange",
+    //     ],
+    // },
 }
 
-export const Triggers = addIdToNodes({
-    "trigger:manual": DefaultTrigger,
-    "trigger:http": LinkTrigger,
-    "trigger:gmail:EmailReceived": TriggerEmailReceived,
-})
+export const Triggers = createObject([
+    DefaultTrigger, LinkTrigger,
+])
 
 export const TriggerCategories = {
     Default: {
         title: "Default",
-        icon: Run,
+        icon: RunIcon,
         members: [
-            "trigger:manual",
+            "basic:DefaultTrigger",
         ],
     },
     Link: {
         title: "Link",
-        icon: Link,
+        icon: LinkIcon,
         members: [
-            "trigger:http",
+            "basic:LinkTrigger",
         ]
     },
-    Gmail: {
-        title: "Gmail",
-        icon: BrandGmail,
-        members: [
-            "trigger:gmail:EmailReceived",
-        ],
-    },
+    // Gmail: {
+    //     title: "Gmail",
+    //     icon: BrandGmail,
+    //     members: [
+    //         "trigger:gmail:EmailReceived",
+    //     ],
+    // },
 }
 
 
-function addIdToNodes(nodesObj) {
-    return Object.fromEntries(
-        Object.entries(nodesObj).map(
-            ([id, data]) => [id, { ...data, id, }]
-        )
-    )
+function createObject(arr) {
+    return Object.fromEntries(arr.map(item => [item.id, item]))
 }
+

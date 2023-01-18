@@ -2,11 +2,11 @@
 export default {
     id: "exampleAction",
     name: "Example Action",
-    inputs: ["$"],
-    outputs: ["_"],
+    inputs: ["_"],
+    outputs: ["$"],
 
-    onInputsReady({ $ }) {
-        console.log("printing", $)
-        this.publish({ _: $ })
+    onInputsReady({ _ }) {
+        console.log("printing", _)
+        this.publish({ $: _ })
     },
 }

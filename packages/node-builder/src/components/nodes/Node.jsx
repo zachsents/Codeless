@@ -1,12 +1,12 @@
-import { forwardRef, useMemo, useState } from "react"
+import { forwardRef } from "react"
 import { Card, Group, Flex, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
-import { useClickOutside, useHover, useInterval } from "@mantine/hooks"
+import { useHover, useInterval, useSetState } from "@mantine/hooks"
 import { Position, useKeyPress, useUpdateNodeInternals } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
 import { useNodeData, useNodeDisplayProps } from "../../util"
-import { TbExclamationMark, TbMinus, TbPlus } from "react-icons/tb"
+import { TbExclamationMark } from "react-icons/tb"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect } from "react"
 import { useRef } from "react"
@@ -55,8 +55,22 @@ export default function Node({ id, type, selected }) {
     // look at our errors from the last run
     const errors = lastRun?.errors?.[id] ?? []
 
+    // state for handle alignment
+    // const [handleAlignments, setHandleAlignments] = useSetState()
+    const handleAlignments = useRef({})
+    const handleAlignHandles = (handleNames, el) => {
+        const alignHandle = (handleName => handleAlignments.current[handleName] = el)
+
+        if(typeof handleNames === "string") {
+            alignHandle(handleNames)
+            return
+        }
+
+        handleNames.forEach(alignHandle)
+    }
+
     // helper function for rendering custom handles
-    const renderCustomHandles = (handles, dataType, handleType, position) =>
+    const renderCustomHandles = (handles, handleType, position) =>
         handles?.map(handle => {
             // handle can either be a string or { name, label }
             const { name, label } = typeof handle === "string" ? { name: handle } : handle
@@ -64,9 +78,9 @@ export default function Node({ id, type, selected }) {
             return <CustomHandle
                 name={name}
                 label={label}
-                // showLabel={hovered || selected}
                 showLabel={hovered}
-                {...{ dataType, handleType, position }}
+                align={handleAlignments.current[name]}
+                {...{ handleType, position }}
                 key={name}
             />
         })
@@ -95,13 +109,11 @@ export default function Node({ id, type, selected }) {
             ref={hoverRef}
         >
             <HandleStack position={Position.Left} ref={leftStackRef}>
-                {renderCustomHandles(nodeType.valueTargets, DataType.Value, "target", Position.Left)}
-                {renderCustomHandles(nodeType.signalTargets, DataType.Signal, "target", Position.Left)}
+                {renderCustomHandles(nodeType.inputs, "target", Position.Left)}
             </HandleStack>
 
             <HandleStack position={Position.Right} ref={rightStackRef}>
-                {renderCustomHandles(nodeType.valueSources, DataType.Value, "source", Position.Right)}
-                {renderCustomHandles(nodeType.signalSources, DataType.Signal, "source", Position.Right)}
+                {renderCustomHandles(nodeType.outputs, "source", Position.Right)}
             </HandleStack>
 
             <Card
@@ -115,7 +127,11 @@ export default function Node({ id, type, selected }) {
             >
                 <Flex>
                     {nodeType.renderNode ?
-                        <nodeType.renderNode {...displayProps} containerComponent={ContentWithIcon} />
+                        <nodeType.renderNode
+                            {...displayProps}
+                            containerComponent={ContentWithIcon}
+                            alignHandles={handleAlignHandles}
+                        />
                         :
                         <ContentWithIcon>
                             <Text maw={120} lh={1.2} size="xs" ff="DM Sans">{nodeType.renderName?.(displayProps) ?? nodeType.name}</Text>
@@ -192,6 +208,7 @@ const stackStyle = position => ({
     position: "absolute",
     top: "50%",
     zIndex: 10,
+    height: "100%",
 
     ...(position == Position.Left && {
         left: 0,

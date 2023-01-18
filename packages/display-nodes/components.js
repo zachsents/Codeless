@@ -1,4 +1,5 @@
-import { Group, Stack, Text, Tooltip } from "@mantine/core";
+import { Box, Group, Skeleton, Stack, Text, Tooltip } from "@mantine/core";
+import { forwardRef } from "react";
 import { InfoCircle } from "tabler-icons-react";
 
 
@@ -29,3 +30,36 @@ export function Control({ children, ...props }) {
         </Stack>
     )
 }
+
+export const SkeletonWithHandle = forwardRef(({ align = "left", h = 15, ...props }, ref) => {
+
+    return (
+        <Box
+            w="100%"
+            justify="center"
+            align="center"
+            sx={{ position: "relative" }}
+            ref={ref}
+        >
+            <Box
+                sx={theme => ({
+                    width: "100%",
+                    height: h,
+                    backgroundColor: theme.colors.gray[2],
+                    borderRadius: h / 2,
+                })}
+            ></Box>
+            <Box
+                sx={theme => ({
+                    width: align == "both" ? `calc(100% + ${theme.spacing.md * 2}px)` : theme.spacing.md + 10,
+                    height: 3,
+                    position: "absolute",
+                    top: "50%",
+                    [align == "right" ? "right" : "left"]: -theme.spacing.md,
+                    transform: "translateY(-50%)",
+                    background: theme.colors.gray[2],
+                })}
+            ></Box>
+        </Box>
+    )
+})

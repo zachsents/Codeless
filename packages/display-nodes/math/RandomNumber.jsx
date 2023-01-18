@@ -2,10 +2,13 @@ import { NumberInput, Stack, Switch, Group } from "@mantine/core"
 import { Dice3 } from "tabler-icons-react"
 
 export default {
+    id: "math:RandomNumber",
     name: "Random Number",
     description: "Generates a random number.",
     icon: Dice3,
-    valueSources: [" "],
+    
+    inputs: [],
+    outputs: ["$"],
 
     defaultState: {
         min: 1,

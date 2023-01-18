@@ -8,6 +8,9 @@ export function startGraph(nodes, setupPayload) {
             node.type.onStart?.bind(node)(setupPayload)
         )
     })
+
+    // watch empty promise to indicate starting finished
+    watch(Promise.resolve())
 }
 
 
@@ -38,7 +41,7 @@ function prepNode(node, nodeType, nodes, edges) {
     node.expectedInputs = Object.fromEntries(
         nodeType.inputs.map(input => [
             input.name ?? input,
-            input.expectSingleValue ? 1 : getConnectedHandles(node.id, input, nodes, edges).length
+            expectSingleValue(input) ? 1 : getConnectedHandles(node.id, input, nodes, edges).length
         ])
     )
 
@@ -75,7 +78,7 @@ function prepNode(node, nodeType, nodes, edges) {
                             nodeInputs[inputName] = nodeInputs[inputName].flat()
 
                         // option: pass a single value instead of an array
-                        if (inputDef.expectSingleValue)
+                        if (expectSingleValue(inputDef))
                             // use last value in array
                             nodeInputs[inputName] = nodeInputs[inputName][nodeInputs[inputName].length - 1]
                     })
@@ -140,4 +143,8 @@ function getConnectedHandles(nodeId, handleName, nodes, edges) {
 
 function getNode(nodeId, nodes) {
     return nodes.find(node => node.id == nodeId)
+}
+
+function expectSingleValue(input) {
+    return input.expectSingleValue ?? (input.name ?? input).startsWith("$")
 }

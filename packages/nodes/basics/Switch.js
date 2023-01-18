@@ -1,15 +1,9 @@
+import { Primitive } from "./templates.js"
 
 
 export default {
-    id: "primitive:Switch",
+    id: "basic:Switch",
     name: "Switch",
-    sources: {
-        values: {
-            " ": {
-                async get() {
-                    return this.state.$
-                }
-            }
-        }
-    }
+
+    ...Primitive(),
 }

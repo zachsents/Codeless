@@ -1,15 +1,13 @@
 
 
 export default {
-    id: "primitive:DateTime",
+    id: "basic:DateTime",
     name: "Date & Time",
-    sources: {
-        values: {
-            " ": {
-                get() {
-                    return new Date(this.state.$)
-                }
-            }
-        }
-    }
+
+    inputs: [],
+    outputs: ["$"],
+
+    onStart() {
+        this.publish({ $: new Date(this.state.$) })
+    },
 }
