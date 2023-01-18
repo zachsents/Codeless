@@ -44,14 +44,16 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
                 color={plan?.color}
                 size={30}
                 withBorder
-                label={<PlanIcon />}
+                label={PlanIcon && <PlanIcon />}
             >
                 <Link href={`/app/${id}`}>
                     <Box p="lg" sx={cardTitleContainerStyle}>
                         <Group position="apart">
                             <Text size={24} weight={500} color="white">{name}</Text>
                             <Box>
-                                <Text size="sm" weight={500} align="right" color="white">{flowCount} flows</Text>
+                                <Text size="sm" weight={500} align="right" color="white">
+                                    {flowCount} flow{flowCount == 1 ? "" : "s"}
+                                </Text>
                                 <Text size="sm" weight={500} align="right" color="white">3 integrations</Text>
                             </Box>
                         </Group>
