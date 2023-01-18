@@ -1,13 +1,15 @@
-import { Box, Button, Container, Grid, Group, Header, Menu, SimpleGrid, Skeleton, Space, Stack, Tabs, Text, TextInput, Title } from "@mantine/core"
+import { ActionIcon, Box, Button, Container, Grid, Group, Header, Menu, SimpleGrid, Skeleton, Space, Stack, Tabs, Text, TextInput, Title } from "@mantine/core"
 import { signOut, mapSnapshot } from "firebase-web-helpers"
 import { collection, query, where } from "firebase/firestore"
 import Link from "next/link"
-import { TbPlus, TbSearch, TbUser, TbUserCircle } from "react-icons/tb"
+import { TbPlus, TbSearch, TbUser, TbUserCircle, TbX } from "react-icons/tb"
 import AppCard from "../components/cards/AppCard"
 import ArticleCard from "../components/cards/ArticleCard"
 import { auth, firestore, useMustBeSignedIn } from "../modules/firebase"
 import { useRealtimeState } from "../modules/hooks"
 import { openContextModal } from '@mantine/modals'
+import { useMemo, useState } from "react"
+import fuzzy from "fuzzy"
 
 
 export default function Dashboard() {
@@ -30,6 +32,13 @@ export default function Dashboard() {
             size: "lg",
         })
     }
+
+    // handle searchin apps
+    const [searchQuery, setSearchQuery] = useState("")
+    const filteredApps = useMemo(
+        () => apps?.filter(app => fuzzy.test(searchQuery, app.name)),
+        [apps, searchQuery]
+    )
 
     return (
         <>
@@ -80,15 +89,25 @@ export default function Dashboard() {
                             </Group>
 
                             <TextInput
+                                value={searchQuery}
+                                onChange={event => setSearchQuery(event.currentTarget.value)}
                                 size="lg"
                                 placeholder={`Search ${apps?.length ?? ""} apps...`}
                                 icon={<TbSearch />}
+                                rightSection={searchQuery &&
+                                    <ActionIcon radius="md" mr="xl" onClick={() => setSearchQuery("")}>
+                                        <TbX />
+                                    </ActionIcon>
+                                }
                             />
                             <Space h="xs" />
 
+                            {filteredApps.length == 0 &&
+                                <Text align="center" size="lg" color="dimmed">No apps found.</Text>}
+
                             <SimpleGrid cols={2} verticalSpacing="xl" spacing="xl">
                                 {apps ?
-                                    apps.map(app => <AppCard app={app} key={app.id} />)
+                                    filteredApps.map(app => <AppCard app={app} key={app.id} />)
                                     :
                                     <>
                                         <Skeleton height={100} />
