@@ -1,4 +1,4 @@
-import { Button, Center, Container, Loader, Stack, Text, TextInput, Title } from "@mantine/core"
+import { BackgroundImage, Button, Center, Container, Image, Loader, Stack, Text, TextInput, Title } from "@mantine/core"
 import { FcGoogle } from "react-icons/fc"
 import { TbMail } from "react-icons/tb"
 import { auth, sendEmailSignInLink } from "../modules/firebase"
@@ -7,6 +7,8 @@ import { useForm } from '@mantine/form'
 import { useState } from "react"
 import { useRouter } from 'next/router'
 import GoBackButton from "../components/GoBackButton"
+import { createLinearGradient } from "../modules/colors"
+import { BsGoogle } from "react-icons/bs"
 
 
 const SignInMethod = {
@@ -27,44 +29,55 @@ export default function Login() {
     }
 
     return (
-        <Center sx={{ width: "100vw", height: "100vh" }} pb={100}>
-            <Container size="sm" sx={{ minWidth: 400 }}>
-                {!signInMethod &&
-                    <Stack>
-                        <Title order={1} align="center">Welcome! 😁</Title>
-                        <Text align="center">Choose a sign-in method</Text>
+        <BackgroundImage src="/photon-bg.svg">
+            <Center sx={containerStyle} pb={100}>
+
+                <Stack w={400}>
+                    {!signInMethod && <>
+                        <Title align="center" weight={400} color="dimmed">
+                            Welcome to
+                            <Text component="span" weight={600} sx={minusTitleStyle}> minus</Text>
+                        </Title>
+
                         <Button
-                            onClick={() => setSignInMethod(SignInMethod.Email)}
                             size="xl"
-                            leftIcon={<TbMail />}
-                        >
-                            Sign in with email
-                        </Button>
-                        <Button
+                            leftIcon={<BsGoogle />}
+                            fullWidth
                             onClick={() => {
                                 setSignInMethod(SignInMethod.Google)
                                 signInWithGoogle(auth).then(handleLogin).catch(() => setSignInMethod(null))
                             }}
-                            size="xl"
-                            variant="white"
-                            color="dark"
-                            leftIcon={<FcGoogle />}
-                            sx={theme => ({
-                                border: "1px solid " + theme.colors.gray[3]
-                            })}
                         >
                             Sign in with Google
                         </Button>
-                    </Stack>
-                }
 
-                {signInMethod == SignInMethod.Email && <EmailLogin goBack={() => setSignInMethod(null)} />}
+                        <Button
+                            fullWidth
+                            variant="subtle"
+                            onClick={() => setSignInMethod(SignInMethod.Email)}
+                        >
+                            Sign in with email instead
+                        </Button>
+                    </>}
 
-                {signInMethod == SignInMethod.Google && <GoogleLogin />}
-            </Container>
-        </Center>
+                    {signInMethod == SignInMethod.Email && <EmailLogin goBack={() => setSignInMethod(null)} />}
+                    {signInMethod == SignInMethod.Google && <GoogleLogin />}
+                </Stack>
+            </Center>
+        </BackgroundImage>
     )
 }
+
+const containerStyle = theme => ({
+    width: "100vw",
+    height: "100vh",
+})
+
+const minusTitleStyle = theme => ({
+    background: createLinearGradient(theme.colors, "grape"),
+    backgroundClip: "text",
+    color: "transparent",
+})
 
 function EmailLogin({ goBack }) {
 
@@ -88,26 +101,28 @@ function EmailLogin({ goBack }) {
         setLoadingState(2)
     }
 
-    return (
-        <Stack>
-            <GoBackButton onClick={goBack} />
-            <form onSubmit={form.onSubmit(handleSubmit)}>
-                <Title order={2} align="center" mb={20}>Log in with your email</Title>
-                <TextInput placeholder="mark@facebook.com" size="xl" {...form.getInputProps("email")} mb={20} disabled={!!loadingState} />
-                {/* <PasswordInput label="Password" placeholder="🤫" size="xl" {...form.getInputProps("password")} mb={20} disabled={loading} /> */}
-                <Center>
-                    {loadingState == 0 ? <Button type="submit" size="xl">Next</Button> :
-                        loadingState == 1 ? <Loader /> : <Text>We've sent a link to your email.</Text>}
-                </Center>
-            </form>
+    return loadingState == 2 ?
+        <Stack align="center" spacing="xs">
+            <Text size="lg">A sign-in link has been sent to your email.</Text>
+            <Text color="dimmed">You may close this window.</Text>
         </Stack>
-    )
+        :
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Stack>
+                <Title order={2} weight={400} color="dimmed" align="center">
+                    Log in with your email
+                </Title>
+                <TextInput placeholder="mark@facebook.com" size="xl" {...form.getInputProps("email")} disabled={!!loadingState} />
+                <Button type="submit" size="lg" fullWidth loading={!!loadingState}>Next</Button>
+                <Button variant="subtle" fullWidth onClick={goBack}>Go back</Button>
+            </Stack>
+        </form>
 }
 
 function GoogleLogin() {
     return (
         <Stack align="center">
-            <Text size="xl" align="center" mb={10}>Logging you in...</Text>
+            <Text size="lg" align="center" mb={10}>Logging you in...</Text>
             <Loader />
         </Stack>
     )
