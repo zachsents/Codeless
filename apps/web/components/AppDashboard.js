@@ -44,10 +44,10 @@ export default function AppDashboard({ children }) {
                             <NavLink label="Integrations" variant="filled" icon={<TbPlugConnected />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/integrations")} />
                         </Link>
-                        <Link href={`/app/${appId}/settings`}>
+                        {/* <Link href={`/app/${appId}/settings`}>
                             <NavLink label="Settings" variant="filled" icon={<TbSettings />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/settings")} />
-                        </Link>
+                        </Link> */}
                     </Navbar.Section>
                     <Navbar.Section>{/* Footer with user */}</Navbar.Section>
                 </Navbar>}

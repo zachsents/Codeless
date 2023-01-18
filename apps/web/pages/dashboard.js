@@ -102,7 +102,7 @@ export default function Dashboard() {
                             />
                             <Space h="xs" />
 
-                            {filteredApps.length == 0 &&
+                            {filteredApps?.length == 0 &&
                                 <Text align="center" size="lg" color="dimmed">No apps found.</Text>}
 
                             <SimpleGrid cols={2} verticalSpacing="xl" spacing="xl">
