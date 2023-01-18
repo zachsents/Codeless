@@ -110,7 +110,7 @@ export default function FlowCard({ flow }) {
                                                 </Sparklines>
                                             </Box> */}
 
-                                            <Group spacing="xs">
+                                            {flow?.deployed && <Group spacing="xs">
                                                 {Triggers[flow.trigger]?.controls?.map((control, i) =>
                                                     <FlowControlButton
                                                         {...control}
@@ -119,11 +119,16 @@ export default function FlowCard({ flow }) {
                                                         key={i}
                                                     />
                                                 )}
-                                            </Group>
+                                            </Group>}
                                         </Group>
                                     </Group>
                                     <Group position="apart" grow>
-                                        <Button onClick={() => setExpanded(true)} variant="transparent" leftIcon={<TbListDetails />}>
+                                        <Button
+                                            onClick={() => setExpanded(true)}
+                                            variant="transparent"
+                                            leftIcon={<TbListDetails />}
+                                            color="gray"
+                                        >
                                             View Details
                                         </Button>
                                         <Link href={`/app/${appId}/flow/${flow.id}/edit`}>

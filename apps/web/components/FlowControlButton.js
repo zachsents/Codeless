@@ -23,11 +23,11 @@ export default function FlowControlButton({ icon, label, onClick, appId, flow })
                 error, setError,
             })}
             loading={loading}
-            color={success ? "green" : error ? "red" : ""}
+            color={success ? "green" : error ? "red" : "gray"}
 
-            radius="lg"
-            variant="subtle"
-            size="lg"
+            // radius="lg"
+            // variant="subtle"
+            // size="lg"
         >
             <Icon fontSize={18} size={18} />
         </LinkIcon>

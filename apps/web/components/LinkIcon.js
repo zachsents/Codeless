@@ -1,10 +1,21 @@
 import { ActionIcon, Tooltip } from '@mantine/core'
 import Link from 'next/link'
 
-export default function LinkIcon({ children, href, label, position, radius = "md", size = "lg", ...props }) {
+export default function LinkIcon({ children, href, label, position, radius = "md", size = "lg",
+    color, variant, ...props }) {
+
+    // default variant depends on color
+    variant ??= color == "gray" ? "light" : "subtle"
 
     const actionIcon =
-        <ActionIcon component={href && "a"} radius={radius} size={size} {...props}>
+        <ActionIcon
+            component={href && "a"}
+            radius={radius}
+            size={size}
+            variant={variant}
+            color={color}
+            {...props}
+        >
             {children}
         </ActionIcon>
 

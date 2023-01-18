@@ -44,7 +44,7 @@ export default function CreateFlow() {
     const form = useForm({
         initialValues: {
             name: "",
-            triggerType: "Link",
+            triggerType: "Default",
             trigger: null,
         },
         validate: {

@@ -41,6 +41,7 @@ export default function AppFlows() {
                                             variant="white"
                                             leftIcon={<TbPlus />}
                                             mt={15}
+                                            radius="md"
                                         >
                                             Create Flow
                                         </Button>
