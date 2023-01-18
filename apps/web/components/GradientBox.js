@@ -5,7 +5,7 @@ export default function GradientBox({ children, from = "indigo", to = "cyan", ce
 
     const theme = useMantineTheme()
 
-    const background = centerAround ?
+    const background = centerAround !== undefined ?
         createLinearGradient(theme.colors, centerAround, { shade }) :
         `linear-gradient(45deg, ${theme.colors[from][shade]} 0%, ${theme.colors[to][shade]} 100%)`
 

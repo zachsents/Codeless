@@ -30,7 +30,7 @@ export default function AppSettings() {
 
     return (
         <AppDashboard>
-            <GradientBox>
+            <GradientBox centerAround={app?.color ?? null}>
                 <Group position="apart" sx={{ alignItems: "stretch" }}>
                     <Box sx={{ width: "60%", maxWidth: 500, minWidth: 250 }}>
                         <PageTitle white mb={20}>Integrations</PageTitle>

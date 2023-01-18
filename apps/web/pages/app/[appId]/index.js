@@ -28,7 +28,7 @@ export default function AppOverview() {
 
     return (
         <AppDashboard>
-            <GradientBox centerAround={app?.color ?? "blue"}>
+            <GradientBox centerAround={app?.color ?? null}>
                 {app && plan ?
                     <Group position="apart" sx={{ alignItems: "stretch" }}>
                         <Box>

@@ -4,6 +4,10 @@ export function createLinearGradient(colorObject, center, {
     shade = 5,
     removeGrays = true,
 } = {}) {
+
+    if(center === null)
+        return colorObject.gray?.[shade] ?? "gray"
+
     const colors = removeGrays ? justMantineColors(colorObject) : colorObject
     const colorKeys = Object.keys(colors)
     const centerIndex = colorKeys.indexOf(center)
