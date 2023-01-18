@@ -30,53 +30,56 @@ export default function AppSettings() {
 
     return (
         <AppDashboard>
-            <GradientBox centerAround={app?.color ?? null}>
-                <Group position="apart" sx={{ alignItems: "stretch" }}>
-                    <Box sx={{ width: "60%", maxWidth: 500, minWidth: 250 }}>
-                        <PageTitle white mb={20}>Integrations</PageTitle>
-                        <Text color="white">
-                            Flows are more useful when you integrate your other apps. Manage them here.
-                        </Text>
-                    </Box>
-                    <Box>
-                        <Stack align="center">
-                            <Carousel w={150} slideSize="33.33%" loop dragFree withControls={false} getEmblaApi={setCarousel}>
-                                <Carousel.Slide>
-                                    <ThemeIcon size="xl" radius="xl" color="red">
-                                        <TbBrandGmail size={22} />
-                                    </ThemeIcon>
-                                </Carousel.Slide>
-                                <Carousel.Slide>
-                                    <ThemeIcon size="xl" radius="xl" color="teal.5">
-                                        <SiGooglesheets size={20} />
-                                    </ThemeIcon>
-                                </Carousel.Slide>
-                                <Carousel.Slide>
-                                    <ThemeIcon size="xl" radius="xl" color="yellow">
-                                        <TbBrandAirtable size={22} />
-                                    </ThemeIcon>
-                                </Carousel.Slide>
-                                <Carousel.Slide>
-                                    <ThemeIcon size="xl" radius="xl" color="pink">
-                                        <TbBrandInstagram size={22} />
-                                    </ThemeIcon>
-                                </Carousel.Slide>
-                                <Carousel.Slide>
-                                    <ThemeIcon size="xl" radius="xl" color="blue">
-                                        <TbBrandTwitter size={22} />
-                                    </ThemeIcon>
-                                </Carousel.Slide>
-                            </Carousel>
-                            <GlassButton rightIcon={<TbExternalLink />}>Browse Integrations</GlassButton>
-                        </Stack>
-                    </Box>
-                </Group>
-            </GradientBox>
+            <Stack spacing="xl">
+                <GradientBox centerAround={app?.color ?? null}>
+                    <Group position="apart" sx={{ alignItems: "stretch" }}>
+                        <Box sx={{ width: "60%", maxWidth: 500, minWidth: 250 }}>
+                            <PageTitle white mb={20}>Integrations</PageTitle>
+                            <Text color="white">
+                                Flows are more useful when you integrate your other apps. Manage them here.
+                            </Text>
+                        </Box>
+                        <Box>
+                            <Stack align="center">
+                                <Carousel w={150} slideSize="33.33%" loop dragFree withControls={false} getEmblaApi={setCarousel}>
+                                    <Carousel.Slide>
+                                        <ThemeIcon size="xl" radius="xl" color="red">
+                                            <TbBrandGmail size={22} />
+                                        </ThemeIcon>
+                                    </Carousel.Slide>
+                                    <Carousel.Slide>
+                                        <ThemeIcon size="xl" radius="xl" color="teal.5">
+                                            <SiGooglesheets size={20} />
+                                        </ThemeIcon>
+                                    </Carousel.Slide>
+                                    <Carousel.Slide>
+                                        <ThemeIcon size="xl" radius="xl" color="yellow">
+                                            <TbBrandAirtable size={22} />
+                                        </ThemeIcon>
+                                    </Carousel.Slide>
+                                    <Carousel.Slide>
+                                        <ThemeIcon size="xl" radius="xl" color="pink">
+                                            <TbBrandInstagram size={22} />
+                                        </ThemeIcon>
+                                    </Carousel.Slide>
+                                    <Carousel.Slide>
+                                        <ThemeIcon size="xl" radius="xl" color="blue">
+                                            <TbBrandTwitter size={22} />
+                                        </ThemeIcon>
+                                    </Carousel.Slide>
+                                </Carousel>
+                                <GlassButton rightIcon={<TbExternalLink />}>Browse Integrations</GlassButton>
+                            </Stack>
+                        </Box>
+                    </Group>
+                </GradientBox>
 
-            <SimpleGrid cols={1} spacing={35} verticalSpacing={25}>
-                <IntegrationCard integration={GoogleSheetsAuth} app={app} />
-                <IntegrationCard integration={GmailAuth} app={app} />
-            </SimpleGrid>
+                <SimpleGrid cols={1} spacing={35} verticalSpacing={25}>
+                    <IntegrationCard integration={GoogleSheetsAuth} app={app} />
+                    <IntegrationCard integration={GmailAuth} app={app} />
+                </SimpleGrid>
+
+            </Stack>
         </AppDashboard>
     )
 }
