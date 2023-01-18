@@ -29,6 +29,10 @@ import Sum from "./math/aggregations/Sum.js"
 import Product from "./math/aggregations/Product.js"
 import RandomNumber from "./math/RandomNumber.js"
 
+import Spreadsheet from "./google/sheets/Spreadsheet.js"
+import Range from "./google/sheets/Range.js"
+import Table from "./google/sheets/Table.js"
+
 
 export default createObject([
 
@@ -58,6 +62,10 @@ export default createObject([
     Add, Subtract, Multiply, Divide,
     // Aggregations
     Average, Sum, Product,
+
+
+    // ===== Google Sheets =====
+    Spreadsheet, Range, Table,
 ])
 
 

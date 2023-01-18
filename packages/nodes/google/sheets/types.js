@@ -6,7 +6,7 @@ export class SheetReference {
         this.sheetName = sheetName
     }
 
-    
+
 }
 
 
@@ -19,20 +19,12 @@ export class Range {
         this.sheetName = sheetName
         this.singleCell = !endRow
 
-        if (typeof startRow == "string") {
-            this.format = Range.FORMAT_A1
-            this.startRow = startColumn
-            this.startColumn = startRow
-            this.endRow = endColumn
-            this.endColumn = endRow
-        }
-        else {
-            this.format = Range.FORMAT_RC
-            this.startRow = startRow
-            this.startColumn = startColumn
-            this.endRow = endRow
-            this.endColumn = endColumn
-        }
+        this.startRow = startRow
+        this.startColumn = startColumn
+        this.endRow = endRow
+        this.endColumn = endColumn
+
+        this.format = typeof startColumn == "string" ? Range.FORMAT_A1 : Range.FORMAT_RC
     }
 
     toString() {

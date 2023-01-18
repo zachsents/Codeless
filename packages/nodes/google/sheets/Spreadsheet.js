@@ -6,11 +6,11 @@ export default {
     name: "Spreadsheet",
 
     inputs: [],
-    outputs: ["sheetRef"],
+    outputs: ["_sheetRef"],
 
     onStart() {
         this.publish({
-            sheetRef: new SheetReference(this.state.spreadsheetId, this.state.sheetName)
+            _sheetRef: new SheetReference(this.state.spreadsheetId, this.state.sheetName)
         })
     },
 }

@@ -29,7 +29,11 @@ import Sum from "./math/aggregations/Sum"
 import Product from "./math/aggregations/Product"
 import RandomNumber from "./math/RandomNumber"
 
+import Spreadsheet from "./google/sheets/Spreadsheet"
+
 import { Run as RunIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
+import { SiGooglesheets } from "react-icons/si"
+import Range from "./google/sheets/Range"
 
 
 export const Nodes = createObject([
@@ -56,6 +60,10 @@ export const Nodes = createObject([
     Add, Subtract, Multiply, Divide,
     // Aggregations
     Average, Sum, Product,
+
+
+    // ===== Google Sheets =====
+    Spreadsheet, Range,
 ])
 
 export const NodeCategories = {
@@ -103,23 +111,24 @@ export const NodeCategories = {
             "math:Product",
         ],
     },
-    // GoogleSheets: {
-    //     title: "Sheets",
-    //     icon: SiGooglesheets,
-    //     members: [
-    //         "googlesheets:Range",
-    //         "googlesheets:CellRange",
-    //         "googlesheets:RowRange",
-    //         "googlesheets:ColumnRange",
-    //         "googlesheets:GetRange",
-    //         "googlesheets:SetRange",
-    //         "googlesheets:GetSheet",
-    //         "googlesheets:GetNamedColumn",
-    //         "googlesheets:SetNamedColumn",
-    //         "googlesheets:Append",
-    //         "googlesheets:ClearRange",
-    //     ],
-    // },
+    GoogleSheets: {
+        title: "Google Sheets",
+        icon: SiGooglesheets,
+        members: [
+            "googlesheets:Spreadsheet",
+            "googlesheets:Range",
+            // "googlesheets:CellRange",
+            // "googlesheets:RowRange",
+            // "googlesheets:ColumnRange",
+            // "googlesheets:GetRange",
+            // "googlesheets:SetRange",
+            // "googlesheets:GetSheet",
+            // "googlesheets:GetNamedColumn",
+            // "googlesheets:SetNamedColumn",
+            // "googlesheets:Append",
+            // "googlesheets:ClearRange",
+        ],
+    },
 }
 
 export const Triggers = createObject([

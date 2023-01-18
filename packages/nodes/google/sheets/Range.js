@@ -7,30 +7,33 @@ export default {
     id: "googlesheets:Range",
     name: "Range",
 
-    inputs: ["sheet"],
+    inputs: ["$sheet"],
     outputs: ["data"],
 
-    async onInputsReady({ sheet }) {
+    async onInputsReady({ $sheet }) {
         // get Google Sheets API
         const sheetsApi = await authorizeGoogleSheetsAPI()
 
         // construct range
-        const range = new Range(sheet.sheetName, ...this.state.range)
+        const range = new Range($sheet.sheetName, ...this.state.range)
 
         // read values from range
         const response = await sheetsApi.spreadsheets.values.get({
-            spreadsheetId: sheet.spreadsheetId,
+            spreadsheetId: $sheet.spreadsheetId,
             range: range.toString(),
-            majorDimension: "ROW",
+            majorDimension: "ROWS",
             valueRenderOption: "UNFORMATTED_VALUE",
         })
         const values = response.data.values
 
         // return the values straight up if it's 1D or a single value
-        if(values.length == 1) {
-            if(values[0].length == 1)
-                return values[0][0]
-            return values[0]
+        if (values.length == 1) {
+            if (values[0].length == 1) {
+                this.publish({ data: values[0][0] })
+                return
+            }
+            this.publish({ data: values[0] })
+            return
         }
 
         // otherwise, return in Table form

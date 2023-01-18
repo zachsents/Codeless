@@ -1,58 +1,76 @@
-import { SortAscendingLetters } from "tabler-icons-react"
-import { TextInput, Text, Group, Stack, Grid } from "@mantine/core"
+import { TextInput, Text, Group, Stack, Grid, NumberInput } from "@mantine/core"
 import { parseRange } from "./util"
+import { SiGooglesheets } from "react-icons/si"
+
 
 export default {
+    id: "googlesheets:Range",
     name: "Range",
-    description: "Define a range.",
-    icon: SortAscendingLetters,
+    description: "Gets a range of values from a Google Sheet.",
+    icon: SiGooglesheets,
     color: "green",
-    valueSources: [" "],
 
-    defaultState: { $: "A1:C4" },
+    inputs: ["$sheet"],
+    outputs: ["data"],
+
+    defaultState: { range: ["", "", "", ""] },
 
     renderNode: ({ state, containerComponent: ContainerComponent }) => {
 
-        const { sheet, start, end } = parseRange(state.$)
+        const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
+
+        const rangeString = "" + startColumn + startRow + (endColumn ? ":" : "") + endColumn + endRow
 
         return <ContainerComponent>
-            <Text size={8} lh={1.2}>{sheet}</Text>    
-            <Text size="xs" lh={1.2}>{start}:{end}</Text>    
+            <Text size="xs" lh={1.2}>{rangeString || "Empty Range"}</Text>
         </ContainerComponent>
     },
 
     configuration: ({ state, setState }) => {
 
-        const { sheet, start, end } = parseRange(state.$)
+        const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
 
-        const setRange = ({ start: newStart = start, end: newEnd = end, sheet: newSheet = sheet }) => {
-            setState({ $: `${newSheet ? `'${newSheet}'!` : ""}${newStart}:${newEnd}` })
+        const setRange = ({ sr = startRow, sc = startColumn, er = endRow, ec = endColumn }) => {
+            setState({ range: [sr, sc, er, ec] })
         }
 
         return (
-            <Grid w={160} gutter="xs">
-                <Grid.Col span={12}>
+            <Grid w={280} gutter="xs" columns={13}>
+                <Grid.Col span={3}>
                     <TextInput
-                        value={sheet ?? ""}
-                        onChange={event => setRange({ sheet: event.currentTarget.value })}
-                        placeholder="Sheet Name"
+                        radius="md"
+                        value={startColumn ?? ""}
+                        onChange={event => setRange({ sc: event.currentTarget.value })}
+                        placeholder="A"
                     />
                 </Grid.Col>
-                <Grid.Col span="auto">
-                    <TextInput
-                        value={start ?? ""}
-                        onChange={event => setRange({ start: event.currentTarget.value })}
-                        placeholder="A1"
+                <Grid.Col span={3}>
+                    <NumberInput
+                        radius="md"
+                        hideControls
+                        value={startRow ?? null}
+                        onChange={val => setRange({ sr: val })}
+                        placeholder="1"
                     />
                 </Grid.Col>
                 <Grid.Col span={1}>
                     <Text>:</Text>
                 </Grid.Col>
-                <Grid.Col span="auto">
+                <Grid.Col span={3}>
                     <TextInput
-                        value={end ?? ""}
-                        onChange={event => setRange({ end: event.currentTarget.value })}
-                        placeholder="C4"
+                        radius="md"
+                        value={endColumn ?? ""}
+                        onChange={event => setRange({ ec: event.currentTarget.value })}
+                        placeholder="C"
+                    />
+                </Grid.Col>
+                <Grid.Col span={3}>
+                    <NumberInput
+                        radius="md"
+                        hideControls
+                        value={endRow ?? null}
+                        onChange={val => setRange({ er: val })}
+                        placeholder="3"
                     />
                 </Grid.Col>
             </Grid>
