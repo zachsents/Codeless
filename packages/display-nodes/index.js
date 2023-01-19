@@ -30,11 +30,13 @@ import Product from "./math/aggregations/Product"
 import RandomNumber from "./math/RandomNumber"
 
 import Spreadsheet from "./google/sheets/Spreadsheet"
-
-import { Run as RunIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
-import { SiGooglesheets } from "react-icons/si"
 import Range from "./google/sheets/Range"
 import Table from "./google/sheets/Table"
+
+import RowWhere from "./tables/RowWhere"
+
+import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
+import { SiGooglesheets } from "react-icons/si"
 
 
 export const Nodes = createObject([
@@ -61,6 +63,10 @@ export const Nodes = createObject([
     Add, Subtract, Multiply, Divide,
     // Aggregations
     Average, Sum, Product,
+
+
+    // ===== Tables =====
+    RowWhere,
 
 
     // ===== Google Sheets =====
@@ -110,6 +116,13 @@ export const NodeCategories = {
             "math:Average",
             "math:Sum",
             "math:Product",
+        ],
+    },
+    Tables: {
+        title: "Tables",
+        icon: TableIcon,
+        members: [
+            "tables:RowWhere",
         ],
     },
     GoogleSheets: {

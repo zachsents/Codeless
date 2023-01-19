@@ -33,6 +33,8 @@ import Spreadsheet from "./google/sheets/Spreadsheet.js"
 import Range from "./google/sheets/Range.js"
 import Table from "./google/sheets/Table.js"
 
+import RowWhere from "./tables/RowWhere.js"
+
 
 export default createObject([
 
@@ -63,6 +65,9 @@ export default createObject([
     // Aggregations
     Average, Sum, Product,
 
+
+    // ===== Tables =====
+    RowWhere,
 
     // ===== Google Sheets =====
     Spreadsheet, Range, Table,

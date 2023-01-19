@@ -4,15 +4,15 @@ export default {
     id: "tables:RowWhere",
     name: "Row Where",
 
-    inputs: ["table", "compare"],
+    inputs: ["$table", "$searchValue"],
     outputs: ["row"],
 
-    onInputsReady({ table, compare }) {
+    onInputsReady({ $table, $searchValue }) {
 
         this.publish({
-            row: table.findRow(
-                this.state.searchColumn, 
-                compare,
+            row: $table.findRow(
+                this.state.searchColumn,
+                $searchValue,
                 this.state.compareMethod == "contains" ? (data, value) => data.includes?.(value) : null
             )
         })
