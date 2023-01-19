@@ -300,6 +300,7 @@ function CategoryTile({ children, icon: Icon, ...props }) {
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: theme.radius.lg,
+                    padding: "0 5px",
 
                     backgroundColor: theme.colors.gray[0],
                     "&:hover": {
@@ -312,6 +313,10 @@ function CategoryTile({ children, icon: Icon, ...props }) {
                 },
                 label: {
                     fontWeight: 500,
+                    fontSize: Math.max(
+                        Math.min(theme.fontSizes.sm, -0.3 * children.length + 16),
+                        0
+                    ),
                 },
                 body: {
                     flex: "0 auto",
