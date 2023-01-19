@@ -34,6 +34,7 @@ import Range from "./google/sheets/Range"
 import Table from "./google/sheets/Table"
 
 import RowWhere from "./tables/RowWhere"
+import Column from "./tables/Column"
 
 import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
 import { SiGooglesheets } from "react-icons/si"
@@ -66,7 +67,7 @@ export const Nodes = createObject([
 
 
     // ===== Tables =====
-    RowWhere,
+    RowWhere, Column,
 
 
     // ===== Google Sheets =====
@@ -123,6 +124,7 @@ export const NodeCategories = {
         icon: TableIcon,
         members: [
             "tables:RowWhere",
+            "tables:Column",
         ],
     },
     GoogleSheets: {
