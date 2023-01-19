@@ -1,6 +1,6 @@
-import { Select, TextInput } from "@mantine/core";
-import { Table } from "tabler-icons-react";
-import { Control, ControlLabel, ControlStack } from "../components";
+import { Select, Stack, Text, TextInput } from "@mantine/core"
+import { Table } from "tabler-icons-react"
+import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components"
 
 
 export default {
@@ -18,6 +18,21 @@ export default {
         compareMethod: "equals",
     },
 
+
+    renderNode: ({ state, containerComponent: ContainerComponent, alignHandles }) => {
+        return state.searchColumn ?
+            <Stack spacing={0}>
+                <Text align="center" size="xs" color="dimmed">Row where</Text>
+                <Text align="center" size="xs" weight={500}>{state.searchColumn}</Text>
+                <Text align="center" size="xs" color="dimmed">{state.compareMethod}</Text>
+                <SkeletonWithHandle align="left" ref={el => alignHandles("$searchValue", el)} />
+            </Stack>
+            :
+            <ContainerComponent>
+                <Text size="xs">Row Where</Text>
+            </ContainerComponent>
+    },
+
     configuration: ({ state, setState }) => {
         return (
             <ControlStack>
@@ -25,7 +40,7 @@ export default {
                     <ControlLabel info="The column you're searching in.">
                         Search Column
                     </ControlLabel>
-                    <TextInput 
+                    <TextInput
                         value={state.searchColumn ?? ""}
                         onChange={event => setState({ searchColumn: event.currentTarget.value })}
                         placeholder="Column Name"
@@ -36,7 +51,7 @@ export default {
                     <ControlLabel info='The method used for searching. "Equals" will look for an exact match, while "Contains" will match any substring.'>
                         Search Method
                     </ControlLabel>
-                    <Select 
+                    <Select
                         data={[
                             { label: "Equals", value: "equals" },
                             { label: "Contains", value: "contains" },
