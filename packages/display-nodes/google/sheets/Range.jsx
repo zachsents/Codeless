@@ -1,5 +1,4 @@
-import { TextInput, Text, Group, Stack, Grid, NumberInput } from "@mantine/core"
-import { parseRange } from "./util"
+import { TextInput, Text, Grid, NumberInput } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
 
 

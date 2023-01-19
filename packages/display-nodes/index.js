@@ -34,6 +34,7 @@ import Spreadsheet from "./google/sheets/Spreadsheet"
 import { Run as RunIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
 import { SiGooglesheets } from "react-icons/si"
 import Range from "./google/sheets/Range"
+import Table from "./google/sheets/Table"
 
 
 export const Nodes = createObject([
@@ -63,7 +64,7 @@ export const Nodes = createObject([
 
 
     // ===== Google Sheets =====
-    Spreadsheet, Range,
+    Spreadsheet, Range, Table,
 ])
 
 export const NodeCategories = {
@@ -117,6 +118,7 @@ export const NodeCategories = {
         members: [
             "googlesheets:Spreadsheet",
             "googlesheets:Range",
+            "googlesheets:Table",
             // "googlesheets:CellRange",
             // "googlesheets:RowRange",
             // "googlesheets:ColumnRange",
