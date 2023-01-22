@@ -180,8 +180,31 @@ export function useListHandles(nodeId) {
                 draft[handle]--
             })
 
-            const connectedEdge = connectedEdges.find(edge => parseListHandle(edge.targetHandle).index == index)
-            connectedEdge && removeEdge(connectedEdge.id, rf)
+            // fix edges
+            rf.setEdges(produce(draft => {
+                // remove connected edge
+                const connectedEdge = connectedEdges.find(edge => parseListHandle(edge.targetHandle).index == index)
+                connectedEdge &&
+                    draft.splice(draft.findIndex(edge => edge.id == connectedEdge?.id), 1)
+
+                // shift up edges beneath the removed one
+                connectedEdges.forEach(ed => {
+                    const edge = draft.find(edge => edge.id == ed.id)
+
+                    if(!edge)
+                        return
+
+                    const { name, index: currentIndex } = parseListHandle(edge.targetHandle)
+
+                    if (currentIndex > index) {
+                        edge.targetHandle = `${name}.${currentIndex - 1}`
+                        edge.id = edge.id.replace(
+                            `${edge.target}${name}.${currentIndex}`,
+                            `${edge.target}${name}.${currentIndex - 1}`
+                        )
+                    }
+                })
+            }))
         }
     }
 }
@@ -252,9 +275,9 @@ export function createNode(nodeType, position) {
 
 export function parseListHandle(id) {
     const [, name, index] = id.match(/(.+?)(?:\.(\d+))?$/) ?? []
-    return { 
-        name, 
-        index: parseInt(index), 
+    return {
+        name,
+        index: parseInt(index),
     }
 }
 
