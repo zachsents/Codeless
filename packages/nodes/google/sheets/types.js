@@ -1,3 +1,32 @@
+import { Table } from "../../types/Table.js"
+
+export class GoogleSheetTable extends Table {
+
+    constructor(api, sheetReference, range) {
+        super()
+        this.api = api
+        this.sheetReference = sheetReference
+        this.range = range
+    }
+
+    async addRow(row) {
+        // convert row to array
+        const values = [this.headers.map(header => row[header])]
+
+        await this.api.spreadsheets.values.append({
+            spreadsheetId: this.sheetReference.spreadsheetId,
+            range: this.range.toString(),
+            valueInputOption: "USER_ENTERED",
+            insertDataOption: "INSERT_ROWS",
+            requestBody: {
+                majorDimension: "ROWS",
+                values,
+            },
+        })
+
+        super.addRow(row)
+    }
+}
 
 export class SheetReference {
 
@@ -5,8 +34,6 @@ export class SheetReference {
         this.spreadsheetId = spreadsheetId
         this.sheetName = sheetName
     }
-
-
 }
 
 

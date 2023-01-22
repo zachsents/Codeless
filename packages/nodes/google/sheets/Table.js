@@ -1,6 +1,6 @@
-import { Table } from "../../types/Table.js"
 import { authorizeGoogleSheetsAPI } from "./auth.js"
 import { getEntireSheetValues } from "./shared.js"
+import { GoogleSheetTable, Range } from "./types.js"
 
 
 export default {
@@ -16,7 +16,7 @@ export default {
 
         // either use entire sheet
         if (this.state.useEntireSheet) {
-            var values = await getEntireSheetValues(sheetsApi, {
+            var [values, range] = await getEntireSheetValues(sheetsApi, {
                 spreadsheetId: $sheet.spreadsheetId,
                 sheetName: $sheet.sheetName,
                 majorDimension: "ROWS",
@@ -25,7 +25,7 @@ export default {
         // or just a range
         else {
             // construct range
-            const range = new Range($sheet.sheetName, ...this.state.range)
+            var range = new Range($sheet.sheetName, ...this.state.range)
 
             // read values from range
             const response = await sheetsApi.spreadsheets.values.get({
@@ -42,7 +42,7 @@ export default {
         const tableData = values.slice(this.state.startRow - 1)
 
         // return in Table form
-        const table = new Table()
+        const table = new GoogleSheetTable(sheetsApi, $sheet, range)
         table.loadFrom2DArray(tableData, { headers })
         this.publish({ table })
     },

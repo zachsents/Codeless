@@ -1,3 +1,4 @@
+import { Range } from "./types.js"
 
 
 export async function getEntireSheetValues(sheetsApi, { spreadsheetId, sheetName, majorDimension }) {
@@ -15,15 +16,21 @@ export async function getEntireSheetValues(sheetsApi, { spreadsheetId, sheetName
         response.data.sheets[0]
 
     // create range that encompasses entire sheet
-    const encompassingRange = `'${sheet.properties.title}'!R1C1:R${sheet.properties.gridProperties.rowCount}C${sheet.properties.gridProperties.columnCount}`
+    const encompassingRange = new Range(
+        sheet.properties.title,
+        1,
+        1,
+        sheet.properties.gridProperties.rowCount,
+        sheet.properties.gridProperties.columnCount
+    )
 
     // read values
     response = await sheetsApi.spreadsheets.values.get({
         spreadsheetId,
-        range: encompassingRange,
+        range: encompassingRange.toString(),
         majorDimension,
         valueRenderOption: "UNFORMATTED_VALUE",
     })
 
-    return response.data.values
+    return [response.data.values, encompassingRange]
 }
