@@ -10,7 +10,12 @@ export default {
     icon: Table,
     color: "yellow",
 
-    inputs: ["$table"],
+    inputs: [
+        {
+            name: "$table",
+            label: "Table or Row",
+        }
+    ],
     outputs: ["column"],
 
     defaultState: {

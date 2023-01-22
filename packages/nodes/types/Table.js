@@ -22,7 +22,7 @@ export class Table {
     }
     
     getRow(index, includeHeaders = true) {
-        return includeHeaders ? this.rows[index] : Object.values(this.rows[index])
+        return includeHeaders ? new Row(this, this.rows[index]) : Object.values(this.rows[index])
     }
 
     getColumn(name) {
@@ -30,11 +30,24 @@ export class Table {
     }
 
     findRow(columnName, value, compareFunction) {
-        return this.rows.find(row => compareFunction?.(row[columnName], value) ?? (row[columnName] == value))
+        const row = this.rows.find(row => compareFunction?.(row[columnName], value) ?? (row[columnName] == value))
+        return row && new Row(this, row)
     }
 
     addRow(row) {    
         this.rows.push(row)
+    }
+}
+
+
+export class Row {
+    constructor(table, data) {
+        this.table = table
+        this.data = data
+    }
+
+    getColumn(name) {
+        return this.data[name]
     }
 }
 
