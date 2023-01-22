@@ -5,6 +5,7 @@ import DateTime from "./basics/DateTime"
 import Number from "./basics/Number"
 import Switch from "./basics/Switch"
 import Text from "./basics/Text"
+import Template from "./basics/Template"
 
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
@@ -35,10 +36,10 @@ import Table from "./google/sheets/Table"
 
 import RowWhere from "./tables/RowWhere"
 import Column from "./tables/Column"
+import AddRow from "./tables/AddRow"
 
 import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
 import { SiGooglesheets } from "react-icons/si"
-import AddRow from "./tables/AddRow"
 
 
 export const Nodes = createObject([
@@ -46,7 +47,7 @@ export const Nodes = createObject([
     // ===== Basics =====
 
     // Data
-    Number, Text, Switch, DateTime,
+    Number, Text, Switch, DateTime, Template,
     // Actions
     Print, RunFlow, ScheduleFlow,
     // Transforms
@@ -84,6 +85,7 @@ export const NodeCategories = {
             "basic:Text",
             "basic:Switch",
             "basic:DateTime",
+            "basic:Template",
 
             "basic:Print", 
             "basic:RunFlow", 

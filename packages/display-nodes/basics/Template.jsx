@@ -1,37 +1,35 @@
+import { Fragment } from "react"
 import { ActionIcon, Button, Grid, Group, Space, Stack, Text, TextInput } from "@mantine/core"
 import produce from "immer"
-import { Fragment } from "react"
-import { Table, Plus, X, ArrowRight } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components"
+import { Template, Plus, X, ArrowRight } from "tabler-icons-react"
+import { Control, ControlLabel, ControlStack } from "../components"
 
 
 export default {
-    id: "tables:AddRow",
-    name: "Add Row",
-    description: "Adds a row to a table.",
-    icon: Table,
-    color: "yellow",
+    id: "basic:Template",
+    name: "Fill Template",
+    description: "Inserts values into a template.",
+    icon: Template,
 
     inputs: [
-        "$table",
+        "$template",
         {
             name: "$data",
             list: true,
         }
     ],
-    outputs: ["table"],
+    outputs: ["text"],
 
     defaultState: {
         dataLabels: [],
     },
 
-
     renderNode: ({ state, containerComponent: ContainerComponent, alignHandles, listHandles }) => {
 
         return (
             <Stack spacing="xs">
-                <ContainerComponent ref={el => alignHandles(["$table", "table"], el)}>
-                    <Text size="xs">Add Row</Text>
+                <ContainerComponent ref={el => alignHandles(["$template", "text"], el)}>
+                    <Text size="xs">Fill Template</Text>
                 </ContainerComponent>
 
                 <Space h={0} />
@@ -45,7 +43,7 @@ export default {
                     >
                         <ArrowRight size={14} />
                         <Text size="xs" >
-                            {state.dataLabels?.[i] ?? `Column ${i + 1}`}
+                            {state.dataLabels?.[i] ?? "<none>"}
                         </Text>
                     </Group>
                 )}
@@ -67,8 +65,8 @@ export default {
         return (
             <ControlStack>
                 <Control>
-                    <ControlLabel info="The names of the columns to attach to the data. Leave blank if you just want them data added in order.">
-                        Column Names
+                    <ControlLabel info="The names of the variables in the template. They will be filled in spots surrounded with curly braces. e.g. {FirstName}, {Email}">
+                        Variable Names
                     </ControlLabel>
 
                     <Grid align="center">
@@ -76,7 +74,7 @@ export default {
                             <Fragment key={"data" + i}>
                                 <Grid.Col span={10}>
                                     <TextInput
-                                        placeholder="Column Name"
+                                        placeholder="Variable Name"
                                         radius="md"
                                         value={state.dataLabels?.[i] ?? ""}
                                         onChange={event => setState({
@@ -110,7 +108,7 @@ export default {
                         variant="subtle"
                         onClick={() => listHandles.add("$data")}
                     >
-                        Add Column
+                        Add Variable
                     </Button>
                 </Control>
             </ControlStack>
