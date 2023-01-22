@@ -9,6 +9,6 @@ export default {
     outputs: ["$"],
     
     onInputsReady({ _a, _b }) {
-        this.publish({ $: elementWise(_a, _b, (a, b) => a > b) })
+        this.publish({ $: elementWise(_a, _b, (a, b) => parseFloat(a) > parseFloat(b)) })
     },
 }

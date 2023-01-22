@@ -47,11 +47,8 @@ export function useNodeState(nodeId, defaultState) {
                 return
             }
 
-            if (!node.data)
-                node.data = { state: {} }
-
-            if (!node.data.state)
-                node.data.state = {}
+            node.data ??= { state: {} }
+            node.data.state ??= {}
 
             node.data.state = {
                 ...(!overwrite && node.data.state),
@@ -92,8 +89,7 @@ export function useNodeData(nodeId) {
                 return
             }
 
-            if (!node.data)
-                node.data = { state: {} }
+            node.data ??= { state: {} }
 
             node.data = {
                 ...node.data,
@@ -132,14 +128,61 @@ export function useNodeDisplayProps(id) {
         return entries ? Object.fromEntries(entries) : {}
     }, [connectedEdges])
 
+    // list handle stuff
+    const listHandles = useListHandles(id)
+
     return {
         state,
         setState,
         defaultState: nodeType?.defaultState,
+        connections,
+        listHandles,
         flowId,
         appId,
-        connections,
         firestore,
+    }
+}
+
+export function useListHandles(nodeId) {
+
+    const rf = useReactFlow()
+    const listHandles = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.listHandles)
+    const connectedEdges = useConnectedEdges(nodeId)
+
+    const modifyListHandles = mutator => rf.setNodes(nodes =>
+        produce(nodes, draft => {
+            const node = draft.find(node => node.id == nodeId)
+
+            if (!node) {
+                console.log("Couldn't find node:", nodeId)
+                return
+            }
+
+            node.data ??= { listHandles: {} }
+            node.data.listHandles ??= {}
+
+            mutator?.(node.data?.listHandles)
+        })
+    )
+
+    return {
+        handles: listHandles,
+        modifyListHandles,
+        add: handle => {
+            modifyListHandles(draft => {
+                draft[handle] ??= 0
+                draft[handle]++
+            })
+        },
+        remove: (handle, index) => {
+            modifyListHandles(draft => {
+                draft[handle] ??= 1
+                draft[handle]--
+            })
+
+            const connectedEdge = connectedEdges.find(edge => parseListHandle(edge.targetHandle).index == index)
+            connectedEdge && removeEdge(connectedEdge.id, rf)
+        }
     }
 }
 
@@ -204,6 +247,14 @@ export function createNode(nodeType, position) {
         },
         position,
         focusable: false,
+    }
+}
+
+export function parseListHandle(id) {
+    const [, name, index] = id.match(/(.+?)(?:\.(\d+))?$/) ?? []
+    return { 
+        name, 
+        index: parseInt(index), 
     }
 }
 

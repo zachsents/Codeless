@@ -32,6 +32,10 @@ export class Table {
     findRow(columnName, value, compareFunction) {
         return this.rows.find(row => compareFunction?.(row[columnName], value) ?? (row[columnName] == value))
     }
+
+    addRow(row) {    
+        this.rows.push(row)
+    }
 }
 
 

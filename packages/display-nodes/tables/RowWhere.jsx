@@ -5,7 +5,7 @@ import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../comp
 
 export default {
     id: "tables:RowWhere",
-    name: "Row Where",
+    name: "Find Row",
     description: "Gets a specific row from a table. Functions similarly to a VLOOKUP.",
     icon: Table,
     color: "yellow",
@@ -22,14 +22,14 @@ export default {
     renderNode: ({ state, containerComponent: ContainerComponent, alignHandles }) => {
         return state.searchColumn ?
             <Stack spacing={0}>
-                <Text align="center" size="xs" color="dimmed">Row where</Text>
-                <Text align="center" size="xs" weight={500}>{state.searchColumn}</Text>
+                <Text align="center" size="xs" color="dimmed">Find a row where</Text>
+                <Text align="center" size="xs" weight={500}>"{state.searchColumn}"</Text>
                 <Text align="center" size="xs" color="dimmed">{state.compareMethod}</Text>
                 <SkeletonWithHandle align="left" ref={el => alignHandles("$searchValue", el)} />
             </Stack>
             :
             <ContainerComponent>
-                <Text size="xs">Row Where</Text>
+                <Text size="xs">Find Row</Text>
             </ContainerComponent>
     },
 

@@ -38,6 +38,7 @@ import Column from "./tables/Column"
 
 import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
 import { SiGooglesheets } from "react-icons/si"
+import AddRow from "./tables/AddRow"
 
 
 export const Nodes = createObject([
@@ -67,7 +68,7 @@ export const Nodes = createObject([
 
 
     // ===== Tables =====
-    RowWhere, Column,
+    RowWhere, Column, AddRow,
 
 
     // ===== Google Sheets =====
@@ -125,6 +126,7 @@ export const NodeCategories = {
         members: [
             "tables:RowWhere",
             "tables:Column",
+            "tables:AddRow",
         ],
     },
     GoogleSheets: {

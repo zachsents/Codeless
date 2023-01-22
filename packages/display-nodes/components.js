@@ -1,6 +1,6 @@
-import { Box, Group, Skeleton, Stack, Text, Tooltip } from "@mantine/core";
-import { forwardRef } from "react";
-import { InfoCircle } from "tabler-icons-react";
+import { forwardRef } from "react"
+import { Box, Group, Skeleton, Stack, Text, Tooltip } from "@mantine/core"
+import { InfoCircle } from "tabler-icons-react"
 
 
 export function ControlStack({ children, w = 180, ...props }) {

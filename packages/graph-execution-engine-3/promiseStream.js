@@ -13,15 +13,16 @@ export function subscribe() {
     })
 }
 
-export function watch(promise) {
+export function watch(promise, catchError) {
     if (promise) {
         totalPromises++
         promise
             .then(() => {
                 resolvedPromises++
             })
-            .catch(() => {
+            .catch(error => {
                 failedPromises++
+                catchError?.(error)
             })
             .finally(() => {
                 // if all promises are fulfilled

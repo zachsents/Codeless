@@ -35,6 +35,7 @@ import Table from "./google/sheets/Table.js"
 
 import RowWhere from "./tables/RowWhere.js"
 import Column from "./tables/Column.js"
+import AddRow from "./tables/AddRow.js"
 
 
 export default createObject([
@@ -68,7 +69,7 @@ export default createObject([
 
 
     // ===== Tables =====
-    RowWhere, Column,
+    RowWhere, Column, AddRow,
 
     // ===== Google Sheets =====
     Spreadsheet, Range, Table,

@@ -1,11 +1,10 @@
 import { Box, useMantineTheme, Text } from "@mantine/core"
 import { Handle } from "reactflow"
-import { DataType } from "../../modules/dataTypes"
 import { motion } from "framer-motion"
 import { useRef } from "react"
 
 
-export default function CustomHandle({ name, dataType, handleType, position, label, align, showLabel = false }) {
+export default function CustomHandle({ name, handleType, index, position, label, align, showLabel = false }) {
 
     const theme = useMantineTheme()
 
@@ -24,7 +23,7 @@ export default function CustomHandle({ name, dataType, handleType, position, lab
     return (
         <motion.div whileHover="hovered" style={handleWrapperStyle(alignHeight)} ref={wrapperRef}>
             <motion.div variants={variants} transition={{ duration: 0.05 }}>
-                <Handle {...createHandleProps(theme, name, dataType, {
+                <Handle {...createHandleProps(theme, name, index, {
                     type: handleType,
                     position,
                 })} />
@@ -61,22 +60,15 @@ const valueStyle = theme => ({
     backgroundColor: theme.colors.gray[5],
 })
 
-function createHandleProps(theme, name, dataType, props) {
+function createHandleProps(theme, name, index, props) {
     return {
-        // id: createHandleId(name, dataType),
-        id: name,
+        id: index == null ? name : `${name}.${index}`,
         ...props,
         style: {
             ...handleStyle(theme),
             ...valueStyle(theme),
-            // ...(dataType == DataType.Value && valueStyle(theme)),
-            // ...(dataType == DataType.Signal && signalStyle(theme)),
         },
     }
-}
-
-function createHandleId(name, dataType) {
-    return `<${dataType}>${name}`
 }
 
 function formatName(name) {

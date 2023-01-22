@@ -61,7 +61,7 @@ export default function Node({ id, type, selected }) {
     const handleAlignHandles = (handleNames, el) => {
         const alignHandle = (handleName => handleAlignments.current[handleName] = el)
 
-        if(typeof handleNames === "string") {
+        if (typeof handleNames === "string") {
             alignHandle(handleNames)
             return
         }
@@ -73,21 +73,27 @@ export default function Node({ id, type, selected }) {
     const renderCustomHandles = (handles, handleType, position) =>
         handles?.map(handle => {
             // handle can either be a string or { name, label }
-            const { name, label } = typeof handle === "string" ? { name: handle } : handle
+            const { name, label, list } = typeof handle === "string" ? { name: handle } : handle
 
-            return <CustomHandle
-                name={name}
-                label={label}
-                showLabel={hovered}
-                align={handleAlignments.current[name]}
-                {...{ handleType, position }}
-                key={name}
-            />
-        })
+            // if it's a list handle, get current number of handles
+            const numberOfHandles = list ? (data?.listHandles?.[name] ?? 0) : 1
+
+            return Array(numberOfHandles).fill(0).map((_, i) =>
+                <CustomHandle
+                    name={name}
+                    index={list && i}
+                    label={label}
+                    showLabel={hovered}
+                    align={handleAlignments.current[list ? `${name}.${i}` : name]}
+                    {...{ handleType, position }}
+                    key={`${name}.${i}`}
+                />
+            )
+        }).flat()
 
     // custom component for rendering inner node content
-    const ContentWithIcon = ({ children }) => (
-        <Group spacing="xs">
+    const ContentWithIcon = forwardRef(({ children }, ref) => (
+        <Group spacing="xs" ref={ref}>
             {nodeType.color ?
                 <ThemeIcon color={nodeType.color} size="sm" radius="xl">
                     <nodeType.icon size={10} />
@@ -99,7 +105,7 @@ export default function Node({ id, type, selected }) {
                 {children}
             </Box>
         </Group>
-    )
+    ))
 
     return (
         <motion.div

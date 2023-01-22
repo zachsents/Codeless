@@ -1,4 +1,4 @@
-import { Select, Stack, Text, TextInput } from "@mantine/core"
+import { Stack, Text, TextInput } from "@mantine/core"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components"
 
