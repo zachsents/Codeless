@@ -10,6 +10,7 @@ import Template from "./basics/Template"
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
 import ScheduleFlow from "./basics/actions/ScheduleFlow"
+import SendEmail from "./basics/actions/SendEmail"
 
 import And from "./basics/transforms/And"
 import Or from "./basics/transforms/Or"
@@ -53,7 +54,7 @@ export const Nodes = createObject([
     // Data
     Number, Text, Switch, DateTime, Template,
     // Actions
-    Print, RunFlow, ScheduleFlow,
+    Print, RunFlow, ScheduleFlow, SendEmail,
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan,
 
@@ -102,6 +103,7 @@ export const NodeCategories = {
             "basic:Print", 
             "basic:RunFlow", 
             "basic:ScheduleFlow",
+            "basic:SendEmail",
 
             "basic:And",
             "basic:Or",
