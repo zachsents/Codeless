@@ -4,10 +4,19 @@ export default {
     id: "basic:Print",
     name: "Print",
 
-    inputs: ["_in"],
+    inputs: ["$in"],
     outputs: [],
 
-    onInputsReady({ _in }) {
-        console.log(_in)
+    onInputsReady({ $in }) {
+        console.log("\n")
+        line()
+        console.log("Print Node")
+        line()
+        console.log($in)
+        line()
     },
+}
+
+function line() {
+    console.log('-'.repeat(process.stdout.columns ?? 20))
 }

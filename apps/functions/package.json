@@ -7,7 +7,6 @@
         "shell": "firebase functions:shell",
         "start": "npm run shell",
         "logs": "firebase functions:log",
-
         "deploy": "node ./buildDeps.js && firebase deploy --only functions && node ./cleanupBuild.js"
     },
     "engines": {
@@ -15,14 +14,15 @@
     },
     "main": "index.js",
     "dependencies": {
+        "@minus/gee3": "*",
+        "@minus/server-nodes": "*",
+        "dotenv": "^16.0.3",
         "firebase-admin": "^11.3.0",
+        "firebase-admin-callable-functions": "*",
         "firebase-functions": "^4.1.0",
         "googleapis": "^109.0.1",
         "nanoid": "^4.0.0",
-        "nanoid-dictionary": "^4.3.0",
-        "@minus/gee3": "*",
-        "@minus/server-nodes": "*",
-        "firebase-admin-callable-functions": "*"
+        "nanoid-dictionary": "^4.3.0"
     },
     "devDependencies": {
         "firebase-functions-test": "^0.2.0"

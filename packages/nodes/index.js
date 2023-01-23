@@ -38,6 +38,10 @@ import RowWhere from "./tables/RowWhere.js"
 import Column from "./tables/Column.js"
 import AddRow from "./tables/AddRow.js"
 
+import AskGPT3 from "./openai/AskGPT3.js"
+
+import TrimWhitespace from "./text/TrimWhitespace.js"
+
 
 export default createObject([
 
@@ -53,6 +57,10 @@ export default createObject([
     Print, RunFlow, ScheduleFlow,
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan,
+
+
+    // ===== Text =====
+    TrimWhitespace,
 
 
     // ===== Control =====
@@ -74,6 +82,10 @@ export default createObject([
 
     // ===== Google Sheets =====
     Spreadsheet, Range, Table,
+
+
+    // ===== OpenAI =====
+    AskGPT3,
 ])
 
 

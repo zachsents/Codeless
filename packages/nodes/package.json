@@ -12,6 +12,7 @@
     "dependencies": {
         "firebase-admin-callable-functions": "*",
         "googleapis": "^105.0.0",
-        "lodash": "^4.17.21"
+        "lodash": "^4.17.21",
+        "openai": "^3.1.0"
     }
 }

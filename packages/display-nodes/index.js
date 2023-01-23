@@ -38,8 +38,12 @@ import RowWhere from "./tables/RowWhere"
 import Column from "./tables/Column"
 import AddRow from "./tables/AddRow"
 
-import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit } from "tabler-icons-react"
-import { SiGooglesheets } from "react-icons/si"
+import AskGPT3 from "./openai/AskGPT3"
+
+import TrimWhitespace from "./text/TrimWhitespace"
+
+import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit, AlphabetLatin } from "tabler-icons-react"
+import { SiGooglesheets, SiOpenai } from "react-icons/si"
 
 
 export const Nodes = createObject([
@@ -53,6 +57,10 @@ export const Nodes = createObject([
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan,
 
+
+    // ===== Text =====
+    TrimWhitespace,
+    
 
     // ===== Control =====
     If,
@@ -74,6 +82,10 @@ export const Nodes = createObject([
 
     // ===== Google Sheets =====
     Spreadsheet, Range, Table,
+
+
+    // ===== OpenAI =====
+    AskGPT3,
 ])
 
 export const NodeCategories = {
@@ -98,6 +110,14 @@ export const NodeCategories = {
             "basic:NotEqual",
             "basic:GreaterThan",
         ],
+    },
+    Text: {
+        title: "Text",
+        icon: AlphabetLatin,
+        members: [
+            "text:TrimWhitespace",
+            "basic:Template",
+        ]
     },
     Control: {
         title: "Control",
@@ -148,6 +168,13 @@ export const NodeCategories = {
             // "googlesheets:SetNamedColumn",
             // "googlesheets:Append",
             // "googlesheets:ClearRange",
+        ],
+    },
+    OpenAI: {
+        title: "OpenAI",
+        icon: SiOpenai,
+        members: [
+            "openai:AskGPT3",
         ],
     },
 }

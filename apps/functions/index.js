@@ -7,6 +7,9 @@ import { customAlphabet } from "nanoid"
 import nanoidDict from "nanoid-dictionary"
 import { oauthClient, db } from "./init.js"
 
+import * as dotenv from "dotenv"
+dotenv.config()
+
 
 export const runWithUrl = functions.https.onRequest(async (request, response) => {
 
