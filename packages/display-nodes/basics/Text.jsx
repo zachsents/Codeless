@@ -1,5 +1,5 @@
 import { AlphabetLatin } from "tabler-icons-react"
-import { TextInput } from "@mantine/core"
+import { Textarea, TextInput } from "@mantine/core"
 
 export default {
     id: "basic:Text",
@@ -11,12 +11,17 @@ export default {
     outputs: ["$"],
 
     renderNode: ({ state, setState }) => (
-        <TextInput
+        <Textarea
             value={state.$ ?? ""}
             onChange={event => setState({ $: event.currentTarget.value })}
             placeholder="Type something..."
+            radius="md"
             m={-5}
-            size="xs" w={160}
+            size="xs"
+            maw={160}
+            autosize
+            minRows={1}
         />
+        
     ),
 }
