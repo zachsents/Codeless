@@ -4,11 +4,11 @@ export default {
     id: "control:ListLoop",
     name: "List Loop",
 
-    inputs: ["$ex", "list"],
-    outputs: ["$"],
+    inputs: ["$list"],
+    outputs: ["item"],
 
-    onInputsReady({ $ex, list }) {
-        for (let item of list)
-            this.publish({ $: item })
+    onInputsReady({ $list }) {
+        for (let item of $list)
+            this.publish({ item })
     },
 }

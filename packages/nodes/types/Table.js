@@ -20,7 +20,7 @@ export class Table {
     log() {
         console.table(this.rows)
     }
-    
+
     getRow(index, includeHeaders = true) {
         return includeHeaders ? new Row(this, this.rows[index]) : Object.values(this.rows[index])
     }
@@ -34,8 +34,20 @@ export class Table {
         return row && new Row(this, row)
     }
 
-    addRow(row) {    
+    addRow(row) {
         this.rows.push(row)
+    }
+
+    [Symbol.iterator]() {
+        const This = this
+        let index = -1
+
+        return {
+            next: () => ({ 
+                value: new Row(This, this.rows[++index]), 
+                done: !(index in this.rows) 
+            })
+        }
     }
 }
 

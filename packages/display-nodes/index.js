@@ -20,6 +20,7 @@ import Not from "./basics/transforms/Not"
 import GreaterThan from "./basics/transforms/GreaterThan"
 
 import If from "./control/If"
+import ListLoop from "./control/ListLoop"
 
 import Add from "./math/transforms/Add"
 import Subtract from "./math/transforms/Subtract"
@@ -64,7 +65,7 @@ export const Nodes = createObject([
     
 
     // ===== Control =====
-    If,
+    If, ListLoop,
 
 
     // ===== Math =====
@@ -126,6 +127,7 @@ export const NodeCategories = {
         icon: ArrowsSplit,
         members: [
             "control:If",
+            "control:ListLoop",
         ],
     },
     Math: {

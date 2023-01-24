@@ -20,6 +20,7 @@ import Not from "./basics/transforms/Not.js"
 import GreaterThan from "./basics/transforms/GreaterThan.js"
 
 import If from "./control/If.js"
+import ListLoop from "./control/ListLoop.js"
 
 import Add from "./math/transforms/Add.js"
 import Subtract from "./math/transforms/Subtract.js"
@@ -65,7 +66,7 @@ export default createObject([
 
 
     // ===== Control =====
-    If,
+    If, ListLoop,
 
 
     // ===== Math =====
