@@ -1,9 +1,9 @@
 
 export class Table {
 
-    constructor() {
-        this.headers = []
-        this.rows = []
+    constructor(headers = [], rows = []) {
+        this.headers = headers
+        this.rows = rows
     }
 
     loadFrom2DArray(data, { headers } = {}) {
@@ -32,6 +32,11 @@ export class Table {
     findRow(columnName, value, compareFunction) {
         const row = this.rows.find(row => compareFunction?.(row[columnName], value) ?? (row[columnName] == value))
         return row && new Row(this, row)
+    }
+    
+    findRows(columnName, value, compareFunction) {
+        const rows = this.rows.filter(row => compareFunction?.(row[columnName], value) ?? (row[columnName] == value))
+        return new Table(this.headers, rows)
     }
 
     addRow(row) {

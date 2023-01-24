@@ -1,11 +1,11 @@
-import { Select, Stack, Text, TextInput } from "@mantine/core"
+import { Select, Stack, Switch, Text, TextInput } from "@mantine/core"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components"
 
 
 export default {
     id: "tables:RowWhere",
-    name: "Find Row",
+    name: "Find Rows",
     description: "Gets a specific row from a table. Functions similarly to a VLOOKUP.",
     icon: Table,
     color: "yellow",
@@ -17,8 +17,10 @@ export default {
     defaultState: {
         searchColumn: "",
         compareMethod: "equals",
+        multiple: false,
     },
 
+    renderName: ({ state }) => `Find Row${state.multiple ? "s" : ""}`,
 
     renderNode: ({ state, alignHandles }) => {
 
@@ -26,7 +28,7 @@ export default {
 
         return state.searchColumn ?
             <Stack spacing={0} align="center">
-                <Text color="dimmed">Find a row where</Text>
+                <Text color="dimmed">Find {state.multiple ? "rows" : "a row"} where</Text>
                 <Text weight={500}>"{state.searchColumn}"</Text>
                 <Text color="dimmed">{state.compareMethod}</Text>
                 <SkeletonWithHandle align="left" ref={el => alignHandles("$searchValue", el)} />
@@ -60,6 +62,16 @@ export default {
                         ]}
                         value={state.compareMethod ?? ""}
                         onChange={val => setState({ compareMethod: val })}
+                    />
+                </Control>
+
+                <Control>
+                    <ControlLabel info="Whether you want to find a single row or multiple rows.">
+                        Find Multiple Rows
+                    </ControlLabel>
+                    <Switch
+                        checked={state.multiple}
+                        onChange={event => setState({ multiple: event.currentTarget.checked })}
                     />
                 </Control>
             </ControlStack>

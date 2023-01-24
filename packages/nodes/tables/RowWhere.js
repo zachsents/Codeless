@@ -10,7 +10,7 @@ export default {
     onInputsReady({ $table, $searchValue }) {
 
         this.publish({
-            row: $table.findRow(
+            row: $table[`findRow${this.state.multiple ? "s" : ""}`](
                 this.state.searchColumn,
                 $searchValue,
                 this.state.compareMethod == "contains" ? (data, value) => data.includes?.(value) : null
