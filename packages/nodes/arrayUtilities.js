@@ -26,3 +26,21 @@ export function elementWise(aList, bList, operation) {
         aList.map(a => operation(a, bList[0])) :
         aList.map((a, i) => operation(a, bList[i]))
 }
+
+export function safeMap(operation, ...lists) {
+    // make sure everything's an array
+    lists.forEach((list, i) => {
+        lists[i] = list.map ? list : [list]
+    })
+
+    // find longest array to map through
+    const longest = lists.reduce(
+        (longest, current) => current.length > longest.length ? current : longest
+    )
+
+    return longest.map(
+        (_, i) => operation(
+            ...lists.map(list => list[i] ?? list[0])
+        )
+    )
+}

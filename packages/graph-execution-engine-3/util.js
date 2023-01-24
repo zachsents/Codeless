@@ -76,8 +76,8 @@ function prepNode(node, nodeType, nodes, edges) {
                         )
 
                         // if a single array is passed, flatten it
-                        if (nodeInputs[inputId].length == 1)
-                            nodeInputs[inputId] = nodeInputs[inputId].flat()
+                        // if (nodeInputs[inputId].length == 1)
+                        //     nodeInputs[inputId] = nodeInputs[inputId].flat()
 
                         // option: pass a single value instead of an array
                         if (expectSingleValue(inputDef))

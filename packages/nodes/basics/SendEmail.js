@@ -3,13 +3,13 @@ export default {
     id: "basic:SendEmail",
     name: "Send Email",
 
-    inputs: ["to", "$subject", "$body"],
+    inputs: ["$to", "$subject", "$body"],
     outputs: [],
 
-    async onInputsReady({ to, $subject, $body }) {
+    async onInputsReady({ $to, $subject, $body }) {
         await global.admin.firestore().collection("mail")
             .add({
-                to,
+                to: $to,
                 message: {
                     subject: $subject,
                     text: $body,

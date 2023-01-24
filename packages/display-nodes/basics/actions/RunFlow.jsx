@@ -10,7 +10,7 @@ export default {
     description: "Runs a flow",
     icon: Run,
 
-    inputs: ["payload"],
+    inputs: ["$payload"],
     outputs: [],
 
     configuration: ({ state, setState, appId, flowId, firestore }) => {
