@@ -4,15 +4,17 @@ export default {
     id: "basic:Print",
     name: "Print",
 
-    inputs: ["$in"],
+    inputs: ["_in"],
     outputs: [],
 
-    onInputsReady({ $in }) {
+    onInputsReady({ _in }) {
         console.log("\n")
         line()
         console.log("Print Node")
         line()
-        console.log($in)
+        console.log(
+            _in.length == 1 ? _in[0] : _in
+        )
         line()
     },
 }

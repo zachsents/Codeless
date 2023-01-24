@@ -10,6 +10,7 @@ import Template from "./basics/Template.js"
 import Print from "./basics/actions/Print.js"
 import RunFlow from "./basics/actions/RunFlow.js"
 import ScheduleFlow from "./basics/actions/ScheduleFlow.js"
+import LoopFlow from "./basics/actions/LoopFlow.js"
 import SendEmail from "./basics/SendEmail.js"
 
 import And from "./basics/transforms/And.js"
@@ -20,7 +21,6 @@ import Not from "./basics/transforms/Not.js"
 import GreaterThan from "./basics/transforms/GreaterThan.js"
 
 import If from "./control/If.js"
-import ListLoop from "./control/ListLoop.js"
 
 import Add from "./math/transforms/Add.js"
 import Subtract from "./math/transforms/Subtract.js"
@@ -56,7 +56,7 @@ export default createObject([
     // Data
     Number, Text, Switch, DateTime, Template,
     // Actions
-    Print, RunFlow, ScheduleFlow, SendEmail,
+    Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan,
 
@@ -66,7 +66,7 @@ export default createObject([
 
 
     // ===== Control =====
-    If, ListLoop,
+    If,
 
 
     // ===== Math =====

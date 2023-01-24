@@ -6,11 +6,6 @@ export default {
     description: "Prints to console.",
     icon: Terminal,
 
-    inputs: [
-        {
-            name: "$in",
-            label: "",
-        }
-    ],
+    inputs: ["_in"],
     outputs: [],
 }

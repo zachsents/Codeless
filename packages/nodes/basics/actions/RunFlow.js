@@ -5,10 +5,10 @@ export default {
     id: "basic:RunFlow",
     name: "Run Flow",
 
-    inputs: ["$payload"],
+    inputs: ["payload"],
     outputs: [],
 
-    async onInputsReady({ $payload }) {
+    async onInputsReady({ payload }) {
         // call function for running flow
         const response = await httpsCallable(url("runNow", {
             projectId: global.admin.app().options.projectId,
@@ -16,7 +16,7 @@ export default {
         }))({
             appId: global.info.appId,
             flowId: this.state.flow,
-            payload: $payload,
+            payload: payload,
         })
         const { result } = await response.json()
 

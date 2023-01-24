@@ -1,15 +1,15 @@
-import { Run } from "tabler-icons-react"
 import { Select } from "@mantine/core"
+import { ArrowIteration } from "tabler-icons-react"
 import { useOtherFlows } from "../../hooks"
 
 
 export default {
-    id: "basic:RunFlow",
-    name: "Run Flow",
-    description: "Runs a flow",
-    icon: Run,
+    id: "basic:LoopFlow",
+    name: "Loop Flow",
+    description: "Runs a flow multiple times with different payloads.",
+    icon: ArrowIteration,
 
-    inputs: ["payload"],
+    inputs: ["list"],
     outputs: [],
 
     configuration: ({ state, setState, appId, flowId, firestore }) => {
@@ -34,3 +34,4 @@ export default {
         )
     }
 }
+

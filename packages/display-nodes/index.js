@@ -10,6 +10,7 @@ import Template from "./basics/Template"
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
 import ScheduleFlow from "./basics/actions/ScheduleFlow"
+import LoopFlow from "./basics/actions/LoopFlow"
 import SendEmail from "./basics/actions/SendEmail"
 
 import And from "./basics/transforms/And"
@@ -20,7 +21,6 @@ import Not from "./basics/transforms/Not"
 import GreaterThan from "./basics/transforms/GreaterThan"
 
 import If from "./control/If"
-import ListLoop from "./control/ListLoop"
 
 import Add from "./math/transforms/Add"
 import Subtract from "./math/transforms/Subtract"
@@ -44,7 +44,7 @@ import AskGPT3 from "./openai/AskGPT3"
 
 import TrimWhitespace from "./text/TrimWhitespace"
 
-import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Settings, Math, ListSearch, Icons, BrandGmail, ArrowsSplit, AlphabetLatin } from "tabler-icons-react"
+import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin } from "tabler-icons-react"
 import { SiGooglesheets, SiOpenai } from "react-icons/si"
 
 
@@ -55,7 +55,7 @@ export const Nodes = createObject([
     // Data
     Number, Text, Switch, DateTime, Template,
     // Actions
-    Print, RunFlow, ScheduleFlow, SendEmail,
+    Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan,
 
@@ -65,7 +65,7 @@ export const Nodes = createObject([
     
 
     // ===== Control =====
-    If, ListLoop,
+    If,
 
 
     // ===== Math =====
@@ -104,6 +104,7 @@ export const NodeCategories = {
             "basic:Print", 
             "basic:RunFlow", 
             "basic:ScheduleFlow",
+            "basic:LoopFlow",
             "basic:SendEmail",
 
             "basic:And",
@@ -127,7 +128,6 @@ export const NodeCategories = {
         icon: ArrowsSplit,
         members: [
             "control:If",
-            "control:ListLoop",
         ],
     },
     Math: {
