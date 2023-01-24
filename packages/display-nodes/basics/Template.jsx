@@ -13,9 +13,9 @@ export default {
     badge: "Text",
 
     inputs: [
-        "$template",
+        "template",
         {
-            name: "$data",
+            name: "data",
             list: true,
         }
     ],
@@ -27,8 +27,8 @@ export default {
 
     renderNode: ({ state, alignHandles, listHandles }) => {
 
-        const numberOfItems = listHandles.handles?.["$data"] ?? 0
-        alignHandles("$template", null)
+        const numberOfItems = listHandles.handles?.["data"] ?? 0
+        alignHandles("template", null)
 
         return (
             <Stack spacing="xs">
@@ -36,8 +36,9 @@ export default {
                     Array(numberOfItems).fill(0).map((_, i) =>
                         <Group
                             spacing="xs"
-                            ref={el => alignHandles(`$data.${i}`, el)}
-                            key={"data" + i} align="center"
+                            align="center"
+                            ref={el => alignHandles(`data.${i}`, el)}
+                            key={"data" + i} 
                         >
                             <ArrowRight size={14} />
                             <Text>
@@ -54,7 +55,7 @@ export default {
     configuration: ({ state, setState, listHandles }) => {
 
         const handleRemove = i => {
-            listHandles.remove("$data", i)
+            listHandles.remove("data", i)
             setState({
                 dataLabels: produce(state.dataLabels, draft => {
                     draft.splice(i, 1)
@@ -70,7 +71,7 @@ export default {
                     </ControlLabel>
 
                     <Grid align="center">
-                        {Array(listHandles.handles?.["$data"] ?? 0).fill(0).map((_, i) =>
+                        {Array(listHandles.handles?.["data"] ?? 0).fill(0).map((_, i) =>
                             <Fragment key={"data" + i}>
                                 <Grid.Col span={10}>
                                     <TextInput
@@ -106,7 +107,7 @@ export default {
                         radius="sm"
                         leftIcon={<Plus size={14} />}
                         variant="subtle"
-                        onClick={() => listHandles.add("$data")}
+                        onClick={() => listHandles.add("data")}
                     >
                         Add Variable
                     </Button>
