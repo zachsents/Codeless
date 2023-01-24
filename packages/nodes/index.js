@@ -43,6 +43,7 @@ import AddRow from "./tables/AddRow.js"
 import AskGPT3 from "./openai/AskGPT3.js"
 
 import TrimWhitespace from "./text/TrimWhitespace.js"
+import Join from "./text/Join.js"
 
 
 export default createObject([
@@ -62,7 +63,7 @@ export default createObject([
 
 
     // ===== Text =====
-    TrimWhitespace,
+    TrimWhitespace, Join,
 
 
     // ===== Control =====

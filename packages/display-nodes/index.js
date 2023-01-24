@@ -46,6 +46,7 @@ import TrimWhitespace from "./text/TrimWhitespace"
 
 import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin } from "tabler-icons-react"
 import { SiGooglesheets, SiOpenai } from "react-icons/si"
+import Join from "./text/Join"
 
 
 export const Nodes = createObject([
@@ -61,7 +62,7 @@ export const Nodes = createObject([
 
 
     // ===== Text =====
-    TrimWhitespace,
+    TrimWhitespace, Join,
     
 
     // ===== Control =====
@@ -119,7 +120,9 @@ export const NodeCategories = {
         title: "Text",
         icon: AlphabetLatin,
         members: [
+            "basic:Text",
             "text:TrimWhitespace",
+            "text:Join",
             "basic:Template",
         ]
     },
