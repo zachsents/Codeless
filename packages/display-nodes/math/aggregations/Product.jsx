@@ -5,6 +5,7 @@ export default {
     name: "Product",
     description: "Multiplies numbers (Capital pi product notation).",
     icon: MathPi,
+    badge: "Math",
     
     inputs: ["_in"],
     outputs: ["product"],

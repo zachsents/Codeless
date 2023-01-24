@@ -9,6 +9,7 @@ export default {
     description: "Gets a specific row from a table. Functions similarly to a VLOOKUP.",
     icon: Table,
     color: "yellow",
+    badge: "Tables",
 
     inputs: ["$table", "$searchValue"],
     outputs: ["row"],
@@ -19,18 +20,19 @@ export default {
     },
 
 
-    renderNode: ({ state, containerComponent: ContainerComponent, alignHandles }) => {
+    renderNode: ({ state, alignHandles }) => {
+
+        alignHandles("$table", null)
+
         return state.searchColumn ?
-            <Stack spacing={0}>
-                <Text align="center" size="xs" color="dimmed">Find a row where</Text>
-                <Text align="center" size="xs" weight={500}>"{state.searchColumn}"</Text>
-                <Text align="center" size="xs" color="dimmed">{state.compareMethod}</Text>
+            <Stack spacing={0} align="center">
+                <Text color="dimmed">Find a row where</Text>
+                <Text weight={500}>"{state.searchColumn}"</Text>
+                <Text color="dimmed">{state.compareMethod}</Text>
                 <SkeletonWithHandle align="left" ref={el => alignHandles("$searchValue", el)} />
             </Stack>
             :
-            <ContainerComponent>
-                <Text size="xs">Find Row</Text>
-            </ContainerComponent>
+            <Text size="xs" color="dimmed">No parameters specified</Text>
     },
 
     configuration: ({ state, setState }) => {

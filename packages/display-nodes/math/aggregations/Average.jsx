@@ -5,6 +5,7 @@ export default {
     name: "Average",
     description: "Averages numbers.",
     icon: LayoutAlignMiddle,
+    badge: "Math",
     
     inputs: ["_in"],
     outputs: ["average"],

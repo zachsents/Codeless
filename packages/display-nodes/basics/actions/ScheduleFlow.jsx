@@ -10,8 +10,8 @@ export default {
     description: "Schedules a flow",
     icon: CalendarTime,
     
-    inputs: ["$ex", "payload", "$time"],
-    outputs: ["$"],
+    inputs: ["payload", "$time"],
+    outputs: [],
 
     configuration: ({ state, setState, appId, flowId, firestore }) => {
 
@@ -23,7 +23,7 @@ export default {
                     query(
                         collection(firestore, `apps/${appId}/flows`),
                         where(documentId(), "!=", flowId),
-                        where("trigger", "==", "trigger:manual")
+                        where("trigger", "==", "basic:DefaultTrigger")
                     )
                 )
                     .then(result => {

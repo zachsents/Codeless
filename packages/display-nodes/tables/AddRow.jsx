@@ -11,6 +11,7 @@ export default {
     description: "Adds a row to a table.",
     icon: Table,
     color: "yellow",
+    badge: "Tables",
 
     inputs: [
         "$table",
@@ -26,29 +27,28 @@ export default {
     },
 
 
-    renderNode: ({ state, containerComponent: ContainerComponent, alignHandles, listHandles }) => {
+    renderNode: ({ state, alignHandles, listHandles }) => {
+
+        const numberOfItems = listHandles.handles?.["$data"] ?? 0
+        alignHandles(["$table", "table"], null)
 
         return (
             <Stack spacing="xs">
-                <ContainerComponent ref={el => alignHandles(["$table", "table"], el)}>
-                    <Text size="xs">Add Row</Text>
-                </ContainerComponent>
-
-                <Space h={0} />
-
-                {Array(listHandles.handles?.["$data"] ?? 0).fill(0).map((_, i) =>
-                    <Group
-                        spacing="xs"
-                        ref={el => alignHandles(`$data.${i}`, el)}
-                        key={"data" + i} align="center"
-                        ml={-5}
-                    >
-                        <ArrowRight size={14} />
-                        <Text size="xs" >
-                            {state.dataLabels?.[i] ?? `Column ${i + 1}`}
-                        </Text>
-                    </Group>
-                )}
+                {numberOfItems ?
+                    Array(numberOfItems).fill(0).map((_, i) =>
+                        <Group
+                            spacing="xs"
+                            ref={el => alignHandles(`$data.${i}`, el)}
+                            key={"data" + i} align="center"
+                        >
+                            <ArrowRight size={14} />
+                            <Text>
+                                {state.dataLabels?.[i] ?? `Column ${i + 1}`}
+                            </Text>
+                        </Group>
+                    )
+                    :
+                    <Text size="xs" color="dimmed" align="center">No columns specified</Text>}
             </Stack>
         )
     },

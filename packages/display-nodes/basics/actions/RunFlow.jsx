@@ -10,9 +10,9 @@ export default {
     description: "Runs a flow",
     icon: Run,
 
-    inputs: ["$ex", "payload"],
-    outputs: ["$"],
-    
+    inputs: ["payload"],
+    outputs: [],
+
     configuration: ({ state, setState, appId, flowId, firestore }) => {
 
         // grab schedulable flows that aren't this one
@@ -23,7 +23,7 @@ export default {
                     query(
                         collection(firestore, `apps/${appId}/flows`),
                         where(documentId(), "!=", flowId),
-                        where("trigger", "==", "trigger:manual")
+                        where("trigger", "==", "basic:DefaultTrigger")
                     )
                 )
                     .then(result => {

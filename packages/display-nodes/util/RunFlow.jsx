@@ -11,7 +11,6 @@ export default {
     signalTargets: ["signal"],
 
     configuration: ({ state, setState, appId, flowId, firestore }) => {
-
         // grab schedulable flows that aren't this one
         const [otherFlows, setOtherFlows] = useState([])
         useEffect(() => {
@@ -20,7 +19,7 @@ export default {
                     query(
                         collection(firestore, `apps/${appId}/flows`),
                         where(documentId(), "!=", flowId),
-                        where("trigger", "==", "trigger:manual")
+                        where("trigger", "==", "basic:DefaultTrigger")
                     )
                 )
                     .then(result => {

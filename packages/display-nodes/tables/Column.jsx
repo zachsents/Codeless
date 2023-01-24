@@ -9,6 +9,7 @@ export default {
     description: "Gets a specific column from a table.",
     icon: Table,
     color: "yellow",
+    badge: "Tables",
 
     inputs: [
         {
@@ -23,16 +24,21 @@ export default {
     },
 
 
-    renderNode: ({ state, containerComponent: ContainerComponent }) => {
-        return state.column ?
-            <Stack spacing={0}>
-                <Text align="center" size="xs" color="dimmed">Get column</Text>
-                <Text align="center" size="xs" weight={500}>"{state.column}"</Text>
+    renderNode: ({ state, alignHandles }) => {
+        const align = el => alignHandles(["$table", "column"], el)
+
+        return (
+            <Stack spacing={0} align="center" ref={align}>
+                {state.column ?
+                    <>
+                        <Text color="dimmed">Get column</Text>
+                        <Text weight={500}>"{state.column}"</Text>
+                    </>
+                    :
+                    <Text color="dimmed" size="xs">No column specified</Text>
+                }
             </Stack>
-            :
-            <ContainerComponent>
-                <Text size="xs">Get Column</Text>
-            </ContainerComponent>
+        )
     },
 
     configuration: ({ state, setState }) => {

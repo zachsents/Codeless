@@ -18,7 +18,7 @@ export default {
 
     renderNode({ alignHandles }) {
 
-        return <Stack align="center" w={100} spacing={4}>
+        return <Stack align="center" w={100} spacing={4} ref={el => alignHandles("$", el)}>
             <SkeletonWithHandle align="left" ref={el => alignHandles("_a", el)} />
             <Text size="xs">equals</Text>
             <SkeletonWithHandle align="left" ref={el => alignHandles("_b", el)} />

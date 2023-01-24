@@ -14,7 +14,7 @@ export default {
 
     renderNode({ alignHandles }) {
 
-        return <Stack align="center" w={100} spacing={0}>
+        return <Stack align="center" spacing={0}>
             <Text size="xs">If</Text>
             <SkeletonWithHandle align="left" ref={el => alignHandles("$condition", el)} />
             <Space h="xs" />

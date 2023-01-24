@@ -9,6 +9,7 @@ export default {
     description: "Turns a Google Sheet into a Table.",
     icon: SiGooglesheets,
     color: "green",
+    badge: "Google Sheets",
 
     inputs: ["$sheet"],
     outputs: ["table"],
@@ -26,9 +27,11 @@ export default {
 
         const rangeString = "" + startColumn + startRow + (endColumn ? ":" : "") + endColumn + endRow
 
-        return <ContainerComponent>
-            <Text size="xs" lh={1.2}>Table from {state.useEntireSheet ? "Sheet" : (rangeString || "Empty Range")}</Text>
-        </ContainerComponent>
+        return (
+            <Text color="dimmed" size="xs" align="center">
+                Create table from {state.useEntireSheet ? "entire sheet" : (rangeString || "Empty Range")}
+            </Text>
+        )
     },
 
     configuration: ({ state, setState }) => {

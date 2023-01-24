@@ -5,6 +5,7 @@ export default {
     name: "Sum",
     description: "Adds all items in a list.",
     icon: Sum,
+    badge: "Math",
     
     inputs: ["_in"],
     outputs: ["sum"],

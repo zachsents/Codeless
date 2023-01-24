@@ -5,6 +5,7 @@ export default {
     name: "Multiply",
     description: "Multiplies numbers.",
     icon: X,
+    badge: "Math",
     
     inputs: ["_a", "_b"],
     outputs: ["$"],

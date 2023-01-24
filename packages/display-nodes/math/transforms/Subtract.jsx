@@ -5,6 +5,7 @@ export default {
     name: "Subtract",
     description: "Subtracts numbers.",
     icon: Minus,
+    badge: "Math",
 
     inputs: ["_a", "_b"],
     outputs: ["$"],

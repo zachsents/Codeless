@@ -1,4 +1,4 @@
-import { NumberInput, Stack, Switch, Group } from "@mantine/core"
+import { NumberInput, Stack, Switch, Group, Text } from "@mantine/core"
 import { Dice3 } from "tabler-icons-react"
 
 export default {
@@ -6,7 +6,8 @@ export default {
     name: "Random Number",
     description: "Generates a random number.",
     icon: Dice3,
-    
+    badge: "Math",
+
     inputs: [],
     outputs: ["$"],
 
@@ -14,6 +15,14 @@ export default {
         min: 1,
         max: 7,
         integer: true,
+    },
+
+    renderNode: ({ state, alignHandles }) => {
+        return (
+            <Text size="xs" color="dimmed" align="center" ref={el => alignHandles("$", el)}>
+                {state.integer ? "Integer" : "Number"} between {state.min} and {state.max}
+            </Text>
+        )
     },
 
     configuration: ({ state, setState }) => {

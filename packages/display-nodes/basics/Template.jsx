@@ -10,6 +10,7 @@ export default {
     name: "Fill Template",
     description: "Inserts values into a template.",
     icon: Template,
+    badge: "Text",
 
     inputs: [
         "$template",
@@ -24,29 +25,28 @@ export default {
         dataLabels: [],
     },
 
-    renderNode: ({ state, containerComponent: ContainerComponent, alignHandles, listHandles }) => {
+    renderNode: ({ state, alignHandles, listHandles }) => {
+
+        const numberOfItems = listHandles.handles?.["$data"] ?? 0
+        alignHandles("$template", null)
 
         return (
             <Stack spacing="xs">
-                <ContainerComponent ref={el => alignHandles(["$template", "text"], el)}>
-                    <Text size="xs">Fill Template</Text>
-                </ContainerComponent>
-
-                <Space h={0} />
-
-                {Array(listHandles.handles?.["$data"] ?? 0).fill(0).map((_, i) =>
-                    <Group
-                        spacing="xs"
-                        ref={el => alignHandles(`$data.${i}`, el)}
-                        key={"data" + i} align="center"
-                        ml={-5}
-                    >
-                        <ArrowRight size={14} />
-                        <Text size="xs" >
-                            {state.dataLabels?.[i] ?? "<none>"}
-                        </Text>
-                    </Group>
-                )}
+                {numberOfItems ?
+                    Array(numberOfItems).fill(0).map((_, i) =>
+                        <Group
+                            spacing="xs"
+                            ref={el => alignHandles(`$data.${i}`, el)}
+                            key={"data" + i} align="center"
+                        >
+                            <ArrowRight size={14} />
+                            <Text>
+                                {state.dataLabels?.[i] ?? "<none>"}
+                            </Text>
+                        </Group>
+                    )
+                    :
+                    <Text size="xs" color="dimmed" align="center">No variables</Text>}
             </Stack>
         )
     },

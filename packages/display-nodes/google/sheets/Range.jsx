@@ -1,4 +1,4 @@
-import { TextInput, Text, Grid, NumberInput } from "@mantine/core"
+import { TextInput, Text, Grid, NumberInput, Center } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
 
 
@@ -8,21 +8,27 @@ export default {
     description: "Gets a range of values from a Google Sheet.",
     icon: SiGooglesheets,
     color: "green",
+    badge: "Google Sheets",
 
     inputs: ["$sheet"],
     outputs: ["data"],
 
     defaultState: { range: ["", "", "", ""] },
 
-    renderNode: ({ state, containerComponent: ContainerComponent }) => {
+    renderNode: ({ state }) => {
 
         const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
 
         const rangeString = "" + startColumn + startRow + (endColumn ? ":" : "") + endColumn + endRow
 
-        return <ContainerComponent>
-            <Text size="xs" lh={1.2}>{rangeString || "Empty Range"}</Text>
-        </ContainerComponent>
+        return (
+            <Center>
+                {rangeString ?
+                    <Text>{rangeString}</Text>
+                    :
+                    <Text size="xs" color="dimmed">Empty Range</Text>}
+            </Center>
+        )
     },
 
     configuration: ({ state, setState }) => {

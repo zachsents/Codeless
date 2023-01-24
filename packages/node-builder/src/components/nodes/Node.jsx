@@ -1,5 +1,5 @@
 import { forwardRef } from "react"
-import { Card, Group, Flex, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon } from "@mantine/core"
+import { Card, Group, Flex, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
 import { useHover, useInterval, useSetState } from "@mantine/hooks"
 import { Position, useKeyPress, useUpdateNodeInternals } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
@@ -58,8 +58,11 @@ export default function Node({ id, type, selected }) {
     // state for handle alignment
     // const [handleAlignments, setHandleAlignments] = useSetState()
     const handleAlignments = useRef({})
+    const headerRef = useRef()
     const handleAlignHandles = (handleNames, el) => {
-        const alignHandle = (handleName => handleAlignments.current[handleName] = el)
+        const alignHandle = handleName => {
+            handleAlignments.current[handleName] = el === null ? headerRef.current : el
+        }
 
         if (typeof handleNames === "string") {
             alignHandle(handleNames)
@@ -125,25 +128,49 @@ export default function Node({ id, type, selected }) {
             <Card
                 radius="md"
                 p="sm"
-                px="md"
                 shadow={selected ? "lg" : "sm"}
                 mih={stackHeight}
                 sx={cardStyle(id, { copyCursor: duplicating })}
                 onDoubleClick={() => setData({ expanded: true, focused: true })}
             >
-                <Flex>
-                    {nodeType.renderNode ?
+                <Card.Section withBorder p="xs">
+                    <Group position="apart" ref={headerRef}>
+                        <Group spacing="xs">
+                            {nodeType.color ?
+                                <ThemeIcon color={nodeType.color} size="sm" radius="xl">
+                                    <nodeType.icon size={10} />
+                                </ThemeIcon>
+                                :
+                                <nodeType.icon size={16} />
+                            }
+                            <Text
+                                maw={120}
+                                lh={1.2}
+                                size="xs"
+                                ff="DM Sans"
+                            >
+                                {nodeType.renderName?.(displayProps) ?? nodeType.name}
+                            </Text>
+                        </Group>
+
+                        {nodeType.badge &&
+                            <Badge size="xs" color={nodeType.color ?? "gray"}>
+                                {nodeType.badge}
+                            </Badge>}
+                    </Group>
+                </Card.Section>
+
+
+                {nodeType.renderNode &&
+                    <Box mt="sm">
                         <nodeType.renderNode
                             {...displayProps}
                             containerComponent={ContentWithIcon}
                             alignHandles={handleAlignHandles}
                         />
-                        :
-                        <ContentWithIcon>
-                            <Text maw={120} lh={1.2} size="xs" ff="DM Sans">{nodeType.renderName?.(displayProps) ?? nodeType.name}</Text>
-                        </ContentWithIcon>
-                    }
-                </Flex>
+                    </Box>
+                }
+
             </Card>
 
             <ErrorIcon show={!!errors.length} errors={errors} onClick={() => openSettings("errors")} />
@@ -205,7 +232,7 @@ function ErrorIcon({ show = false, errors, onClick }) {
 
 const cardStyle = (id, { copyCursor }) => theme => ({
     overflow: "visible",
-    display: "flex",
+    // display: "flex",
     backgroundColor: id == "trigger" && theme.colors.yellow[5],
     cursor: copyCursor ? "copy" : undefined,
 })
