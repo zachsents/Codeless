@@ -59,6 +59,7 @@ export default {
                         data={[
                             { label: "Equals", value: "equals" },
                             { label: "Contains", value: "contains" },
+                            { label: "Matches Regex", value: "matches Regex" },
                         ]}
                         value={state.compareMethod ?? ""}
                         onChange={val => setState({ compareMethod: val })}

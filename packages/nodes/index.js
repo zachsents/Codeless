@@ -44,6 +44,7 @@ import AskGPT3 from "./openai/AskGPT3.js"
 
 import TrimWhitespace from "./text/TrimWhitespace.js"
 import Join from "./text/Join.js"
+import Regex from "./text/Regex.js"
 
 
 export default createObject([
@@ -63,7 +64,7 @@ export default createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join,
+    TrimWhitespace, Join, Regex,
 
 
     // ===== Control =====
