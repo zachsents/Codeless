@@ -14,7 +14,7 @@ export function subscribe() {
 }
 
 export function watch(promise, catchError) {
-    if (promise) {
+    if (promise?.then) {
         totalPromises++
         promise
             .then(() => {
