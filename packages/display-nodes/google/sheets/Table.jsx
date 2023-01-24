@@ -5,7 +5,7 @@ import { Control, ControlLabel, ControlStack } from "../../components"
 
 export default {
     id: "googlesheets:Table",
-    name: "Table",
+    name: "Use Sheet as Table",
     description: "Turns a Google Sheet into a Table.",
     icon: SiGooglesheets,
     color: "green",
@@ -29,7 +29,7 @@ export default {
 
         return (
             <Text color="dimmed" size="xs" align="center">
-                Create table from {state.useEntireSheet ? "entire sheet" : (rangeString || "Empty Range")}
+                Use {state.useEntireSheet ? "entire sheet" : (rangeString || "<Empty Range>")} as table
             </Text>
         )
     },
