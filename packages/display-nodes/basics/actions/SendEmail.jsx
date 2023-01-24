@@ -6,6 +6,6 @@ export default {
     description: "Sends an email.",
     icon: Mail,
 
-    inputs: ["$to", "$subject", "$body"],
+    inputs: ["to", "subject", "body"],
     outputs: [],
 }

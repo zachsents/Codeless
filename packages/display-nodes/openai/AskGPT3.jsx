@@ -9,7 +9,7 @@ export default {
     color: "dark",
     // badge: "Open AI",
 
-    inputs: ["$prompt"],
+    inputs: ["prompt"],
     outputs: ["response"],
 
     defaultState: {
