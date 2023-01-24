@@ -21,7 +21,7 @@ export default {
                         model,
                         prompt: currentPrompt,
                         temperature: 0,
-                        max_tokens: 100,
+                        max_tokens: 300,
                         frequency_penalty: 0.0,
                         presence_penalty: 0.0,
                         // stop: ["\n"],
