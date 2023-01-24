@@ -90,7 +90,7 @@ const handleWrapperStyle = align => ({
     position: align ? "absolute" : "relative",
     ...(align && {
         top: align,
-    })
+    }),
 })
 
 const tooltipContainerStyle = position => ({

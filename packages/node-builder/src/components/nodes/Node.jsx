@@ -1,5 +1,5 @@
 import { forwardRef } from "react"
-import { Card, Group, Flex, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
+import { Card, Group, Flex, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge, Center } from "@mantine/core"
 import { useHover, useInterval, useSetState } from "@mantine/hooks"
 import { Position, useKeyPress, useUpdateNodeInternals } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
@@ -232,7 +232,9 @@ function ErrorIcon({ show = false, errors, onClick }) {
 
 const cardStyle = (id, { copyCursor }) => theme => ({
     overflow: "visible",
-    // display: "flex",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     backgroundColor: id == "trigger" && theme.colors.yellow[5],
     cursor: copyCursor ? "copy" : undefined,
 })
@@ -241,7 +243,7 @@ const stackStyle = position => ({
     position: "absolute",
     top: "50%",
     zIndex: 10,
-    height: "100%",
+    minHeight: "100%",
 
     ...(position == Position.Left && {
         left: 0,
