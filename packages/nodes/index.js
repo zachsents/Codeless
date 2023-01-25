@@ -38,6 +38,7 @@ import Table from "./google/sheets/Table.js"
 
 import RowWhere from "./tables/RowWhere.js"
 import Column from "./tables/Column.js"
+import SetColumn from "./tables/SetColumn.js"
 import AddRow from "./tables/AddRow.js"
 
 import AskGPT3 from "./openai/AskGPT3.js"
@@ -82,7 +83,7 @@ export default createObject([
 
 
     // ===== Tables =====
-    RowWhere, Column, AddRow,
+    RowWhere, Column, SetColumn, AddRow,
 
     // ===== Google Sheets =====
     Spreadsheet, Range, Table,

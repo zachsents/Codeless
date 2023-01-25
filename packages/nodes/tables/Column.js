@@ -1,16 +1,19 @@
+import { safeMap } from "../arrayUtilities.js"
 
 
 export default {
     id: "tables:Column",
     name: "Column",
 
-    inputs: ["$table"],
+    inputs: ["table"],
     outputs: ["column"],
 
-    onInputsReady({ $table }) {
+    onInputsReady({ table }) {
 
+        const columnName = this.state.column
+        
         this.publish({
-            column: $table.getColumn(this.state.column)
+            column: safeMap(tab => tab.getColumn(columnName), table)
         })
     },
 }

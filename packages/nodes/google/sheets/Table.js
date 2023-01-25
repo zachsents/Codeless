@@ -42,7 +42,10 @@ export default {
         const tableData = values.slice(this.state.startRow - 1)
 
         // return in Table form
-        const table = new GoogleSheetTable(sheetsApi, $sheet, range)
+        const table = new GoogleSheetTable(sheetsApi, $sheet, range, {
+            headerRow: this.state.headerRow,
+            startRow: this.state.startRow,
+        })
         table.loadFrom2DArray(tableData, { headers })
         this.publish({ table })
     },

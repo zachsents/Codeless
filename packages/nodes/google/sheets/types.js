@@ -1,18 +1,24 @@
-import { Table } from "../../types/Table.js"
+import { Row, Table } from "../../types/Table.js"
 
 export class GoogleSheetTable extends Table {
 
-    constructor(api, sheetReference, range) {
+    constructor(api, sheetReference, range, options = {}) {
         super()
         this.api = api
         this.sheetReference = sheetReference
         this.range = range
+
+        this.options = options
     }
 
-    async addRow(row) {
-        // convert row to array
-        const values = [this.headers.map(header => row[header])]
+    createRow(rowData) {
+        return new GoogleSheetsRow(this, rowData)
+    }
 
+    async addRow(rowData) {
+        const row = super.addRow(rowData)
+
+        // hit API
         await this.api.spreadsheets.values.append({
             spreadsheetId: this.sheetReference.spreadsheetId,
             range: this.range.toString(),
@@ -20,11 +26,43 @@ export class GoogleSheetTable extends Table {
             insertDataOption: "INSERT_ROWS",
             requestBody: {
                 majorDimension: "ROWS",
-                values,
+                values: row.toArray(),
             },
         })
+    }
+}
 
-        super.addRow(row)
+export class GoogleSheetsRow extends Row {
+    constructor(table, data) {
+        super(table, data)
+    }
+
+    get sheetRow() {
+        return this.table.range.startRow + this.table.options.startRow + this.index - 1
+    }
+
+    toArray() {
+        const data = this.data
+        return [this.table.headers.map(header => data[header])]
+    }
+
+    async setColumn(name, value) {        
+        super.setColumn(name, value)
+
+        // create range for just this row
+        const range = Object.assign(new Range(), this.table.range)
+        range.startRow = range.endRow = this.sheetRow
+
+        // hit API
+        await this.table.api.spreadsheets.values.update({
+            spreadsheetId: this.table.sheetReference.spreadsheetId,
+            range: range.toString(),
+            valueInputOption: "USER_ENTERED",
+            requestBody: {
+                majorDimension: "ROWS",
+                values: this.toArray(),
+            },
+        })
     }
 }
 

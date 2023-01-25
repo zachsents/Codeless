@@ -4,9 +4,9 @@ import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../comp
 
 
 export default {
-    id: "tables:Column",
-    name: "Get Column",
-    description: "Gets a specific column from a table.",
+    id: "tables:SetColumn",
+    name: "Set Column",
+    description: "Sets a column's value in a table or row.",
     icon: Table,
     color: "yellow",
     badge: "Tables",
@@ -15,9 +15,15 @@ export default {
         {
             name: "table",
             label: "Table or Row",
+        },
+        "value",
+    ],
+    outputs: [
+        {
+            name: "tableOut",
+            label: "Table or Row"
         }
     ],
-    outputs: ["column"],
 
     defaultState: {
         column: "",
@@ -25,13 +31,18 @@ export default {
 
 
     renderNode: ({ state, alignHandles }) => {
-        const align = el => alignHandles(["table", "column"], el)
+        
+        alignHandles(["table", "tableOut"], null)
 
         return (
-            <Stack spacing={0} align="center" ref={align}>
+            <Stack
+                spacing={0}
+                align="center"
+                ref={el => alignHandles("value", el)}
+            >
                 {state.column ?
                     <>
-                        <Text color="dimmed">Get column</Text>
+                        <Text color="dimmed">Set column</Text>
                         <Text weight={500}>"{state.column}"</Text>
                     </>
                     :
@@ -45,7 +56,7 @@ export default {
         return (
             <ControlStack>
                 <Control>
-                    <ControlLabel info="The column you want the data from.">
+                    <ControlLabel info="The column you want to set the data for.">
                         Column
                     </ControlLabel>
                     <TextInput

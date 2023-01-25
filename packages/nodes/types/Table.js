@@ -6,41 +6,62 @@ export class Table {
         this.rows = rows
     }
 
-    loadFrom2DArray(data, { headers } = {}) {
+    loadFrom2DArray(data, { headers = [] } = {}) {
+        const This = this
+        this.headers = headers
+
         this.rows = data.map(
-            row => Object.fromEntries(row.map(
+            row => This.createRow(Object.fromEntries(row.map(
                 (value, i) => {
-                    this.headers[i] = headers?.[i] ?? i
+                    this.headers[i] ??= i
                     return [this.headers[i], value]
                 }
-            ))
+            )))
         )
     }
 
     log() {
-        console.table(this.rows)
+        console.table(this.rows.map(row => row.data))
     }
 
-    getRow(index, includeHeaders = true) {
-        return includeHeaders ? new Row(this, this.rows[index]) : Object.values(this.rows[index])
+    createRow(rowData) {
+        return new Row(this, rowData)
+    }
+
+    getRow(index) {
+        return this.rows[index]
+    }
+
+    findRow(columnName, value, compareFunction = (a, b) => a == b) {
+        const row = this.rows.find(
+            row => compareFunction(row.data[columnName], value)
+        )
+        return row
+    }
+
+    findRows(columnName, value, compareFunction = (a, b) => a == b) {
+        const rows = this.rows.filter(
+            row => compareFunction(row.data[columnName], value)
+        )
+        return rows
+    }
+
+    addRow(rowData) {
+        const newRow = this.createRow(rowData)
+        this.rows.push(newRow)
+        return newRow
     }
 
     getColumn(name) {
-        return this.rows.map(row => row[name])
+        return this.rows.map(row => row.getColumn(name))
     }
 
-    findRow(columnName, value, compareFunction) {
-        const row = this.rows.find(row => compareFunction?.(row[columnName], value) ?? (row[columnName] == value))
-        return row && new Row(this, row)
-    }
-    
-    findRows(columnName, value, compareFunction) {
-        const rows = this.rows.filter(row => compareFunction?.(row[columnName], value) ?? (row[columnName] == value))
-        return new Table(this.headers, rows)
-    }
+    setColumn(name, value) {
+        const values = value.map ? value : [value]
 
-    addRow(row) {
-        this.rows.push(row)
+        this.rows.forEach((row, i) => {
+            row.setColumn(name, values[i] ?? values[0])
+        })
     }
 
     [Symbol.iterator]() {
@@ -48,9 +69,9 @@ export class Table {
         let index = -1
 
         return {
-            next: () => ({ 
-                value: new Row(This, this.rows[++index]), 
-                done: !(index in this.rows) 
+            next: () => ({
+                value: This.rows[++index],
+                done: !(index in This.rows)
             })
         }
     }
@@ -65,6 +86,14 @@ export class Row {
 
     getColumn(name) {
         return this.data[name]
+    }
+
+    setColumn(name, value) {
+        this.data[name] = value
+    }
+
+    get index() {
+        return this.table.rows.indexOf(this)
     }
 }
 

@@ -11,7 +11,7 @@ export default {
 
         switch(this.state.compareMethod) {
             case "equals":
-                var compareFunc = null
+                var compareFunc = (data, value) => data == value
                 break
             case "contains":
                 var compareFunc = (data, value) => data.includes?.(value)
