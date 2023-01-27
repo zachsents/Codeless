@@ -47,7 +47,7 @@ export class GoogleSheetsRow extends Row {
 
     async setColumn(name, value) {
         super.setColumn(name, value)
-        
+
         // create range for just this row
         const range = Object.assign(new Range(), this.table.range, {
             startRow: this.sheetRow,
@@ -81,27 +81,52 @@ export class Range {
     static FORMAT_RC = "rc"
     static FORMAT_A1 = "a1"
 
-    constructor(sheetName, startRow, startColumn, endRow, endColumn) {
-        this.sheetName = sheetName
-        this.singleCell = !endRow
-
-        this.startRow = startRow
-        this.startColumn = startColumn
-        this.endRow = endRow
-        this.endColumn = endColumn
-
-        this.format = typeof startColumn == "string" ? Range.FORMAT_A1 : Range.FORMAT_RC
+    static lettersToNumber(column) {
+        let result = 0
+        for (let i = 0; i < column.length; i++) {
+            result *= 26;
+            result += column.charCodeAt(i) - 64
+        }
+        return result
     }
 
-    toString() {
+    static numberToLetters(number) {
+        let result = ""
+        while (number > 0) {
+            let remainder = number % 26
+            remainder ||= 26
+
+            result = String.fromCharCode(remainder + 64) + result
+            number = (number - remainder) / 26
+        }
+        return result
+    }
+
+    constructor(sheetName, startRow, startColumn, endRow, endColumn) {
+        this.sheetName = sheetName
+
+        this.startRow = startRow
+        this.startColumn = typeof startColumn == "string" ? Range.lettersToNumber(startColumn) : startColumn
+        this.endRow = endRow
+        this.endColumn = typeof endColumn == "string" ? Range.lettersToNumber(endColumn) : endColumn
+    }
+
+    get singleCell() {
+        return this.endRow == null || this.endColumn == null
+    }
+
+    toString(format = Range.FORMAT_A1) {
         // create sheet prefix (e.g. 'Sheet1'!)
         const sheetPrefix = this.sheetName ? `'${this.sheetName}'!` : ""
 
-        // create range string in either A1 or RC notation (e.g. A1:C5, D6, R2C5:R25C6)
-        const rangeString = this.format == Range.FORMAT_A1 ?
-            `${this.startColumn}${this.startRow}` + (this.singleCell ? "" : `:${this.endColumn}${this.endRow}`) :
-            `R${this.startRow}C${this.startColumn}` + (this.singleCell ? "" : `:R${this.endRow}C${this.endColumn}`)
+        // create range string in A1 notation (e.g. A1:C5, D6)
+        if (format == Range.FORMAT_A1)
+            return sheetPrefix + `${Range.numberToLetters(this.startColumn)}${this.startRow}` +
+                (this.singleCell ? "" : `:${Range.numberToLetters(this.endColumn)}${this.endRow}`)
 
-        return sheetPrefix + rangeString
+        // create range string in RC notation (e.g. R2C5:R25C6)
+        if (format == Range.FORMAT_RC)
+            return sheetPrefix + `R${this.startRow}C${this.startColumn}` +
+                (this.singleCell ? "" : `:R${this.endRow}C${this.endColumn}`)
     }
 }
