@@ -19,6 +19,7 @@ import Equals from "./basics/transforms/Equals"
 import NotEqual from "./basics/transforms/NotEqual"
 import Not from "./basics/transforms/Not"
 import GreaterThan from "./basics/transforms/GreaterThan"
+import Count from "./basics/Count"
 
 import If from "./control/If"
 
@@ -60,7 +61,7 @@ export const Nodes = createObject([
     // Actions
     Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
-    And, Or, Equals, NotEqual, Not, GreaterThan,
+    And, Or, Equals, NotEqual, Not, GreaterThan, Count,
 
 
     // ===== Text =====
@@ -116,6 +117,7 @@ export const NodeCategories = {
             "basic:Equals",
             "basic:NotEqual",
             "basic:GreaterThan",
+            "basic:Count",
         ],
     },
     Text: {

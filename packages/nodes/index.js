@@ -19,6 +19,7 @@ import Equals from "./basics/transforms/Equals.js"
 import NotEqual from "./basics/transforms/NotEqual.js"
 import Not from "./basics/transforms/Not.js"
 import GreaterThan from "./basics/transforms/GreaterThan.js"
+import Count from "./basics/Count.js"
 
 import If from "./control/If.js"
 
@@ -61,7 +62,7 @@ export default createObject([
     // Actions
     Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
-    And, Or, Equals, NotEqual, Not, GreaterThan,
+    And, Or, Equals, NotEqual, Not, GreaterThan, Count,
 
 
     // ===== Text =====
