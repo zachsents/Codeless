@@ -11,9 +11,9 @@ export default {
         const last = clean(this.state.last)
 
         this.publish({
-            text: (this.state.useLast ? list.slice(0, -1) : list)
-                .join(join) +
-                (this.state.useLast ? last + list[list.length - 1] : "")
+            text: (list.length <= 1 || !this.state.useLast) ?
+                list.join(join) :
+                list.slice(0, -1).join(join) + last + list[list.length - 1]
         })
     },
 }

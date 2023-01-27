@@ -15,7 +15,7 @@ export default {
 
     defaultState: {
         join: ", ",
-        last: ", and ",
+        last: " and ",
         useLast: true,
     },
 
