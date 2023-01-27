@@ -75,9 +75,9 @@ function prepNode(node, nodeType, nodes, edges) {
                             input => (input.name ?? input) == inputName
                         )
 
-                        // if a single array is passed, flatten it
-                        if (nodeInputs[inputId].length == 1)
-                            nodeInputs[inputId] = nodeInputs[inputId].flat()
+                        // go from [ [...] ] to [...]
+                        if (nodeInputs[inputId].length == 1 && nodeInputs[inputId][0] instanceof Array)
+                            nodeInputs[inputId] = nodeInputs[inputId][0]
 
                         // option: pass a single value instead of an array
                         if (expectSingleValue(inputDef))

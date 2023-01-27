@@ -10,11 +10,9 @@ export default {
 
     async onInputsReady({ table, value }) {
 
-        const columnName = this.state.column
-
         await Promise.all(
             safeMap(
-                (tab, val) => tab.setColumn(columnName, val),
+                (row, val) => row.setColumn(this.state.column, val),
                 table, value
             )
         )

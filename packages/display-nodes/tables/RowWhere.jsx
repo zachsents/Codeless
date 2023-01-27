@@ -11,7 +11,7 @@ export default {
     color: "yellow",
     badge: "Tables",
 
-    inputs: ["$table", "$searchValue"],
+    inputs: ["table", "$searchValue"],
     outputs: ["row"],
 
     defaultState: {
@@ -24,7 +24,7 @@ export default {
 
     renderNode: ({ state, alignHandles }) => {
 
-        alignHandles("$table", null)
+        alignHandles("table", null)
 
         return state.searchColumn ?
             <Stack spacing={0} align="center">

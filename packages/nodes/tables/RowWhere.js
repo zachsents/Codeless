@@ -4,10 +4,10 @@ export default {
     id: "tables:RowWhere",
     name: "Row Where",
 
-    inputs: ["$table", "$searchValue"],
+    inputs: ["table", "$searchValue"],
     outputs: ["row"],
 
-    onInputsReady({ $table, $searchValue }) {
+    onInputsReady({ table, $searchValue }) {
 
         switch(this.state.compareMethod) {
             case "equals":
@@ -21,12 +21,13 @@ export default {
                 break
         }
 
+        // find either one row or multiple rows
+        const rows = table[this.state.multiple ? "filter" : "find"](
+            row => compareFunc(row.getColumn(this.state.searchColumn), $searchValue)
+        )
+
         this.publish({
-            row: $table[`findRow${this.state.multiple ? "s" : ""}`](
-                this.state.searchColumn,
-                $searchValue,
-                compareFunc
-            )
+            row: rows
         })
     },
 }

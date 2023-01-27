@@ -14,13 +14,13 @@ export default {
     badge: "Tables",
 
     inputs: [
-        "$table",
+        "table",
         {
             name: "$data",
             list: true,
         }
     ],
-    outputs: ["table"],
+    outputs: ["tableOut"],
 
     defaultState: {
         dataLabels: [],
@@ -30,7 +30,7 @@ export default {
     renderNode: ({ state, alignHandles, listHandles }) => {
 
         const numberOfItems = listHandles.handles?.["$data"] ?? 0
-        alignHandles(["$table", "table"], null)
+        alignHandles(["table", "tableOut"], null)
 
         return (
             <Stack spacing="xs">

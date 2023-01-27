@@ -16,7 +16,7 @@ export class GoogleSheetTable extends Table {
     }
 
     async addRow(rowData) {
-        const row = super.addRow(rowData)
+        const newRow = this.createRow(rowData)
 
         // hit API
         await this.api.spreadsheets.values.append({
@@ -26,9 +26,13 @@ export class GoogleSheetTable extends Table {
             insertDataOption: "INSERT_ROWS",
             requestBody: {
                 majorDimension: "ROWS",
-                values: row.toArray(),
+                values: [newRow.toArray()],
             },
         })
+
+        // once it successfully gets added to the Sheet, we can add it to our local copy
+        this.push(newRow)
+        return newRow
     }
 }
 
@@ -41,17 +45,14 @@ export class GoogleSheetsRow extends Row {
         return this.table.range.startRow + this.table.options.startRow + this.index - 1
     }
 
-    toArray() {
-        const data = this.data
-        return [this.table.headers.map(header => data[header])]
-    }
-
-    async setColumn(name, value) {        
+    async setColumn(name, value) {
         super.setColumn(name, value)
-
+        
         // create range for just this row
-        const range = Object.assign(new Range(), this.table.range)
-        range.startRow = range.endRow = this.sheetRow
+        const range = Object.assign(new Range(), this.table.range, {
+            startRow: this.sheetRow,
+            endRow: this.sheetRow,
+        })
 
         // hit API
         await this.table.api.spreadsheets.values.update({
@@ -60,7 +61,7 @@ export class GoogleSheetsRow extends Row {
             valueInputOption: "USER_ENTERED",
             requestBody: {
                 majorDimension: "ROWS",
-                values: this.toArray(),
+                values: [this.toArray()],
             },
         })
     }

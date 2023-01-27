@@ -10,10 +10,10 @@ export default {
 
     onInputsReady({ table }) {
 
-        const columnName = this.state.column
+        const res = safeMap(row => row.getColumn(this.state.column), table)
         
         this.publish({
-            column: safeMap(tab => tab.getColumn(columnName), table)
+            column: res
         })
     },
 }

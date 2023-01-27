@@ -1,79 +1,38 @@
 
-export class Table {
+export class Table extends Array {
 
-    constructor(headers = [], rows = []) {
+    constructor(headers = []) {
+        super()
         this.headers = headers
-        this.rows = rows
-    }
-
-    loadFrom2DArray(data, { headers = [] } = {}) {
-        const This = this
-        this.headers = headers
-
-        this.rows = data.map(
-            row => This.createRow(Object.fromEntries(row.map(
-                (value, i) => {
-                    this.headers[i] ??= i
-                    return [this.headers[i], value]
-                }
-            )))
-        )
-    }
-
-    log() {
-        console.table(this.rows.map(row => row.data))
     }
 
     createRow(rowData) {
         return new Row(this, rowData)
     }
 
-    getRow(index) {
-        return this.rows[index]
-    }
+    loadFrom2DArray(data, { headers = [] } = {}) {
+        this.headers = headers
 
-    findRow(columnName, value, compareFunction = (a, b) => a == b) {
-        const row = this.rows.find(
-            row => compareFunction(row.data[columnName], value)
-        )
-        return row
-    }
-
-    findRows(columnName, value, compareFunction = (a, b) => a == b) {
-        const rows = this.rows.filter(
-            row => compareFunction(row.data[columnName], value)
-        )
-        return rows
+        data.forEach(row => {
+            this.push(
+                this.createRow(Object.fromEntries(row.map(
+                    (value, i) => {
+                        this.headers[i] ||= i + 1
+                        return [this.headers[i], value]
+                    }
+                )))
+            )
+        })
     }
 
     addRow(rowData) {
         const newRow = this.createRow(rowData)
-        this.rows.push(newRow)
+        this.push(newRow)
         return newRow
     }
 
-    getColumn(name) {
-        return this.rows.map(row => row.getColumn(name))
-    }
-
-    setColumn(name, value) {
-        const values = value.map ? value : [value]
-
-        this.rows.forEach((row, i) => {
-            row.setColumn(name, values[i] ?? values[0])
-        })
-    }
-
-    [Symbol.iterator]() {
-        const This = this
-        let index = -1
-
-        return {
-            next: () => ({
-                value: This.rows[++index],
-                done: !(index in This.rows)
-            })
-        }
+    static get [Symbol.species]() {
+        return Array
     }
 }
 
@@ -84,6 +43,14 @@ export class Row {
         this.data = data
     }
 
+    get headers() {
+        return this._headers ?? this.table.headers
+    }
+
+    get index() {
+        return this.table.indexOf(this)
+    }
+
     getColumn(name) {
         return this.data[name]
     }
@@ -92,8 +59,8 @@ export class Row {
         this.data[name] = value
     }
 
-    get index() {
-        return this.table.rows.indexOf(this)
+    toArray() {
+        return this.headers.map(header => this.data[header])
     }
 }
 
