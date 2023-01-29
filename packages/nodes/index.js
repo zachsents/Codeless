@@ -33,6 +33,8 @@ import Sum from "./math/aggregations/Sum.js"
 import Product from "./math/aggregations/Product.js"
 import RandomNumber from "./math/RandomNumber.js"
 
+import EmailReceivedTrigger from "./google/gmail/triggers/EmailReceived.js"
+
 import Spreadsheet from "./google/sheets/Spreadsheet.js"
 import Range from "./google/sheets/Range.js"
 import Table from "./google/sheets/Table.js"
@@ -85,6 +87,11 @@ export default createObject([
 
     // ===== Tables =====
     RowWhere, Column, SetColumn, AddRow,
+
+
+    // ===== Gmail =====
+    EmailReceivedTrigger,
+
 
     // ===== Google Sheets =====
     Spreadsheet, Range, Table,

@@ -29,7 +29,7 @@ export function useFlowPublishing(flow, appId) {
         // write field on document
         !result?.error && await setPublishedOnDocument(appId, flow?.id, false)
         setLoading(false)
-        
+
         console.debug(!result?.error ? "Done." : "Failed.")
     }, [flow, appId, setLoading])
 

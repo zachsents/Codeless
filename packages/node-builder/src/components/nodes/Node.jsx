@@ -235,7 +235,7 @@ const cardStyle = (id, { copyCursor }) => theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    backgroundColor: id == "trigger" && theme.colors.yellow[5],
+    border: id == "trigger" ? `4px solid ${theme.colors.yellow[5]}` : "none",
     cursor: copyCursor ? "copy" : undefined,
 })
 

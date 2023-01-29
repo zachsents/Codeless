@@ -33,6 +33,8 @@ import Sum from "./math/aggregations/Sum"
 import Product from "./math/aggregations/Product"
 import RandomNumber from "./math/RandomNumber"
 
+import EmailReceivedTrigger from "./google/gmail/triggers/EmailReceived"
+
 import Spreadsheet from "./google/sheets/Spreadsheet"
 import Range from "./google/sheets/Range"
 import Table from "./google/sheets/Table"
@@ -46,7 +48,7 @@ import AskGPT3 from "./openai/AskGPT3"
 
 import TrimWhitespace from "./text/TrimWhitespace"
 
-import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin } from "tabler-icons-react"
+import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin, BrandGmail } from "tabler-icons-react"
 import { SiGooglesheets, SiOpenai } from "react-icons/si"
 import Join from "./text/Join"
 import Regex from "./text/Regex"
@@ -193,7 +195,7 @@ export const NodeCategories = {
 }
 
 export const Triggers = createObject([
-    DefaultTrigger, LinkTrigger,
+    DefaultTrigger, LinkTrigger, EmailReceivedTrigger,
 ])
 
 export const TriggerCategories = {
@@ -211,13 +213,13 @@ export const TriggerCategories = {
             "basic:LinkTrigger",
         ]
     },
-    // Gmail: {
-    //     title: "Gmail",
-    //     icon: BrandGmail,
-    //     members: [
-    //         "trigger:gmail:EmailReceived",
-    //     ],
-    // },
+    Gmail: {
+        title: "Gmail",
+        icon: BrandGmail,
+        members: [
+            "gmail:EmailReceivedTrigger",
+        ],
+    },
 }
 
 

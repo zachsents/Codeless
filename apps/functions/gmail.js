@@ -2,6 +2,7 @@ import functions from "firebase-functions"
 import { oauthClient, db } from "./init.js"
 import { google } from "googleapis"
 import { ExecutionMethod, run } from "./index.js"
+import { httpsCallable, url } from "firebase-admin-callable-functions"
 
 
 export const watchGmailInbox = functions.https.onCall(async ({ appId, flow, stop = false }) => {
@@ -20,7 +21,7 @@ export const watchGmailInbox = functions.https.onCall(async ({ appId, flow, stop
     }
 
     // start watching
-    const response = await gmail.users.watch({
+    const { data: { historyId } } = await gmail.users.watch({
         userId: "me",
         labelIds: ["INBOX"],
         labelFilterAction: "include",
@@ -32,30 +33,27 @@ export const watchGmailInbox = functions.https.onCall(async ({ appId, flow, stop
         userId: "me",
     })
 
-    // put trigger email address in flow document
+    // put email address & history ID in flow document
     await db.doc(`apps/${appId}/flows/${flow.id}`).update({
-        gmailTriggerEmailAddress: emailAddress
+        gmailTriggerEmailAddress: emailAddress,
+        gmailTriggerHistoryId: historyId,
     })
-
-    return response.data
 })
 
 
-export const runFromGmailEvent = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
+export const handleGmailMessage = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
+
+    if (!message.data) {
+        console.error("No message data. Quitting")
+        return
+    }
 
     // parse out pubsub message data
-    const { emailAddress, historyId } = message.data &&
-        JSON.parse(
-            Buffer.from(message.data, 'base64').toString()
-        )
+    const { emailAddress, historyId: newHistoryId } = JSON.parse(
+        Buffer.from(message.data, 'base64').toString()
+    )
 
-    // export const testGmail = functions.https.onRequest(async (req, res) => {
-
-    //     const emailAddress = "zachsents@gmail.com"
-    //     const historyId = "9202665"
-    //     res.send({})
-
-    console.debug(`Received Gmail Event: ${emailAddress}, ${historyId}`)
+    console.debug(`Received Gmail Event: ${emailAddress}, ${newHistoryId}`)
 
     // query for flows involving this email address
     const querySnapshot = await db.collectionGroup("flows")
@@ -63,98 +61,131 @@ export const runFromGmailEvent = functions.pubsub.topic("gmail").onPublish(async
         .where("deployed", "==", true)
         .get()
 
-    // group flows by app
-    const appMap = querySnapshot.docs.reduce((accum, doc) => {
+    // make a map of app -> flows
+    const appMap = querySnapshot.docs.reduce((map, doc) => {
         const appId = doc.ref.parent.parent.id
-        if (accum[appId])
-            accum[appId].push(doc.id)
-        else
-            accum[appId] = [doc.id]
-        return accum
+
+        map[appId] ??= { flows: [], newHistoryId, appId }
+        map[appId].flows.push(doc.id)
+        return map
     }, {})
 
-    // loop through each one
-    for (let appId of Object.keys(appMap)) {
-        console.debug("Current app:", appId)
+    // fan out by app -- calling runGmailFlowsForApp for each one
+    // doing this so we can asynchronously authorize a bunch of Gmail APIs
+    Object.keys(appMap).forEach(appId => {
+        httpsCallable(url("gmail-runGmailFlowsForApp", {
+            projectId: global.admin.app().options.projectId,
+            local: process.env.FUNCTIONS_EMULATOR,
+        }))(appMap[appId])
+    })
+})
 
-        // get Gmail API
-        const gmail = await getGmailApi(appId)
+
+export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows, newHistoryId }, context) => {
+    console.debug(`Running ${flows.length} flow(s) for app:`, appId)
+
+    // get Gmail API
+    const gmail = await getGmailApi(appId)
+
+    // loop through flows
+    const flowPromises = flows.map(async flowId => {
+
+        /**
+         * Fetch and update flow's history ID -- it's important this happens
+         * in a transaction so we don't get repeat messages.
+         */
+        const flowDocRef = db.doc(`apps/${appId}/flows/${flowId}`)
+        const startHistoryId = await db.runTransaction(async t => {
+            // grab history ID
+            const doc = await t.get(flowDocRef)
+            const historyId = doc.data().gmailTriggerHistoryId
+
+            // set new history ID
+            await t.update(flowDocRef, {
+                gmailTriggerHistoryId: Math.max(newHistoryId, historyId),
+            })
+
+            return historyId
+        })
+
+        console.log(`Getting history between ${startHistoryId} and ${newHistoryId}`)
 
         // fetch history
         const { data: { history } } = await gmail.users.history.list({
             userId: "me",
-            startHistoryId: historyId,
-            // historyTypes: ["messageAdded"],
+            startHistoryId,
+            historyTypes: ["messageAdded"],
         })
 
-        // map to a list of unique message IDs
-        const messageIds = [...new Set(
-            history?.map(item => item.messages?.map(message => message.id) ?? []).flat() ?? []
-        )]
+        // grab all message IDs for messages added
+        const messageIds = history
+            // this is also important for preventing repeats -- need to make sure we only look within history bounds
+            ?.filter(hist => hist.id < Math.max(startHistoryId, newHistoryId))
+            .map(
+                hist => hist.messagesAdded?.map(msgAdded => msgAdded.message.id) ?? []
+            ).flat() ?? []
 
-        console.debug(`Found ${messageIds.length} message IDs in history.`)
+        console.debug(`[${flowId}] Found ${messageIds.length} messages added in history.`)
 
-        // fetch messages
-        const messages = (await Promise.all(
-            messageIds.map(async id => {
-                try {
-                    const { data } = await gmail.users.messages.get({
-                        userId: "me",
-                        id,
-                    })
-
-                    console.debug(`Got message: ${id}`)
-
-                    // pull out the data we want
-                    return {
-                        id: data.id,
-                        from: getHeader("From", data.payload),
-                        replyTo: getHeader("Reply-To", data.payload),
-                        subject: getHeader("Subject", data.payload),
-                        date: getHeader("Date", data.payload),
-                        plainText: decodeEmailBody(
-                            data.payload.body.data ??
-                            data.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
-                        ),
-                        html: decodeEmailBody(
-                            data.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
-                        ),
-                        snippet: data.snippet,
-                    }
-                }
-                catch (err) {
-                    console.debug(`Encountered an error fetching message ${id}:`)
-                    console.debug(err.message + "\n")
-                }
-            })
-        ))
-            .filter(message => !!message)
-
-        console.debug(`Was able to retrieve ${messages.length} messages.`)
-
-        // run flows 
+        // loop through message IDs
         await Promise.all(
-            messages.map(message => appMap[appId].map(flowId => run({
-                appId,
-                flowId,
-                payload: message,
-                logOptions: {
-                    executionMethod: ExecutionMethod.PubSub,
+            messageIds.map(async (messageId, i) => {
+
+                // fetch message details
+                const { data: message } = await gmail.users.messages.get({
+                    userId: "me",
+                    id: messageId,
+                })
+
+                console.debug(`[${flowId}] (${i + 1} / ${messageIds.length}) Got details for message: ${messageId}`)
+
+                // check if we sent this email -- e.g. a reply to an email in our inbox
+                if (message.labelIds?.includes("SENT")) {
+                    console.debug(`[${flowId}] Message has 'SENT' label, ignoring`)
+                    return
                 }
-            })))
-                .flat()
+
+                // pull out the data we want to pass to the flow
+                const flowPayload = {
+                    id: message.id,
+                    from: getHeader("From", message.payload),
+                    replyTo: getHeader("Reply-To", message.payload),
+                    subject: getHeader("Subject", message.payload),
+                    date: getHeader("Date", message.payload),
+                    plainText: decodeEmailBody(
+                        message.payload.body.data ??
+                        message.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
+                    ),
+                    html: decodeEmailBody(
+                        message.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
+                    ),
+                    snippet: message.snippet,
+                }
+
+                // run flow
+                await run({
+                    appId,
+                    flowId,
+                    payload: flowPayload,
+                    logOptions: {
+                        executionMethod: ExecutionMethod.PubSub,
+                    }
+                })
+            })
         )
-    }
+    })
+
+    await Promise.all(flowPromises)
 })
 
 
 export const refreshWatch = functions.pubsub.schedule("0 11 * * *").onRun(async (context) => {
-// export const refreshWatch = functions.https.onRequest(async (req, res) => {
-//     res.send({})
+    // export const refreshWatch = functions.https.onRequest(async (req, res) => {
+    //     res.send({})
 
     // get flows with Gmail trigger
     const querySnapshot = await db.collectionGroup("flows")
-        .where("trigger", "==", "trigger:gmail:EmailReceived")
+        .where("trigger", "==", "gmail:EmailReceivedTrigger")
         // .where("deployed", "==", true)
         .get()
 

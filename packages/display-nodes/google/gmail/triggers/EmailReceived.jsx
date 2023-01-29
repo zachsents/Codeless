@@ -3,28 +3,30 @@ import { Mailbox } from "tabler-icons-react"
 
 
 export default {
-    name: "Email received",
+    id: "gmail:EmailReceivedTrigger",
+    name: "Email Received",
     description: "Triggered when an email is received in Gmail.",
     icon: Mailbox,
-    signalSources: [" "],
-    valueSources: [
-        "from",
-        "subject",
-        "date",
-        "plainText",
-        "html",
-    ],
+    color: "red",
+    badge: "Gmail",
 
-    onPublish: async ({ appId, flow, functions }) => {
-        return await callGmailWatchFunction(functions, {
+    inputs: [],
+    outputs: [
+        "fromName", "fromEmail", "subject", "date", "plainText", {
+            name: "html",
+            label: "HTML",
+        }],
+
+    onPublish: ({ appId, flow, functions }) => {
+        return callGmailWatchFunction(functions, {
             appId,
             flow,
             stop: false,
         })
     },
 
-    onUnpublish: async ({ appId, flow, functions }) => {
-        return await callGmailWatchFunction(functions, {
+    onUnpublish: ({ appId, flow, functions }) => {
+        return callGmailWatchFunction(functions, {
             appId,
             flow,
             stop: true,
@@ -37,7 +39,7 @@ async function callGmailWatchFunction(functions, payload) {
     try {
         const { data } = await httpsCallable(functions, "gmail-watchGmailInbox")(payload)
         return {
-            error: data.error,
+            error: data?.error,
         }
     }
     catch (err) {
