@@ -5,8 +5,8 @@ import { Control, ControlLabel, ControlStack } from "../components"
 
 export default {
     id: "text:Join",
-    name: "Join List to Text",
-    description: "Converts a list into text.",
+    name: "Custom Join List to Text",
+    description: "Converts a list into text using custom parameters.",
     icon: AlphabetLatin,
     badge: "Text",
 

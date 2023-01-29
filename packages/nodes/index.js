@@ -48,6 +48,7 @@ import AskGPT3 from "./openai/AskGPT3.js"
 
 import TrimWhitespace from "./text/TrimWhitespace.js"
 import Join from "./text/Join.js"
+import IntlJoin from "./text/IntlJoin.js"
 import Regex from "./text/Regex.js"
 
 
@@ -68,7 +69,7 @@ export default createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex,
+    TrimWhitespace, Join, Regex, IntlJoin,
 
 
     // ===== Control =====

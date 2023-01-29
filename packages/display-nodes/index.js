@@ -51,6 +51,7 @@ import TrimWhitespace from "./text/TrimWhitespace"
 import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin, BrandGmail } from "tabler-icons-react"
 import { SiGooglesheets, SiOpenai } from "react-icons/si"
 import Join from "./text/Join"
+import IntlJoin from "./text/IntlJoin"
 import Regex from "./text/Regex"
 
 
@@ -67,7 +68,7 @@ export const Nodes = createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex,
+    TrimWhitespace, Join, Regex, IntlJoin,
     
 
     // ===== Control =====
@@ -129,9 +130,10 @@ export const NodeCategories = {
             "basic:Text",
             "text:TrimWhitespace",
             "text:Join",
+            "text:IntlJoin",
             "text:Regex",
             "basic:Template",
-        ]
+        ],
     },
     Control: {
         title: "Control",
