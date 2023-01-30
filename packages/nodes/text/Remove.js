@@ -1,4 +1,4 @@
-import { safeMap } from "../arrayUtilities.js"
+import { expectRegexToBeGlobal, safeMap } from "../arrayUtilities.js"
 
 export default {
     id: "text:Remove",
@@ -8,9 +8,10 @@ export default {
     outputs: ["outputText"],
 
     async onInputsReady({ inputText, remove }) {
+
         this.publish({
             outputText: safeMap(
-                (input, remove) => input?.replaceAll(remove, ""),
+                (input, remove) => input?.replaceAll(expectRegexToBeGlobal(remove), ""),
                 inputText, remove
             )
         })

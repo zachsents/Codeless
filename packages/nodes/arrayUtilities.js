@@ -44,3 +44,9 @@ export function safeMap(operation, ...lists) {
         )
     )
 }
+
+export function expectRegexToBeGlobal(reg) {
+    return reg instanceof RegExp && !reg.global ?
+        new RegExp(reg.source, reg.flags + "g") :
+        reg
+}

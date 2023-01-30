@@ -1,4 +1,4 @@
-import { safeMap } from "../arrayUtilities.js"
+import { expectRegexToBeGlobal, safeMap } from "../arrayUtilities.js"
 
 export default {
     id: "text:Replace",
@@ -10,7 +10,10 @@ export default {
     async onInputsReady({ inputText, replace, replaceWith }) {
         this.publish({
             outputText: safeMap(
-                (input, replace, replaceWith) => input?.replaceAll(replace, replaceWith ?? ""),
+                (input, replace, replaceWith) => input?.replaceAll(
+                    expectRegexToBeGlobal(replace),
+                    replaceWith ?? ""
+                ),
                 inputText, replace, replaceWith
             )
         })
