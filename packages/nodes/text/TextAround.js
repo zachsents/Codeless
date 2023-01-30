@@ -24,7 +24,7 @@ export default {
                     const result = text.match(new RegExp(pattern, flags))
                     return grabSubstring(result, text, this.state.reach)
                 }
-                
+
                 const flags = "dg" + (target?.flags?.replaceAll(/[gd]/g, "") ?? "")
                 const result = text.matchAll(new RegExp(pattern, flags))
 
@@ -33,8 +33,10 @@ export default {
             text, target
         )
 
-        this.publish({ 
-            surroundingText: surroundingText.length == 1 ? surroundingText[0] : surroundingText
+        this.publish({
+            surroundingText: surroundingText.length == 1 && !this.state.onlyFirst ?
+                surroundingText[0] :
+                surroundingText
         })
     }
 }
