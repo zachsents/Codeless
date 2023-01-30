@@ -56,6 +56,7 @@ import IntlJoin from "./text/IntlJoin"
 import Regex from "./text/Regex"
 import TextContains from "./text/TextContains"
 import TextMatchesRegex from "./text/TextMatchesRegex"
+import Replace from "./text/Replace"
 
 
 export const Nodes = createObject([
@@ -71,7 +72,7 @@ export const Nodes = createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex,
+    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace,
     
 
     // ===== Control =====
@@ -138,6 +139,7 @@ export const NodeCategories = {
             "basic:Template",
             "text:TextContains",
             "text:TextMatchesRegex",
+            "text:Replace",
         ],
     },
     Control: {

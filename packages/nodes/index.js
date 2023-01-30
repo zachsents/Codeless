@@ -53,6 +53,7 @@ import IntlJoin from "./text/IntlJoin.js"
 import Regex from "./text/Regex.js"
 import TextContains from "./text/TextContains.js"
 import TextMatchesRegex from "./text/TextMatchesRegex.js"
+import Replace from "./text/Replace.js"
 
 
 export default createObject([
@@ -72,7 +73,7 @@ export default createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex,
+    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace,
 
 
     // ===== Control =====
