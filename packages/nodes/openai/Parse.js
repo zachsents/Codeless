@@ -36,9 +36,13 @@ export default {
 
                     // try to parse
                     try {
-                        return JSON.parse(resp.data.choices[0].text)
+                        // GPT responds with weird stuff sometimes -- we're gonna try to pick out JSON
+                        return JSON.parse(
+                            resp.data.choices[0].text.match(/{.+}/s)[0]
+                        )
                     }
                     catch (err) {
+                        console.debug(`Unable to parse GPT response as JSON:\n${resp.data.choices[0].text}`)
                         return {}
                     }
                 },
