@@ -11,6 +11,10 @@ export default {
     inputs: [],
     outputs: ["$"],
 
+    defaultState: {
+        $: "",
+    },
+
     renderNode: ({ state, setState, alignHandles }) => (
         <Box ref={el => alignHandles("$", el)}>
             <Textarea

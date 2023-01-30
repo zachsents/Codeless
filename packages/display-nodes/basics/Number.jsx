@@ -11,6 +11,10 @@ export default {
     inputs: [],
     outputs: ["$"],
 
+    defaultState: {
+        $: null
+    },
+
     renderNode: ({ state, setState, alignHandles }) => (
 
         <Box ref={el => alignHandles("$", el)}>
