@@ -54,6 +54,7 @@ import Regex from "./text/Regex.js"
 import TextContains from "./text/TextContains.js"
 import TextMatchesRegex from "./text/TextMatchesRegex.js"
 import Replace from "./text/Replace.js"
+import Remove from "./text/Remove.js"
 
 
 export default createObject([
@@ -73,7 +74,7 @@ export default createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace,
+    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace, Remove,
 
 
     // ===== Control =====
