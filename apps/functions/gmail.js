@@ -122,8 +122,12 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
             // this is also important for preventing repeats -- need to make sure we only look within history bounds
             ?.filter(hist => hist.id < Math.max(startHistoryId, newHistoryId))
             .map(
-                hist => hist.messagesAdded?.map(msgAdded => msgAdded.message.id) ?? []
-            ).flat() ?? []
+                hist => hist.messagesAdded
+                    // exclude drafts & sent mail
+                    ?.filter(({ message }) => !message.labelIds?.includes("DRAFT") && !message.labelIds?.includes("SENT"))
+                    .map(({ message }) => message.id) ?? []
+            )
+            .flat() ?? []
 
         console.debug(`[${flowId}] Found ${messageIds.length} messages added in history.`)
 
@@ -132,18 +136,17 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
             messageIds.map(async (messageId, i) => {
 
                 // fetch message details
-                const { data: message } = await gmail.users.messages.get({
-                    userId: "me",
-                    id: messageId,
-                })
+                try {
+                    var { data: message } = await gmail.users.messages.get({
+                        userId: "me",
+                        id: messageId,
+                    })
+                }
+                catch (err) {
+                    console.debug(`[${flowId}] (${i + 1} / ${messageIds.length}) Unable to get message: ${messageId}`)
+                }
 
                 console.debug(`[${flowId}] (${i + 1} / ${messageIds.length}) Got details for message: ${messageId}`)
-
-                // check if we sent this email -- e.g. a reply to an email in our inbox
-                if (message.labelIds?.includes("SENT")) {
-                    console.debug(`[${flowId}] Message has 'SENT' label, ignoring`)
-                    return
-                }
 
                 // pull out the data we want to pass to the flow
                 const flowPayload = {

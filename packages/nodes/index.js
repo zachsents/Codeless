@@ -45,11 +45,14 @@ import SetColumn from "./tables/SetColumn.js"
 import AddRow from "./tables/AddRow.js"
 
 import AskGPT3 from "./openai/AskGPT3.js"
+import Parse from "./openai/Parse.js"
 
 import TrimWhitespace from "./text/TrimWhitespace.js"
 import Join from "./text/Join.js"
 import IntlJoin from "./text/IntlJoin.js"
 import Regex from "./text/Regex.js"
+import TextContains from "./text/TextContains.js"
+import TextMatchesRegex from "./text/TextMatchesRegex.js"
 
 
 export default createObject([
@@ -69,7 +72,7 @@ export default createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex, IntlJoin,
+    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex,
 
 
     // ===== Control =====
@@ -99,7 +102,7 @@ export default createObject([
 
 
     // ===== OpenAI =====
-    AskGPT3,
+    AskGPT3, Parse,
 ])
 
 

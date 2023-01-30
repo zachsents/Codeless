@@ -1,6 +1,7 @@
-import { forwardRef } from "react"
-import { Box, Group, Skeleton, Stack, Text, Tooltip } from "@mantine/core"
-import { InfoCircle } from "tabler-icons-react"
+import { forwardRef, Fragment } from "react"
+import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip } from "@mantine/core"
+import { ArrowRight, InfoCircle, Plus, X } from "tabler-icons-react"
+import produce from "immer"
 
 
 export function ControlStack({ children, w = 180, ...props }) {
@@ -63,3 +64,112 @@ export const SkeletonWithHandle = forwardRef(({ align = "left", h = 15, ...props
         </Box>
     )
 })
+
+
+export function ListHandlesNodeContent({
+    handleName,
+    listHandles,
+    alignHandles,
+    state,
+    arrowSide = "in",
+    emptyMessage = "Nothing specified",
+    unnamedMessage = "<none>",
+    stateKey = "dataLabels",
+}) {
+
+    const numberOfItems = listHandles.handles?.[handleName] ?? 0
+
+    return numberOfItems ?
+        <Stack spacing="xs">
+            {Array(numberOfItems).fill(0).map((_, i) =>
+                <Group
+                    position={arrowSide == "out" ? "right" : "left"}
+                    spacing="xs"
+                    ref={el => alignHandles(`${handleName}.${i}`, el)}
+                    key={handleName + i}
+                >
+                    {arrowSide == "in" && <ArrowRight size={14} />}
+                    <Text>
+                        {state[stateKey]?.[i] ?? (typeof unnamedMessage === "function" ? unnamedMessage(i) : unnamedMessage)}
+                    </Text>
+                    {arrowSide == "out" && <ArrowRight size={14} />}
+                </Group>
+            )}
+        </Stack>
+        :
+        <Text size="xs" color="dimmed" align="center">{emptyMessage}</Text>
+}
+
+
+
+export function ListHandlesControl({
+    handleName,
+    listHandles,
+    state,
+    setState,
+    stateKey = "dataLabels",
+    controlTitle,
+    controlInfo,
+    addLabel,
+    inputPlaceholder,
+}) {
+
+    const handleRemove = i => {
+        listHandles.remove(handleName, i)
+        setState({
+            [stateKey]: produce(state[stateKey], draft => {
+                draft.splice(i, 1)
+            })
+        })
+    }
+
+    return (
+        <Control>
+            <ControlLabel info={controlInfo}>
+                {controlTitle}
+            </ControlLabel>
+
+            <Grid align="center">
+                {Array(listHandles.handles?.[handleName] ?? 0).fill(0).map((_, i) =>
+                    <Fragment key={handleName + i}>
+                        <Grid.Col span={10}>
+                            <TextInput
+                                placeholder={inputPlaceholder}
+                                radius="md"
+                                value={state[stateKey]?.[i] ?? ""}
+                                onChange={event => setState({
+                                    [stateKey]: produce(state[stateKey], draft => {
+                                        draft[i] = event.currentTarget.value
+                                    })
+                                })}
+                            />
+                        </Grid.Col>
+
+                        <Grid.Col span={2}>
+                            <ActionIcon
+                                radius="md"
+                                color="red"
+                                onClick={() => handleRemove(i)}
+                            >
+                                <X size={14} />
+                            </ActionIcon>
+                        </Grid.Col>
+                    </Fragment>
+                )}
+            </Grid>
+
+            <Button
+                mt="xs"
+                size="xs"
+                compact
+                fullWidth
+                radius="sm"
+                leftIcon={<Plus size={14} />}
+                variant="subtle"
+                onClick={() => listHandles.add(handleName)}
+            >
+                {addLabel}
+            </Button>
+        </Control>
+    )
+}

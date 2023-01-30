@@ -45,6 +45,7 @@ import SetColumn from "./tables/SetColumn"
 import AddRow from "./tables/AddRow"
 
 import AskGPT3 from "./openai/AskGPT3"
+import Parse from "./openai/Parse"
 
 import TrimWhitespace from "./text/TrimWhitespace"
 
@@ -53,6 +54,8 @@ import { SiGooglesheets, SiOpenai } from "react-icons/si"
 import Join from "./text/Join"
 import IntlJoin from "./text/IntlJoin"
 import Regex from "./text/Regex"
+import TextContains from "./text/TextContains"
+import TextMatchesRegex from "./text/TextMatchesRegex"
 
 
 export const Nodes = createObject([
@@ -68,7 +71,7 @@ export const Nodes = createObject([
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex, IntlJoin,
+    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex,
     
 
     // ===== Control =====
@@ -94,7 +97,7 @@ export const Nodes = createObject([
 
 
     // ===== OpenAI =====
-    AskGPT3,
+    AskGPT3, Parse,
 ])
 
 export const NodeCategories = {
@@ -133,6 +136,8 @@ export const NodeCategories = {
             "text:IntlJoin",
             "text:Regex",
             "basic:Template",
+            "text:TextContains",
+            "text:TextMatchesRegex",
         ],
     },
     Control: {
@@ -192,6 +197,7 @@ export const NodeCategories = {
         icon: SiOpenai,
         members: [
             "openai:AskGPT3",
+            "openai:Parse",
         ],
     },
 }

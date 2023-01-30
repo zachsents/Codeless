@@ -9,7 +9,7 @@ export default {
     description: "Asks GPT a prompt.",
     icon: SiOpenai,
     color: "dark",
-    // badge: "Open AI",
+    badge: "Open AI",
 
     inputs: ["prompt"],
     outputs: ["response"],
