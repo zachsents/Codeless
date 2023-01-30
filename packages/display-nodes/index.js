@@ -58,6 +58,7 @@ import TextContains from "./text/TextContains"
 import TextMatchesRegex from "./text/TextMatchesRegex"
 import Replace from "./text/Replace"
 import Remove from "./text/Remove"
+import TextAround from "./text/TextAround"
 
 
 export const Nodes = createObject([
@@ -74,6 +75,7 @@ export const Nodes = createObject([
 
     // ===== Text =====
     TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace, Remove,
+    TextAround,
     
 
     // ===== Control =====
@@ -142,6 +144,7 @@ export const NodeCategories = {
             "text:TextMatchesRegex",
             "text:Replace",
             "text:Remove",
+            "text:TextAround",
         ],
     },
     Control: {
