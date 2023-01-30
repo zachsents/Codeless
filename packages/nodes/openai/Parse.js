@@ -1,5 +1,5 @@
 import { safeMap } from "../arrayUtilities.js"
-import { authorizeOpenAIAPI } from "./auth.js"
+import openaiApi from "./api.js"
 
 
 export default {
@@ -10,8 +10,6 @@ export default {
     outputs: ["data"],
 
     async onInputsReady({ text }) {
-
-        const openaiApi = authorizeOpenAIAPI()
 
         // format data labels for prompt
         const formatter = new Intl.ListFormat("en")
@@ -25,20 +23,13 @@ export default {
             safeMap(
                 async text => {
                     // call API
-                    const resp = await openaiApi.createCompletion({
-                        model: "text-davinci-003",
-                        prompt: prompt(text),
-                        temperature: 0,
-                        max_tokens: 300,
-                        frequency_penalty: 0.0,
-                        presence_penalty: 0.0,
-                    })
+                    const resp = await openaiApi.createCompletion(prompt(text))
 
                     // try to parse
                     try {
                         // GPT responds with weird stuff sometimes -- we're gonna try to pick out JSON
                         return JSON.parse(
-                            resp.data.choices[0].text.match(/{.+}/s)[0]
+                            resp?.match(/{.+}/s)[0]
                         )
                     }
                     catch (err) {

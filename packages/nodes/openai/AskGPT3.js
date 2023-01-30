@@ -1,5 +1,5 @@
 import { safeMap } from "../arrayUtilities.js"
-import { authorizeOpenAIAPI } from "./auth.js"
+import openaiApi from "./api.js"
 
 
 export default {
@@ -11,23 +11,9 @@ export default {
 
     async onInputsReady({ prompt }) {
 
-        const openaiApi = authorizeOpenAIAPI()
-        const model = this.state.model
-
         const response = await Promise.all(
             safeMap(
-                async currentPrompt => {
-                    const resp = await openaiApi.createCompletion({
-                        model,
-                        prompt: currentPrompt,
-                        temperature: 0,
-                        max_tokens: 300,
-                        frequency_penalty: 0.0,
-                        presence_penalty: 0.0,
-                        // stop: ["\n"],
-                    })
-                    return resp.data.choices[0].text
-                },
+                prompt => openaiApi.createCompletion(prompt, { model: this.state.model }),
                 prompt
             )
         )
