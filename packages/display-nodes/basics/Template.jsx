@@ -27,7 +27,7 @@ export default {
 
     renderNode: ({ state, alignHandles, listHandles }) => {
 
-        alignHandles("template", null)
+        alignHandles("template")
 
         return <ListHandlesNodeContent
             handleName="data"

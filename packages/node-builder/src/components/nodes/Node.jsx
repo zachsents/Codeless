@@ -56,20 +56,21 @@ export default function Node({ id, type, selected }) {
     const errors = lastRun?.errors?.[id] ?? []
 
     // state for handle alignment
-    // const [handleAlignments, setHandleAlignments] = useSetState()
-    const handleAlignments = useRef({})
+    const [handleAlignments, setHandleAlignments] = useSetState({})
     const headerRef = useRef()
-    const handleAlignHandles = (handleNames, el) => {
-        const alignHandle = handleName => {
-            handleAlignments.current[handleName] = el === null ? headerRef.current : el
-        }
+    const handleAlignHandles = (handleNames, el = "header") => {
 
-        if (typeof handleNames === "string") {
-            alignHandle(handleNames)
+        if (el == null)
             return
+        const alignEl = el === "header" ? headerRef.current : el
+
+        const alignHandle = handleName => {
+            if (handleAlignments[handleName] != alignEl)
+                setHandleAlignments({ [handleName]: alignEl })
         }
 
-        handleNames.forEach(alignHandle)
+        (typeof handleNames === "string" ? [handleNames] : handleNames)
+            .forEach(alignHandle)
     }
 
     // helper function for rendering custom handles
@@ -87,7 +88,7 @@ export default function Node({ id, type, selected }) {
                     index={list && i}
                     label={label}
                     showLabel={hovered}
-                    align={handleAlignments.current[list ? `${name}.${i}` : name]}
+                    align={handleAlignments[list ? `${name}.${i}` : name]}
                     {...{ handleType, position }}
                     key={`${name}.${i}`}
                 />
@@ -182,14 +183,18 @@ export default function Node({ id, type, selected }) {
 const HandleStack = forwardRef(({ children, position, ...props }, ref) => {
     return (
         <Stack
-            justify="space-evenly"
-            align="center"
-            spacing={0}
+            justify="center"
             sx={stackStyle(position)}
-            ref={ref}
             {...props}
         >
-            {children}
+            <Stack
+                justify="space-evenly"
+                align="center"
+                spacing={0}
+                ref={ref}
+            >
+                {children}
+            </Stack>
         </Stack>
     )
 })

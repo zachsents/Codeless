@@ -24,7 +24,7 @@ export default {
 
     renderNode: ({ state, alignHandles }) => {
 
-        alignHandles("table", null)
+        alignHandles("table")
 
         return state.searchColumn ?
             <Stack spacing={0} align="center">

@@ -32,7 +32,7 @@ export default {
 
     renderNode: ({ state, alignHandles }) => {
         
-        alignHandles(["table", "tableOut"], null)
+        alignHandles(["table", "tableOut"])
 
         return (
             <Stack

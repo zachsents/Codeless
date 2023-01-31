@@ -29,7 +29,7 @@ export default {
 
     renderNode: ({ state, alignHandles, listHandles }) => {
 
-        alignHandles(["table", "tableOut"], null)
+        alignHandles(["table", "tableOut"])
 
         return <ListHandlesNodeContent
             handleName="$data"
