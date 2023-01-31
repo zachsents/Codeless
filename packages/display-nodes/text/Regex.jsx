@@ -43,7 +43,7 @@ export default {
     configuration: ({ state, setState }) => {
 
         return (
-            <ControlStack w={200}>
+            <ControlStack>
                 <Control>
                     <ControlLabel info="The Regex pattern.">
                         Pattern
@@ -80,7 +80,7 @@ export default {
 function FlagControl({ flag, state, setState }) {
 
     return (
-        <Group position="apart">
+        <Group position="apart" pr="lg">
             <Text>{flag}</Text>
             <Switch
                 checked={state.flags[flag]}

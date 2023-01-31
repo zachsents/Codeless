@@ -6,11 +6,12 @@ import { findEdgeFromConnection } from "../util"
 import Node from "./nodes/Node"
 
 import 'reactflow/dist/style.css'
-import "../nodeStyles.css"
+// import "../nodeStyles.css"
 import { useEffect } from "react"
 import ActiveDetails from "./ActiveDetails"
 import { useDebouncedValue } from "@mantine/hooks"
 import produce from "immer"
+import DataEdge from "./DataEdge"
 
 
 export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, flowId, appId, firestore, lastRun, openSettings }) {
@@ -61,6 +62,7 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
         <NodeBuilderContext.Provider value={{ nodeTypes, flowId, appId, firestore, lastRun, openSettings }}>
             <ReactFlow
                 nodeTypes={rfNodeTypes}
+                edgeTypes={edgeTypes}
                 defaultNodes={initialNodes}
                 defaultEdges={initialEdges}
                 onConnect={handleConnect}
@@ -113,9 +115,15 @@ export function useNodeBuilder() {
 }
 
 
+const edgeTypes = {
+    dataEdge: DataEdge,
+}
+
+
 const valueEdgeProps = theme => ({
     // type: "smoothstep",
     focusable: false,
+    type: "dataEdge",
     // pathOptions: {
     //     borderRadius: 30,
     // },

@@ -43,7 +43,7 @@ export default {
         }
 
         return (
-            <ControlStack w={280}>
+            <ControlStack>
                 <Control>
                     <Checkbox
                         label="Use Entire Sheet"
@@ -57,7 +57,7 @@ export default {
                         Table Range
                     </ControlLabel>
 
-                    <Grid gutter="xs" columns={13}>
+                    <Grid w="100%" gutter="xs" columns={13}>
                         <Grid.Col span={3}>
                             <TextInput
                                 radius="md"

@@ -1,9 +1,9 @@
-import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space } from '@mantine/core'
+import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion } from '@mantine/core'
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useOnSelectionChange, useReactFlow, useStore, useStoreApi } from 'reactflow'
-import { TbAdjustments, TbBooks, TbTrash } from "react-icons/tb"
+import { TbAdjustments, TbBooks, TbTrash, TbX } from "react-icons/tb"
 import { motion, AnimatePresence } from "framer-motion"
-import { removeEdges, removeNodes, useNodeData, useNodeDisplayProps, useNodeType } from '../util'
+import { removeEdges, removeNodes, useNodeData, useNodeDisplayProps, useNodeScreenPosition, useNodeSelection, useNodeType } from '../util'
 
 
 export default function ActiveDetails() {
@@ -24,96 +24,124 @@ export default function ActiveDetails() {
     return (
         <AnimatePresence>
             {!emptySelection &&
-                <Box sx={containerStyle}>
-                    {singleNodeSelected ?
-                        <SingleNodeToolbar node={selectedNodes[0]} key={selectedNodes[0].id} /> :
-                        <DefaultToolbar selectedEdges={selectedEdges} selectedNodes={selectedNodes} />}
-                </Box>}
+                (singleNodeSelected ?
+                    <NodeConfig node={selectedNodes[0]} key={selectedNodes[0].id} /> :
+                    <Box sx={underScreenContainerStyle}>
+                        <DefaultToolbar selectedEdges={selectedEdges} selectedNodes={selectedNodes} />
+                    </Box>)}
         </AnimatePresence>
     )
 }
 
-
-function SingleNodeToolbar({ node }) {
+function NodeConfig({ node }) {
 
     const rf = useReactFlow()
+    const theme = useMantineTheme()
 
-    const [data, setData] = useNodeData(node.id)
-    const displayProps = useNodeDisplayProps(node.id)
     const nodeType = useNodeType({ type: node.type })
-
     const hasConfiguration = !!nodeType.configuration
 
-    // animation stuff
-    const underScreen = { y: 40 }
-    const fullyExpanded = { y: "calc(-100% - 40px)" }
-    const partiallyExpanded = { y: -100 }
+    const displayProps = useNodeDisplayProps(node.id)
+    const [, , deselect] = useNodeSelection(node.id, { reactFlow: rf })
 
-    // use ref to get configuration height
-    const configRef = useRef()
-    const configHeight = configRef.current?.offsetHeight ?? 0
-
-    // focus on node when expanded
-    useEffect(() => {
-        data?.expanded && rf.fitBounds({
-            x: node.position.x,
-            y: node.position.y + (configHeight > 160 ? configHeight * 0.3 : 0),
-            width: node.width,
-            height: node.height,
-        }, {
-            duration: 200,
-        })
-    }, [data?.focused])
-
-    // expand and close node on scroll
-    const handleWheel = event => {
-        if(event.deltaY != 0)
-            setData({ expanded: event.deltaY > 0 })
-    }
+    const [accordionValue, setAccordionValue] = useState(hasConfiguration ? "options" : null)
 
     return (
         <motion.div
-            initial={underScreen}
-            animate={!hasConfiguration || data?.expanded ? fullyExpanded : partiallyExpanded}
-            exit={underScreen}
-            key={node.id}
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", duration: 0.5, spring: 0.5 }}
+            style={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                bottom: 0,
+                pointerEvents: "none",
+                zIndex: 100,
+                padding: theme.spacing.lg,
+            }}
         >
-            <Stack align="center" onWheel={handleWheel}>
-                <ToolbarCard>
-                    <Group spacing="xs">
-                        <nodeType.icon />
-                        <Text>{nodeType.name}</Text>
-                        {/* <Tooltip label="View Guides">
-                            <ActionIcon size="lg" radius="md"><TbBooks fontSize={22} /></ActionIcon>
-                        </Tooltip> */}
-                        <Tooltip label="Configure Node">
-                            <ActionIcon size="lg" radius="md" onClick={() => setData({ expanded: true })}>
-                                <TbAdjustments fontSize={22} />
-                            </ActionIcon>
-                        </Tooltip>
-                    </Group>
-                    <Divider orientation="vertical" />
-                    <Group spacing={5}>
-                        {node.deletable !== false &&
-                            <DeleteButton nodes={[node]} edges={[]} label="Node" />}
-                    </Group>
-                </ToolbarCard>
+            <Card
+                radius="md" shadow="sm" w={300} mah="100%"
+                sx={{ pointerEvents: "all", overflow: "visible" }}
+            >
+                <Stack spacing="xl">
+                    <Group spacing="xs" position="apart" noWrap align="start">
+                        <Stack spacing="xs">
+                            <Group noWrap>
+                                {nodeType.color ?
+                                    <ThemeIcon color={nodeType.color} size="lg" radius="xl">
+                                        <nodeType.icon size={18} />
+                                    </ThemeIcon>
+                                    :
+                                    <nodeType.icon size={22} />
+                                }
+                                <Title order={3}>{nodeType.name}</Title>
+                            </Group>
+                            <Group>
+                                {nodeType.badge &&
+                                    <Badge color={nodeType.color ?? "gray"}>
+                                        {nodeType.badge}
+                                    </Badge>}
+                                {node.id == "trigger" && <Badge>Trigger</Badge>}
+                            </Group>
+                        </Stack>
 
-                {hasConfiguration &&
-                    <Card
-                        shadow="md"
-                        radius="xl"
-                        px="xl"
-                        onClick={() => setData({ expanded: true })}
-                        miw="100%"
-                        sx={{ overflow: "visible" }}
+                        <ActionIcon radius="md" onClick={deselect}>
+                            <TbX />
+                        </ActionIcon>
+                    </Group>
+
+                    <Accordion
+                        variant="separated"
+                        value={accordionValue} onChange={setAccordionValue}
+                        styles={theme => ({
+                            item: { border: "none" },
+                            content: { padding: theme.spacing.xs },
+                            label: { overflow: "visible" },
+                        })}
                     >
-                        <Center ref={configRef}>
-                            {rf.getNode(node.id) &&
-                                <nodeType.configuration {...displayProps} />}
-                        </Center>
-                    </Card>}
-            </Stack>
+                        {hasConfiguration &&
+                            <Accordion.Item value="options">
+                                <Accordion.Control>
+                                    <AccordionTitle active={accordionValue == "options"}>Options</AccordionTitle>
+                                </Accordion.Control>
+                                <Accordion.Panel>
+                                    {rf.getNode(node.id) &&
+                                        <nodeType.configuration {...displayProps} />}
+                                </Accordion.Panel>
+                            </Accordion.Item>}
+                        <Accordion.Item value="testing">
+                            <Accordion.Control>
+                                <AccordionTitle active={accordionValue == "testing"}>Testing</AccordionTitle>
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                                <Text color="dimmed" size="sm" align="center">No test data to show.</Text>
+                            </Accordion.Panel>
+                        </Accordion.Item>
+                        <Accordion.Item value="errors">
+                            <Accordion.Control>
+                                <AccordionTitle active={accordionValue == "errors"}>Problems</AccordionTitle>
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                            </Accordion.Panel>
+                        </Accordion.Item>
+                    </Accordion>
+                </Stack>
+            </Card>
+        </motion.div>
+    )
+}
+
+
+function AccordionTitle({ children, active }) {
+    return (
+        <motion.div
+            initial={{ x: 0 }}
+            animate={{ x: active ? -10 : 0 }}
+        >
+            <Title order={5}>{children}</Title>
         </motion.div>
     )
 }
@@ -173,7 +201,7 @@ const cardStyle = theme => ({
     overflow: "visible",
 })
 
-const containerStyle = theme => ({
+const underScreenContainerStyle = theme => ({
     position: "absolute",
     // bottom: 40,
     top: "100%",

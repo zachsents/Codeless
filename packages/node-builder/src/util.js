@@ -1,35 +1,13 @@
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import shallow from "zustand/shallow"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
-import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useNodes, useReactFlow, useStore } from "reactflow"
+import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useNodes, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
 import { useNodeBuilder } from "./components/NodeBuilder"
+import { useInterval, useSetState } from "@mantine/hooks"
 
 
-export function findEdgeFromConnection(connection, edges) {
-    return edges.find(
-        edge => edge.source == connection.source && edge.sourceHandle == connection.sourceHandle &&
-            edge.target == connection.target && edge.targetHandle == connection.targetHandle
-    )
-}
 
-export function validateEdgeConnection(connection, edges) {
-    // ensure edge doesn't already exist
-    // const unique = edges.every(edge =>
-    //     edge.source != connection.source ||
-    //     edge.sourceHandle != connection.sourceHandle ||
-    //     edge.target != connection.target ||
-    //     edge.targetHandle != connection.targetHandle
-    // )
-
-    // only connect when handles have matching data types
-    const sourceHandle = new Handle(connection.sourceHandle)
-    const targetHandle = new Handle(connection.targetHandle)
-    const sameDataType = sourceHandle.dataType == targetHandle.dataType
-
-    // if all tests are passed, make the connection
-    return sameDataType && sourceHandle.dataType
-}
 
 
 
@@ -60,20 +38,17 @@ export function useNodeState(nodeId, defaultState) {
     // set default state
     useEffect(() => {
         if (defaultState) {
-            const changeObject = Object.keys(defaultState).reduce(
-                (accum, key) => state?.[key] === undefined ?
-                    { ...accum, [key]: defaultState[key] } :
-                    accum,
-                {}
-            )
-
-            setState(changeObject)
+            setState(produce(defaultState, draft => {
+                Object.keys(draft).forEach(key => {
+                    if (state?.[key] !== undefined)
+                        delete draft[key]
+                })
+            }))
         }
     }, [defaultState])
 
     return [state, setState]
 }
-
 
 export function useNodeData(nodeId) {
 
@@ -100,7 +75,6 @@ export function useNodeData(nodeId) {
 
     return [data, setData]
 }
-
 
 export function useNodeDisplayProps(id) {
 
@@ -191,7 +165,7 @@ export function useListHandles(nodeId) {
                 connectedEdges.forEach(ed => {
                     const edge = draft.find(edge => edge.id == ed.id)
 
-                    if(!edge)
+                    if (!edge)
                         return
 
                     const { name, index: currentIndex } = parseListHandle(edge.targetHandle)
@@ -231,6 +205,115 @@ export function useNodeType({ id, type }) {
         return nodeTypes[type]
 }
 
+export function useSmoothlyUpdateNode(id, deps = [], {
+    interval = 20
+} = {}) {
+    const updateNodeInterals = useUpdateNodeInternals()
+    const nodeUpdateInterval = useInterval(() => {
+        updateNodeInterals(id)
+    }, interval)
+    useEffect(() => {
+        nodeUpdateInterval.start()
+    }, deps)
+
+    return nodeUpdateInterval.stop
+}
+
+export function useNodeMinHeight() {
+    const stackRefs = useRef([])
+    const addRef = index => el => stackRefs.current[index] = (el?.offsetHeight ?? 0)
+    return [
+        Math.max(...stackRefs.current),
+        addRef
+    ]
+}
+
+export function useHandleAlignment() {
+    const [handleAlignments, setHandleAlignments] = useSetState({})
+    const headerRef = useRef()
+
+    const alignHandles = (handleNames, el = "header") => {
+
+        if (el == null)
+            return
+        const alignEl = el === "header" ? headerRef.current : el
+
+        const alignHandle = handleName => {
+            if (handleAlignments[handleName] != alignEl)
+                setHandleAlignments({ [handleName]: alignEl })
+        }
+
+        (typeof handleNames === "string" ? [handleNames] : handleNames)
+            .forEach(alignHandle)
+    }
+
+    return [handleAlignments, alignHandles, headerRef]
+}
+
+export function useDeleteNode(id, { reactFlow } = {}) {
+    const rf = reactFlow ?? useReactFlow()
+    return () => {
+        removeNode(id, rf)
+    }
+}
+
+export function useDeleteEdge(id, { reactFlow } = {}) {
+    const rf = reactFlow ?? useReactFlow()
+    return () => {
+        removeEdge(id, rf)
+    }
+}
+
+export function useNodeScreenPosition(id) {
+
+    useViewport()
+
+    // update when node position changes
+    useStore(s => Object.fromEntries(s.nodeInternals)[id]?.position)
+
+    const rfViewportBounds = document.querySelector(".react-flow__renderer")
+        .getBoundingClientRect()
+
+    const screen = document.querySelector(`.react-flow__node[data-id="${id}"]`)
+        .getBoundingClientRect()
+
+    screen.center = {
+        x: screen.x + screen.width / 2,
+        y: screen.y + screen.height / 2,
+    }
+
+    const viewport = Object.fromEntries(
+        ["bottom", "left", "right", "top", "x", "y"]
+            .map(key => [key, screen[key] - rfViewportBounds[key]])
+    )
+    viewport.center = {
+        x: screen.center.x - rfViewportBounds.x,
+        y: screen.center.y - rfViewportBounds.y,
+    }
+
+    return { screen, viewport }
+}
+
+export function useNodeSelection(id, { reactFlow }) {
+    const rf = reactFlow ?? useReactFlow()
+
+    const selected = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.selected)
+    
+    const setSelected = val => {
+        rf.setNodes(produce(draft => {
+            const node = draft.find(node => node.id == id)
+            if(node)
+                node.selected = val
+        }))
+    }
+
+    return [selected, () => setSelected(true), () => setSelected(false), setSelected]
+}
+
+
+/**
+ * Node & Edge Actions
+ */
 
 export function removeNode(nodeId, reactFlow) {
     removeNodes([nodeId], reactFlow)
@@ -273,6 +356,36 @@ export function createNode(nodeType, position) {
     }
 }
 
+export function findEdgeFromConnection(connection, edges) {
+    return edges.find(
+        edge => edge.source == connection.source && edge.sourceHandle == connection.sourceHandle &&
+            edge.target == connection.target && edge.targetHandle == connection.targetHandle
+    )
+}
+
+export function validateEdgeConnection(connection, edges) {
+    // ensure edge doesn't already exist
+    // const unique = edges.every(edge =>
+    //     edge.source != connection.source ||
+    //     edge.sourceHandle != connection.sourceHandle ||
+    //     edge.target != connection.target ||
+    //     edge.targetHandle != connection.targetHandle
+    // )
+
+    // only connect when handles have matching data types
+    const sourceHandle = new Handle(connection.sourceHandle)
+    const targetHandle = new Handle(connection.targetHandle)
+    const sameDataType = sourceHandle.dataType == targetHandle.dataType
+
+    // if all tests are passed, make the connection
+    return sameDataType && sourceHandle.dataType
+}
+
+
+/**
+ * Special Utilities
+ */
+
 export function parseListHandle(id) {
     const [, name, index] = id.match(/(.+?)(?:\.(\d+))?$/) ?? []
     return {
@@ -286,11 +399,5 @@ export class Handle {
         const split = handleId.match(/\<([\w\W]*?)\>(.*)/)
         this.dataType = split?.[1]
         this.name = split?.[2]
-    }
-}
-
-export class Getter {
-    constructor(get) {
-        this.get = get
     }
 }

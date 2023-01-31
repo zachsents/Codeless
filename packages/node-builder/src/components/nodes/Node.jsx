@@ -1,77 +1,41 @@
-import { forwardRef } from "react"
-import { Card, Group, Flex, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge, Center } from "@mantine/core"
-import { useHover, useInterval, useSetState } from "@mantine/hooks"
-import { Position, useKeyPress, useUpdateNodeInternals } from "reactflow"
+import { forwardRef, useEffect } from "react"
+import { Card, Group, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
+import { useHover } from "@mantine/hooks"
+import { Position, useKeyPress } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
-import { DataType } from "../../modules/dataTypes"
 import CustomHandle from "./CustomHandle"
-import { useNodeData, useNodeDisplayProps } from "../../util"
-import { TbExclamationMark } from "react-icons/tb"
+import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight } from "../../util"
+import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 import { AnimatePresence, motion } from "framer-motion"
-import { useEffect } from "react"
-import { useRef } from "react"
 
 
-export default function Node({ id, type, selected }) {
+export default function Node({ id, type, selected, ...props }) {
+
+    const theme = useMantineTheme()
+    const { nodeTypes, lastRun, openSettings } = useNodeBuilder()
 
     // get node type
-    const { nodeTypes, lastRun, openSettings } = useNodeBuilder()
     const nodeType = nodeTypes[type]
 
-    // node's interal state & data
-    const [data, setData] = useNodeData(id)
-
-    // props for display components
-    const displayProps = useNodeDisplayProps(id)
-
-    // when deselected, close node
-    useEffect(() => {
-        !selected && setData({ expanded: false, focused: false })
-    }, [selected])
+    const [data, setData] = useNodeData(id)                                     // node's internal data
+    const displayProps = useNodeDisplayProps(id)                                // props to pass to display override components
+    const [stackHeight, addHeightRef] = useNodeMinHeight()                      // making sure card is correct size
+    const [handleAlignments, alignHandles, headerRef] = useHandleAlignment()    // handle alignment
+    const handleDelete = useDeleteNode(id)
 
     // hover for showing handle labels
     const { hovered, ref: hoverRef } = useHover()
 
-    // smoothly updating edge positions
-    const updateNodeInterals = useUpdateNodeInternals()
-    const nodeUpdateInterval = useInterval(() => {
-        updateNodeInterals(id)
-    }, 20)
-    useEffect(() => {
-        nodeUpdateInterval.start()
-    }, [selected])
-
-    // calculating min height for stacks
-    const leftStackRef = useRef()
-    const rightStackRef = useRef()
-    const stackHeight = Math.max(
-        leftStackRef.current?.offsetHeight ?? 0,
-        rightStackRef.current?.offsetHeight ?? 0
-    )
+    // look at our errors from the last run
+    const errors = lastRun?.errors?.[id] ?? []
 
     // alt-dragging for duplication -- TO DO: implement this
     const duplicating = useKeyPress("Alt") && hovered
 
-    // look at our errors from the last run
-    const errors = lastRun?.errors?.[id] ?? []
-
-    // state for handle alignment
-    const [handleAlignments, setHandleAlignments] = useSetState({})
-    const headerRef = useRef()
-    const handleAlignHandles = (handleNames, el = "header") => {
-
-        if (el == null)
-            return
-        const alignEl = el === "header" ? headerRef.current : el
-
-        const alignHandle = handleName => {
-            if (handleAlignments[handleName] != alignEl)
-                setHandleAlignments({ [handleName]: alignEl })
-        }
-
-        (typeof handleNames === "string" ? [handleNames] : handleNames)
-            .forEach(alignHandle)
-    }
+    // side effect: when deselected, close node
+    useEffect(() => {
+        !selected && setData({ expanded: false, focused: false })
+    }, [selected])
 
     // helper function for rendering custom handles
     const renderCustomHandles = (handles, handleType, position) =>
@@ -95,45 +59,34 @@ export default function Node({ id, type, selected }) {
             )
         }).flat()
 
-    // custom component for rendering inner node content
-    const ContentWithIcon = forwardRef(({ children }, ref) => (
-        <Group spacing="xs" ref={ref}>
-            {nodeType.color ?
-                <ThemeIcon color={nodeType.color} size="sm" radius="xl">
-                    <nodeType.icon size={10} />
-                </ThemeIcon>
-                :
-                <nodeType.icon size={16} />
-            }
-            <Box>
-                {children}
-            </Box>
-        </Group>
-    ))
-
     return (
         <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: selected ? 1.1 : 1, }}
-            onAnimationComplete={nodeUpdateInterval.stop}
+            initial={{ outline: "none" }}
+            animate={{ outline: `${selected ? 3 : 0}px solid ${theme.colors.yellow[5]}` }}
+            transition={{ duration: 0.15 }}
+            style={{ borderRadius: theme.radius.md }}
             ref={hoverRef}
         >
-            <HandleStack position={Position.Left} ref={leftStackRef}>
+
+            {/* Handles */}
+            <HandleStack position={Position.Left} ref={addHeightRef(0)}>
                 {renderCustomHandles(nodeType.inputs, "target", Position.Left)}
             </HandleStack>
 
-            <HandleStack position={Position.Right} ref={rightStackRef}>
+            <HandleStack position={Position.Right} ref={addHeightRef(1)}>
                 {renderCustomHandles(nodeType.outputs, "source", Position.Right)}
             </HandleStack>
 
+            {/* Main Content */}
             <Card
                 radius="md"
                 p="sm"
-                shadow={selected ? "lg" : "sm"}
+                shadow="sm"
                 mih={stackHeight}
-                sx={cardStyle(id, { copyCursor: duplicating })}
-                onDoubleClick={() => setData({ expanded: true, focused: true })}
+                sx={cardStyle(id, { copyCursor: duplicating, selected })}
+            // onDoubleClick={() => setData({ expanded: true, focused: true })}
             >
+                {/* Header */}
                 <Card.Section withBorder p="xs">
                     <Group position="apart" ref={headerRef}>
                         <Group spacing="xs">
@@ -161,20 +114,39 @@ export default function Node({ id, type, selected }) {
                     </Group>
                 </Card.Section>
 
-
+                {/* Body */}
                 {nodeType.renderNode &&
                     <Box mt="sm">
                         <nodeType.renderNode
                             {...displayProps}
-                            containerComponent={ContentWithIcon}
-                            alignHandles={handleAlignHandles}
+                            alignHandles={alignHandles}
                         />
                     </Box>
                 }
-
             </Card>
 
             <ErrorIcon show={!!errors.length} errors={errors} onClick={() => openSettings("errors")} />
+
+            {/* Controls */}
+            <Box sx={controlsStyle}>
+                <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: selected ? 1 : 0 }}
+                    transition={{ type: "spring", duration: 0.5, bounce: 0.5 }}
+                >
+                    <Card shadow="sm" p={5} radius="md">
+                        <Group spacing="xs">
+                            <ActionIcon size="md" radius="sm">
+                                <TbCopy size={16} />
+                            </ActionIcon>
+                            {nodeType.deletable !== false &&
+                                <ActionIcon size="md" radius="sm" color="red" onClick={handleDelete}>
+                                    <TbTrash size={16} />
+                                </ActionIcon>}
+                        </Group>
+                    </Card>
+                </motion.div>
+            </Box>
         </motion.div>
     )
 }
@@ -235,13 +207,22 @@ function ErrorIcon({ show = false, errors, onClick }) {
 }
 
 
-const cardStyle = (id, { copyCursor }) => theme => ({
+const cardStyle = (id, { copyCursor, selected }) => theme => ({
     overflow: "visible",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    border: id == "trigger" ? `4px solid ${theme.colors.yellow[5]}` : "none",
+    // outline: selected ? `3px solid ${theme.colors.yellow[5]}` : "none",
+    // border: id == "trigger" ? `4px solid ${theme.colors.dark[2]}` : "none",
     cursor: copyCursor ? "copy" : undefined,
+})
+
+const controlsStyle = theme => ({
+    position: "absolute",
+    bottom: "100%",
+    left: "50%",
+    marginBottom: theme.spacing.xs,
+    transform: "translateX(-50%)",
 })
 
 const stackStyle = position => ({

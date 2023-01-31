@@ -4,9 +4,9 @@ import { ArrowRight, InfoCircle, Plus, X } from "tabler-icons-react"
 import produce from "immer"
 
 
-export function ControlStack({ children, w = 180, ...props }) {
+export function ControlStack({ children, ...props }) {
     return (
-        <Stack w={w} {...props}>
+        <Stack {...props}>
             {children}
         </Stack>
     )
@@ -17,7 +17,13 @@ export function ControlLabel({ children, bold = false, info }) {
         <Group position="apart">
             <Text size="sm" weight={bold ? 500 : 400}>{children}</Text>
             {info &&
-                <Tooltip label={info}>
+                <Tooltip
+                    label={typeof info == "string" ?
+                        <Text maw={300}>{info}</Text> : info}
+                    position="left"
+                    multiline
+                    maw={500}
+                >
                     <Text color="dimmed" size="sm" mb={-5}><InfoCircle size={15} /></Text>
                 </Tooltip>}
         </Group>
