@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion } from '@mantine/core'
+import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex } from '@mantine/core'
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useOnSelectionChange, useReactFlow, useStore, useStoreApi } from 'reactflow'
 import { TbAdjustments, TbBooks, TbTrash, TbX } from "react-icons/tb"
@@ -52,88 +52,98 @@ function NodeConfig({ node }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", duration: 0.5, spring: 0.5 }}
-            style={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                bottom: 0,
-                pointerEvents: "none",
-                zIndex: 100,
-                padding: theme.spacing.lg,
-            }}
+            style={configContainerStyle(theme)}
         >
-            <Card
-                radius="md" shadow="sm" w={300} mah="100%"
-                sx={{ pointerEvents: "all", overflow: "visible" }}
-            >
-                <Stack spacing="xl">
-                    <Group spacing="xs" position="apart" noWrap align="start">
-                        <Stack spacing="xs">
-                            <Group noWrap>
-                                {nodeType.color ?
-                                    <ThemeIcon color={nodeType.color} size="lg" radius="xl">
-                                        <nodeType.icon size={18} />
-                                    </ThemeIcon>
-                                    :
-                                    <nodeType.icon size={22} />
-                                }
-                                <Title order={3}>{nodeType.name}</Title>
-                            </Group>
-                            <Group>
-                                {nodeType.badge &&
-                                    <Badge color={nodeType.color ?? "gray"}>
-                                        {nodeType.badge}
-                                    </Badge>}
-                                {node.id == "trigger" && <Badge>Trigger</Badge>}
-                            </Group>
-                        </Stack>
-
-                        <ActionIcon radius="md" onClick={deselect}>
-                            <TbX />
-                        </ActionIcon>
-                    </Group>
-
-                    <Accordion
-                        variant="separated"
-                        value={accordionValue} onChange={setAccordionValue}
-                        styles={theme => ({
-                            item: { border: "none" },
-                            content: { padding: theme.spacing.xs },
-                            label: { overflow: "visible" },
-                        })}
+            <ScrollArea w="100%" h="100%">
+                <Flex p="lg" direction="column" align="flex-end" justify="flex-start">
+                    <Card
+                        radius="md" shadow="sm" w={300} mah="100%"
+                        sx={{ pointerEvents: "all", overflow: "visible" }}
                     >
-                        {hasConfiguration &&
-                            <Accordion.Item value="options">
-                                <Accordion.Control>
-                                    <AccordionTitle active={accordionValue == "options"}>Options</AccordionTitle>
-                                </Accordion.Control>
-                                <Accordion.Panel>
-                                    {rf.getNode(node.id) &&
-                                        <nodeType.configuration {...displayProps} />}
-                                </Accordion.Panel>
-                            </Accordion.Item>}
-                        <Accordion.Item value="testing">
-                            <Accordion.Control>
-                                <AccordionTitle active={accordionValue == "testing"}>Testing</AccordionTitle>
-                            </Accordion.Control>
-                            <Accordion.Panel>
-                                <Text color="dimmed" size="sm" align="center">No test data to show.</Text>
-                            </Accordion.Panel>
-                        </Accordion.Item>
-                        <Accordion.Item value="errors">
-                            <Accordion.Control>
-                                <AccordionTitle active={accordionValue == "errors"}>Problems</AccordionTitle>
-                            </Accordion.Control>
-                            <Accordion.Panel>
-                            </Accordion.Panel>
-                        </Accordion.Item>
-                    </Accordion>
-                </Stack>
-            </Card>
+                        <Stack spacing="xl">
+                            <Group spacing="xs" position="apart" noWrap align="start">
+                                <Stack spacing="xs">
+                                    <Group noWrap>
+                                        {nodeType.color ?
+                                            <ThemeIcon color={nodeType.color} size="lg" radius="xl">
+                                                <nodeType.icon size={18} />
+                                            </ThemeIcon>
+                                            :
+                                            <nodeType.icon size={22} />
+                                        }
+                                        <Title order={3}>{nodeType.name}</Title>
+                                    </Group>
+                                    <Group>
+                                        {nodeType.badge &&
+                                            <Badge color={nodeType.color ?? "gray"}>
+                                                {nodeType.badge}
+                                            </Badge>}
+                                        {node.id == "trigger" && <Badge>Trigger</Badge>}
+                                    </Group>
+                                </Stack>
+
+                                <ActionIcon radius="md" onClick={deselect}>
+                                    <TbX />
+                                </ActionIcon>
+                            </Group>
+
+                            <Accordion
+                                variant="separated"
+                                value={accordionValue} onChange={setAccordionValue}
+                                styles={theme => ({
+                                    item: { border: "none" },
+                                    content: { padding: theme.spacing.xs },
+                                    label: { overflow: "visible" },
+                                })}
+                            >
+                                {hasConfiguration &&
+                                    <Accordion.Item value="options">
+                                        <Accordion.Control>
+                                            <AccordionTitle active={accordionValue == "options"}>Options</AccordionTitle>
+                                        </Accordion.Control>
+                                        <Accordion.Panel>
+                                            {rf.getNode(node.id) &&
+                                                <nodeType.configuration {...displayProps} />}
+                                        </Accordion.Panel>
+                                    </Accordion.Item>}
+                                <Accordion.Item value="testing">
+                                    <Accordion.Control>
+                                        <AccordionTitle active={accordionValue == "testing"}>Testing</AccordionTitle>
+                                    </Accordion.Control>
+                                    <Accordion.Panel>
+                                        <Text color="dimmed" size="sm" align="center">No test data to show.</Text>
+                                    </Accordion.Panel>
+                                </Accordion.Item>
+                                <Accordion.Item value="errors">
+                                    <Accordion.Control>
+                                        <AccordionTitle active={accordionValue == "errors"}>Problems</AccordionTitle>
+                                    </Accordion.Control>
+                                    <Accordion.Panel>
+                                    </Accordion.Panel>
+                                </Accordion.Item>
+                            </Accordion>
+                        </Stack>
+                    </Card>
+                </Flex>
+            </ScrollArea>
         </motion.div>
     )
 }
 
+const configContainerStyle = theme => ({
+    position: "absolute",
+    right: 0,
+    top: 0,
+    bottom: 0,
+    pointerEvents: "none",
+    zIndex: 100,
+    // padding: theme.spacing.lg,
+    width: 500,
+    // display: "flex",
+    // flexDirection: "column",
+    // justifyContent: "flex-start",
+    // alignItems: "flex-end",
+})
 
 function AccordionTitle({ children, active }) {
     return (
