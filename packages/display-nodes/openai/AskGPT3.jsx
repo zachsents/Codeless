@@ -28,7 +28,11 @@ export default {
                     <Select
                         data={[
                             { label: "Davinci Text 3 (recommended)", value: "text-davinci-003" },
+                            { label: "Curie", value: "text-curie-001" },
+                            { label: "Babbage", value: "text-babbage-001" },
+                            { label: "Ada", value: "text-ada-001" },
                             { label: "Davinci Code 2", value: "code-davinci-002" },
+                            { label: "Cushman Code 2", value: "code-cushman-001" },
                         ]}
                         value={state.model}
                         onChange={model => setState({ model })}
