@@ -5,7 +5,8 @@ import DateTime from "./basics/DateTime"
 import Number from "./basics/Number"
 import Switch from "./basics/Switch"
 import Text from "./basics/Text"
-import Template from "./basics/Template"
+import SetVariable from "./basics/SetVariable"
+import UseVariable from "./basics/UseVariable"
 
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
@@ -47,10 +48,11 @@ import AddRow from "./tables/AddRow"
 import AskGPT3 from "./openai/AskGPT3"
 import Parse from "./openai/Parse"
 
-import TrimWhitespace from "./text/TrimWhitespace"
-
 import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin, BrandGmail } from "tabler-icons-react"
 import { SiGooglesheets, SiOpenai } from "react-icons/si"
+
+import TrimWhitespace from "./text/TrimWhitespace"
+import Template from "./basics/Template"
 import Join from "./text/Join"
 import IntlJoin from "./text/IntlJoin"
 import Regex from "./text/Regex"
@@ -66,7 +68,7 @@ export const Nodes = createObject([
     // ===== Basics =====
 
     // Data
-    Number, Text, Switch, DateTime, Template,
+    Number, Text, Switch, DateTime, Template, SetVariable, UseVariable,
     // Actions
     Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
@@ -113,7 +115,8 @@ export const NodeCategories = {
             "basic:Text",
             "basic:Switch",
             "basic:DateTime",
-            "basic:Template",
+            "basic:SetVariable",
+            "basic:UseVariable",
 
             "basic:Print", 
             "basic:RunFlow", 

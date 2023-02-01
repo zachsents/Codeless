@@ -5,7 +5,8 @@ import DateTime from "./basics/DateTime.js"
 import Number from "./basics/Number.js"
 import Switch from "./basics/Switch.js"
 import Text from "./basics/Text.js"
-import Template from "./basics/Template.js"
+import SetVariable from "./basics/SetVariable.js"
+import UseVariable from "./basics/UseVariable.js"
 
 import Print from "./basics/actions/Print.js"
 import RunFlow from "./basics/actions/RunFlow.js"
@@ -48,6 +49,7 @@ import AskGPT3 from "./openai/AskGPT3.js"
 import Parse from "./openai/Parse.js"
 
 import TrimWhitespace from "./text/TrimWhitespace.js"
+import Template from "./basics/Template.js"
 import Join from "./text/Join.js"
 import IntlJoin from "./text/IntlJoin.js"
 import Regex from "./text/Regex.js"
@@ -67,7 +69,7 @@ export default createObject([
     // ===== Basics =====
 
     // Data
-    Number, Text, Switch, DateTime, Template,
+    Number, Text, Switch, DateTime, Template, SetVariable, UseVariable,
     // Actions
     Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms

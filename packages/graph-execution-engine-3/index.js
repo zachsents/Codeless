@@ -9,6 +9,8 @@ export async function runFlow({
     nodeTypes,
     setupPayload,
 }) {
+    // clear variables
+    global.variables = {}
 
     // clear errors
     clearErrors()
