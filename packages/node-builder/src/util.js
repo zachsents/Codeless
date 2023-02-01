@@ -85,7 +85,7 @@ export function useNodeDisplayProps(id) {
     const nodeType = nodeTypes[node?.type]
 
     const [state, setState] = useNodeState(id, nodeType?.defaultState)
-    const [inputConnections, outputConnections] = useNodeConnections(id, { nodeType })
+    const [inputConnections, outputConnections] = useNodeConnections(id, { nodeType: nodeType ?? null })
     const listHandles = useListHandles(id)
 
     return {
@@ -105,7 +105,7 @@ export function useNodeDisplayProps(id) {
 export function useNodeConnections(id, { nodeType: providedNodeType } = {}) {
 
     const connectedEdges = useConnectedEdges(id)
-    const nodeType = providedNodeType ?? useNodeType({ id })
+    const nodeType = providedNodeType === undefined ? useNodeType({ id }) : providedNodeType
 
     return useMemo(() => {
         // find connected edges
