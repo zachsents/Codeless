@@ -171,18 +171,18 @@ const fillIns = {
                 </Control>            
             </ControlStack>
         )
-    }
+    },
     ` : "",
 
     onStart: onStart ?
         `onStart(setupPayload) {
         this.publish({ ${outputs.map(output => `${output}: null`).join(", ")} })
-    }` : "",
+    },` : "",
 
     onInputsReady: onInputsReady ?
         `onInputsReady({ ${inputs.join(", ")} }) {
         this.publish({ ${outputs.map(output => `${output}: null`).join(", ")} })
-    }` : "",
+    },` : "",
 }
 
 // make replacements
