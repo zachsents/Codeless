@@ -4,12 +4,12 @@ import { useHover } from "@mantine/hooks"
 import { Position, useKeyPress } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import CustomHandle from "./CustomHandle"
-import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight } from "../../util"
+import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../util"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 import { AnimatePresence, motion } from "framer-motion"
 
 
-export default function Node({ id, type, selected, ...props }) {
+export default function Node({ id, type, selected, xPos, yPos, ...props }) {
 
     const theme = useMantineTheme()
     const { nodeTypes, lastRun, openSettings } = useNodeBuilder()
@@ -62,7 +62,8 @@ export default function Node({ id, type, selected, ...props }) {
             })
         }).flat()
 
-    // Object.values(displayProps.connections).some(x => x) && console.log(displayProps.connections)
+    // handle snapping position 
+    useNodeSnapping(id, xPos, yPos)
 
     return (
         <motion.div

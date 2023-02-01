@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import shallow from "zustand/shallow"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
@@ -305,7 +305,7 @@ export function useNodeScreenPosition(id) {
     return { screen, viewport }
 }
 
-export function useNodeSelection(id, { reactFlow }) {
+export function useNodeSelection(id, { reactFlow } = {}) {
     const rf = reactFlow ?? useReactFlow()
 
     const selected = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.selected)
@@ -319,6 +319,86 @@ export function useNodeSelection(id, { reactFlow }) {
     }
 
     return [selected, () => setSelected(true), () => setSelected(false), setSelected]
+}
+
+export function useNodeSnapping(id, x, y, { 
+    reactFlow, 
+    distance = 10, 
+    horizontalLookaround = 500,
+    preventSnappingKey = "Shift" 
+} = {}) {
+    const rf = reactFlow ?? useReactFlow()
+
+    const [keyPressed, setKeyPressed] = useState(false)
+
+    useEffect(() => {
+        const keyDownHandler = event => event.key == preventSnappingKey && setKeyPressed(true)
+        const keyUpHandler = event => event.key == preventSnappingKey && setKeyPressed(false)
+        window.addEventListener("keydown", keyDownHandler)
+        window.addEventListener("keyup", keyUpHandler)
+        return () => {
+            window.removeEventListener("keydown", keyDownHandler)
+            window.removeEventListener("keyup", keyUpHandler)
+        }
+    }, [])
+
+    useLayoutEffect(() => {
+        if(keyPressed)
+            return
+
+        // get our center
+        const node = rf.getNode(id)
+        if(!node)
+            return
+        const center = {
+            x: x + node.width / 2,
+            y: y + node.height / 2,
+        }
+
+        // find nodes that are eligible to snap to 
+        const [closestLeft, closestRight] = rf.getNodes().reduce((closest, node) => {
+            // ignore our node
+            if (node.id == id)
+                return closest
+
+            // get center
+            const currentCenter = {
+                x: node.position.x + node.width / 2,
+                y: node.position.y + node.height / 2,
+            }
+
+            // ignore one's outside of vertical snapping distance
+            if (Math.abs(currentCenter.y - center.y) > distance)
+                return closest
+
+            // ignore ones outside of horizontal lookaround
+            if(Math.abs(currentCenter.x - center.x) > horizontalLookaround)
+                return closest
+
+            // compare nodes to the left
+            if (currentCenter.x < center.x && (!closest[0] || currentCenter.x > closest[0].x))
+                return [currentCenter, closest[1]]
+
+            // compare nodes to the right
+            if (currentCenter.x > center.x && (!closest[1] || currentCenter.x < closest[1].x))
+                return [closest[0], currentCenter]
+
+            return closest
+        }, [null, null])
+
+        // find closest
+        const closest = closestLeft && closestRight ?
+            (Math.abs(closestLeft.y - center.y) < Math.abs(closestRight.y - center.y) ? closestLeft : closestRight) :
+            (closestLeft ?? closestRight)
+
+        if (closest) {
+            rf.setNodes(produce(draft => {
+                const node = draft.find(node => node.id == id)
+                node.position.y = closest.y - node.height / 2
+            }))
+        }
+
+    }, [x, y])
 }
 
 
@@ -390,6 +470,10 @@ export function validateEdgeConnection(connection, edges) {
 
     // if all tests are passed, make the connection
     return sameDataType && sourceHandle.dataType
+}
+
+export function getNodeElement(id) {
+    return document.querySelector(`.react-flow__node[data-id="${id}"]`)
 }
 
 
