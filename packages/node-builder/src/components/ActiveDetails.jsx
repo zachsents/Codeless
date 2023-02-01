@@ -1,7 +1,7 @@
-import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex } from '@mantine/core'
+import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, List } from '@mantine/core'
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useOnSelectionChange, useReactFlow, useStore, useStoreApi } from 'reactflow'
-import { TbAdjustments, TbBooks, TbTrash, TbX } from "react-icons/tb"
+import { TbAdjustments, TbAlertTriangle, TbBooks, TbTrash, TbX } from "react-icons/tb"
 import { motion, AnimatePresence } from "framer-motion"
 import { removeEdges, removeNodes, useNodeData, useNodeDisplayProps, useNodeScreenPosition, useNodeSelection, useNodeType } from '../util'
 
@@ -46,6 +46,8 @@ function NodeConfig({ node }) {
 
     const [accordionValue, setAccordionValue] = useState(hasConfiguration ? "options" : null)
 
+    const numUnconnectedInputs = Object.values(displayProps.inputConnections).reduce((sum, cur) => sum + !cur, 0)
+
     return (
         <motion.div
             initial={{ x: "100%" }}
@@ -61,6 +63,8 @@ function NodeConfig({ node }) {
                         sx={{ pointerEvents: "all", overflow: "visible" }}
                     >
                         <Stack spacing="xl">
+
+                            {/* Header */}
                             <Group spacing="xs" position="apart" noWrap align="start">
                                 <Stack spacing="xs">
                                     <Group noWrap>
@@ -87,6 +91,18 @@ function NodeConfig({ node }) {
                                 </ActionIcon>
                             </Group>
 
+                            {numUnconnectedInputs > 0 &&
+                                <Group noWrap p="xs" sx={theme => ({ backgroundColor: theme.colors.gray[0], borderRadius: theme.radius.md })}>
+                                    <ThemeIcon color="yellow">
+                                        <TbAlertTriangle />
+                                    </ThemeIcon>
+                                    <Text size="sm" color="dimmed">
+                                        This node has {numUnconnectedInputs} input{numUnconnectedInputs == 1 ? " that isn't " : "s that aren't "}
+                                        connected.
+                                    </Text>
+                                </Group>}
+
+                            {/* Body */}
                             <Accordion
                                 variant="separated"
                                 value={accordionValue} onChange={setAccordionValue}
@@ -106,6 +122,7 @@ function NodeConfig({ node }) {
                                                 <nodeType.configuration {...displayProps} />}
                                         </Accordion.Panel>
                                     </Accordion.Item>}
+
                                 <Accordion.Item value="testing">
                                     <Accordion.Control>
                                         <AccordionTitle active={accordionValue == "testing"}>Testing</AccordionTitle>
@@ -114,6 +131,7 @@ function NodeConfig({ node }) {
                                         <Text color="dimmed" size="sm" align="center">No test data to show.</Text>
                                     </Accordion.Panel>
                                 </Accordion.Item>
+
                                 <Accordion.Item value="errors">
                                     <Accordion.Control>
                                         <AccordionTitle active={accordionValue == "errors"}>Problems</AccordionTitle>

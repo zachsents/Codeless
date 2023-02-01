@@ -4,15 +4,17 @@ import { motion } from "framer-motion"
 import { useRef } from "react"
 
 
-export default function CustomHandle({ name, handleType, index, position, label, align, showLabel = false }) {
+export default function CustomHandle({ id, name, handleType, position, label, connected, align, showLabel = false }) {
 
     const theme = useMantineTheme()
 
     const variants = {
         hovered: { scale: 2.5 },
+        unconnected: { scale: 1.3 },
     }
 
     const tooltipLabel = label ?? formatName(name)
+    const unconnectedTarget = !connected && handleType == "target"
 
     // calculate alignment
     const wrapperRef = useRef()
@@ -20,18 +22,33 @@ export default function CustomHandle({ name, handleType, index, position, label,
         align.offsetTop + align.offsetHeight / 2 - wrapperRef.current?.offsetHeight / 2
     )
 
+    // props to pass to RF Handle component
+    const handleProps = {
+        id,
+        type: handleType,
+        position,
+        style: {
+            ...handleStyle(theme),
+            backgroundColor: unconnectedTarget ?
+                theme.colors.red[8] :
+                theme.colors.gray[5],
+        },
+    }
+
     return (
-        <motion.div whileHover="hovered" style={handleWrapperStyle(alignHeight)} ref={wrapperRef}>
-            <motion.div variants={variants} transition={{ duration: 0.05 }}>
-                <Handle {...createHandleProps(theme, name, index, {
-                    type: handleType,
-                    position,
-                })} />
+        <motion.div
+            animate={unconnectedTarget ? "unconnected" : undefined}
+            whileHover="hovered"
+            style={handleWrapperStyle(alignHeight)}
+            ref={wrapperRef}
+        >
+            <motion.div variants={variants} transition={{ type: "spring", duration: 0.15 }}>
+                <Handle {...handleProps} />
             </motion.div>
             {showLabel && tooltipLabel &&
                 <Box sx={tooltipContainerStyle(position)}>
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} >
-                        <Text sx={tooltipStyle}>{tooltipLabel}</Text>
+                        <Text sx={tooltipStyle}>{tooltipLabel}{unconnectedTarget ? " (not connected)" : ""}</Text>
                     </motion.div>
                 </Box>}
         </motion.div>
@@ -49,7 +66,6 @@ const handleStyle = theme => ({
     height: handleSize,
     border: "none",
     // outline: "3px solid " + (theme.other.editorBackgroundColor ?? theme.colors.gray[2])
-    // outline: "3px solid " + theme.other.editorBackgroundColor,
 })
 
 const signalStyle = theme => ({
@@ -60,20 +76,9 @@ const valueStyle = theme => ({
     backgroundColor: theme.colors.gray[5],
 })
 
-function createHandleProps(theme, name, index, props) {
-    return {
-        id: index == null ? name : `${name}.${index}`,
-        ...props,
-        style: {
-            ...handleStyle(theme),
-            ...valueStyle(theme),
-        },
-    }
-}
-
 function formatName(name) {
 
-    if(name.startsWith("_"))
+    if (name.startsWith("_"))
         return ""
 
     return name

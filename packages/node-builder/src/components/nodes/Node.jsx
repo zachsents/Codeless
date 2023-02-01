@@ -46,18 +46,23 @@ export default function Node({ id, type, selected, ...props }) {
             // if it's a list handle, get current number of handles
             const numberOfHandles = list ? (data?.listHandles?.[name] ?? 0) : 1
 
-            return Array(numberOfHandles).fill(0).map((_, i) =>
-                <CustomHandle
+            return Array(numberOfHandles).fill(0).map((_, i) => {
+                const handleId = list ? `${name}.${i}` : name
+                return <CustomHandle
+                    id={handleId}
                     name={name}
-                    index={list && i}
                     label={label}
                     showLabel={hovered}
-                    align={handleAlignments[list ? `${name}.${i}` : name]}
-                    {...{ handleType, position }}
-                    key={`${name}.${i}`}
+                    connected={displayProps.connections[handleId]}
+                    align={handleAlignments[handleId]}
+                    position={position}
+                    handleType={handleType}
+                    key={handleId}
                 />
-            )
+            })
         }).flat()
+
+    // Object.values(displayProps.connections).some(x => x) && console.log(displayProps.connections)
 
     return (
         <motion.div
@@ -134,7 +139,7 @@ export default function Node({ id, type, selected, ...props }) {
                     animate={{ scale: selected ? 1 : 0 }}
                     transition={{ type: "spring", duration: 0.5, bounce: 0.5 }}
                 >
-                    <Card shadow="sm" p={5} radius="md">
+                    <Card shadow="sm" p={5} radius="md" sx={{pointerEvents: "all"}}>
                         <Group spacing="xs">
                             <ActionIcon size="md" radius="sm">
                                 <TbCopy size={16} />
@@ -223,6 +228,7 @@ const controlsStyle = theme => ({
     left: "50%",
     marginBottom: theme.spacing.xs,
     transform: "translateX(-50%)",
+    pointerEvents: "none",
 })
 
 const stackStyle = position => ({

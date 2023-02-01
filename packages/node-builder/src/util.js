@@ -85,36 +85,47 @@ export function useNodeDisplayProps(id) {
     const nodeType = nodeTypes[node?.type]
 
     const [state, setState] = useNodeState(id, nodeType?.defaultState)
-
-    const connectedEdges = useConnectedEdges(id)
-
-    // pass connection state to node
-    const connections = useMemo(() => {
-        if (!node)
-            return {}
-
-        // find connected edges
-        const connectedHandles = connectedEdges.map(edge => new Handle(edge.targetHandle).name)
-
-        // create a map of value target handles to connection state
-        const entries = nodeType.valueTargets?.map(vt => [vt, connectedHandles.includes(vt)])
-
-        return entries ? Object.fromEntries(entries) : {}
-    }, [connectedEdges])
-
-    // list handle stuff
+    const [inputConnections, outputConnections] = useNodeConnections(id, { nodeType })
     const listHandles = useListHandles(id)
 
     return {
         state,
         setState,
         defaultState: nodeType?.defaultState,
-        connections,
+        connections: { ...inputConnections, ...outputConnections },
+        inputConnections,
+        outputConnections,
         listHandles,
         flowId,
         appId,
         firestore,
     }
+}
+
+export function useNodeConnections(id, { nodeType: providedNodeType } = {}) {
+
+    const connectedEdges = useConnectedEdges(id)
+    const nodeType = providedNodeType ?? useNodeType({ id })
+
+    return useMemo(() => {
+        // find connected edges
+        const connectedInputHandles = connectedEdges.filter(edge => edge.target == id)
+            .map(edge => edge.targetHandle)
+        const connectedOutputHandles = connectedEdges.filter(edge => edge.source == id)
+            .map(edge => edge.sourceHandle)
+
+        // create a map of value target handles to connection state
+        const inputConns = Object.fromEntries(
+            (nodeType?.inputs ?? []).map(handle => [handle.name ?? handle, false])
+        )
+        const outputConns = Object.fromEntries(
+            (nodeType?.outputs ?? []).map(handle => [handle.name ?? handle, false])
+        )
+        connectedInputHandles.forEach(handle => inputConns[handle] = true)
+        connectedOutputHandles.forEach(handle => outputConns[handle] = true)
+
+        return [inputConns, outputConns]
+    }, [connectedEdges])
 }
 
 export function useListHandles(nodeId) {
@@ -298,11 +309,11 @@ export function useNodeSelection(id, { reactFlow }) {
     const rf = reactFlow ?? useReactFlow()
 
     const selected = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.selected)
-    
+
     const setSelected = val => {
         rf.setNodes(produce(draft => {
             const node = draft.find(node => node.id == id)
-            if(node)
+            if (node)
                 node.selected = val
         }))
     }
