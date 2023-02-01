@@ -321,6 +321,12 @@ export function useNodeSelection(id, { reactFlow } = {}) {
     return [selected, () => setSelected(true), () => setSelected(false), setSelected]
 }
 
+export function useNodeDragging(id) {
+    const dragging = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.dragging)
+
+    return [dragging]
+}
+
 export function useNodeSnapping(id, x, y, { 
     reactFlow, 
     distance = 10, 

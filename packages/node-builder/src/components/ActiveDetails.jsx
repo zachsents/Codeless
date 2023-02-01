@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { useOnSelectionChange, useReactFlow, useStore, useStoreApi } from 'reactflow'
 import { TbAdjustments, TbAlertTriangle, TbBooks, TbTrash, TbX } from "react-icons/tb"
 import { motion, AnimatePresence } from "framer-motion"
-import { removeEdges, removeNodes, useNodeData, useNodeDisplayProps, useNodeScreenPosition, useNodeSelection, useNodeType } from '../util'
+import { removeEdges, removeNodes, useNodeData, useNodeDisplayProps, useNodeDragging, useNodeScreenPosition, useNodeSelection, useNodeType } from '../util'
 
 
 export default function ActiveDetails() {
@@ -21,11 +21,16 @@ export default function ActiveDetails() {
     const emptySelection = selectedNodes.length == 0 && selectedEdges.length == 0
     const singleNodeSelected = selectedNodes.length == 1 && selectedEdges.length == 0
 
+    const [dragging] = useNodeDragging(selectedNodes[0]?.id)
+    
+
     return (
         <AnimatePresence>
             {!emptySelection &&
                 (singleNodeSelected ?
-                    <NodeConfig node={selectedNodes[0]} key={selectedNodes[0].id} /> :
+                    (dragging ?
+                        <></> :
+                        <NodeConfig node={selectedNodes[0]} key={selectedNodes[0].id} />) :
                     <Box sx={underScreenContainerStyle}>
                         <DefaultToolbar selectedEdges={selectedEdges} selectedNodes={selectedNodes} />
                     </Box>)}

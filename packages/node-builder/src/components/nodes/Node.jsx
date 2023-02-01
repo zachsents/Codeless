@@ -4,12 +4,12 @@ import { useHover } from "@mantine/hooks"
 import { Position, useKeyPress } from "reactflow"
 import { useNodeBuilder } from "../NodeBuilder"
 import CustomHandle from "./CustomHandle"
-import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../util"
+import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSelection, useNodeSnapping } from "../../util"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 import { AnimatePresence, motion } from "framer-motion"
 
 
-export default function Node({ id, type, selected, xPos, yPos, ...props }) {
+export default function Node({ id, type, selected, dragging, xPos, yPos, ...props }) {
 
     const theme = useMantineTheme()
     const { nodeTypes, lastRun, openSettings } = useNodeBuilder()
@@ -22,6 +22,7 @@ export default function Node({ id, type, selected, xPos, yPos, ...props }) {
     const [stackHeight, addHeightRef] = useNodeMinHeight()                      // making sure card is correct size
     const [handleAlignments, alignHandles, headerRef] = useHandleAlignment()    // handle alignment
     const handleDelete = useDeleteNode(id)
+    const [, , deselect] = useNodeSelection(id)
 
     // hover for showing handle labels
     const { hovered, ref: hoverRef } = useHover()
@@ -36,6 +37,11 @@ export default function Node({ id, type, selected, xPos, yPos, ...props }) {
     useEffect(() => {
         !selected && setData({ expanded: false, focused: false })
     }, [selected])
+
+    // side effect: when dragging, deselect
+    useEffect(() => {
+        dragging && deselect()
+    }, [dragging])
 
     // helper function for rendering custom handles
     const renderCustomHandles = (handles, handleType, position) =>
@@ -134,25 +140,29 @@ export default function Node({ id, type, selected, xPos, yPos, ...props }) {
             <ErrorIcon show={!!errors.length} errors={errors} onClick={() => openSettings("errors")} />
 
             {/* Controls */}
-            <Box sx={controlsStyle}>
-                <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: selected ? 1 : 0 }}
-                    transition={{ type: "spring", duration: 0.5, bounce: 0.5 }}
-                >
-                    <Card shadow="sm" p={5} radius="md" sx={{pointerEvents: "all"}}>
-                        <Group spacing="xs">
-                            <ActionIcon size="md" radius="sm">
-                                <TbCopy size={16} />
-                            </ActionIcon>
-                            {nodeType.deletable !== false &&
-                                <ActionIcon size="md" radius="sm" color="red" onClick={handleDelete}>
-                                    <TbTrash size={16} />
-                                </ActionIcon>}
-                        </Group>
-                    </Card>
-                </motion.div>
-            </Box>
+            <AnimatePresence>
+                {selected && !dragging &&
+                    <Box sx={controlsStyle}>
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            transition={{ type: "spring", duration: 0.5, bounce: 0.5, delay: 0.1 }}
+                        >
+                            <Card shadow="sm" p={5} radius="md" sx={{ pointerEvents: "all" }}>
+                                <Group spacing="xs">
+                                    <ActionIcon size="md" radius="sm">
+                                        <TbCopy size={16} />
+                                    </ActionIcon>
+                                    {nodeType.deletable !== false &&
+                                        <ActionIcon size="md" radius="sm" color="red" onClick={handleDelete}>
+                                            <TbTrash size={16} />
+                                        </ActionIcon>}
+                                </Group>
+                            </Card>
+                        </motion.div>
+                    </Box>}
+            </AnimatePresence>
         </motion.div>
     )
 }
