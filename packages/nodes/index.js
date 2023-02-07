@@ -58,6 +58,7 @@ import TextMatchesRegex from "./text/TextMatchesRegex.js"
 import Replace from "./text/Replace.js"
 import Remove from "./text/Remove.js"
 import TextAround from "./text/TextAround.js"
+import Length from "./text/Length.js"
 
 
 export default createObject([
@@ -78,7 +79,7 @@ export default createObject([
 
     // ===== Text =====
     TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace, Remove,
-    TextAround,
+    TextAround, Length,
 
 
     // ===== Control =====
