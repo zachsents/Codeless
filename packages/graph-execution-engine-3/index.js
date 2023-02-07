@@ -22,7 +22,7 @@ export async function runFlow({
     prepGraph(nodes, edges, nodeTypes)
 
     // start the graph execution
-    startGraph(nodes, setupPayload)
+    await startGraph(nodes, setupPayload)
 
     // wait for graph to finish executing
     await subscribe()

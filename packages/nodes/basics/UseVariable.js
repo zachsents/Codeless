@@ -6,7 +6,7 @@ export default {
     inputs: [],
     outputs: ["$"],
 
-    onStart() {
+    onBeforeStart() {
         global.variables ??= {}
         global.variables[this.state.name] ??= new VariablePort()
         global.variables[this.state.name].subscribe(value => {
@@ -14,7 +14,6 @@ export default {
         })
     },
 }
-
 
 class VariablePort {
 

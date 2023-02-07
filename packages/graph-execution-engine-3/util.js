@@ -2,7 +2,15 @@ import { reportError } from "./errors.js"
 import { watch } from "./promiseStream.js"
 
 
-export function startGraph(nodes, setupPayload) {
+export async function startGraph(nodes, setupPayload) {
+    // fire beforeStart event
+    await Promise.all(
+        nodes.map(node =>
+            node.type.onBeforeStart?.bind(node)()
+        )
+    )
+
+    // fire start event
     nodes.forEach(node => {
         watch(
             node.type.onStart?.bind(node)(setupPayload)
@@ -15,9 +23,6 @@ export function startGraph(nodes, setupPayload) {
 
 
 export function prepGraph(nodes, edges, nodeTypes) {
-    // edges.forEach(
-    //     edge => prepEdge(edge)
-    // )
     nodes.forEach(
         node => prepNode(node, nodeTypes[node.type], nodes, edges)
     )
@@ -123,11 +128,6 @@ function prepNode(node, nodeType, nodes, edges) {
             })
         })
     }
-}
-
-
-function prepEdge(edge) {
-    // TO DO: parse edge names for variable-length handle lists
 }
 
 
