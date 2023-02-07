@@ -17,7 +17,10 @@ export default {
         const formattedListQuotes = formatter.format(this.state.dataLabels.map(label => `"${label}"`))
 
         // construct prompt
-        const prompt = text => `Parse out the ${formattedList} from this text in JSON form with keys ${formattedListQuotes}:\n\n${text}`
+        const prompt = text => `Parse out the ${formattedList} from this text in JSON form with keys ${formattedListQuotes}:
+\`\`\`
+${text}
+\`\`\``
 
         const result = await Promise.all(
             safeMap(
