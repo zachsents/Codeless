@@ -21,10 +21,10 @@ export default {
                 <Space h="xs" />
                 <Text size="xs">Then</Text>
                 <Box ref={el => alignHandles("output", el)}>
-                    <SkeletonWithHandle align="both" ref={el => alignHandles("ifTrue", el)} />
+                    <SkeletonWithHandle align="left" ref={el => alignHandles("ifTrue", el)} />
                     <Space h="xs" />
                     <Text size="xs">Otherwise</Text>
-                    <SkeletonWithHandle align="both" ref={el => alignHandles("ifFalse", el)} />
+                    <SkeletonWithHandle align="left" ref={el => alignHandles("ifFalse", el)} />
                 </Box>
             </Stack>
         )
