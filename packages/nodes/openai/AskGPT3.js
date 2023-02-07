@@ -13,7 +13,10 @@ export default {
 
         const response = await Promise.all(
             safeMap(
-                prompt => openaiApi.createCompletion(prompt, { model: this.state.model }),
+                prompt => openaiApi.createCompletion(prompt, { 
+                    model: this.state.model,
+                    temperature: this.state.temperature,
+                }),
                 prompt
             )
         )
