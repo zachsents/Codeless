@@ -59,6 +59,7 @@ import Replace from "./text/Replace.js"
 import Remove from "./text/Remove.js"
 import TextAround from "./text/TextAround.js"
 import Length from "./text/Length.js"
+import Ternary from "./basics/Ternary.js"
 
 
 export default createObject([
@@ -83,7 +84,7 @@ export default createObject([
 
 
     // ===== Control =====
-    If,
+    If, Ternary,
 
 
     // ===== Math =====

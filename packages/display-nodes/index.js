@@ -62,6 +62,7 @@ import Replace from "./text/Replace"
 import Remove from "./text/Remove"
 import TextAround from "./text/TextAround"
 import Length from "./text/Length"
+import Ternary from "./basics/Ternary"
 
 
 export const Nodes = createObject([
@@ -82,7 +83,7 @@ export const Nodes = createObject([
     
 
     // ===== Control =====
-    If,
+    If, Ternary,
 
 
     // ===== Math =====
@@ -132,6 +133,7 @@ export const NodeCategories = {
             "basic:NotEqual",
             "basic:GreaterThan",
             "basic:Count",
+            "basic:Ternary",
         ],
     },
     Text: {
@@ -157,6 +159,7 @@ export const NodeCategories = {
         icon: ArrowsSplit,
         members: [
             "control:If",
+            "basic:Ternary",
         ],
     },
     Math: {
