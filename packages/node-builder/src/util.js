@@ -167,25 +167,29 @@ export function useListHandles(nodeId) {
 
             // fix edges
             rf.setEdges(produce(draft => {
+                // find related edges
+                const listEdges = draft.filter(edge =>
+                    (edge.target == nodeId && parseListHandle(edge.targetHandle).name == handle) ||
+                    (edge.source == nodeId && parseListHandle(edge.sourceHandle).name == handle)
+                )
+                const connectedEdge = listEdges.find(edge =>
+                    parseListHandle(edge.target == nodeId ? edge.targetHandle : edge.sourceHandle).index == index
+                )
+
                 // remove connected edge
-                const connectedEdge = connectedEdges.find(edge => parseListHandle(edge.targetHandle).index == index)
                 connectedEdge &&
-                    draft.splice(draft.findIndex(edge => edge.id == connectedEdge?.id), 1)
+                    draft.splice(draft.indexOf(connectedEdge), 1)
 
                 // shift up edges beneath the removed one
-                connectedEdges.forEach(ed => {
-                    const edge = draft.find(edge => edge.id == ed.id)
-
-                    if (!edge)
-                        return
-
-                    const { name, index: currentIndex } = parseListHandle(edge.targetHandle)
+                listEdges.forEach(edge => {
+                    const handleKey = edge.target == nodeId ? "targetHandle" : "sourceHandle"
+                    const { name, index: currentIndex } = parseListHandle(edge[handleKey])
 
                     if (currentIndex > index) {
-                        edge.targetHandle = `${name}.${currentIndex - 1}`
+                        edge[handleKey] = `${name}.${currentIndex - 1}`
                         edge.id = edge.id.replace(
-                            `${edge.target}${name}.${currentIndex}`,
-                            `${edge.target}${name}.${currentIndex - 1}`
+                            `${name}.${currentIndex}`,
+                            `${name}.${currentIndex - 1}`
                         )
                     }
                 })
@@ -327,11 +331,11 @@ export function useNodeDragging(id) {
     return [dragging]
 }
 
-export function useNodeSnapping(id, x, y, { 
-    reactFlow, 
-    distance = 10, 
+export function useNodeSnapping(id, x, y, {
+    reactFlow,
+    distance = 10,
     horizontalLookaround = 500,
-    preventSnappingKey = "Shift" 
+    preventSnappingKey = "Shift"
 } = {}) {
     const rf = reactFlow ?? useReactFlow()
 
@@ -349,12 +353,12 @@ export function useNodeSnapping(id, x, y, {
     }, [])
 
     useLayoutEffect(() => {
-        if(keyPressed)
+        if (keyPressed)
             return
 
         // get our center
         const node = rf.getNode(id)
-        if(!node)
+        if (!node)
             return
         const center = {
             x: x + node.width / 2,
@@ -378,7 +382,7 @@ export function useNodeSnapping(id, x, y, {
                 return closest
 
             // ignore ones outside of horizontal lookaround
-            if(Math.abs(currentCenter.x - center.x) > horizontalLookaround)
+            if (Math.abs(currentCenter.x - center.x) > horizontalLookaround)
                 return closest
 
             // compare nodes to the left
