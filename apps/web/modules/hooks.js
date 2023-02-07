@@ -84,7 +84,7 @@ export function useCreateApp() {
                     name,
                     lastEdited: serverTimestamp(),
                     created: serverTimestamp(),
-                    owner: user.uid,
+                    owners: [user.uid],
                     plan: doc(firestore, "plans", "free"),
                     color: "blue",
                 }),

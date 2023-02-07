@@ -19,7 +19,7 @@ export default function Dashboard() {
     const [apps] = useRealtimeState(
         user && query(
             collection(firestore, "apps"),
-            where("owner", "==", user.uid)
+            where("owners", "array-contains", user.uid)
         ),
         mapSnapshot
     )

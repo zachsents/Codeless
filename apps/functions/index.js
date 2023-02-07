@@ -212,7 +212,7 @@ async function validateCall(appId, flowId, { uid, matchTrigger } = {}) {
     if (uid) {
         const appDoc = await db.doc(`apps/${appId}`).get()
 
-        if (uid != appDoc.data().owner)
+        if (!appDoc.data().owners.includes(uid))
             return { error: "You are not authorized to run this flow." }
     }
 
