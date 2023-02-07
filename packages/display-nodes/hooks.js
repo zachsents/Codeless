@@ -1,5 +1,6 @@
-import { collection, documentId, getDocs, query, where } from "firebase/firestore"
 import { useEffect, useState } from "react"
+import { useDebouncedValue } from "@mantine/hooks"
+import { collection, documentId, getDocs, query, where } from "firebase/firestore"
 
 
 export function useOtherFlows({ appId, flowId, firestore, setFlow }) {
@@ -32,3 +33,22 @@ export function useOtherFlows({ appId, flowId, firestore, setFlow }) {
     return [otherFlows]
 }
 
+
+export function useDebouncedSynchronizedState(state, setState, debounce) {
+    const [instantState, setInstantState] = useState(state)
+
+    // Sync: instant state -> debounced
+    const [debouncedState] = useDebouncedValue(instantState, debounce)
+
+    // Sync: debounced -> upper state
+    useEffect(() => {
+        debouncedState != state && setState(debouncedState)
+    }, [debouncedState])
+
+    // Sync: upper state -> instant state
+    useEffect(() => {
+        state != instantState && setInstantState(state)
+    }, [state])
+
+    return [instantState, setInstantState]
+}
