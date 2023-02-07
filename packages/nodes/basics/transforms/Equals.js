@@ -9,6 +9,8 @@ export default {
     outputs: ["$"],
 
     onInputsReady({ _a, _b }) {
-        this.publish({ $: safeMap((a, b) => a == b, _a, _b) })
+        this.publish({ 
+            $: safeMap((a, b) => a == b, _a, _b) 
+        })
     },
 }

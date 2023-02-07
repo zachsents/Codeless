@@ -1,3 +1,4 @@
+import { safeMap } from "../../arrayUtilities.js"
 
 
 export default {
@@ -8,6 +9,6 @@ export default {
     outputs: ["_out"],
 
     onInputsReady({ _in }) {
-        this.publish({ _out: _in.map(input => !input) })
+        this.publish({ _out: safeMap(input => !input, _in) })
     },
 }
