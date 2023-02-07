@@ -30,6 +30,10 @@ export default {
             frequency_penalty,
             presence_penalty,
         })
+        
+        if(resp.status >= 400)
+            throw new Error(`OpenAI request failed: ${resp.statusText}`)
+
         return resp.data.choices[0].text
     }
 }

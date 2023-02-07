@@ -33,7 +33,7 @@ export default {
                         )
                     }
                     catch (err) {
-                        console.debug(`Unable to parse GPT response as JSON:\n${resp.data.choices[0].text}`)
+                        console.debug(`Unable to parse GPT response as JSON:\n${resp}`)
                         return {}
                     }
                 },
