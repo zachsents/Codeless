@@ -112,7 +112,7 @@ export class Range {
     }
 
     get singleCell() {
-        return !this.endRow || !this.endColumn
+        return !this.endRow && !this.endColumn
     }
 
     toString(format = Range.FORMAT_A1) {
