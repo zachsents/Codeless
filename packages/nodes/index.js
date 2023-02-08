@@ -60,6 +60,7 @@ import Remove from "./text/Remove.js"
 import TextAround from "./text/TextAround.js"
 import Length from "./text/Length.js"
 import Ternary from "./basics/Ternary.js"
+import Extract from "./text/Extract.js"
 
 
 export default createObject([
@@ -80,7 +81,7 @@ export default createObject([
 
     // ===== Text =====
     TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace, Remove,
-    TextAround, Length,
+    TextAround, Length, Extract,
 
 
     // ===== Control =====

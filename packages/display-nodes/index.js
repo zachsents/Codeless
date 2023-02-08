@@ -63,6 +63,7 @@ import Remove from "./text/Remove"
 import TextAround from "./text/TextAround"
 import Length from "./text/Length"
 import Ternary from "./basics/Ternary"
+import Extract from "./text/Extract"
 
 
 export const Nodes = createObject([
@@ -79,7 +80,7 @@ export const Nodes = createObject([
 
     // ===== Text =====
     TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace, Remove,
-    TextAround, Length,
+    TextAround, Length, Extract,
     
 
     // ===== Control =====
@@ -152,6 +153,7 @@ export const NodeCategories = {
             "text:Remove",
             "text:TextAround",
             "text:Length",
+            "text:Extract",
         ],
     },
     Control: {
