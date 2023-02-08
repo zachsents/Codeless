@@ -11,3 +11,13 @@ export default {
     inputs: ["text", "pattern"],
     outputs: ["extracted"],
 }
+
+/** 
+ * TO DO:
+ * 
+ * Add a list handle for output based on how many capture groups
+ * are in the Regex. This is useful for counting them: /(?<!\\)\((?!\?)/g
+ * 
+ * In order to achieve this, we'll need to give access to the connected
+ * nodes states.
+ */
