@@ -1,9 +1,10 @@
-import { ActionIcon, Box, Card, Divider, Group, Text, Stack, Tooltip, Center, Space, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, List } from '@mantine/core'
-import { useState, useCallback, useEffect, useRef } from 'react'
-import { useOnSelectionChange, useReactFlow, useStore, useStoreApi } from 'reactflow'
-import { TbAdjustments, TbAlertTriangle, TbBooks, TbTrash, TbX } from "react-icons/tb"
+import { useState, useCallback } from 'react'
+import { useOnSelectionChange, useReactFlow } from 'reactflow'
+import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex } from '@mantine/core'
 import { motion, AnimatePresence } from "framer-motion"
-import { removeEdges, removeNodes, useNodeData, useNodeDisplayProps, useNodeDragging, useNodeScreenPosition, useNodeSelection, useNodeType } from '../util'
+import {  TbAlertTriangle, TbTrash, TbX } from "react-icons/tb"
+
+import { removeEdges, removeNodes, useNodeDisplayProps, useNodeDragging, useNodeSelection, useNodeType } from '../../modules/graph-util'
 
 
 export default function ActiveDetails() {

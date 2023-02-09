@@ -1,21 +1,21 @@
-import { forwardRef, useEffect } from "react"
-import { Card, Group, Stack, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
-import { useHover } from "@mantine/hooks"
+import { useEffect } from "react"
 import { Position, useKeyPress } from "reactflow"
-import { useNodeBuilder } from "../NodeBuilder"
-import CustomHandle from "./CustomHandle"
-import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSelection, useNodeSnapping } from "../../util"
-import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
+import { Card, Group, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
+import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
+import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
+
+import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSelection, useNodeSnapping } from "../../modules/graph-util"
+import Handle, { HandleDirection } from "./Handle"
+import { Nodes } from "../../modules/nodes"
 
 
 export default function Node({ id, type, selected, dragging, xPos, yPos, ...props }) {
 
     const theme = useMantineTheme()
-    const { nodeTypes, lastRun, openSettings } = useNodeBuilder()
 
     // get node type
-    const nodeType = nodeTypes[type]
+    const nodeType = Nodes[type]
 
     const [data, setData] = useNodeData(id)                                     // node's internal data
     const displayProps = useNodeDisplayProps(id)                                // props to pass to display override components
@@ -28,7 +28,8 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
     const { hovered, ref: hoverRef } = useHover()
 
     // look at our errors from the last run
-    const errors = lastRun?.errors?.[id] ?? []
+    // const errors = lastRun?.errors?.[id] ?? []
+    const errors = []
 
     // alt-dragging for duplication -- TO DO: implement this
     const duplicating = useKeyPress("Alt") && hovered
@@ -43,30 +44,15 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
         dragging && deselect()
     }, [dragging])
 
-    // helper function for rendering custom handles
-    const renderCustomHandles = (handles, handleType, position) =>
-        handles?.map(handle => {
-            // handle can either be a string or { name, label }
-            const { name, label, list } = typeof handle === "string" ? { name: handle } : handle
-
-            // if it's a list handle, get current number of handles
-            const numberOfHandles = list ? (data?.listHandles?.[name] ?? 0) : 1
-
-            return Array(numberOfHandles).fill(0).map((_, i) => {
-                const handleId = list ? `${name}.${i}` : name
-                return <CustomHandle
-                    id={handleId}
-                    name={name}
-                    label={label}
-                    showLabel={hovered}
-                    connected={displayProps.connections[handleId]}
-                    align={handleAlignments[handleId]}
-                    position={position}
-                    handleType={handleType}
-                    key={handleId}
-                />
-            })
-        }).flat()
+    const commonHandleGroupProps = {
+        includeContainer: true,
+        queryListHandle: name => data?.listHandles?.[name] ?? 0,
+        handleProps: handleId => ({
+            showLabel: hovered,
+            connected: displayProps.connections[handleId],
+            align: handleAlignments[handleId],
+        }),
+    }
 
     // handle snapping position 
     useNodeSnapping(id, xPos, yPos)
@@ -81,13 +67,18 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
         >
 
             {/* Handles */}
-            <HandleStack position={Position.Left} ref={addHeightRef(0)}>
-                {renderCustomHandles(nodeType.inputs, "target", Position.Left)}
-            </HandleStack>
-
-            <HandleStack position={Position.Right} ref={addHeightRef(1)}>
-                {renderCustomHandles(nodeType.outputs, "source", Position.Right)}
-            </HandleStack>
+            <Handle.Group
+                handles={nodeType.inputs}
+                direction={HandleDirection.Input}
+                {...commonHandleGroupProps}
+                ref={addHeightRef(0)}
+            />
+            <Handle.Group
+                handles={nodeType.outputs}
+                direction={HandleDirection.Output}
+                {...commonHandleGroupProps}
+                ref={addHeightRef(1)}
+            />
 
             {/* Main Content */}
             <Card
@@ -137,7 +128,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
                 }
             </Card>
 
-            <ErrorIcon show={!!errors.length} errors={errors} onClick={() => openSettings("errors")} />
+            <ErrorIcon show={!!errors.length} errors={errors} />
 
             {/* Controls */}
             <AnimatePresence>
@@ -167,25 +158,6 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
     )
 }
 
-
-const HandleStack = forwardRef(({ children, position, ...props }, ref) => {
-    return (
-        <Stack
-            justify="center"
-            sx={stackStyle(position)}
-            {...props}
-        >
-            <Stack
-                justify="space-evenly"
-                align="center"
-                spacing={0}
-                ref={ref}
-            >
-                {children}
-            </Stack>
-        </Stack>
-    )
-})
 
 
 function ErrorIcon({ show = false, errors, onClick }) {
@@ -240,20 +212,4 @@ const controlsStyle = theme => ({
     marginBottom: theme.spacing.xs,
     transform: "translateX(-50%)",
     pointerEvents: "none",
-})
-
-const stackStyle = position => ({
-    position: "absolute",
-    top: "50%",
-    zIndex: 10,
-    minHeight: "100%",
-
-    ...(position == Position.Left && {
-        left: 0,
-        transform: "translate(-50%, -50%)",
-    }),
-    ...(position == Position.Right && {
-        right: 0,
-        transform: "translate(50%, -50%)",
-    }),
 })

@@ -1,7 +1,9 @@
-import { Button, Group, HoverCard, Skeleton, Stack, Text, Title, useMantineTheme } from "@mantine/core"
-import { createNode } from "@minus/node-builder"
-import { TbBook } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
+import { Button, Group, HoverCard, Skeleton, Stack, Text, Title, useMantineTheme } from "@mantine/core"
+import { TbBook } from "react-icons/tb"
+
+import { createNode } from "../../modules/graph-util"
+
 
 export default function NodeInfoPopover({ node, children }) {
 

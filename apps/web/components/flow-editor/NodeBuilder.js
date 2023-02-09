@@ -1,32 +1,43 @@
-import { createContext, useContext, useMemo } from "react"
-import ReactFlow, { Background, useReactFlow, useNodes, useEdges } from "reactflow"
-import { useMantineTheme } from "@mantine/core"
-
-import { findEdgeFromConnection } from "../util"
-import Node from "./nodes/Node"
-
-import 'reactflow/dist/style.css'
-// import "../nodeStyles.css"
-import { useEffect } from "react"
-import ActiveDetails from "./ActiveDetails"
-import { useDebouncedValue } from "@mantine/hooks"
+import { useEffect, useMemo } from "react"
 import produce from "immer"
+import ReactFlow, { Background, useReactFlow, useNodes, useEdges, MiniMap } from "reactflow"
+import { useMantineTheme } from "@mantine/core"
+import { useDebouncedValue } from "@mantine/hooks"
+import { useUpdateFlowGraph } from "@minus/client-sdk"
+
+import { findEdgeFromConnection, serializeGraph, deserializeGraph } from "../../modules/graph-util"
+import { useDebouncedCustomState } from "../../modules/hooks"
+import { useFlowContext } from "../../modules/context"
+import { Nodes } from "../../modules/nodes"
+import Node from "./Node"
+import ActiveDetails from "./ActiveDetails"
 import DataEdge from "./DataEdge"
 
+import 'reactflow/dist/style.css'
 
-export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, flowId, appId, firestore, lastRun, openSettings }) {
+
+export default function NodeBuilder({ }) {
 
     const theme = useMantineTheme()
     const rf = useReactFlow()
 
-    // put node types into a form RF likes
-    const rfNodeTypes = useMemo(() =>
-        Object.fromEntries(Object.keys(nodeTypes).map(type => [type, Node])),
-        [nodeTypes]
+    const { flowGraph } = useFlowContext()
+    const updateFlowGraph = useUpdateFlowGraph(flowGraph?.id)
+
+    // deserialize graph
+    const { nodes: initialNodes, edges: initialEdges } = useMemo(
+        () => deserializeGraph(flowGraph?.graph),
+        [flowGraph?.graph]
     )
 
-    // deserialize initial state
-    const { nodes: initialNodes, edges: initialEdges } = useMemo(() => deserializeGraph(initialGraph))
+    // debounce graph changes and update
+    const [, setGraph] = useDebouncedCustomState(flowGraph?.graph, updateFlowGraph, 1000)
+
+    // put node types into a form RF likes
+    const rfNodeTypes = useMemo(() =>
+        Object.fromEntries(Object.keys(Nodes).map(type => [type, Node])),
+        [Nodes]
+    )
 
     // handle connection -- validate and style edges 
     const handleConnect = connection => {
@@ -58,36 +69,35 @@ export default function NodeBuilder({ nodeTypes = {}, initialGraph, onChange, fl
     }
 
 
-    return (
-        <NodeBuilderContext.Provider value={{ nodeTypes, flowId, appId, firestore, lastRun, openSettings }}>
-            <ReactFlow
-                nodeTypes={rfNodeTypes}
-                edgeTypes={edgeTypes}
-                defaultNodes={initialNodes}
-                defaultEdges={initialEdges}
-                onConnect={handleConnect}
-                // onEdgeUpdate={handleConnect}
-                fitView
-                // connectionLineType="smoothstep"
-                selectionKeyCode={null}
-                multiSelectionKeyCode={"Shift"}
-                zoomActivationKeyCode={null}
-            >
-                <Background
-                    // variant="lines" 
-                    gap={40}
-                    size={1}
-                    color="transparent"
-                    style={{
-                        backgroundColor: theme.other.editorBackgroundColor ?? theme.colors.gray[2]
-                    }}
-                />
-                <ChangeWatcher onChange={onChange} />
-                <ActiveDetails />
-            </ReactFlow>
-        </NodeBuilderContext.Provider>
-    )
+    return flowGraph ?
+        <ReactFlow
+            nodeTypes={rfNodeTypes}
+            edgeTypes={edgeTypes}
+            defaultNodes={initialNodes}
+            defaultEdges={initialEdges}
+            onConnect={handleConnect}
+            fitView
+            // connectionLineType="smoothstep"
+            selectionKeyCode={null}
+            multiSelectionKeyCode={"Shift"}
+            zoomActivationKeyCode={null}
+        >
+            <Background
+                // variant="lines" 
+                gap={40}
+                size={1}
+                color="transparent"
+                style={{
+                    backgroundColor: theme.other.editorBackgroundColor ?? theme.colors.gray[2]
+                }}
+            />
+            <ActiveDetails />
+            <ChangeWatcher onChange={setGraph} />
+        </ReactFlow>
+        :
+        <></>
 }
+
 
 function ChangeWatcher({ onChange }) {
 
@@ -101,24 +111,15 @@ function ChangeWatcher({ onChange }) {
 
     useEffect(() => {
         onChange?.(serialized)
-        // console.log(nodes.length, edges.length)
     }, [serialized])
 
     return <></>
 }
 
 
-const NodeBuilderContext = createContext()
-
-export function useNodeBuilder() {
-    return useContext(NodeBuilderContext)
-}
-
-
 const edgeTypes = {
     dataEdge: DataEdge,
 }
-
 
 const valueEdgeProps = theme => ({
     // type: "smoothstep",
@@ -146,16 +147,3 @@ const signalEdgeProps = theme => ({
         stroke: theme.colors.dark[5],
     }
 })
-
-
-export function serializeGraph(nodes = [], edges = []) {
-    return JSON.stringify({
-        nodes: nodes.map(node => ({ ...node, state: node.data.state, })), 
-        edges
-    })
-}
-
-function deserializeGraph(str = "{}") {
-    const { nodes, edges } = JSON.parse(str)
-    return { nodes, edges }
-}

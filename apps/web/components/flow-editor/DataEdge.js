@@ -1,10 +1,11 @@
-import { ActionIcon, useMantineTheme } from '@mantine/core'
-import { useHover } from '@mantine/hooks'
-import React from 'react'
-import { TbX } from 'react-icons/tb'
 import { getBezierPath } from 'reactflow'
-import { useDeleteEdge } from '../util'
+import { ActionIcon, Flex, useMantineTheme } from '@mantine/core'
+import { useHover } from '@mantine/hooks'
 import { motion, AnimatePresence } from "framer-motion"
+import { TbX } from 'react-icons/tb'
+
+import { useDeleteEdge } from '../../modules/graph-util'
+
 
 const InteractionPadding = 20
 const ForeignObjectSize = 30
@@ -73,19 +74,21 @@ export default function DataEdge({
                 className="edgebutton-foreignobject"
                 requiredExtensions="http://www.w3.org/1999/xhtml"
             >
-                <AnimatePresence>
-                    {hovered &&
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            transition={{ type: "spring", duration: 0.2 }}
-                        >
-                            <ActionIcon size="sm" radius="md" color="red" variant="filled" onClick={onEdgeClick}>
-                                <TbX />
-                            </ActionIcon>
-                        </motion.div>}
-                </AnimatePresence>
+                <Flex w="100%" h="100%" justify="center" align="center">
+                    <AnimatePresence>
+                        {hovered &&
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0 }}
+                                transition={{ type: "spring", duration: 0.2 }}
+                            >
+                                <ActionIcon size="sm" radius="md" color="red" variant="filled" onClick={onEdgeClick}>
+                                    <TbX />
+                                </ActionIcon>
+                            </motion.div>}
+                    </AnimatePresence>
+                </Flex>
             </foreignObject>
         </g>
     )

@@ -21,5 +21,9 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "packageManager": "npm@7.24.0"
+  "packageManager": "npm@7.24.0",
+  "dependencies": {
+    "reactflow": "^11.5.5",
+    "zustand": "^4.3.2"
+  }
 }

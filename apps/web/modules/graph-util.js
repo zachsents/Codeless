@@ -1,14 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import shallow from "zustand/shallow"
+import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
+import { useInterval, useSetState } from "@mantine/hooks"
+import { shallow } from "zustand/shallow"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
-import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useNodes, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
-import { useNodeBuilder } from "./components/NodeBuilder"
-import { useInterval, useSetState } from "@mantine/hooks"
 
-
-
-
+import { useAppId, useFlowId } from "./hooks"
+import { Nodes } from "./nodes"
 
 
 export function useNodeState(nodeId, defaultState) {
@@ -50,6 +48,7 @@ export function useNodeState(nodeId, defaultState) {
     return [state, setState]
 }
 
+
 export function useNodeData(nodeId) {
 
     const rf = useReactFlow()
@@ -76,19 +75,24 @@ export function useNodeData(nodeId) {
     return [data, setData]
 }
 
+
 export function useNodeDisplayProps(id) {
 
     const rf = useReactFlow()
-    const { nodeTypes, flowId, appId, firestore } = useNodeBuilder()
+
+    const appId = useAppId()
+    const flowId = useFlowId()
 
     const node = rf.getNode(id)
-    const nodeType = nodeTypes[node?.type]
+    const nodeType = Nodes[node?.type]
 
     const [state, setState] = useNodeState(id, nodeType?.defaultState)
     const [inputConnections, outputConnections] = useNodeConnections(id, { nodeType: nodeType ?? null })
     const listHandles = useListHandles(id)
 
     return {
+        appId,
+        flowId,
         state,
         setState,
         defaultState: nodeType?.defaultState,
@@ -96,11 +100,9 @@ export function useNodeDisplayProps(id) {
         inputConnections,
         outputConnections,
         listHandles,
-        flowId,
-        appId,
-        firestore,
     }
 }
+
 
 export function useNodeConnections(id, { nodeType: providedNodeType } = {}) {
 
@@ -127,6 +129,7 @@ export function useNodeConnections(id, { nodeType: providedNodeType } = {}) {
         return [inputConns, outputConns]
     }, [connectedEdges])
 }
+
 
 export function useListHandles(nodeId) {
 
@@ -198,6 +201,7 @@ export function useListHandles(nodeId) {
     }
 }
 
+
 export function useConnectedEdges(id) {
     return useStore(
         s => s.edges.filter(edge => edge.target == id || edge.source == id),
@@ -208,17 +212,18 @@ export function useConnectedEdges(id) {
     )
 }
 
+
 export function useNodeType({ id, type }) {
-    const { nodeTypes } = useNodeBuilder()
 
     if (id) {
         const rf = useReactFlow()
-        return nodeTypes[rf.getNode(id).type]
+        return Nodes[rf.getNode(id).type]
     }
 
     if (type)
-        return nodeTypes[type]
+        return Nodes[type]
 }
+
 
 export function useSmoothlyUpdateNode(id, deps = [], {
     interval = 20
@@ -234,6 +239,7 @@ export function useSmoothlyUpdateNode(id, deps = [], {
     return nodeUpdateInterval.stop
 }
 
+
 export function useNodeMinHeight() {
     const stackRefs = useRef([])
     const addRef = index => el => stackRefs.current[index] = (el?.offsetHeight ?? 0)
@@ -242,6 +248,7 @@ export function useNodeMinHeight() {
         addRef
     ]
 }
+
 
 export function useHandleAlignment() {
     const [handleAlignments, setHandleAlignments] = useSetState({})
@@ -265,6 +272,7 @@ export function useHandleAlignment() {
     return [handleAlignments, alignHandles, headerRef]
 }
 
+
 export function useDeleteNode(id, { reactFlow } = {}) {
     const rf = reactFlow ?? useReactFlow()
     return () => {
@@ -272,12 +280,14 @@ export function useDeleteNode(id, { reactFlow } = {}) {
     }
 }
 
+
 export function useDeleteEdge(id, { reactFlow } = {}) {
     const rf = reactFlow ?? useReactFlow()
     return () => {
         removeEdge(id, rf)
     }
 }
+
 
 export function useNodeScreenPosition(id) {
 
@@ -309,6 +319,7 @@ export function useNodeScreenPosition(id) {
     return { screen, viewport }
 }
 
+
 export function useNodeSelection(id, { reactFlow } = {}) {
     const rf = reactFlow ?? useReactFlow()
 
@@ -325,11 +336,13 @@ export function useNodeSelection(id, { reactFlow } = {}) {
     return [selected, () => setSelected(true), () => setSelected(false), setSelected]
 }
 
+
 export function useNodeDragging(id) {
     const dragging = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.dragging)
 
     return [dragging]
 }
+
 
 export function useNodeSnapping(id, x, y, {
     reactFlow,
@@ -490,6 +503,18 @@ export function getNodeElement(id) {
 /**
  * Special Utilities
  */
+
+export function serializeGraph(nodes = [], edges = []) {
+    return JSON.stringify({
+        nodes: nodes.map(node => ({ ...node, state: node.data.state, })),
+        edges
+    })
+}
+
+export function deserializeGraph(str = "{}") {
+    const { nodes, edges } = JSON.parse(str)
+    return { nodes, edges }
+}
 
 export function parseListHandle(id) {
     const [, name, index] = id.match(/(.+?)(?:\.(\d+))?$/) ?? []

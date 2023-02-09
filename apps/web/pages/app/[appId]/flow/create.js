@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react"
 import { ActionIcon, Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
+import Link from "next/link"
 import { useRouter } from "next/router"
 import { TbArrowLeft, TbArrowNarrowRight } from "react-icons/tb"
 import { useAppDetailsRealtime, useCreateFlow, useFlowCountForApp, usePlan } from "@minus/client-sdk"
-import { serializeGraph } from "@minus/node-builder"
 import { Triggers, TriggerCategories } from "@minus/client-nodes"
 
 import { useAppId, useMustBeSignedIn } from "../../../../modules/hooks"
+import { serializeGraph } from "../../../../modules/graph-util"
 import AppDashboard from "../../../../components/AppDashboard"
 import FormSubsection from "../../../../components/forms/FormSubsection"
 import FormSection from "../../../../components/forms/FormSection"
-import Link from "next/link"
 
 
 export default function CreateFlow() {

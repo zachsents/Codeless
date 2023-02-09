@@ -20,11 +20,11 @@
     "@mantine/nprogress": "^5.8.4",
     "@minus/client-nodes": "*",
     "@minus/client-sdk": "*",
-    "@minus/node-builder": "*",
     "embla-carousel-react": "^7.0.5",
     "firebase": "^9.13.0",
     "framer-motion": "^7.6.7",
     "fuzzy": "^0.1.3",
+    "immer": "^9.0.19",
     "next": "12.3.1",
     "next-transpile-modules": "^10.0.0",
     "react": "18.2.0",
@@ -32,9 +32,11 @@
     "react-icons": "^4.6.0",
     "react-query": "^3.39.3",
     "react-sparklines": "^1.7.0",
-    "reactflow": "^11.2.0",
+    "reactflow": "^11.5.5",
+    "short-uuid": "^4.2.2",
     "tabler-icons-react": "^1.55.0",
-    "timeago.js": "^4.0.2"
+    "timeago.js": "^4.0.2",
+    "zustand": "^4.3.2"
   },
   "devDependencies": {
     "eslint": "8.25.0",

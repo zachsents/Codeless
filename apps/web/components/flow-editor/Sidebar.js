@@ -1,14 +1,14 @@
 import { forwardRef, useEffect, useRef, useState, useMemo } from "react"
+import { useReactFlow } from "reactflow"
+import fuzzy from "fuzzy"
 import { ActionIcon, Box, Button, Group, Navbar, NavLink, ScrollArea, Stack, SimpleGrid, Space, Text, TextInput, Title } from "@mantine/core"
 import { useDisclosure, useDebouncedState } from "@mantine/hooks"
 import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbSearch, TbX } from "react-icons/tb"
-import { useReactFlow } from "reactflow"
-import fuzzy from "fuzzy"
 
+import { createNode } from "../../modules/graph-util"
 import LinkIcon from "../LinkIcon"
 import NodeInfoPopover from "./NodeInfoPopover"
 import { NodeCategories } from "../../modules/nodes"
-import { createNode } from "@minus/node-builder"
 
 import { motion } from "framer-motion"
 
