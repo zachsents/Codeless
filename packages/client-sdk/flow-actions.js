@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { firestore, functions } from "./firebase-init.js"
 import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
@@ -225,6 +225,36 @@ export async function unpublishFlow(flowId) {
         throw new Error(error)
 
     await updateDoc(getFlowRef(flowId), { published: false })
+}
+
+
+/**
+ * Creates a query that looks for flows that can be ran
+ * manually, excluding the one given.
+ *
+ * @export
+ * @param {string} flowId
+ */
+export function createOtherRunnableFlowsQuery(flowId) {
+    return flowId && query(
+        FlowsCollection(),
+        where(documentId(), "!=", flowId),
+        where("trigger", "==", "basic:DefaultTrigger")
+    )
+}
+
+
+/**
+ * Queries flows flows that can be ran manually, excluding 
+ * the one given.
+ *
+ * @export
+ * @param {string} flowId
+ */
+export function getOtherRunnableFlows(flowId) {
+    return flowId && getDocsWithIds(
+        createOtherRunnableFlowsQuery(flowId)
+    )
 }
 
 

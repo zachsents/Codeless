@@ -14,6 +14,7 @@
         "@mantine/dates": "^5.8.3",
         "@mantine/form": "^5.6.3",
         "@mantine/hooks": "^5.6.3",
+        "@minus/client-sdk": "*",
         "firebase": "^9.13.0",
         "immer": "^9.0.16",
         "react": "18.2.0",

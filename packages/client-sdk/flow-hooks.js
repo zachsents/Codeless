@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useQuery } from "react-query"
-import { createFlow, createFlowsForAppQuery, deleteFlow, getFlow, getFlowCountForApp, getFlowGraph, getFlowGraphRef, getFlowRef, getFlowsForApp, publishFlow, renameFlow, unpublishFlow, updateFlowGraph } from "./flow-actions.js"
+import { createFlow, createFlowsForAppQuery, createOtherRunnableFlowsQuery, deleteFlow, getFlow, getFlowCountForApp, getFlowGraph, getFlowGraphRef, getFlowRef, getFlowsForApp, getOtherRunnableFlows, publishFlow, renameFlow, unpublishFlow, updateFlowGraph } from "./flow-actions.js"
 import { useRealtime } from "./firestore-util.js"
 import { useCallbackWithRequirements } from "./util.js"
 
@@ -191,4 +191,33 @@ export function useFlowCountForApp(appId) {
     )
 
     return { flowCount, ...result }
+}
+
+
+/**
+ * Hook that lists flows flows that can be run manually, 
+ * excluding the one given.
+ *
+ * @export
+ * @param {string} flowId
+ */
+export function useOtherRunnableFlows(flowId) {
+    const { data: flows, ...result } = useQuery(
+        ["otherRunnableFlows", flowId],
+        () => getOtherRunnableFlows(flowId)
+    )
+
+    return { flows, ...result }
+}
+
+
+/**
+ * Hook that provides a real-time list of flows flows that
+ * can be run manually, excluding the one given.
+ *
+ * @export
+ * @param {string} flowId
+ */
+export function useOtherRunnableFlowsRealtime(flowId) {
+    return useRealtime(createOtherRunnableFlowsQuery(flowId))
 }

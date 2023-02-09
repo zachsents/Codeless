@@ -12,16 +12,11 @@ export default {
     inputs: ["payload", "$time"],
     outputs: [],
 
-    configuration: ({ state, setState, appId, flowId, firestore }) => {
+    configuration: ({ state, setState, flowId }) => {
 
         const setFlow = flow => setState({ flow })
 
-        const [otherFlows] = useOtherFlows({
-            appId,
-            flowId,
-            firestore,
-            setFlow,
-        })
+        const [otherFlows] = useOtherFlows(flowId, setFlow)
 
         return (
             <Select

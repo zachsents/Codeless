@@ -1,36 +1,29 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useDebouncedValue } from "@mantine/hooks"
-import { collection, documentId, getDocs, query, where } from "firebase/firestore"
+import { useOtherRunnableFlowsRealtime } from "@minus/client-sdk"
 
 
-export function useOtherFlows({ appId, flowId, firestore, setFlow }) {
+export function useOtherFlows(flowId, setFlow) {
 
     // grab schedulable flows that aren't this one
-    const [otherFlows, setOtherFlows] = useState([])
-    useEffect(() => {
-        appId && flowId &&
-            getDocs(
-                query(
-                    collection(firestore, `apps/${appId}/flows`),
-                    where(documentId(), "!=", flowId),
-                    where("trigger", "==", "basic:DefaultTrigger")
-                )
-            )
-                .then(result => {
-                    setOtherFlows(result.docs.map(doc => ({
-                        value: doc.id,
-                        label: doc.data().name,
-                    })))
-                })
-    }, [appId, flowId])
+    const [otherFlows] = useOtherRunnableFlowsRealtime(flowId)
+
+    // transform to what Mantine Selects like
+    const otherFlowsData = useMemo(
+        () => otherFlows?.map(flow => ({
+            value: flow.id,
+            label: flow.name,
+        })) ?? [],
+        [otherFlows]
+    )
 
     // if there's only one other flow, set it
     useEffect(() => {
-        if (otherFlows.length == 1)
-            setFlow(otherFlows[0].value)
-    }, [otherFlows])
+        if (otherFlowsData.length == 1)
+            setFlow(otherFlowsData[0].value)
+    }, [otherFlowsData])
 
-    return [otherFlows]
+    return [otherFlowsData]
 }
 
 
