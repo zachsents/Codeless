@@ -58,7 +58,7 @@ export const handleGmailMessage = functions.pubsub.topic("gmail").onPublish(asyn
     // query for flows involving this email address
     const querySnapshot = await db.collectionGroup("flows")
         .where("gmailTriggerEmailAddress", "==", emailAddress)
-        .where("deployed", "==", true)
+        .where("published", "==", true)
         .get()
 
     // make a map of app -> flows
@@ -189,7 +189,7 @@ export const refreshWatch = functions.pubsub.schedule("0 11 * * *").onRun(async 
     // get flows with Gmail trigger
     const querySnapshot = await db.collectionGroup("flows")
         .where("trigger", "==", "gmail:EmailReceivedTrigger")
-        // .where("deployed", "==", true)
+        // .where("published", "==", true)
         .get()
 
     // map to unique app IDs

@@ -1,7 +1,8 @@
-import { Center, Loader, Stack, Text } from '@mantine/core'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { finishEmailSignIn } from '../modules/firebase'
+import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
+import { finishEmailSignIn } from "@minus/client-sdk"
+import { Loader, Stack, Text } from "@mantine/core"
+
 
 export default function FinishEmailSignIn() {
 
@@ -30,7 +31,7 @@ export default function FinishEmailSignIn() {
         <Stack align="center" mt={50}>
             {loading && <Loader />}
             {error ? <Text size="xl">Uh oh. We ran into an issue signing you in. Please try again.</Text> :
-                <Text size="xl" align="center" mb={10}>You've been signed in!</Text>}
+                <Text size="xl" align="center" mb={10}>You"ve been signed in!</Text>}
         </Stack>
     )
 }

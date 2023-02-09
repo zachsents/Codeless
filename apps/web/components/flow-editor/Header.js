@@ -1,25 +1,32 @@
-import { Group, Header as MantineHeader, Text, Box } from "@mantine/core"
+import { useRouter } from "next/router"
 import { useReactFlow } from "reactflow"
-import LinkIcon from '../LinkIcon'
-import { TbArrowLeft, TbCloud, TbCloudUpload, TbMaximize, TbPencil, TbSettings, TbExclamationMark, TbCheck } from 'react-icons/tb'
-import { useRouter } from 'next/router'
-import RenameModal from "../RenameModal"
-import { SettingsTabs } from "./SettingsDrawer"
-import { useFlowContext } from "../../modules/context"
-import { useRenameFlow } from "../../modules/hooks"
+import { Group, Header as MantineHeader, Text, Title } from "@mantine/core"
+import { openContextModal } from "@mantine/modals"
+import { TbArrowLeft, TbCloud, TbCloudUpload, TbMaximize, TbPencil, TbSettings, TbExclamationMark, TbCheck } from "react-icons/tb"
 import { Triggers } from "@minus/client-nodes"
+
+import { useFlowContext } from "../../modules/context"
+import LinkIcon from "../LinkIcon"
+import { SettingsTabs } from "./SettingsDrawer"
 import FlowControlButton from "../FlowControlButton"
 
 
 export default function Header({ openSettings }) {
 
     const { query: { appId, flowId } } = useRouter()
-    const flow = useFlowContext()
+    const { flow } = useFlowContext()
 
     const rf = useReactFlow()
 
-    // renaming & deleting
-    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flowId)
+    // renaming
+    const handleOpenRenameModal = () => {
+        openContextModal({
+            modal: "RenameFlow",
+            innerProps: { flowId, oldName: flow.name },
+            title: <Title order={3}>Rename "{flow.name}"</Title>,
+            size: "lg",
+        })
+    }
 
     // displaying if there's errors
     const hasErrors = Object.keys(flow?.runs?.[0]?.errors ?? {}).length > 0
@@ -50,7 +57,7 @@ export default function Header({ openSettings }) {
                     <Group spacing="xs">
                         <Text>{flow?.name}</Text>
                         <LinkIcon
-                            onClick={() => setRenaming(true)}
+                            onClick={handleOpenRenameModal}
                             label="Edit Title"
                             variant="transparent"><TbPencil /></LinkIcon>
                     </Group>
@@ -81,7 +88,7 @@ export default function Header({ openSettings }) {
                                 variant="light"><TbCheck fontSize={24} /></LinkIcon>
                         }
 
-                        {flow?.deployed ?
+                        {flow?.published ?
                             <LinkIcon
                                 onClick={() => openSettings?.(SettingsTabs.Deployment)}
                                 label="Your flow is live!"
@@ -100,24 +107,8 @@ export default function Header({ openSettings }) {
                     </Group>
                 </Group>
             </MantineHeader>
-
-            <RenameModal name={flow?.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
         </>
     )
 }
 
 export const HeaderHeight = 60
-
-const navlinkStyles = theme => ({
-    root: {
-        borderRadius: theme.radius.md,
-        width: 100,
-        justifyContent: "center",
-    },
-    body: {
-        flex: "0 auto",
-    },
-    label: {
-        fontWeight: 600,
-    }
-})

@@ -1,15 +1,18 @@
-import { Avatar, Badge, Box, Button, Card, Center, Group, Progress, RingProgress, SimpleGrid, Skeleton, Space, Stack, Text, Title, useMantineTheme } from '@mantine/core'
-import Link from 'next/link'
-import { TbArrowRight, TbBrandAirtable, TbBrandGmail, TbTrendingUp } from 'react-icons/tb'
-import { Sparklines, SparklinesBars } from 'react-sparklines'
-import AppDashboard from '../../../components/AppDashboard'
-import GradientBox from '../../../components/GradientBox'
-import LoadingSkeleton from '../../../components/LoadingSkeleton'
-import PageTitle from '../../../components/PageTitle'
+import Link from "next/link"
+import { Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
+import { Sparklines, SparklinesBars } from "react-sparklines"
+import { TbArrowRight, TbBrandAirtable, TbBrandGmail, TbTrendingUp } from "react-icons/tb"
+import { SiGooglesheets } from "react-icons/si"
+import { useAppDetailsRealtime, useFlowCountForApp, usePlan } from "@minus/client-sdk"
+
+
+import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
+import AppDashboard from "../../../components/AppDashboard"
+import GradientBox from "../../../components/GradientBox"
+import LoadingSkeleton from "../../../components/LoadingSkeleton"
+import PageTitle from "../../../components/PageTitle"
 import OurCard from "../../../components/cards/OurCard"
-import { useMustBeSignedIn } from '../../../modules/firebase'
-import { useApp, useAppId, useCollectionCount, useFlowCount, usePlan } from "../../../modules/hooks"
-import { SiGooglesheets } from 'react-icons/si'
+
 
 export default function AppOverview() {
 
@@ -17,32 +20,26 @@ export default function AppOverview() {
 
     useMustBeSignedIn()
     const appId = useAppId()
-    const app = useApp()
-    const plan = usePlan(app?.plan)
-
-    const flowCount = useFlowCount(app?.id)
+    const [app] = useAppDetailsRealtime(appId)
+    const { plan } = usePlan({ ref: app?.plan })
+    const { flowCount } = useFlowCountForApp(app?.id)
     const flowInfoLoaded = flowCount != null && !!plan
-
-    // const collectionCount = useCollectionCount(app?.id)
-    // const collectionInfoLoaded = collectionCount != null && !!plan
 
     return (
         <AppDashboard>
             <Stack spacing="xl">
                 <GradientBox centerAround={app?.color ?? null}>
-                    {app && plan ?
+                    {app ?
                         <Group position="apart" sx={{ alignItems: "stretch" }}>
                             <Box>
                                 <PageTitle white mb={20}>{app.name}</PageTitle>
-                                <Text color="white" sx={{
-                                    minWidth: 300,
-                                    maxWidth: 500,
-                                }}>
+                                <Text color="white" miw={300} max={500}>
                                     {app.description}
                                 </Text>
                             </Box>
                             <Box>
-                                <Badge size="xl" color={plan?.color}>{plan?.name}</Badge>
+                                {plan &&
+                                    <Badge size="xl" color={plan?.color}>{plan?.name}</Badge>}
                             </Box>
                         </Group>
                         :

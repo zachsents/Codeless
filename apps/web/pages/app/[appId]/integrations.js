@@ -1,24 +1,27 @@
-import { Box, Group, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
+import { useEffect, useState } from "react"
+import { Box, Group, SimpleGrid, Stack, Text, ThemeIcon } from "@mantine/core"
 import { useInterval } from "@mantine/hooks"
 import { Carousel } from "@mantine/carousel"
-import { TbBrandAirtable, TbBrandGmail, TbBrandGoogleDrive, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from 'react-icons/tb'
+import { TbBrandAirtable, TbBrandGmail, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from "react-icons/tb"
 import { SiGooglesheets } from "react-icons/si"
-import AppDashboard from '../../../components/AppDashboard'
-import GlassButton from '../../../components/GlassButton'
-import GradientBox from '../../../components/GradientBox'
-import PageTitle from '../../../components/PageTitle'
-import OurCard from "../../../components/cards/OurCard"
-import { auth, firestore, functions, useMustBeSignedIn } from '../../../modules/firebase'
-import { useEffect, useState } from 'react'
+import { useAppDetailsRealtime } from "@minus/client-sdk"
 import GoogleSheetsAuth from "@minus/client-nodes/google/sheets/auth"
 import GmailAuth from "@minus/client-nodes/google/gmail/auth"
-import { useAppRealtime } from '../../../modules/hooks'
+
+import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
+import AppDashboard from "../../../components/AppDashboard"
+import GlassButton from "../../../components/GlassButton"
+import GradientBox from "../../../components/GradientBox"
+import PageTitle from "../../../components/PageTitle"
+import OurCard from "../../../components/cards/OurCard"
 
 
 export default function AppSettings() {
 
-    const user = useMustBeSignedIn()
-    const app = useAppRealtime()
+    useMustBeSignedIn()
+
+    const appId = useAppId()
+    const [app] = useAppDetailsRealtime(appId)
 
     // auto scroll integrations carousel
     const [carousel, setCarousel] = useState()
@@ -93,7 +96,7 @@ function IntegrationCard({ integration, app }) {
                     <ThemeIcon color={integration.color ?? ""} size="xl"><integration.icon size={22} /></ThemeIcon>
                     <Text size="xl" weight={500}>{integration.title}</Text>
                 </Group>
-                <integration.component app={app} firestore={firestore} functions={functions} />
+                <integration.component app={app} />
             </Group>
         </OurCard>
     )

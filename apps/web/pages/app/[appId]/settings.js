@@ -1,6 +1,6 @@
-import React from 'react'
-import AppDashboard from '../../../components/AppDashboard'
-import { useMustBeSignedIn } from '../../../modules/firebase'
+import React from "react"
+import AppDashboard from "../../../components/AppDashboard"
+import { useMustBeSignedIn } from "../../../modules/hooks"
 
 export default function AppSettings() {
 

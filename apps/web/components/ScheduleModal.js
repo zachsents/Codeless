@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { Button, Center, Group, Modal, Space, Stack, Text, Title, useMantineTheme } from '@mantine/core'
+import { useState } from "react"
+import { Button, Center, Group, Modal, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
 import { Calendar, TimeInput } from "@mantine/dates"
-import { TbCheck, TbClock } from 'react-icons/tb'
-import { useForm } from '@mantine/form'
-import { useAppId } from '../modules/hooks'
-import { httpsCallable } from 'firebase/functions'
-import { functions } from '../modules/firebase'
+import { TbCheck, TbClock } from "react-icons/tb"
+import { useForm } from "@mantine/form"
+import { useAppId } from "../modules/hooks"
+import { httpsCallable } from "firebase/functions"
+import { functions } from "../modules/firebase"
 
 export default function ScheduleModal({ opened, onClose, flow }) {
 

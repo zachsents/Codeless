@@ -1,17 +1,18 @@
-import { ActionIcon, AppShell, Container, Group, Navbar, NavLink, Title } from '@mantine/core'
+import { ActionIcon, AppShell, Button, Container, Group, Menu, Navbar, NavLink, Title, Tooltip } from "@mantine/core"
 import { FaHome } from "react-icons/fa"
-import { TbReportAnalytics, TbSettings, TbDatabase, TbCode, TbPlugConnected } from "react-icons/tb"
+import { TbReportAnalytics, TbPlugConnected, TbChevronDown, TbApps, TbChevronLeft, TbHome, TbBook, TbSlideshow, TbCurrencyDollar, TbExternalLink } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useMustBeSignedIn } from '../modules/firebase'
+import { useRouter } from "next/router"
+import Link from "next/link"
+import { useAppId, useMustBeSignedIn } from "../modules/hooks"
 
 
 export default function AppDashboard({ children }) {
 
-    const user = useMustBeSignedIn()
+    useMustBeSignedIn()
 
-    const { query: { appId }, pathname } = useRouter()
+    const appId = useAppId()
+    const { pathname } = useRouter()
 
     return (
         <AppShell
@@ -20,11 +21,30 @@ export default function AppDashboard({ children }) {
             navbar={
                 <Navbar width={{ base: 280 }} withBorder={false} p="md">
                     <Navbar.Section>
-                        <Group position="apart">
-                            <Title order={3}>minus</Title>
+
+                        <Group >
                             <Link href="/dashboard">
-                                <ActionIcon color="dark" component="a"><FaHome /></ActionIcon>
+                                <Tooltip label="Back to Apps" position="right">
+                                    <ActionIcon
+                                        variant="light"
+                                        size="lg"
+                                    >
+                                        <TbChevronLeft />
+                                    </ActionIcon>
+                                </Tooltip>
                             </Link>
+                            <Menu width={200} shadow="sm" styles={{ dropdown: { border: "none" } }}>
+                                <Menu.Target>
+                                    <Button rightIcon={<TbChevronDown />} variant="light">
+                                        <Title order={3}>minus</Title>
+                                    </Button>
+                                </Menu.Target>
+                                <Menu.Dropdown>
+                                    <Menu.Item icon={<TbBook />} rightSection={<TbExternalLink />}>Guides</Menu.Item>
+                                    <Menu.Item icon={<TbSlideshow />} rightSection={<TbExternalLink />}>Examples</Menu.Item>
+                                    <Menu.Item icon={<TbCurrencyDollar />} rightSection={<TbExternalLink />}>Pricing</Menu.Item>
+                                </Menu.Dropdown>
+                            </Menu>
                         </Group>
                     </Navbar.Section>
                     <Navbar.Section grow mt="md">
@@ -36,10 +56,6 @@ export default function AppDashboard({ children }) {
                             <NavLink label="Flows" variant="filled" icon={<TiFlowMerge />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/flows")} />
                         </Link>
-                        {/* <Link href={`/app/${appId}/collections`}>
-                            <NavLink label="Collections" variant="filled" icon={<TbDatabase />}
-                                styles={navlinkStyles} component="a" active={pathname.endsWith("/collections")} />
-                        </Link> */}
                         <Link href={`/app/${appId}/integrations`}>
                             <NavLink label="Integrations" variant="filled" icon={<TbPlugConnected />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/integrations")} />
@@ -60,8 +76,8 @@ export default function AppDashboard({ children }) {
 }
 
 const shellStyles = theme => ({
-    main: { 
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] 
+    main: {
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0]
     },
 })
 

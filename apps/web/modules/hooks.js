@@ -1,198 +1,41 @@
+import {  useEffect, useMemo, useState } from "react"
 import { useDebouncedValue } from "@mantine/hooks"
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore"
 import { useRouter } from "next/router"
-import { useCallback, useEffect, useState } from "react"
-import { auth, firestore } from "./firebase"
-import { getMappedDocs, mapDoc, mapSnapshot, useAuthState } from "firebase-web-helpers"
+import fuzzy from "fuzzy"
+import { useAuthState } from "@minus/client-sdk"
 
 
-export function useAsyncState(factory, dependencies = []) {
-    const [state, setState] = useState()
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState()
+export function useMustBeSignedIn() {
+    const user = useAuthState()
+    const router = useRouter()
     useEffect(() => {
-        setLoading(true)
-        factory?.()
-            .then(results => {
-                setState(results)
-                setLoading(false)
-            })
-            .catch(err => {
-                console.error(err)
-                setError(err)
-                setLoading(false)
-            })
-    }, dependencies)
-    return [state, loading, error]
+        user === null && router.push("/login")
+    }, [user])
+
+    return user
 }
 
-export function useRealtimeState(ref, selector) {
-    const [state, setState] = useState()
-    useEffect(() => {
-        if (ref)
-            return onSnapshot(ref, snap => setState(selector(snap)))
-    }, [!!ref])
-    return [state]
+
+export function useSearch(list, selector) {
+    const [searchQuery, setSearchQuery] = useState("")
+    const filtered = useMemo(
+        () => list?.filter(
+            item => fuzzy.test(searchQuery, selector?.(item) ?? item?.toString())
+        ),
+        [list, searchQuery]
+    )
+
+    return [filtered, searchQuery, setSearchQuery]
 }
+
 
 export function useAppId() {
     return useRouter().query.appId
 }
 
-export function useApp(appId = useAppId()) {
 
-    const [app] = useAsyncState(async () => {
-        return appId && {
-            ...(await getDoc(
-                doc(firestore, "apps", appId)
-            )).data(),
-            id: appId,
-        }
-    }, [appId])
-
-    return app
-}
-
-export function useAppRealtime(appId = useAppId()) {
-    const [app] = useRealtimeState(
-        appId && doc(firestore, "apps", appId),
-        mapDoc
-    )
-    return app
-}
-
-export function useUpdateApp(appId = useAppId()) {
-    return [
-        useCallback(
-            (changes = {}) => appId && updateDoc(
-                doc(firestore, "apps", appId),
-                changes
-            ),
-            [appId]
-        )
-    ]
-}
-
-export function useCreateApp() {
-
-    const user = useAuthState(auth)
-
-    return [
-        useCallback(
-            name =>
-                name && user && addDoc(collection(firestore, "apps"), {
-                    name,
-                    lastEdited: serverTimestamp(),
-                    created: serverTimestamp(),
-                    owners: [user.uid],
-                    plan: doc(firestore, "plans", "free"),
-                    color: "blue",
-                }),
-            [user]
-        )
-    ]
-}
-
-export function useDeleteApp(appId, { includeModalState = true } = {}) {
-
-    const [deleting, setDeleting] = includeModalState ? useState(false) : []
-
-    const handleDelete = useCallback(
-        () => appId && deleteDoc(doc(firestore, "apps", appId)),
-        [appId]
-    )
-
-    return [handleDelete, deleting, setDeleting]
-}
-
-export function usePlan(planRef) {
-    const [plan] = useAsyncState(async () =>
-        planRef && await getDoc(planRef)
-        , [planRef])
-    return plan?.data()
-}
-
-export function useFlows(appId) {
-    const [flows] = useAsyncState(async () =>
-        appId && await getMappedDocs(collection(firestore, "apps", appId, "flows"))
-        , [appId])
-    return flows
-}
-
-export function useFlowsRealtime(appId) {
-    const [flows] = useRealtimeState(
-        appId && collection(firestore, "apps", appId, "flows"),
-        mapSnapshot
-    )
-    return flows
-}
-
-export function useFlowRealtime(appId, flowId) {
-    const [flow] = useRealtimeState(
-        appId && flowId && doc(firestore, "apps", appId, "flows", flowId),
-        mapDoc
-    )
-    return flow
-}
-
-export function useFlowCount(appId) {
-    const [flowCount] = useAsyncState(async () =>
-        appId && (await getCountFromServer(
-            collection(firestore, "apps", appId, "flows")
-        )).data().count
-        , [appId])
-    return flowCount
-}
-
-export function useCollections(appId) {
-    const [collections] = useAsyncState(async () =>
-        appId && await getMappedDocs(collection(firestore, "apps", appId, "collections"))
-        , [appId])
-    return collections
-}
-
-export function useCollectionsRealtime(appId) {
-    const [collections] = useRealtimeState(
-        appId && collection(firestore, "apps", appId, "collections"),
-        mapSnapshot
-    )
-    return collections
-}
-
-export function useCollectionCount(appId) {
-    const [collectionCount] = useAsyncState(async () =>
-        appId && (await getCountFromServer(
-            collection(firestore, "apps", appId, "collections")
-        )).data().count
-        , [appId])
-    return collectionCount
-}
-
-export function useRenameFlow(appId, flowId, includeModalState = true) {
-
-    const [renaming, setRenaming] = includeModalState ? useState(false) : []
-
-    const handleRename = useCallback(
-        newName => appId && flowId && updateDoc(
-            doc(firestore, "apps", appId, "flows", flowId),
-            { name: newName }
-        ),
-        [appId, flowId]
-    )
-
-    return [handleRename, renaming, setRenaming]
-}
-
-export function useDeleteFlow(appId, flowId, includeModalState = true) {
-
-    const [deleting, setDeleting] = includeModalState ? useState(false) : []
-
-    const handleDelete = useCallback(
-        () => appId && flowId && deleteDoc(doc(firestore, "apps", appId, "flows", flowId)),
-        [appId, flowId]
-    )
-
-    return [handleDelete, deleting, setDeleting]
+export function useFlowId() {
+    return useRouter().query.flowId
 }
 
 

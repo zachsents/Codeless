@@ -1,4 +1,4 @@
-import { Menu } from '@mantine/core'
+import { Menu } from "@mantine/core"
 
 export default function FloatingMenu({ children, width = 200, ...props }) {
     return (

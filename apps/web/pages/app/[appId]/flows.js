@@ -1,35 +1,28 @@
-import { ActionIcon, Box, Button, Group, SimpleGrid, Skeleton, Space, Stack, Text, TextInput } from '@mantine/core'
-import AppDashboard from '../../../components/AppDashboard'
-import PageTitle from '../../../components/PageTitle'
-import GradientBox from '../../../components/GradientBox'
-import FlowCard from '../../../components/cards/FlowCard'
+import Link from "next/link"
+import { ActionIcon, Box, Button, Group, SimpleGrid, Skeleton, Stack, Text, TextInput } from "@mantine/core"
 import { TbExternalLink, TbPlus, TbArrowBigUpLines, TbX, TbSearch } from "react-icons/tb"
-import Link from 'next/link'
-import { useApp, useAppId, useFlowsRealtime, usePlan } from '../../../modules/hooks'
-import { useMustBeSignedIn } from '../../../modules/firebase'
-import { plural } from '../../../modules/util'
-import GlassButton from '../../../components/GlassButton'
-import { useMemo, useState } from 'react'
-import fuzzy from "fuzzy"
+import { useAppDetailsRealtime, useFlowsForAppRealtime, usePlan } from "@minus/client-sdk"
+
+import { useAppId, useMustBeSignedIn, useSearch } from "../../../modules/hooks"
+import { plural } from "../../../modules/util"
+import GlassButton from "../../../components/GlassButton"
+import AppDashboard from "../../../components/AppDashboard"
+import PageTitle from "../../../components/PageTitle"
+import GradientBox from "../../../components/GradientBox"
+import FlowCard from "../../../components/cards/FlowCard"
 
 
 export default function AppFlows() {
 
     useMustBeSignedIn()
     const appId = useAppId()
-    const app = useApp()
-    const plan = usePlan(app?.plan)
-    const flows = useFlowsRealtime(appId)
+    const [app] = useAppDetailsRealtime(appId)
+    const { plan } = usePlan({ ref: app?.plan })
+    const [flows] = useFlowsForAppRealtime(appId)
 
     const flowsLeft = plan?.flowCount - flows?.length
 
-    // handle searching flows
-    const [searchQuery, setSearchQuery] = useState("")
-    const filteredFlows = useMemo(
-        () => flows?.filter(flow => fuzzy.test(searchQuery, flow.name)),
-        [flows, searchQuery]
-    )
-
+    const [filteredFlows, searchQuery, setSearchQuery] = useSearch(flows, flow => flow.name)
 
     return (
         <AppDashboard>
@@ -83,6 +76,7 @@ export default function AppFlows() {
                 <TextInput
                     value={searchQuery}
                     onChange={event => setSearchQuery(event.currentTarget.value)}
+                    radius="lg"
                     size="lg"
                     placeholder={`Search ${flows?.length ?? ""} flow${flows?.length == 1 ? "" : "s"}...`}
                     icon={<TbSearch />}

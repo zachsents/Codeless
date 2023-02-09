@@ -1,30 +1,22 @@
-import { ActionIcon, Box, Button, Container, Grid, Group, Header, Menu, SimpleGrid, Skeleton, Space, Stack, Tabs, Text, TextInput, Title } from "@mantine/core"
-import { signOut, mapSnapshot } from "firebase-web-helpers"
-import { collection, query, where } from "firebase/firestore"
+import { useMemo, useState } from "react"
 import Link from "next/link"
-import { TbPlus, TbSearch, TbUser, TbUserCircle, TbX } from "react-icons/tb"
+import fuzzy from "fuzzy"
+import { ActionIcon, Button, Container, Grid, Group, Header, Menu, SimpleGrid, Skeleton, Space, Stack, Text, TextInput, Title } from "@mantine/core"
+import { openContextModal } from "@mantine/modals"
+import { TbPlus, TbSearch, TbUser, TbX } from "react-icons/tb"
+import { signOut, useAppDetailsForUserRealtime } from "@minus/client-sdk"
+
+import { useMustBeSignedIn, useSearch } from "../modules/hooks"
 import AppCard from "../components/cards/AppCard"
 import ArticleCard from "../components/cards/ArticleCard"
-import { auth, firestore, useMustBeSignedIn } from "../modules/firebase"
-import { useRealtimeState } from "../modules/hooks"
-import { openContextModal } from '@mantine/modals'
-import { useMemo, useState } from "react"
-import fuzzy from "fuzzy"
 
 
 export default function Dashboard() {
 
     const user = useMustBeSignedIn()
+    const [apps] = useAppDetailsForUserRealtime(user?.uid)
 
-    const [apps] = useRealtimeState(
-        user && query(
-            collection(firestore, "apps"),
-            where("owners", "array-contains", user.uid)
-        ),
-        mapSnapshot
-    )
-
-    const handleCreateApp = () => {
+    const handleOpenCreateAppModal = () => {
         openContextModal({
             modal: "CreateApp",
             innerProps: {},
@@ -33,12 +25,8 @@ export default function Dashboard() {
         })
     }
 
-    // handle searchin apps
-    const [searchQuery, setSearchQuery] = useState("")
-    const filteredApps = useMemo(
-        () => apps?.filter(app => fuzzy.test(searchQuery, app.name)),
-        [apps, searchQuery]
-    )
+    // handle searching apps
+    const [filteredApps, searchQuery, setSearchQuery] = useSearch(apps, app => app.name)
 
     return (
         <>
@@ -70,7 +58,7 @@ export default function Dashboard() {
                                 </Button>
                             </Menu.Target>
                             <Menu.Dropdown>
-                                <Menu.Item onClick={() => signOut(auth)}>Sign Out</Menu.Item>
+                                <Menu.Item onClick={signOut}>Sign Out</Menu.Item>
                             </Menu.Dropdown>
                         </Menu>
                     </Grid.Col>
@@ -83,7 +71,7 @@ export default function Dashboard() {
                         <Stack spacing="xl">
                             <Group position="apart">
                                 <Title>Your Apps</Title>
-                                <Button onClick={handleCreateApp} radius="md" variant="light" leftIcon={<TbPlus />}>
+                                <Button onClick={handleOpenCreateAppModal} radius="md" variant="light" leftIcon={<TbPlus />}>
                                     New App
                                 </Button>
                             </Group>
@@ -92,6 +80,7 @@ export default function Dashboard() {
                                 value={searchQuery}
                                 onChange={event => setSearchQuery(event.currentTarget.value)}
                                 size="lg"
+                                radius="lg"
                                 placeholder={`Search ${apps?.length ?? ""} app${apps?.length == 1 ? "" : "s"}...`}
                                 icon={<TbSearch />}
                                 rightSection={searchQuery &&

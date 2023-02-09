@@ -104,43 +104,8 @@ export const runFromSchedule = functions.tasks.taskQueue().onDispatch(
 )
 
 
-export const authorizeGoogleApp = functions.https.onCall(async ({ appId, scopes }) => {
-
-    const url = oauthClient.generateAuthUrl({
-        access_type: "offline",
-        scope: scopes,
-        state: appId,
-        include_granted_scopes: true,
-    })
-
-    return { url }
-})
-
-
-export const googleAppAuthorizationRedirect = functions.https.onRequest(async (request, response) => {
-
-    // create tokens from code
-    const { tokens } = await oauthClient.getToken(request.query.code)
-
-    // check granted scopes
-    const grantedScopes = (await oauthClient.getTokenInfo(tokens.access_token)).scopes
-
-    // store refresh token & scopes
-    const appId = request.query.state
-    await db.doc(`apps/${appId}`).update({
-        "integrations.Google.refreshToken": tokens.refresh_token,
-        "integrations.Google.scopes": grantedScopes,
-    })
-
-    console.log(`Succesfully authorized app "${appId}"`)
-
-    // response with JS to close the popup window
-    response.send("<script>window.close()</script>")
-})
-
-
+export * as google from "./google.js"
 export * as gmail from "./gmail.js"
-
 
 
 export async function run({ appId, flowId, payload, context, logOptions, validationOptions }) {
@@ -226,8 +191,8 @@ async function validateCall(appId, flowId, { uid, matchTrigger } = {}) {
     const flowData = flowDoc.data()
 
     // Make sure flow is deloyed
-    if (!flowData.deployed)
-        return { error: "This flow isn't deployed.", appId, flowId, status: 503 }
+    if (!flowData.published)
+        return { error: "This flow isn't published.", appId, flowId, status: 503 }
 
     // Optional: Make sure flow is correct trigger type
     if (matchTrigger && flowData.trigger != matchTrigger)

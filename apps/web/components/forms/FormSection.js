@@ -1,4 +1,4 @@
-import { Stack, Title } from '@mantine/core'
+import { Stack, Title } from "@mantine/core"
 
 export default function FormSection({ title, children }) {
     return (

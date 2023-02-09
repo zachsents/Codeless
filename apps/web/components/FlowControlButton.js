@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState } from "react"
 import { Check, MoodSad } from "tabler-icons-react"
-import { functions } from '../modules/firebase'
-import LinkIcon from './LinkIcon'
+import { functions } from "@minus/client-sdk"
+import LinkIcon from "./LinkIcon"
+
 
 export default function FlowControlButton({ icon, label, onClick, appId, flow }) {
 

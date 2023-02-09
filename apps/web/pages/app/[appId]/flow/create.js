@@ -1,35 +1,35 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput, Title } from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { useRouter } from 'next/router'
-import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore'
-import { TbArrowNarrowRight } from 'react-icons/tb'
-import * as TablerIcons from "tabler-icons-react"
+import { useEffect, useMemo, useState } from "react"
+import { ActionIcon, Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core"
+import { useForm } from "@mantine/form"
+import { useRouter } from "next/router"
+import { TbArrowLeft, TbArrowNarrowRight } from "react-icons/tb"
+import { useAppDetailsRealtime, useCreateFlow, useFlowCountForApp, usePlan } from "@minus/client-sdk"
+import { serializeGraph } from "@minus/node-builder"
+import { Triggers, TriggerCategories } from "@minus/client-nodes"
 
-import { serializeGraph } from '@minus/node-builder'
-import { firestore, useMustBeSignedIn } from '../../../../modules/firebase'
-import { useApp, useFlowCount, usePlan } from '../../../../modules/hooks'
-import AppDashboard from '../../../../components/AppDashboard'
-import GoBackButton from '../../../../components/GoBackButton'
-import FormSubsection from '../../../../components/forms/FormSubsection'
-import FormSection from '../../../../components/forms/FormSection'
-import { Triggers, TriggerCategories } from '@minus/client-nodes'
+import { useAppId, useMustBeSignedIn } from "../../../../modules/hooks"
+import AppDashboard from "../../../../components/AppDashboard"
+import FormSubsection from "../../../../components/forms/FormSubsection"
+import FormSection from "../../../../components/forms/FormSection"
+import Link from "next/link"
 
 
 export default function CreateFlow() {
 
     useMustBeSignedIn()
-    const { query: { appId }, ...router } = useRouter()
+    const router = useRouter()
+
+    const appId = useAppId()
+    const [app] = useAppDetailsRealtime(appId)
+    const { plan } = usePlan({ ref: app?.plan })
+    const { flowCount } = useFlowCountForApp(appId)
+    const createFlow = useCreateFlow(appId)
 
     // check if user is maxed out on flows
-    const app = useApp()
-    const plan = usePlan(app?.plan)
-    const flowCount = useFlowCount(appId)
     useEffect(() => {
-        if (plan && flowCount !== undefined && plan.flowCount <= flowCount)
+        if (plan && flowCount != null && plan.flowCount <= flowCount)
             router.push(`/app/${appId}/flows`)
     }, [plan, flowCount])
-
 
     // look up trigger types and map to data the SegmentedControl can use
     const triggerTypes = Object.entries(TriggerCategories).map(([catId, cat]) => {
@@ -38,7 +38,6 @@ export default function CreateFlow() {
             value: catId,
         }
     })
-
 
     // form hook & handlers
     const form = useForm({
@@ -55,21 +54,16 @@ export default function CreateFlow() {
     })
     const [formLoading, setFormLoading] = useState(false)
 
-
     // submission
     const handleSubmit = async values => {
         setFormLoading(true)
-        const newDocRef = await addDoc(collection(firestore, "apps", appId, "flows"), {
+        const { id: newFlowId } = await createFlow({
             name: values.name,
             trigger: values.trigger,
-            lastEdited: serverTimestamp(),
-            created: serverTimestamp(),
-            executionCount: 0,
-            graph: createGraphWithTrigger(values.trigger)
+            initialGraph: createGraphWithTrigger(values.trigger),
         })
-        router.push(`/app/${appId}/flow/${newDocRef.id}/edit`)
+        router.push(`/app/${appId}/flow/${newFlowId}/edit`)
     }
-
 
     // when trigger type is changed
     const triggers = useMemo(() => {
@@ -96,7 +90,9 @@ export default function CreateFlow() {
     return (
         <AppDashboard>
             <Group position="apart">
-                <GoBackButton href={`/app/${appId}/flows`} />
+                <Link href={`/app/${appId}/flows`}>
+                    <ActionIcon><TbArrowLeft /></ActionIcon>
+                </Link>
             </Group>
             <form onSubmit={form.onSubmit(handleSubmit)}>
                 <FormSection title="New Flow">

@@ -1,26 +1,33 @@
-import { Box, Button, Center, Divider, Drawer, Group, Loader, Space, Stack, Tabs, Text, Textarea, ThemeIcon, Title, useMantineTheme } from '@mantine/core'
-import { doc, updateDoc } from 'firebase/firestore'
-import React, { useEffect, useState } from 'react'
-import { TbCheck, TbCloud, TbCloudOff, TbCloudUpload, TbCopy, TbExclamationMark, TbMoon2, TbPencil, TbTrash } from 'react-icons/tb'
-import { useFlowContext } from '../../modules/context'
-import { firestore } from '../../modules/firebase'
-import { useAppId, useDebouncedCustomState, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
-import { Nodes } from '../../modules/nodes'
-import DeleteModal from '../DeleteModal'
-import LinkIcon from '../LinkIcon'
-import RenameModal from '../RenameModal'
-import { HeaderHeight } from './Header'
-import { functions } from '../../modules/firebase'
-import { useFlowPublishing } from '../../modules/publishing'
+import React, { useEffect, useState } from "react"
+import { Box, Button, Center, Divider, Drawer, Group, Loader, Space, Stack, Tabs, Text, ThemeIcon, Title, useMantineTheme } from "@mantine/core"
+import { openContextModal } from "@mantine/modals"
+import { TbCheck, TbCloudOff, TbCloudUpload, TbCopy, TbExclamationMark, TbPencil, TbTrash } from "react-icons/tb"
+import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
+
+import { useFlowContext } from "../../modules/context"
+import { useAppId } from "../../modules/hooks"
+import { Nodes } from "../../modules/nodes"
+import LinkIcon from "../LinkIcon"
+import { HeaderHeight } from "./Header"
 
 
 export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpenedSuggestedTab }) {
 
     const theme = useMantineTheme()
-    const appId = useAppId()
-    const flow = useFlowContext()
 
+    const appId = useAppId()
+    const { flow } = useFlowContext()
+    const publishFlow = usePublishFlow(flow?.id)
+    const unpublishFlow = useUnpublishFlow(flow?.id)
+
+    const [publishLoading, setPublishLoading] = useState(false)
     const [activeTab, setActiveTab] = useState(SettingsTabs.Deployment)
+
+    const handlePublishChange = async func => {
+        setPublishLoading(true)
+        await func()
+        setPublishLoading(false)
+    }
 
     // select suggested tab whenever it changes
     useEffect(() => {
@@ -31,11 +38,22 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
     }, [suggestedTab])
 
     // renaming & deleting
-    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow?.id)
-    const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow?.id)
-
-    // publishing
-    const publishing = useFlowPublishing(flow, appId)
+    const handleOpenRenameModal = () => {
+        flow && openContextModal({
+            modal: "RenameFlow",
+            innerProps: { flowId: flow.id, oldName: flow.name },
+            title: <Title order={3}>Rename "{flow.name}"</Title>,
+            size: "lg",
+        })
+    }
+    const handleOpenDeleteModal = () => {
+        flow && openContextModal({
+            modal: "DeleteFlow",
+            innerProps: { flowId: flow.id, redirectToApp: appId },
+            title: <Title order={3}>Delete "{flow.name}"</Title>,
+            size: "lg",
+        })
+    }
 
     // deployment content from trigger node
     const DeployInfo = Nodes[flow?.trigger]?.deploy
@@ -51,7 +69,6 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                 onClose={() => onClose?.()}
                 padding="sm"
                 size="lg"
-                // withinPortal={false}
                 overlayOpacity={0}
                 shadow="sm"
                 zIndex={100}
@@ -78,13 +95,9 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                     mx={-theme.spacing.sm}
                     sx={{ backgroundColor: theme.colors.gray[1] }}
                 >
-                    {/* <LinkIcon
-                        label="Redeploy"
-                        disabled
-                        variant="transparent"><TbCloudUpload fontSize={24} /></LinkIcon> */}
                     <LinkIcon
                         label="Rename Flow"
-                        onClick={() => setRenaming(true)}
+                        onClick={handleOpenRenameModal}
                         variant="transparent"><TbPencil fontSize={24} /></LinkIcon>
                     <LinkIcon
                         label="Duplicate Flow"
@@ -92,7 +105,7 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                         variant="transparent"><TbCopy fontSize={24} /></LinkIcon>
                     <LinkIcon
                         label="Delete Flow"
-                        onClick={() => setDeleting(true)}
+                        onClick={handleOpenDeleteModal}
                         variant="transparent"><TbTrash fontSize={24} /></LinkIcon>
                 </Group>
                 <Space h={20} />
@@ -108,19 +121,19 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                         <Space h={20} />
                         <Stack align="center">
                             {
-                                publishing.loading ?
+                                publishLoading ?
                                     <Center>
                                         <Loader />
                                     </Center>
                                     :
-                                    publishing.published ?
+                                    flow?.published ?
                                         <>
                                             <Group position="center">
                                                 <ThemeIcon radius="md" color="green"><TbCheck /></ThemeIcon>
                                                 <Text color="green" weight={600}>Your flow is live!</Text>
                                             </Group>
                                             <Button
-                                                onClick={publishing.unpublish}
+                                                onClick={() => handlePublishChange(unpublishFlow)}
                                                 rightIcon={<TbCloudOff />}
                                                 variant="subtle"
                                                 color="gray"
@@ -133,7 +146,7 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                                         <>
                                             <Text>Your flow is not live.</Text>
                                             <Button
-                                                onClick={publishing.publish}
+                                                onClick={() => handlePublishChange(publishFlow)}
                                                 rightIcon={<TbCloudUpload />}
                                                 size="md"
                                                 mt={10}
@@ -177,9 +190,6 @@ export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpened
                     </Tabs.Panel>
                 </Tabs>
             </Drawer>
-
-            <RenameModal name={flow?.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
-            <DeleteModal name={flow?.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
         </>
     )
 }

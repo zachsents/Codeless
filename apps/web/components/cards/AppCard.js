@@ -1,23 +1,24 @@
-import { ActionIcon, Box, ColorSwatch, Grid, Group, Indicator, Menu, Stack, Text, useMantineTheme } from '@mantine/core'
-import Link from 'next/link'
-import { format as timeAgo } from 'timeago.js'
-import { useFlowCount, usePlan, useUpdateApp } from "../../modules/hooks"
-import * as TbIcons from 'react-icons/tb'
-import { createLinearGradient } from '../../modules/colors'
-import { openContextModal } from '@mantine/modals'
+import Link from "next/link"
+import { format as timeAgo } from "timeago.js"
+import { ActionIcon, Box, ColorSwatch, Grid, Group, Indicator, Menu, Stack, Text, useMantineTheme } from "@mantine/core"
+import { openContextModal } from "@mantine/modals"
+import * as TbIcons from "react-icons/tb"
+import { useFlowCountForApp, usePlan, useUpdateApp } from "@minus/client-sdk"
+
+import { createLinearGradient } from "../../modules/colors"
 
 
 export default function AppCard({ app: { id, name, lastEdited, plan: planRef, color = "blue" } }) {
 
-    const flowCount = useFlowCount(id)
-    const plan = usePlan(planRef)
-    const [updateApp] = useUpdateApp(id)
+    const { flowCount } = useFlowCountForApp(id)
+    const { plan } = usePlan(planRef)
+    const updateApp = useUpdateApp(id)
 
     const handleColorChange = newColor => {
         updateApp({ color: newColor })
     }
 
-    const handleDelete = () => {
+    const handleOpenDeleteModal = () => {
         openContextModal({
             modal: "DeleteApp",
             title: "Delete " + name,
@@ -80,10 +81,10 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
                                 onChange={handleColorChange}
                                 value={color}
                             />
-                            <Menu.Item>
+                            <Menu.Item disabled icon={<TbIcons.TbPencil />}>
                                 Rename
                             </Menu.Item>
-                            <Menu.Item onClick={handleDelete} color="red" icon={<TbIcons.TbTrash />}>
+                            <Menu.Item onClick={handleOpenDeleteModal} color="red" icon={<TbIcons.TbTrash />}>
                                 Delete
                             </Menu.Item>
                         </Menu.Dropdown>

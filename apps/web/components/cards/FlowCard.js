@@ -1,17 +1,15 @@
-import Link from 'next/link'
-import { ActionIcon, Badge, Box, Button, Divider, Group, Overlay, Stack, Text, Tooltip } from '@mantine/core'
-import { TbTrash, TbPencil, TbClock, TbListDetails, TbChartDots3, TbX, TbRun } from "react-icons/tb"
-import { useAppId, useDeleteFlow, useRenameFlow } from '../../modules/hooks'
-import DeleteModal from '../DeleteModal'
-import RenameModal from '../RenameModal'
-import OurCard from './OurCard'
-import { Triggers } from "@minus/client-nodes"
-import { useClickOutside } from '@mantine/hooks'
-import RunManuallyButton from '../RunManuallyButton'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from "react"
+import Link from "next/link"
+import { ActionIcon, Badge, Box, Button, Divider, Group, Overlay, Stack, Text, Title, Tooltip } from "@mantine/core"
+import { useClickOutside } from "@mantine/hooks"
+import { openContextModal } from "@mantine/modals"
 import { AnimatePresence, motion } from "framer-motion"
-import { Run } from 'tabler-icons-react'
-import FlowControlButton from '../FlowControlButton'
+import { TbTrash, TbPencil, TbClock, TbListDetails, TbChartDots3, TbX, TbRun } from "react-icons/tb"
+import { Triggers } from "@minus/client-nodes"
+
+import { useAppId } from "../../modules/hooks"
+import OurCard from "./OurCard"
+import FlowControlButton from "../FlowControlButton"
 
 
 export default function FlowCard({ flow }) {
@@ -31,8 +29,22 @@ export default function FlowCard({ flow }) {
     }, [heightRef.current?.offsetHeight])
 
     // renaming & deleting
-    const [handleRename, renaming, setRenaming] = useRenameFlow(appId, flow.id)
-    const [handleDelete, deleting, setDeleting] = useDeleteFlow(appId, flow.id)
+    const handleOpenRenameModal = () => {
+        openContextModal({
+            modal: "RenameFlow",
+            innerProps: { flowId: flow.id, oldName: flow.name },
+            title: <Title order={3}>Rename "{flow.name}"</Title>,
+            size: "lg",
+        })
+    }
+    const handleOpenDeleteModal = () => {
+        openContextModal({
+            modal: "DeleteFlow",
+            innerProps: { flowId: flow.id },
+            title: <Title order={3}>Delete "{flow.name}"</Title>,
+            size: "lg",
+        })
+    }
 
     // trigger icon
     const TriggerIcon = Triggers[flow.trigger]?.icon
@@ -44,7 +56,6 @@ export default function FlowCard({ flow }) {
         left: "20vw",
         zIndex: 1000,
     }
-
 
     return (
         <>
@@ -71,8 +82,8 @@ export default function FlowCard({ flow }) {
                                             <Button {...leftButtonProps} leftIcon={<TbRun />}>Run Now</Button>
                                             <Button {...leftButtonProps} leftIcon={<TbClock />}>Schedule Run</Button>
                                             <Divider mx="md" my="xs" color="gray.3" />
-                                            <Button onClick={() => setRenaming(true)} {...leftButtonProps} color="gray" leftIcon={<TbPencil />}>Rename Flow</Button>
-                                            <Button onClick={() => setDeleting(true)} {...leftButtonProps} color="red" leftIcon={<TbTrash />}>Delete Flow</Button>
+                                            <Button onClick={handleOpenRenameModal} {...leftButtonProps} color="gray" leftIcon={<TbPencil />}>Rename Flow</Button>
+                                            <Button onClick={handleOpenDeleteModal} {...leftButtonProps} color="red" leftIcon={<TbTrash />}>Delete Flow</Button>
                                         </Stack>
                                     </Group>
                                 </Stack>
@@ -94,7 +105,7 @@ export default function FlowCard({ flow }) {
                                                 <ActionIcon color="gray" variant="transparent"><TriggerIcon /></ActionIcon>}
                                             <Box>
                                                 <Group align="center">
-                                                    {!flow.deployed &&
+                                                    {!flow.published &&
                                                         <Tooltip label="This flow isn't live." withArrow>
                                                             <Badge color="gray">Draft</Badge>
                                                         </Tooltip>}
@@ -110,7 +121,7 @@ export default function FlowCard({ flow }) {
                                                 </Sparklines>
                                             </Box> */}
 
-                                            {flow?.deployed && <Group spacing="xs">
+                                            {flow?.published && <Group spacing="xs">
                                                 {Triggers[flow.trigger]?.controls?.map((control, i) =>
                                                     <FlowControlButton
                                                         {...control}
@@ -144,9 +155,6 @@ export default function FlowCard({ flow }) {
                 </motion.div>
 
             </Box>
-
-            <RenameModal name={flow.name} opened={renaming} setOpened={setRenaming} onRename={handleRename} />
-            <DeleteModal name={flow.name} opened={deleting} setOpened={setDeleting} onDelete={handleDelete} />
 
             <AnimatePresence>
                 {expanded &&

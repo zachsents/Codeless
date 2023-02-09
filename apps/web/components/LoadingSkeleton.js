@@ -1,5 +1,5 @@
-import { Box, Skeleton } from '@mantine/core'
-import React from 'react'
+import { Box, Skeleton } from "@mantine/core"
+import React from "react"
 
 export default function LoadingSkeleton({ size = 3 }) {
 

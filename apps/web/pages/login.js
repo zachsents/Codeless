@@ -1,12 +1,8 @@
-import { BackgroundImage, Button, Center, Container, Image, Loader, Stack, Text, TextInput, Title } from "@mantine/core"
-import { FcGoogle } from "react-icons/fc"
-import { TbMail } from "react-icons/tb"
-import { auth, sendEmailSignInLink } from "../modules/firebase"
-import { signInWithGoogle } from "firebase-web-helpers"
-import { useForm } from '@mantine/form'
+import { BackgroundImage, Button, Center, Loader, Stack, Text, TextInput, Title } from "@mantine/core"
+import { signInWithGoogle, sendEmailSignInLink } from "@minus/client-sdk"
+import { useForm } from "@mantine/form"
 import { useState } from "react"
-import { useRouter } from 'next/router'
-import GoBackButton from "../components/GoBackButton"
+import { useRouter } from "next/router"
 import { createLinearGradient } from "../modules/colors"
 import { BsGoogle } from "react-icons/bs"
 
@@ -45,7 +41,7 @@ export default function Login() {
                             fullWidth
                             onClick={() => {
                                 setSignInMethod(SignInMethod.Google)
-                                signInWithGoogle(auth).then(handleLogin).catch(() => setSignInMethod(null))
+                                signInWithGoogle().then(handleLogin).catch(() => setSignInMethod(null))
                             }}
                         >
                             Sign in with Google

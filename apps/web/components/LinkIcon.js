@@ -1,5 +1,5 @@
-import { ActionIcon, Tooltip } from '@mantine/core'
-import Link from 'next/link'
+import { ActionIcon, Tooltip } from "@mantine/core"
+import Link from "next/link"
 
 export default function LinkIcon({ children, href, label, position, radius = "md", size = "lg",
     color, variant, ...props }) {

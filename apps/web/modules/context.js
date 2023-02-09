@@ -1,29 +1,25 @@
+import { useFlowGraphRealtime, useFlowRealtime } from "@minus/client-sdk"
 import { useRouter } from "next/router"
 import { createContext, useContext, useEffect } from "react"
-import { useFlowRealtime } from "./hooks"
+import { useFlowId } from "./hooks"
 
 
 const FlowContext = createContext()
 
 export function FlowProvider({ children, redirectOnNotExist = false, }) {
 
-    const { query: { appId, flowId }, push } = useRouter()
-    const flow = useFlowRealtime(appId, flowId)
+    const router = useRouter()
 
-    // make a couple convenience mutations
-    if (flow) {
-        flow.appId = appId
-        
-        if(flow.runs?.sort)
-            flow.runs.sort((a, b) => b.executedAt.seconds - a.executedAt.seconds)
-    }
+    const flowId = useFlowId()
+    const [flow] = useFlowRealtime(flowId)
+    const [flowGraph] = useFlowGraphRealtime(flow?.graph)
 
     // redirect if flow doesn't exist
     useEffect(() => {
-        redirectOnNotExist && flow === false && push(redirectOnNotExist)
+        redirectOnNotExist && flow === false && router.push(redirectOnNotExist)
     }, [flow])
 
-    return <FlowContext.Provider value={flow}>
+    return <FlowContext.Provider value={{ flow, flowGraph }}>
         {children}
     </FlowContext.Provider>
 }

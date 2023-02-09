@@ -1,14 +1,15 @@
-import { Button, Group, Stack, TextInput } from '@mantine/core'
-import { useState } from 'react'
-import { TbTrash } from 'react-icons/tb'
-import { useDeleteApp } from '../modules/hooks'
+import { Button, Group, Stack, TextInput } from "@mantine/core"
+import { useDeleteApp } from "@minus/client-sdk"
+import { useState } from "react"
+import { TbTrash } from "react-icons/tb"
 
 
 const CONFIRM_MESSAGE = "confirm"
 
-export default function DeleteAppModal({ context, id, innerProps }) {
+export default function DeleteAppModal({ context, id, innerProps: { appId } }) {
 
-    const [handleDelete, deleting, setDeleting] = useDeleteApp(innerProps.appId)
+    const deleteApp = useDeleteApp(appId)
+    const [loading, setLoading] = useState(false)
     const [confirmation, setConfirmation] = useState("")
 
     const handleSubmit = async event => {
@@ -17,9 +18,8 @@ export default function DeleteAppModal({ context, id, innerProps }) {
         if (confirmation?.toLowerCase() != CONFIRM_MESSAGE)
             return
 
-        setDeleting(true)
-        await handleDelete()
-        // router.push(`/app/${newDocRef.id}`)
+        setLoading(true)
+        await deleteApp()
         context.closeModal(id)
     }
 
@@ -46,7 +46,7 @@ export default function DeleteAppModal({ context, id, innerProps }) {
                             variant="light"
                             color="red"
                             leftIcon={<TbTrash />}
-                            loading={deleting}
+                            loading={loading}
                         >
                             Delete
                         </Button>}

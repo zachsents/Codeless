@@ -1,5 +1,5 @@
-import { Card } from '@mantine/core'
-import { forwardRef } from 'react'
+import { Card } from "@mantine/core"
+import { forwardRef } from "react"
 
 const OurCard = forwardRef(({ children, ...props }, ref) => {
 

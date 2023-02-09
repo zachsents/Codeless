@@ -1,5 +1,5 @@
-import { Group, Stack, Text } from '@mantine/core'
-import React from 'react'
+import { Group, Stack, Text } from "@mantine/core"
+import React from "react"
 
 export default function ResourceFraction({ used, total, label, color }) {
     return (

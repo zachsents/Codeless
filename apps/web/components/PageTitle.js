@@ -1,4 +1,4 @@
-import { Title } from '@mantine/core'
+import { Title } from "@mantine/core"
 
 export default function PageTitle({ children, white, mb = 30, ...props }) {
     return (

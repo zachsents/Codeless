@@ -1,13 +1,14 @@
-import { Button, Group, Stack, TextInput, Title } from '@mantine/core'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { useCreateApp } from '../modules/hooks'
+import { useState } from "react"
+import { Button, Group, Stack, TextInput } from "@mantine/core"
+import { useRouter } from "next/router"
+import { useCreateApp } from "@minus/client-sdk"
+
 
 export default function CreateAppModal({ context, id, innerProps }) {
 
     const router = useRouter()
 
-    const [createApp] = useCreateApp()
+    const createApp = useCreateApp()
     const [appName, setAppName] = useState("")
     const [loading, setLoading] = useState(false)
 
@@ -18,8 +19,8 @@ export default function CreateAppModal({ context, id, innerProps }) {
             return
 
         setLoading(true)
-        const newDocRef = await createApp(appName)
-        router.push(`/app/${newDocRef.id}`)
+        const { id: newAppId } = await createApp(appName)
+        router.push(`/app/${newAppId}`)
         context.closeModal(id)
     }
 

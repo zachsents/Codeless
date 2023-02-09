@@ -1,6 +1,6 @@
-import { Group, Image, Stack, Text } from '@mantine/core'
-import Link from 'next/link'
-import { TbExternalLink } from 'react-icons/tb'
+import { Group, Image, Stack, Text } from "@mantine/core"
+import Link from "next/link"
+import { TbExternalLink } from "react-icons/tb"
 
 
 export default function ArticleCard({ placeholder = 1, title }) {
