@@ -9,6 +9,7 @@ import DeleteFlowModal from "../components/modals/DeleteFlowModal"
 import CreateAppModal from "../components/modals/CreateAppModal"
 import DeleteAppModal from "../components/modals/DeleteAppModal"
 import RouterTransition from "../components/RouterTransition"
+import { ScheduleFlowModal } from "../components/modals/ScheduleFlowModal"
 
 import { initializeFirebase } from "@minus/client-sdk"
 initializeFirebase(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
@@ -36,6 +37,7 @@ const modals = {
     DeleteApp: DeleteAppModal,
     RenameFlow: RenameFlowModal,
     DeleteFlow: DeleteFlowModal,
+    ScheduleFlow: ScheduleFlowModal,
 }
 
 

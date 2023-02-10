@@ -1,44 +1,7 @@
 import functions from "firebase-functions"
 import { oauthClient, db } from "./init.js"
 import { google } from "googleapis"
-import { ExecutionMethod, run } from "./index.js"
 import { httpsCallable, url } from "firebase-admin-callable-functions"
-
-
-export const watchGmailInbox = functions.https.onCall(async ({ appId, flow, stop = false }) => {
-
-    // get Gmail API
-    const gmail = await getGmailApi(appId)
-
-    // stop watching
-    if (stop) {
-        // TO DO: make this check for other flows in the app before unwatching
-        // const response = await gmail.users.stop({
-        //     userId: "me",
-        // })
-        // return response.data
-        return
-    }
-
-    // start watching
-    const { data: { historyId } } = await gmail.users.watch({
-        userId: "me",
-        labelIds: ["INBOX"],
-        labelFilterAction: "include",
-        topicName: "projects/nameless-948a8/topics/gmail",
-    })
-
-    // get email address for user
-    const { data: { emailAddress } } = await gmail.users.getProfile({
-        userId: "me",
-    })
-
-    // put email address & history ID in flow document
-    await db.doc(`apps/${appId}/flows/${flow.id}`).update({
-        gmailTriggerEmailAddress: emailAddress,
-        gmailTriggerHistoryId: historyId,
-    })
-})
 
 
 export const handleGmailMessage = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
@@ -166,14 +129,14 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
                 }
 
                 // run flow
-                await run({
-                    appId,
-                    flowId,
-                    payload: flowPayload,
-                    logOptions: {
-                        executionMethod: ExecutionMethod.PubSub,
-                    }
-                })
+                // await run({
+                //     appId,
+                //     flowId,
+                //     payload: flowPayload,
+                //     logOptions: {
+                //         // executionMethod: ExecutionMethod.PubSub,
+                //     }
+                // })
             })
         )
     })

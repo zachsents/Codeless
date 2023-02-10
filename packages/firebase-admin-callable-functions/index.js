@@ -21,12 +21,12 @@ export function httpsCallable(url) {
 }
 
 export function url(functionName, {
-    projectId = null,
+    projectId = global.admin?.app().options.projectId ?? null,
     region = DEFAULT_REGION,
-    local = false,
+    local = process.env.FUNCTIONS_EMULATOR ?? false,
     hostname = DEFAULT_LOCAL.HOSTNAME,
     port = DEFAULT_LOCAL.PORT,
-}) {
+} = {}) {
     return local ?
         `http://${hostname}:${port}/${projectId}/${region}/${functionName}` :
         `https://${region}-${projectId}.cloudfunctions.net/${functionName}`

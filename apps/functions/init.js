@@ -1,6 +1,8 @@
 import admin from "firebase-admin"
 import { google } from "googleapis"
 import fs from "fs/promises"
+import * as dotenv from "dotenv"
+dotenv.config()
 
 
 admin.initializeApp()

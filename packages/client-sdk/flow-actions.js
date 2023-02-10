@@ -82,7 +82,7 @@ export async function createFlow({
 
     return addDoc(FlowsCollection(), {
         name,
-        apps: [appId],
+        app: appId,
         graph: flowGraphId,
         trigger,
         created: serverTimestamp(),
@@ -153,7 +153,7 @@ export function updateFlowGraph(flowGraphId, newGraph) {
 export function createFlowsForAppQuery(appId) {
     return appId && query(
         FlowsCollection(),
-        where("apps", "array-contains", appId)
+        where("app", "==", appId)
     )
 }
 
@@ -204,8 +204,6 @@ export async function publishFlow(flowId) {
 
     if (error)
         throw new Error(error)
-
-    await updateDoc(getFlowRef(flowId), { published: true })
 }
 
 
@@ -223,8 +221,6 @@ export async function unpublishFlow(flowId) {
 
     if (error)
         throw new Error(error)
-
-    await updateDoc(getFlowRef(flowId), { published: false })
 }
 
 
@@ -263,7 +259,7 @@ export function getOtherRunnableFlows(flowId) {
  *
  * @param {string} flowId
  */
-function assertFlowId(flowId) {
+export function assertFlowId(flowId) {
     if (!flowId)
         throw new Error("Must include a flow ID.")
 }

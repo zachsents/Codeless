@@ -24,22 +24,6 @@ export default {
 
     deletable: false,
 
-    onPublish: ({ appId, flow, functions }) => {
-        return callGmailWatchFunction(functions, {
-            appId,
-            flow,
-            stop: false,
-        })
-    },
-
-    onUnpublish: ({ appId, flow, functions }) => {
-        return callGmailWatchFunction(functions, {
-            appId,
-            flow,
-            stop: true,
-        })
-    },
-
     renderNode: ({ alignHandles }) => {
 
         return (

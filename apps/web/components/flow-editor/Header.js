@@ -63,12 +63,11 @@ export default function Header({ openSettings }) {
                     </Group>
                     <Group spacing="sm" position="right" sx={{ flex: "1 0 0" }}>
 
-                        {flow &&
+                        {flow?.published &&
                             <Group spacing="xs" mr={30}>
                                 {Triggers[flow.trigger]?.controls?.map((control, i) =>
                                     <FlowControlButton
                                         {...control}
-                                        appId={appId}
                                         flow={flow}
                                         key={i}
                                     />

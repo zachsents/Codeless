@@ -1,7 +1,7 @@
 import { getAnalytics } from "firebase/analytics"
 import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
-import { getFirestore } from "firebase/firestore"
+import { getFirestore, connectFirestoreEmulator  } from "firebase/firestore"
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions"
 
 
@@ -32,8 +32,10 @@ export function initializeFirebase(apiKey, {
     includeAnalytics && (analytics = getAnalytics(app))
 
     // connect functions emulator
-    if (process.env.NODE_ENV == "development")
+    if (process.env.NODE_ENV == "development") {
         connectFunctionsEmulator(functions, "localhost", 5001)
+        connectFirestoreEmulator(firestore, "localhost", 8080)
+    }
 }
 
 export { app, analytics, firestore, auth, functions }
