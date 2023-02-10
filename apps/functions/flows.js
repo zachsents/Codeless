@@ -4,6 +4,7 @@ import functions from "firebase-functions"
 import { db, oauthClient } from "./init.js"
 import NodeTypes from "@minus/server-nodes"
 import { runFlow } from "@minus/gee3"
+import { logger } from "./logger.js"
 
 
 export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change, context) => {
@@ -11,23 +12,25 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
     if (!change.after.exists)
         return
 
-    const run = change.after.data()
+    const run = { id: change.after.id, ...change.after.data() }
+
+    logger.setPrefix(`Flow-${run.flow}`)
 
     try {
         /**
          * Pending
          */
-        if (run.status == RunStatus.Pending) {
+        if (run.status == RunStatus.Pending || !run.status) {
             const { valid, error } = await _validate(run.flow)
 
             const status = valid ? RunStatus.Validated : RunStatus.FailedValidation
             await change.after.ref.update({
                 status,
-                ...(error && { validationError: error }),
+                validationError: error ?? null,
                 validatedAt: FieldValue.serverTimestamp()
             })
 
-            functions.logger.log(`[${run.flow}] Finished validation with status: "${status}"`)
+            logger.log(`Finished validation with status: "${status}"`)
             return
         }
 
@@ -45,7 +48,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
                 scheduleTime: new Date(run.scheduledFor.toMillis()),
             })
 
-            functions.logger.log(`[${run.flow}] Scheduled flow`)
+            logger.log(`Scheduled flow`)
             return
         }
 
@@ -55,7 +58,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
         if (run.status == RunStatus.Validated) {
 
             // execute flow
-            functions.logger.log(`[${run.flow}] Beginning flow run`, { flow: run.flow, run: run.id })
+            logger.log(`Beginning flow run ${run.id}`)
             const flow = await Flow.fromId(run.flow)
             global.info = {
                 flow,
@@ -73,7 +76,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
                 ranAt: FieldValue.serverTimestamp(),
             })
 
-            functions.logger.log(`[${run.flow}] Finished flow run with status: "${status}"`, { flow: run.flow, run: run.id })
+            logger.log(`Finished flow run ${run.id} with status: "${status}"`)
             return
         }
     }
@@ -352,7 +355,7 @@ class App {
 }
 
 
-const RunStatus = {
+export const RunStatus = {
     Pending: "pending",
     Scheduled: "scheduled",
     Validated: "validated",

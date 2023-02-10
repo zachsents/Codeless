@@ -4,10 +4,13 @@ import fs from "fs/promises"
 import * as dotenv from "dotenv"
 dotenv.config()
 
-
+// initialize firebase app globalize/export
 admin.initializeApp()
 global.admin = admin
 export const db = admin.firestore()
+
+// set firestore settings
+db.settings({ ignoreUndefinedProperties: true })
 
 // create & globalize OAuth2 client
 export const oauthClient = await getOAuth2Client()

@@ -2,10 +2,10 @@
     "name": "functions",
     "description": "Cloud Functions for Firebase",
     "scripts": {
-        "serve": "firebase emulators:start --only functions",
+        "firestore": "firebase emulators:start --only firestore --import=./.firebase-local --export-on-exit",
         "dev": "firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
-        "shell": "firebase functions:shell",
-        "start": "npm run shell",
+        "serve": "firebase emulators:start --only functions",
+        "shell": "firebase functions:shell --port 5002",
         "logs": "firebase functions:log",
         "deploy": "node ./buildDeps.js && firebase deploy --only functions && node ./cleanupBuild.js"
     },
@@ -19,7 +19,7 @@
         "dotenv": "^16.0.3",
         "firebase-admin": "^11.3.0",
         "firebase-admin-callable-functions": "*",
-        "firebase-functions": "^4.1.0",
+        "firebase-functions": "^4.2.1",
         "googleapis": "^109.0.1",
         "nanoid": "^4.0.0",
         "nanoid-dictionary": "^4.3.0"

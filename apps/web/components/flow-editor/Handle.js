@@ -107,6 +107,7 @@ Handle.Group = memo(forwardRef(({
         handleElements
 }
 ))
+Handle.Group.displayName = "Handle.Group"
 
 
 Handle.VerticalContainer = forwardRef(({ children, position, ...props }, ref) => {
@@ -127,6 +128,7 @@ Handle.VerticalContainer = forwardRef(({ children, position, ...props }, ref) =>
         </Stack>
     )
 })
+Handle.VerticalContainer.displayName = "Handle.VerticalContainer"
 
 
 export const HandleDirection = {

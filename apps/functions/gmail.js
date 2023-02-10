@@ -2,50 +2,55 @@ import functions from "firebase-functions"
 import { oauthClient, db } from "./init.js"
 import { google } from "googleapis"
 import { httpsCallable, url } from "firebase-admin-callable-functions"
+import { logger } from "./logger.js"
+import { RunStatus } from "./flows.js"
 
 
-export const handleGmailMessage = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
+export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
 
-    if (!message.data) {
-        console.error("No message data. Quitting")
-        return
-    }
+    logger.setPrefix("Gmail")
 
-    // parse out pubsub message data
+    if (!message.data)
+        throw new Error("No message data in PubSub message from Gmail topic")
+
+    // parse out PubSub message data
     const { emailAddress, historyId: newHistoryId } = JSON.parse(
         Buffer.from(message.data, 'base64').toString()
     )
 
-    console.debug(`Received Gmail Event: ${emailAddress}, ${newHistoryId}`)
+    logger.log(`Received event for ${emailAddress} (History ID: ${newHistoryId})`)
 
     // query for flows involving this email address
-    const querySnapshot = await db.collectionGroup("flows")
+    const querySnapshot = await db.collection("flows")
         .where("gmailTriggerEmailAddress", "==", emailAddress)
         .where("published", "==", true)
         .get()
 
     // make a map of app -> flows
     const appMap = querySnapshot.docs.reduce((map, doc) => {
-        const appId = doc.ref.parent.parent.id
+        const appId = doc.data().app
 
         map[appId] ??= { flows: [], newHistoryId, appId }
         map[appId].flows.push(doc.id)
         return map
     }, {})
 
-    // fan out by app -- calling runGmailFlowsForApp for each one
+    logger.log(`Handling event for ${Object.keys(appMap).length} apps.`)
+
+    // fan out by app -- calling runFlowsForApp for each one
     // doing this so we can asynchronously authorize a bunch of Gmail APIs
-    Object.keys(appMap).forEach(appId => {
-        httpsCallable(url("gmail-runGmailFlowsForApp", {
-            projectId: global.admin.app().options.projectId,
-            local: process.env.FUNCTIONS_EMULATOR,
-        }))(appMap[appId])
-    })
+    await Promise.all(
+        Object.keys(appMap).map(
+            appId => httpsCallable(url("gmail-runFlowsForApp"))(appMap[appId])
+        )
+    )
 })
 
 
-export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows, newHistoryId }, context) => {
-    console.debug(`Running ${flows.length} flow(s) for app:`, appId)
+export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newHistoryId }, context) => {
+
+    logger.setPrefix("Gmail")
+    logger.log(`Trying ${flows.length} flow(s) for app: ${appId}`)
 
     // get Gmail API
     const gmail = await getGmailApi(appId)
@@ -57,7 +62,7 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
          * Fetch and update flow's history ID -- it's important this happens
          * in a transaction so we don't get repeat messages.
          */
-        const flowDocRef = db.doc(`apps/${appId}/flows/${flowId}`)
+        const flowDocRef = db.doc(`flows/${flowId}`)
         const startHistoryId = await db.runTransaction(async t => {
             // grab history ID
             const doc = await t.get(flowDocRef)
@@ -92,11 +97,12 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
             )
             .flat() ?? []
 
-        console.debug(`[${flowId}] Found ${messageIds.length} messages added in history.`)
+        logger.log(`Found ${messageIds.length} messages added in history. (Flow ID: ${flowId})`)
 
         // loop through message IDs
+        let messagesLoaded = 0
         await Promise.all(
-            messageIds.map(async (messageId, i) => {
+            messageIds.map(async messageId => {
 
                 // fetch message details
                 try {
@@ -106,10 +112,11 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
                     })
                 }
                 catch (err) {
-                    console.debug(`[${flowId}] (${i + 1} / ${messageIds.length}) Unable to get message: ${messageId}`)
+                    logger.log(`[Flow-${flowId}] (${++messagesLoaded} / ${messageIds.length}) Unable to get message: ${messageId}`)
+                    return
                 }
 
-                console.debug(`[${flowId}] (${i + 1} / ${messageIds.length}) Got details for message: ${messageId}`)
+                logger.log(`[Flow-${flowId}] (${++messagesLoaded} / ${messageIds.length}) Got details for message: ${messageId}`)
 
                 // pull out the data we want to pass to the flow
                 const flowPayload = {
@@ -128,15 +135,13 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
                     snippet: message.snippet,
                 }
 
-                // run flow
-                // await run({
-                //     appId,
-                //     flowId,
-                //     payload: flowPayload,
-                //     logOptions: {
-                //         // executionMethod: ExecutionMethod.PubSub,
-                //     }
-                // })
+                // add flow run
+                await db.collection("flowRuns").add({
+                    flow: flowId,
+                    payload: flowPayload,
+                    status: RunStatus.Pending,
+                    source: "gmail",
+                })
             })
         )
     })
@@ -145,36 +150,44 @@ export const runGmailFlowsForApp = functions.https.onCall(async ({ appId, flows,
 })
 
 
-export const refreshWatch = functions.pubsub.schedule("0 11 * * *").onRun(async (context) => {
-    // export const refreshWatch = functions.https.onRequest(async (req, res) => {
-    //     res.send({})
+export const refreshWatches = functions.pubsub.schedule("0 11 * * *").onRun(async (context) => {
 
-    // get flows with Gmail trigger
-    const querySnapshot = await db.collectionGroup("flows")
+    // get published flows with Gmail trigger
+    const querySnapshot = await db.collection("flows")
         .where("trigger", "==", "gmail:EmailReceivedTrigger")
-        // .where("published", "==", true)
+        .where("published", "==", true)
         .get()
 
     // map to unique app IDs
     const appIds = [...new Set(
-        querySnapshot.docs.map(doc => doc.ref.parent.parent.id)
+        querySnapshot.docs.map(doc => doc.app)
     )]
 
     console.log(`Refreshing Gmail watch for ${appIds.length} apps.`)
 
-    // loop through app IDs
-    for (let appId of appIds) {
-        // get Gmail API
-        const gmail = await getGmailApi(appId)
+    // fan out -- need to do this because we only have the one global OAuth client
+    await Promise.all(
+        appIds.map(
+            appId => httpsCallable(url("gmail-refreshWatch"))({ appId })
+        )
+    )
+})
 
-        // refresh watch
-        await gmail.users.watch({
-            userId: "me",
-            labelIds: ["INBOX"],
-            labelFilterAction: "include",
-            topicName: "projects/nameless-948a8/topics/gmail",
-        })
-    }
+
+export const refreshWatch = functions.https.onCall(async (data, context) => {
+
+    // get Gmail API
+    const gmail = await getGmailApi(data.appId)
+
+    // refresh watch
+    await gmail.users.watch({
+        userId: "me",
+        labelIds: ["INBOX"],
+        labelFilterAction: "include",
+        topicName: "projects/nameless-948a8/topics/gmail",
+    })
+
+    console.log(`[App-${data.appId}] Refreshed Gmail watch.`)
 })
 
 
@@ -185,7 +198,7 @@ async function getGmailApi(appId) {
 
     // throw error if there's no token
     if (!refreshToken)
-        return { error: "Gmail is not authorized." }
+        throw new Error(`Gmail is not authorized for app ${appId}.`)
 
     // authorize OAuth2 client with stored token
     oauthClient.setCredentials({
@@ -199,6 +212,7 @@ async function getGmailApi(appId) {
 function getHeader(name, payload) {
     return payload.headers.find(h => h.name == name)?.value
 }
+
 
 function decodeEmailBody(data) {
     return Buffer.from(
