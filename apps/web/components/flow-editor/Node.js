@@ -141,7 +141,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
                             transition={{ type: "spring", duration: 0.5, bounce: 0.5, delay: 0.1 }}
                         >
                             <Card shadow="sm" p={5} radius="md" sx={{ pointerEvents: "all" }}>
-                                <Group spacing="xs">
+                                <Group spacing="xs" noWrap>
                                     <ActionIcon size="md" radius="sm">
                                         <TbCopy size={16} />
                                     </ActionIcon>
