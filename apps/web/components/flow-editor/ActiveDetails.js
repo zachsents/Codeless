@@ -155,7 +155,7 @@ function NodeConfig({ node }) {
                                                     <tbody>
                                                         {Object.entries(latestRun.outputs[node.id]).map(
                                                             ([key, val]) => <tr key={key}>
-                                                                <td>{key}</td>
+                                                                <td style={{ whiteSpace: "nowrap" }}>{key}</td>
                                                                 <td>{val.toString()}</td>
                                                             </tr>
                                                         )}
@@ -179,7 +179,7 @@ function NodeConfig({ node }) {
                                         {numErrors ?
                                             <Stack>
                                                 {latestRun.errors[node.id].map(
-                                                    err => <ErrorRow>{err.message}</ErrorRow>
+                                                    (err, i) => <ErrorRow key={i}>{err.message}</ErrorRow>
                                                 )}
                                             </Stack> :
                                             <Text color="dimmed" size="sm" align="center">No problems!</Text>}
