@@ -1,9 +1,9 @@
-import { ActionIcon, AppShell, Button, Container, Group, Menu, Navbar, NavLink, Title, Tooltip } from "@mantine/core"
-import { FaHome } from "react-icons/fa"
-import { TbReportAnalytics, TbPlugConnected, TbChevronDown, TbApps, TbChevronLeft, TbHome, TbBook, TbSlideshow, TbCurrencyDollar, TbExternalLink } from "react-icons/tb"
-import { TiFlowMerge } from "react-icons/ti"
-import { useRouter } from "next/router"
 import Link from "next/link"
+import { useRouter } from "next/router"
+import { ActionIcon, AppShell, Button, Container, Group, Menu, Navbar, NavLink, Title, Tooltip } from "@mantine/core"
+import { TbReportAnalytics, TbPlugConnected, TbChevronDown, TbChevronLeft, TbBook, TbSlideshow, TbCurrencyDollar, TbExternalLink } from "react-icons/tb"
+import { TiFlowMerge } from "react-icons/ti"
+
 import { useAppId, useMustBeSignedIn } from "../modules/hooks"
 
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react"
 import produce from "immer"
-import ReactFlow, { Background, useReactFlow, useNodes, useEdges, MiniMap } from "reactflow"
+import ReactFlow, { Background, useReactFlow, useNodes, useEdges } from "reactflow"
 import { useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
@@ -33,40 +33,17 @@ export default function NodeBuilder({ }) {
     // debounce graph changes and update
     const [, setGraph] = useDebouncedCustomState(flowGraph?.graph, updateFlowGraph, 1000)
 
-    // put node types into a form RF likes
-    const rfNodeTypes = useMemo(() =>
-        Object.fromEntries(Object.keys(Nodes).map(type => [type, Node])),
-        [Nodes]
-    )
-
     // handle connection -- validate and style edges 
-    const handleConnect = connection => {
-
-        /**
-         * No longer need to verify edge type with GEE 3, but
-         * leaving this here in case we need other forms of verification
-         * in the future (types, etc.).
-         */
-        // const dataType = validateEdgeConnection(connection, rf.getEdges())
-
-        // // edge isn't validated -- remove it
-        // if (!dataType) {
-        //     rf.setEdges(edges => {
-        //         const newEdge = findEdgeFromConnection(connection, edges)
-        //         return applyEdgeChanges([{ id: newEdge.id, type: "remove" }], edges)
-        //     })
-        //     return
-        // }
-
-        // apply edge styles based on data type
-        // const edgeProps = (dataType == DataType.Signal ? signalEdgeProps : valueEdgeProps)(theme)
-        const edgeProps = valueEdgeProps(theme)
-        rf.setEdges(produce(draft => {
-            const newEdge = findEdgeFromConnection(connection, draft)
-            Object.entries(edgeProps)
-                .forEach(([key, val]) => newEdge[key] = val)
-        }))
-    }
+    const handleConnect = useMemo(() => {
+        connection => {
+            const edgeProps = valueEdgeProps(theme)
+            rf.setEdges(produce(draft => {
+                const newEdge = findEdgeFromConnection(connection, draft)
+                Object.entries(edgeProps)
+                    .forEach(([key, val]) => newEdge[key] = val)
+            }))
+        }
+    }, [rf])
 
 
     return flowGraph ?
@@ -78,9 +55,10 @@ export default function NodeBuilder({ }) {
             onConnect={handleConnect}
             fitView
             // connectionLineType="smoothstep"
-            selectionKeyCode={null}
+            selectionKeyCode={"Shift"}
             multiSelectionKeyCode={"Shift"}
             zoomActivationKeyCode={null}
+            elevateNodesOnSelect
         >
             <Background
                 // variant="lines" 
@@ -116,6 +94,9 @@ function ChangeWatcher({ onChange }) {
     return <></>
 }
 
+const rfNodeTypes = Object.fromEntries(
+    Object.keys(Nodes).map(type => [type, Node])
+)
 
 const edgeTypes = {
     dataEdge: DataEdge,
