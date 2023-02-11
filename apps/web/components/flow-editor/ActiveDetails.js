@@ -1,10 +1,12 @@
 import { useState, useCallback } from 'react'
 import { useOnSelectionChange, useReactFlow } from 'reactflow'
-import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex } from '@mantine/core'
+import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, Table } from '@mantine/core'
 import { motion, AnimatePresence } from "framer-motion"
-import {  TbAlertTriangle, TbTrash, TbX } from "react-icons/tb"
+import { TbAlertTriangle, TbCheck, TbExclamationMark, TbTrash, TbX } from "react-icons/tb"
 
 import { deselectNode, getNodeType, useNodeDisplayProps, useNodeDragging } from '../../modules/graph-util'
+import { useFlowContext } from '../../modules/context'
+import { Check } from 'tabler-icons-react'
 
 
 export default function ActiveDetails() {
@@ -23,7 +25,7 @@ export default function ActiveDetails() {
     const singleNodeSelected = selectedNodes.length == 1 && selectedEdges.length == 0
 
     const dragging = useNodeDragging(selectedNodes[0]?.id)
-    
+
 
     return (
         <AnimatePresence>
@@ -43,14 +45,17 @@ function NodeConfig({ node }) {
 
     const rf = useReactFlow()
     const theme = useMantineTheme()
-    
+
+    const { latestRun } = useFlowContext()
     const displayProps = useNodeDisplayProps(node.id)
     const nodeType = getNodeType(node)
     const hasConfiguration = !!nodeType.configuration
-    
+
     const [accordionValue, setAccordionValue] = useState(hasConfiguration ? "options" : null)
 
     const numUnconnectedInputs = Object.values(displayProps.inputConnections).reduce((sum, cur) => sum + !cur, 0)
+    const numOutputs = latestRun?.outputs?.[node.id] ? Object.keys(latestRun?.outputs?.[node.id]).length : 0
+    const numErrors = latestRun?.errors?.[node.id]?.length ?? 0
 
     return (
         <motion.div
@@ -127,20 +132,57 @@ function NodeConfig({ node }) {
                                         </Accordion.Panel>
                                     </Accordion.Item>}
 
-                                <Accordion.Item value="testing">
-                                    <Accordion.Control>
-                                        <AccordionTitle active={accordionValue == "testing"}>Testing</AccordionTitle>
-                                    </Accordion.Control>
-                                    <Accordion.Panel>
-                                        <Text color="dimmed" size="sm" align="center">No test data to show.</Text>
-                                    </Accordion.Panel>
-                                </Accordion.Item>
+                                {nodeType.outputs?.length > 0 &&
+                                    <Accordion.Item value="testing">
+                                        <Accordion.Control>
+                                            <AccordionTitle
+                                                active={accordionValue == "testing"}
+                                                icon={numOutputs > 0 && <Text size="xs">{numOutputs}</Text>}
+                                                iconProps={{ color: "gray" }}
+                                            >
+                                                Outputs
+                                            </AccordionTitle>
+                                        </Accordion.Control>
+                                        <Accordion.Panel>
+                                            {numOutputs > 0 ?
+                                                <Table highlightOnHover withColumnBorders withBorder>
+                                                    <thead>
+                                                        <tr>
+                                                            <th style={{ whiteSpace: "nowrap" }}>Output</th>
+                                                            <th>Value</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {Object.entries(latestRun.outputs[node.id]).map(
+                                                            ([key, val]) => <tr key={key}>
+                                                                <td>{key}</td>
+                                                                <td>{val.toString()}</td>
+                                                            </tr>
+                                                        )}
+                                                    </tbody>
+                                                </Table> :
+                                                <Text color="dimmed" size="sm" align="center">No data to show. Try running your flow!</Text>}
+                                        </Accordion.Panel>
+                                    </Accordion.Item>}
 
                                 <Accordion.Item value="errors">
                                     <Accordion.Control>
-                                        <AccordionTitle active={accordionValue == "errors"}>Problems</AccordionTitle>
+                                        <AccordionTitle
+                                            active={accordionValue == "errors"}
+                                            icon={numErrors > 0 && <Text size="xs">{numErrors}</Text>}
+                                            iconProps={{ color: "red" }}
+                                        >
+                                            Problems
+                                        </AccordionTitle>
                                     </Accordion.Control>
                                     <Accordion.Panel>
+                                        {numErrors ?
+                                            <Stack>
+                                                {latestRun.errors[node.id].map(
+                                                    err => <ErrorRow>{err.message}</ErrorRow>
+                                                )}
+                                            </Stack> :
+                                            <Text color="dimmed" size="sm" align="center">No problems!</Text>}
                                     </Accordion.Panel>
                                 </Accordion.Item>
                             </Accordion>
@@ -167,14 +209,32 @@ const configContainerStyle = theme => ({
     // alignItems: "flex-end",
 })
 
-function AccordionTitle({ children, active }) {
+function AccordionTitle({ children, active, icon, iconProps = {} }) {
     return (
         <motion.div
             initial={{ x: 0 }}
             animate={{ x: active ? -10 : 0 }}
         >
-            <Title order={5}>{children}</Title>
+            <Group>
+                <Title order={5}>{children}</Title>
+                {icon &&
+                    <ThemeIcon size="sm" radius="sm" {...iconProps}>
+                        {icon}
+                    </ThemeIcon>}
+            </Group>
         </motion.div>
+    )
+}
+
+
+function ErrorRow({ children }) {
+    return (
+        <Group noWrap align="center">
+            <ThemeIcon size="sm" radius="sm" color="red" variant="light">
+                <TbExclamationMark />
+            </ThemeIcon>
+            <Text size="sm">{children}</Text>
+        </Group>
     )
 }
 

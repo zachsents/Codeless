@@ -179,6 +179,23 @@ export const runFromUrl = functions.https.onRequest(async (req, res) => {
 })
 
 
+export const flowGraphWritten = functions.firestore.document("flowGraphs/{flowGraphId}").onWrite(async (change, context) => {
+
+    if (!change.after.exists)
+        return
+
+    // query for flow
+    const querySnapshot = await db.collection("flows").where("graph", "==", context.params.flowGraphId).get()
+    
+    // loop and update timestamp -- should only be 1, but just to be thorough
+    await Promise.all(
+        querySnapshot.docs.map(
+            flowDoc => flowDoc.ref.update({ lastEdited: FieldValue.serverTimestamp() })
+        )
+    )
+})
+
+
 async function _validate(flowId) {
     try {
         const flow = await Flow.fromId(flowId)

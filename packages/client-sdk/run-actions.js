@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, onSnapshot, Timestamp } from "firebase/firestore"
+import { addDoc, collection, doc, limit, onSnapshot, orderBy, query, Timestamp, where } from "firebase/firestore"
 import { firestore } from "./firebase-init.js"
 import { docDataWithId } from "./firestore-util.js"
 import { assertFlowId } from "./flow-actions"
@@ -114,6 +114,23 @@ function waitForRunToEnd(runId) {
             }
         })
     })
+}
+
+
+/**
+ * Creates a query that looks for the latest run for a
+ * flow.
+ *
+ * @export
+ * @param {string} flowId
+ */
+export function createLatestRunQuery(flowId) {
+    return flowId && query(
+        RunsCollection(),
+        where("flow", "==", flowId),
+        orderBy("ranAt", "desc"),
+        limit(1)
+    )
 }
 
 

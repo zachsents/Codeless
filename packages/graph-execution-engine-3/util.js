@@ -113,14 +113,13 @@ function prepNode(node, nodeType, nodes, edges) {
                     node.timesRan++
 
                     // call node's onInputsReady function
-                    const nodeOutput = conn.node.type.onInputsReady?.bind(conn.node)(nodeInputs)
+                    const nodeOutput = () => conn.node.type.onInputsReady?.bind(conn.node)(nodeInputs)
 
                     // use PromiseStream to await nodes and process outputs/errors
-                    PromiseStream.add(Promise.resolve(nodeOutput), {
+                    PromiseStream.add(Promise.resolve().then(nodeOutput), {
                         onReject: error => Errors.report(conn.node.id, {
                             type: conn.node.type.id,
                             message: error.message,
-                            fullError: error,
                         }),
                     })
                 }
