@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
 import { useInterval, useSetState } from "@mantine/hooks"
-import { shallow } from "zustand/shallow"
+import shallow from "zustand/shallow"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
 
