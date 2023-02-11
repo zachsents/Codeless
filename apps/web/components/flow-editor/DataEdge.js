@@ -1,10 +1,10 @@
-import { getBezierPath } from 'reactflow'
+import { getBezierPath, useReactFlow } from 'reactflow'
 import { ActionIcon, Flex, useMantineTheme } from '@mantine/core'
 import { useHover } from '@mantine/hooks'
 import { motion, AnimatePresence } from "framer-motion"
 import { TbX } from 'react-icons/tb'
 
-import { useDeleteEdge } from '../../modules/graph-util'
+import { deleteEdgeById } from '../../modules/graph-util'
 
 
 const InteractionPadding = 20
@@ -25,6 +25,7 @@ export default function DataEdge({
 }) {
 
     const theme = useMantineTheme()
+    const rf = useReactFlow()
 
     const [edgePath, labelX, labelY] = getBezierPath({
         sourceX,
@@ -35,11 +36,9 @@ export default function DataEdge({
         targetPosition,
     })
 
-    const deleteEdge = useDeleteEdge(id)
-
     const onEdgeClick = event => {
         event.stopPropagation()
-        deleteEdge()
+        deleteEdgeById(rf, id)
     }
 
     const { hovered, ref: hoverRef } = useHover()

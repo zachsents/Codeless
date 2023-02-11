@@ -36,7 +36,7 @@
     "short-uuid": "^4.2.2",
     "tabler-icons-react": "^1.55.0",
     "timeago.js": "^4.0.2",
-    "zustand": "^4.2.0"
+    "zustand": "^4.1.1"
   },
   "devDependencies": {
     "eslint": "8.25.0",

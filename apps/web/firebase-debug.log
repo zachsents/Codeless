@@ -1,0 +1,186 @@
+[debug] [2023-02-11T00:50:05.393Z] ----------------------------------------------------------------------
+[debug] [2023-02-11T00:50:05.396Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2023-02-11T00:50:05.396Z] CLI Version:   11.22.0
+[debug] [2023-02-11T00:50:05.396Z] Platform:      win32
+[debug] [2023-02-11T00:50:05.397Z] Node Version:  v16.10.0
+[debug] [2023-02-11T00:50:05.397Z] Time:          Fri Feb 10 2023 17:50:05 GMT-0700 (Mountain Standard Time)
+[debug] [2023-02-11T00:50:05.397Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-02-11T00:50:05.462Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-02-11T00:50:05.463Z] > authorizing via signed-in user (zachsents@gmail.com)
+[debug] [2023-02-11T00:50:05.463Z] [iam] checking project nameless-948a8 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-02-11T00:50:05.465Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/nameless-948a8:testIamPermissions [none]
+[debug] [2023-02-11T00:50:05.465Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/nameless-948a8:testIamPermissions x-goog-quota-user=projects/nameless-948a8
+[debug] [2023-02-11T00:50:05.465Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/nameless-948a8:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-02-11T00:50:05.650Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/nameless-948a8:testIamPermissions 200
+[debug] [2023-02-11T00:50:05.650Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/nameless-948a8:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-02-11T00:50:05.652Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/nameless-948a8 [none]
+[debug] [2023-02-11T00:50:05.918Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/nameless-948a8 200
+[debug] [2023-02-11T00:50:05.918Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/nameless-948a8 {"projectId":"nameless-948a8","projectNumber":"526708433703","displayName":"Codeless","name":"projects/nameless-948a8","resources":{"hostingSite":"nameless-948a8","storageBucket":"nameless-948a8.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_7a356ba4-3f40-4cc5-87cf-7f00c4ae088f"}
+[info] 
+[info] === Deploying to 'nameless-948a8'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2023-02-11T00:50:05.927Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions [none]
+[debug] [2023-02-11T00:50:05.927Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2023-02-11T00:50:06.535Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions 200
+[debug] [2023-02-11T00:50:06.536Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions {"name":"projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[nameless-948a8]: beginning deploy... 
+[info] i  hosting[nameless-948a8]: found 52 files in apps/web/out 
+[debug] [2023-02-11T00:50:06.562Z] [hosting] uploading with 200 concurrency
+[debug] [2023-02-11T00:50:06.692Z] [hosting] hash cache [YXBwc1x3ZWJcb3V0] stored for 52 files
+[debug] [2023-02-11T00:50:06.693Z] [hosting][hash queue][FINAL] {"max":112,"min":12,"avg":32.75,"active":0,"complete":52,"success":52,"errored":0,"retried":0,"total":52,"elapsed":125}
+[debug] [2023-02-11T00:50:06.693Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59:populateFiles [none]
+[debug] [2023-02-11T00:50:06.694Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59:populateFiles {"files":{"/article-placeholder-1.svg":"45dec70a96a04a21736fb2923c7717c41d840538afac77743e209c041ca9c9db","/article-placeholder-2.svg":"5f6a41c30a81f47af1a948b880df7b10a79593f986b987f0f02afa4cb417083c","/favicon.ico":"43127f4210c52bcd0f30f291f1ee296ab41ddd1566905dc27fe1129e0175c8f1","/photon-bg.svg":"b20a82bda5ae136fb98f0d8505cfb74cbe9009b5a2ac0fb4bd0e15924be937fb","/404.html":"35d03417ee2ecef562021d9be0a7b77a81f2fe54ca5999b64ccf8d6d72d7eecd","/dashboard.html":"5f900ed000a7aaf072b5df478f39bd194b208442a99d7a8d59c9cb18dcf4b328","/finishEmailSignIn.html":"db2efec9c444219e4668bba39504ca48d8d8d2c56231dacf5a49b166a2aacfef","/index.html":"ce787aab77a4a41fc273e192c26f9f8096bad5c5d648b9f7ff4993d25bec93d5","/login.html":"f161be9c4f612459eef015e0174ecd00279ecbec78e1db5e883b625025b39445","/app/[appId].html":"0d8e6e434804c0d95a2c1ea9475cc2c5ea114c274aaec7959b52546d14be95a4","/app/[appId]/flows.html":"e4945a786ff36c8f92e0c4a46f82b91f8604f6c41e3bb2c36dce6e4ac95818ec","/app/[appId]/integrations.html":"7ceb9010c4ed27079b63fcf1959ae489db91c4291aa1f3a3a644c2db72592864","/app/[appId]/settings.html":"c28a234a4c78bc61b63e71d0d1984b0acaeb4a18b07ea6244edf045f81d91784","/app/[appId]/flow/create.html":"a41470490a93402f1ec6f4d22705d1c322194d07d2d3eeb5981bfa47839e8700","/_next/static/chunks/189-c9481e71eb3b2e69.js":"04059ce1943594cacd635d14fc811873361cb2a2173ec8ec7d0443468abfd2a8","/_next/static/chunks/162-9b46f631cffcb111.js":"b382f0d165244ebb2fea6e52e8e8ea149a0eeee0bfeb96e7bef0cfdae8a621e9","/_next/static/chunks/322-a0ff926bee7d83c0.js":"1c0d7ef7a56386497b6b4c265d8b3c03aa39048b05266da63b8832d090ec8911","/_next/static/chunks/596-ee07fefdd6b01775.js":"51042a4fd768558cff1d6a34b72106ba91fcc90a665f46f31613217790b3c447","/_next/static/chunks/609-64d2061816ce5f74.js":"5cd4ecc82c290362f5f9a8452b2b69c31d635b484f8705e003db6321ec24c1ff","/_next/static/chunks/546-42e95aa989e89ff0.js":"770aea7d1d9ecb6e2ab1dfcfbe65f12168ff60ab895f1f392316db5a5beee895","/_next/static/chunks/90de1be4-e8e6f1b5c70ece58.js":"e1acd576eb5121af36128be5257a6db4f0650e499fea9b5c9a843f10fbdb610a","/_next/static/chunks/883-389bc437a4baec17.js":"ba3f58d11e73497eca8e2ca12646c1c29d607e0335959313fc1bce784f1fd2b8","/_next/static/chunks/e1efa4cc-3aaf88b7c8f74818.js":"a9557308f63dbffed3b4d5511e9dd52849fdc0f5fa706def8550d66e39ca5036","/_next/static/chunks/f36c6662-2034af63982efe71.js":"f57a22f5f90b35745c09f46ef308c71759740bab7d584405226012c1c23db4f2","/_next/static/chunks/983-045a7ddb225c5caa.js":"dda5dfea8d0f8becaada852d262b91485c5e7d0e93b79a2ba63c3cd7807e3c4f","/_next/static/chunks/993-d5c3ea913cf46661.js":"3439f518f505d930895a7dfe5d9e9243ecd4d9a32162a481ab33536fd867c198","/_next/static/chunks/webpack-6ef43a8d4a395f49.js":"2ddbfa248f07b9fbd7d283ce8eaf1c1fbed738201b04316c17ce8b20cc6e8886","/_next/static/chunks/pages/dashboard-b6dd3a9b25e9bcc5.js":"f7854d1264ed72cb60177c1df560441bb0a04710eb3c456423e2efa3d534972e","/_next/static/chunks/pages/finishEmailSignIn-c4ae4dbd75bf75f4.js":"4c9ecea4ca346381484ef79ea7aac4ce255e44cac7dcac3f883a6f286c6f7003","/_next/static/chunks/pages/login-4322dfdbc3370c39.js":"57eea105dea0e9e5d7045719d55604aff22a99eca31cf942bb602fcd2b253b28","/_next/static/chunks/pages/index-326cd2edfe1c33a2.js":"4f46fcce521c74c892172b0f09c240704d6e93cd0fa6fee2408ff870bf4021a9","/_next/static/chunks/pages/_error-6d6f22f5ac783055.js":"e76786fa235be594ec38ba36b04e28672b6ac5112a0cb276d13d5492cc41eaa8","/_next/static/chunks/pages/app/[appId]-4d67a66fe69befaa.js":"241dbf03c024390e99a7d8d3c42ace52c18c4418fdb8fe14dcfdc912f1f4c4da","/_next/static/chunks/pages/app/[appId]/integrations-92e7ea3eb4ea2930.js":"3c593d90d794e72748d6c1718dc83c32d592fd776a0b0523f4fa0bbaf11810d4","/_next/static/chunks/pages/app/[appId]/flows-0955b642a3cea6c0.js":"a2226a6ebeb37bf40980033a37cb8b025e26de72591aa85046ed71c98bc5d27f","/_next/static/chunks/pages/app/[appId]/settings-1f5b006f0bcbc03a.js":"0d13afab0b77612fcb6e6f65fd0ab58941816e85a2a7eb566d86623d363c7255","/_next/static/chunks/pages/app/[appId]/flow/create-2781ac9030e0be72.js":"aa887cc75fa1b03368670031ee6129a84200f866a0626f0968423fc14783502d","/_next/static/css/623246002f3509c8.css":"4932088e342e0fc11685a0d79cad89b86ceaa0fc75165db3cfacbe4bdb028933","/_next/static/css/ae0e3e027412e072.css":"7b1640857856c01f637665bf0d41396ed2125a6ec2e8f468a9b945aa77180d1e","/_next/static/css/b607d5af66bfe6a8.css":"e68ac21258bd01fae2d253c5c33f309797c11d5e30f8e3ff5f531da2e66969ad","/_next/static/E5L7873ULQIrf6PGDVcCq/_buildManifest.js":"54659c59c4394f31862afdc62fca3e7bad1ba3923bd1fbd8ccd8a8d23954856e","/_next/static/E5L7873ULQIrf6PGDVcCq/_ssgManifest.js":"f73bbe5888d285cbab0ee19990a0d9db0b352fa3dfd30959d64a2bc66422d35c","/_next/static/chunks/pages/app/[appId]/flow/[flowId]/edit-3bd3d1765acdcab5.js":"7ee73b2f528044431e745faeaef414cec479689ad2e6f2e5c1d1abe051ce3c69","/app/[appId]/flow/[flowId]/edit.html":"42b4c5f8c7b311f8e579a0dc1025d62ddf09c654a0e0b1b3b8b895d7dba6b6f6","/_next/static/chunks/733-765b174624d5d1c2.js":"8bee52e3c9cb247e95f3b54f61a71a00b8f59165b615b70232e86dc8055b76f9","/_next/static/chunks/5a3f41a5-b66e360e04552ba5.js":"54a346e38fe4760f27b5d15be89a6a2e3911090db31d1f85caeae950391d9c26","/_next/static/chunks/main-87ab17f2bc4affa8.js":"dae64602fc706ad6ca71fc627710ed59ca8a671b87df6bea14c027eba7c41788","/_next/static/chunks/893-11b2885fb014ee42.js":"72f7eb3d36acde5536822cf3e90333a224d6bb627b6910f2b889faa0c4ecd5f4","/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js":"94291e78be8a4f3b9af21c6dae21c20d76cadc33fe6b28d0ed6554e80060fb5c","/_next/static/chunks/32-14aad80ee4deaa81.js":"ceea2c82ef2623684f88d9ca2f2a05274ffc824a1b5a6d50c6f037232feff38d","/_next/static/chunks/framework-ff25748e596a3c59.js":"a28ab91e20653184d3a83144ef1ce6f173fa50a964c1fca4e27d7054c2cd3496","/_next/static/chunks/pages/_app-58dab6e450db92a4.js":"b06cc980d94ad5c16e28c808bb55fe3a12e0ea68788a89800a7f6171d91fa98e"}}
+[debug] [2023-02-11T00:50:07.086Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59:populateFiles 200
+[debug] [2023-02-11T00:50:07.086Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59:populateFiles {"uploadRequiredHashes":["0d8e6e434804c0d95a2c1ea9475cc2c5ea114c274aaec7959b52546d14be95a4","a41470490a93402f1ec6f4d22705d1c322194d07d2d3eeb5981bfa47839e8700","db2efec9c444219e4668bba39504ca48d8d8d2c56231dacf5a49b166a2aacfef","8bee52e3c9cb247e95f3b54f61a71a00b8f59165b615b70232e86dc8055b76f9","35d03417ee2ecef562021d9be0a7b77a81f2fe54ca5999b64ccf8d6d72d7eecd","e4945a786ff36c8f92e0c4a46f82b91f8604f6c41e3bb2c36dce6e4ac95818ec","04059ce1943594cacd635d14fc811873361cb2a2173ec8ec7d0443468abfd2a8","c28a234a4c78bc61b63e71d0d1984b0acaeb4a18b07ea6244edf045f81d91784","42b4c5f8c7b311f8e579a0dc1025d62ddf09c654a0e0b1b3b8b895d7dba6b6f6","7ceb9010c4ed27079b63fcf1959ae489db91c4291aa1f3a3a644c2db72592864","7ee73b2f528044431e745faeaef414cec479689ad2e6f2e5c1d1abe051ce3c69","f161be9c4f612459eef015e0174ecd00279ecbec78e1db5e883b625025b39445","ce787aab77a4a41fc273e192c26f9f8096bad5c5d648b9f7ff4993d25bec93d5","5f900ed000a7aaf072b5df478f39bd194b208442a99d7a8d59c9cb18dcf4b328","54659c59c4394f31862afdc62fca3e7bad1ba3923bd1fbd8ccd8a8d23954856e"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files"}
+[debug] [2023-02-11T00:50:07.090Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/0d8e6e434804c0d95a2c1ea9475cc2c5ea114c274aaec7959b52546d14be95a4 [none]
+[debug] [2023-02-11T00:50:07.091Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/0d8e6e434804c0d95a2c1ea9475cc2c5ea114c274aaec7959b52546d14be95a4 [stream]
+[debug] [2023-02-11T00:50:07.093Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/a41470490a93402f1ec6f4d22705d1c322194d07d2d3eeb5981bfa47839e8700 [none]
+[debug] [2023-02-11T00:50:07.093Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/a41470490a93402f1ec6f4d22705d1c322194d07d2d3eeb5981bfa47839e8700 [stream]
+[debug] [2023-02-11T00:50:07.094Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/db2efec9c444219e4668bba39504ca48d8d8d2c56231dacf5a49b166a2aacfef [none]
+[debug] [2023-02-11T00:50:07.094Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/db2efec9c444219e4668bba39504ca48d8d8d2c56231dacf5a49b166a2aacfef [stream]
+[debug] [2023-02-11T00:50:07.097Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/8bee52e3c9cb247e95f3b54f61a71a00b8f59165b615b70232e86dc8055b76f9 [none]
+[debug] [2023-02-11T00:50:07.097Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/8bee52e3c9cb247e95f3b54f61a71a00b8f59165b615b70232e86dc8055b76f9 [stream]
+[debug] [2023-02-11T00:50:07.099Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/35d03417ee2ecef562021d9be0a7b77a81f2fe54ca5999b64ccf8d6d72d7eecd [none]
+[debug] [2023-02-11T00:50:07.099Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/35d03417ee2ecef562021d9be0a7b77a81f2fe54ca5999b64ccf8d6d72d7eecd [stream]
+[debug] [2023-02-11T00:50:07.101Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/e4945a786ff36c8f92e0c4a46f82b91f8604f6c41e3bb2c36dce6e4ac95818ec [none]
+[debug] [2023-02-11T00:50:07.101Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/e4945a786ff36c8f92e0c4a46f82b91f8604f6c41e3bb2c36dce6e4ac95818ec [stream]
+[debug] [2023-02-11T00:50:07.104Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/04059ce1943594cacd635d14fc811873361cb2a2173ec8ec7d0443468abfd2a8 [none]
+[debug] [2023-02-11T00:50:07.104Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/04059ce1943594cacd635d14fc811873361cb2a2173ec8ec7d0443468abfd2a8 [stream]
+[debug] [2023-02-11T00:50:07.105Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/c28a234a4c78bc61b63e71d0d1984b0acaeb4a18b07ea6244edf045f81d91784 [none]
+[debug] [2023-02-11T00:50:07.106Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/c28a234a4c78bc61b63e71d0d1984b0acaeb4a18b07ea6244edf045f81d91784 [stream]
+[debug] [2023-02-11T00:50:07.106Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/42b4c5f8c7b311f8e579a0dc1025d62ddf09c654a0e0b1b3b8b895d7dba6b6f6 [none]
+[debug] [2023-02-11T00:50:07.107Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/42b4c5f8c7b311f8e579a0dc1025d62ddf09c654a0e0b1b3b8b895d7dba6b6f6 [stream]
+[debug] [2023-02-11T00:50:07.108Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ceb9010c4ed27079b63fcf1959ae489db91c4291aa1f3a3a644c2db72592864 [none]
+[debug] [2023-02-11T00:50:07.108Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ceb9010c4ed27079b63fcf1959ae489db91c4291aa1f3a3a644c2db72592864 [stream]
+[debug] [2023-02-11T00:50:07.109Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ee73b2f528044431e745faeaef414cec479689ad2e6f2e5c1d1abe051ce3c69 [none]
+[debug] [2023-02-11T00:50:07.109Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ee73b2f528044431e745faeaef414cec479689ad2e6f2e5c1d1abe051ce3c69 [stream]
+[debug] [2023-02-11T00:50:07.110Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/f161be9c4f612459eef015e0174ecd00279ecbec78e1db5e883b625025b39445 [none]
+[debug] [2023-02-11T00:50:07.110Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/f161be9c4f612459eef015e0174ecd00279ecbec78e1db5e883b625025b39445 [stream]
+[debug] [2023-02-11T00:50:07.117Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/ce787aab77a4a41fc273e192c26f9f8096bad5c5d648b9f7ff4993d25bec93d5 [none]
+[debug] [2023-02-11T00:50:07.118Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/ce787aab77a4a41fc273e192c26f9f8096bad5c5d648b9f7ff4993d25bec93d5 [stream]
+[debug] [2023-02-11T00:50:07.119Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/5f900ed000a7aaf072b5df478f39bd194b208442a99d7a8d59c9cb18dcf4b328 [none]
+[debug] [2023-02-11T00:50:07.119Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/5f900ed000a7aaf072b5df478f39bd194b208442a99d7a8d59c9cb18dcf4b328 [stream]
+[debug] [2023-02-11T00:50:07.121Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/54659c59c4394f31862afdc62fca3e7bad1ba3923bd1fbd8ccd8a8d23954856e [none]
+[debug] [2023-02-11T00:50:07.121Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/54659c59c4394f31862afdc62fca3e7bad1ba3923bd1fbd8ccd8a8d23954856e [stream]
+[debug] [2023-02-11T00:50:07.122Z] [hosting][populate queue][FINAL] {"max":400,"min":400,"avg":400,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":432}
+[debug] [2023-02-11T00:50:07.123Z] [hosting] uploads queued: 15
+[debug] [2023-02-11T00:50:07.630Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/04059ce1943594cacd635d14fc811873361cb2a2173ec8ec7d0443468abfd2a8 200
+[debug] [2023-02-11T00:50:07.630Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/04059ce1943594cacd635d14fc811873361cb2a2173ec8ec7d0443468abfd2a8 [stream]
+[debug] [2023-02-11T00:50:07.642Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/0d8e6e434804c0d95a2c1ea9475cc2c5ea114c274aaec7959b52546d14be95a4 200
+[debug] [2023-02-11T00:50:07.642Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/0d8e6e434804c0d95a2c1ea9475cc2c5ea114c274aaec7959b52546d14be95a4 [stream]
+[debug] [2023-02-11T00:50:07.672Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ceb9010c4ed27079b63fcf1959ae489db91c4291aa1f3a3a644c2db72592864 200
+[debug] [2023-02-11T00:50:07.672Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ceb9010c4ed27079b63fcf1959ae489db91c4291aa1f3a3a644c2db72592864 [stream]
+[debug] [2023-02-11T00:50:07.693Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/42b4c5f8c7b311f8e579a0dc1025d62ddf09c654a0e0b1b3b8b895d7dba6b6f6 200
+[debug] [2023-02-11T00:50:07.693Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/42b4c5f8c7b311f8e579a0dc1025d62ddf09c654a0e0b1b3b8b895d7dba6b6f6 [stream]
+[debug] [2023-02-11T00:50:07.699Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/5f900ed000a7aaf072b5df478f39bd194b208442a99d7a8d59c9cb18dcf4b328 200
+[debug] [2023-02-11T00:50:07.699Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/5f900ed000a7aaf072b5df478f39bd194b208442a99d7a8d59c9cb18dcf4b328 [stream]
+[debug] [2023-02-11T00:50:07.700Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/f161be9c4f612459eef015e0174ecd00279ecbec78e1db5e883b625025b39445 200
+[debug] [2023-02-11T00:50:07.700Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/f161be9c4f612459eef015e0174ecd00279ecbec78e1db5e883b625025b39445 [stream]
+[debug] [2023-02-11T00:50:07.703Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/35d03417ee2ecef562021d9be0a7b77a81f2fe54ca5999b64ccf8d6d72d7eecd 200
+[debug] [2023-02-11T00:50:07.703Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/35d03417ee2ecef562021d9be0a7b77a81f2fe54ca5999b64ccf8d6d72d7eecd [stream]
+[debug] [2023-02-11T00:50:07.704Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/a41470490a93402f1ec6f4d22705d1c322194d07d2d3eeb5981bfa47839e8700 200
+[debug] [2023-02-11T00:50:07.705Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/a41470490a93402f1ec6f4d22705d1c322194d07d2d3eeb5981bfa47839e8700 [stream]
+[debug] [2023-02-11T00:50:07.710Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ee73b2f528044431e745faeaef414cec479689ad2e6f2e5c1d1abe051ce3c69 200
+[debug] [2023-02-11T00:50:07.711Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/7ee73b2f528044431e745faeaef414cec479689ad2e6f2e5c1d1abe051ce3c69 [stream]
+[debug] [2023-02-11T00:50:07.769Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/54659c59c4394f31862afdc62fca3e7bad1ba3923bd1fbd8ccd8a8d23954856e 200
+[debug] [2023-02-11T00:50:07.769Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/54659c59c4394f31862afdc62fca3e7bad1ba3923bd1fbd8ccd8a8d23954856e [stream]
+[debug] [2023-02-11T00:50:07.770Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/8bee52e3c9cb247e95f3b54f61a71a00b8f59165b615b70232e86dc8055b76f9 200
+[debug] [2023-02-11T00:50:07.770Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/8bee52e3c9cb247e95f3b54f61a71a00b8f59165b615b70232e86dc8055b76f9 [stream]
+[debug] [2023-02-11T00:50:07.771Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/e4945a786ff36c8f92e0c4a46f82b91f8604f6c41e3bb2c36dce6e4ac95818ec 200
+[debug] [2023-02-11T00:50:07.771Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/e4945a786ff36c8f92e0c4a46f82b91f8604f6c41e3bb2c36dce6e4ac95818ec [stream]
+[debug] [2023-02-11T00:50:07.772Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/c28a234a4c78bc61b63e71d0d1984b0acaeb4a18b07ea6244edf045f81d91784 200
+[debug] [2023-02-11T00:50:07.772Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/c28a234a4c78bc61b63e71d0d1984b0acaeb4a18b07ea6244edf045f81d91784 [stream]
+[debug] [2023-02-11T00:50:07.773Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/db2efec9c444219e4668bba39504ca48d8d8d2c56231dacf5a49b166a2aacfef 200
+[debug] [2023-02-11T00:50:07.773Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/db2efec9c444219e4668bba39504ca48d8d8d2c56231dacf5a49b166a2aacfef [stream]
+[debug] [2023-02-11T00:50:07.793Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/ce787aab77a4a41fc273e192c26f9f8096bad5c5d648b9f7ff4993d25bec93d5 200
+[debug] [2023-02-11T00:50:07.793Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/nameless-948a8/versions/207645dae3d5ad59/files/ce787aab77a4a41fc273e192c26f9f8096bad5c5d648b9f7ff4993d25bec93d5 [stream]
+[debug] [2023-02-11T00:50:07.793Z] [hosting][upload queue][FINAL] {"max":703,"min":542,"avg":631.6666666666666,"active":0,"complete":15,"success":15,"errored":0,"retried":0,"total":15,"elapsed":706}
+[info] +  hosting[nameless-948a8]: file upload complete 
+[debug] [2023-02-11T00:50:07.795Z] [hosting] deploy completed after 1258ms
+[debug] [2023-02-11T00:50:07.797Z] [
+  {
+    "config": {
+      "public": "apps/web/out",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "cleanUrls": true,
+      "rewrites": [
+        {
+          "regex": "^/app/([^/]+?)(?:/)?$",
+          "destination": "/app/[appId].html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/collection/create(?:/)?$",
+          "destination": "/app/[appId]/collection/create.html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/collection/([^/]+?)(?:/)?$",
+          "destination": "/app/[appId]/collection/[collectionId].html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/collections(?:/)?$",
+          "destination": "/app/[appId]/collections.html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/flow/create(?:/)?$",
+          "destination": "/app/[appId]/flow/create.html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/flow/([^/]+?)/edit(?:/)?$",
+          "destination": "/app/[appId]/flow/[flowId]/edit.html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/flows(?:/)?$",
+          "destination": "/app/[appId]/flows.html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/integrations(?:/)?$",
+          "destination": "/app/[appId]/integrations.html"
+        },
+        {
+          "regex": "^/app/([^/]+?)/settings(?:/)?$",
+          "destination": "/app/[appId]/settings.html"
+        }
+      ],
+      "redirects": [
+        {
+          "source": "/",
+          "destination": "/dashboard",
+          "type": 301
+        }
+      ],
+      "site": "nameless-948a8"
+    },
+    "version": "projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59"
+  }
+]
+[info] i  hosting[nameless-948a8]: finalizing version... 
+[debug] [2023-02-11T00:50:07.801Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions/207645dae3d5ad59 updateMask=status%2Cconfig
+[debug] [2023-02-11T00:50:07.801Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions/207645dae3d5ad59 {"status":"FINALIZED","config":{"rewrites":[{"regex":"^/app/([^/]+?)(?:/)?$","path":"/app/[appId].html"},{"regex":"^/app/([^/]+?)/collection/create(?:/)?$","path":"/app/[appId]/collection/create.html"},{"regex":"^/app/([^/]+?)/collection/([^/]+?)(?:/)?$","path":"/app/[appId]/collection/[collectionId].html"},{"regex":"^/app/([^/]+?)/collections(?:/)?$","path":"/app/[appId]/collections.html"},{"regex":"^/app/([^/]+?)/flow/create(?:/)?$","path":"/app/[appId]/flow/create.html"},{"regex":"^/app/([^/]+?)/flow/([^/]+?)/edit(?:/)?$","path":"/app/[appId]/flow/[flowId]/edit.html"},{"regex":"^/app/([^/]+?)/flows(?:/)?$","path":"/app/[appId]/flows.html"},{"regex":"^/app/([^/]+?)/integrations(?:/)?$","path":"/app/[appId]/integrations.html"},{"regex":"^/app/([^/]+?)/settings(?:/)?$","path":"/app/[appId]/settings.html"}],"redirects":[{"glob":"/","location":"/dashboard","statusCode":301}],"cleanUrls":true}}
+[debug] [2023-02-11T00:50:08.200Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions/207645dae3d5ad59 200
+[debug] [2023-02-11T00:50:08.200Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/versions/207645dae3d5ad59 {"name":"projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59","status":"FINALIZED","config":{"redirects":[{"statusCode":301,"location":"/dashboard","glob":"/"}],"rewrites":[{"regex":"^/app/([^/]+?)(?:/)?$","path":"/app/[appId].html"},{"regex":"^/app/([^/]+?)/collection/create(?:/)?$","path":"/app/[appId]/collection/create.html"},{"regex":"^/app/([^/]+?)/collection/([^/]+?)(?:/)?$","path":"/app/[appId]/collection/[collectionId].html"},{"regex":"^/app/([^/]+?)/collections(?:/)?$","path":"/app/[appId]/collections.html"},{"regex":"^/app/([^/]+?)/flow/create(?:/)?$","path":"/app/[appId]/flow/create.html"},{"regex":"^/app/([^/]+?)/flow/([^/]+?)/edit(?:/)?$","path":"/app/[appId]/flow/[flowId]/edit.html"},{"regex":"^/app/([^/]+?)/flows(?:/)?$","path":"/app/[appId]/flows.html"},{"regex":"^/app/([^/]+?)/integrations(?:/)?$","path":"/app/[appId]/integrations.html"},{"regex":"^/app/([^/]+?)/settings(?:/)?$","path":"/app/[appId]/settings.html"}],"cleanUrls":true},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2023-02-11T00:50:06.169166Z","createUser":{"email":"zachsents@gmail.com"},"finalizeTime":"2023-02-11T00:50:08.111186Z","finalizeUser":{"email":"zachsents@gmail.com"}}
+[debug] [2023-02-11T00:50:08.200Z] [hosting] finalized version for nameless-948a8:[object Object]
+[info] +  hosting[nameless-948a8]: version finalized 
+[info] i  hosting[nameless-948a8]: releasing new version... 
+[debug] [2023-02-11T00:50:08.202Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/channels/live/releases versionName=projects%2F526708433703%2Fsites%2Fnameless-948a8%2Fversions%2F207645dae3d5ad59
+[debug] [2023-02-11T00:50:08.202Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/channels/live/releases {}
+[debug] [2023-02-11T00:50:08.593Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/channels/live/releases 200
+[debug] [2023-02-11T00:50:08.594Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/nameless-948a8/channels/live/releases {"name":"projects/526708433703/sites/nameless-948a8/channels/live/releases/1676076607898000","version":{"name":"projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59","status":"FINALIZED","config":{"redirects":[{"statusCode":301,"location":"/dashboard","glob":"/"}],"rewrites":[{"regex":"^/app/([^/]+?)(?:/)?$","path":"/app/[appId].html"},{"regex":"^/app/([^/]+?)/collection/create(?:/)?$","path":"/app/[appId]/collection/create.html"},{"regex":"^/app/([^/]+?)/collection/([^/]+?)(?:/)?$","path":"/app/[appId]/collection/[collectionId].html"},{"regex":"^/app/([^/]+?)/collections(?:/)?$","path":"/app/[appId]/collections.html"},{"regex":"^/app/([^/]+?)/flow/create(?:/)?$","path":"/app/[appId]/flow/create.html"},{"regex":"^/app/([^/]+?)/flow/([^/]+?)/edit(?:/)?$","path":"/app/[appId]/flow/[flowId]/edit.html"},{"regex":"^/app/([^/]+?)/flows(?:/)?$","path":"/app/[appId]/flows.html"},{"regex":"^/app/([^/]+?)/integrations(?:/)?$","path":"/app/[appId]/integrations.html"},{"regex":"^/app/([^/]+?)/settings(?:/)?$","path":"/app/[appId]/settings.html"}],"cleanUrls":true},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2023-02-11T00:50:06.169166Z","createUser":{"email":"zachsents@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AEdFTp71AsL3vCW4WbTy2O8YRGz62eFmp0A5Wk6o1M80Nl4"},"finalizeTime":"2023-02-11T00:50:08.111186Z","finalizeUser":{"email":"zachsents@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AEdFTp71AsL3vCW4WbTy2O8YRGz62eFmp0A5Wk6o1M80Nl4"}},"type":"DEPLOY","releaseTime":"2023-02-11T00:50:07.898Z","releaseUser":{"email":"zachsents@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AEdFTp71AsL3vCW4WbTy2O8YRGz62eFmp0A5Wk6o1M80Nl4"}}
+[debug] [2023-02-11T00:50:08.594Z] [hosting] release: {"name":"projects/526708433703/sites/nameless-948a8/channels/live/releases/1676076607898000","version":{"name":"projects/526708433703/sites/nameless-948a8/versions/207645dae3d5ad59","status":"FINALIZED","config":{"redirects":[{"statusCode":301,"location":"/dashboard","glob":"/"}],"rewrites":[{"regex":"^/app/([^/]+?)(?:/)?$","path":"/app/[appId].html"},{"regex":"^/app/([^/]+?)/collection/create(?:/)?$","path":"/app/[appId]/collection/create.html"},{"regex":"^/app/([^/]+?)/collection/([^/]+?)(?:/)?$","path":"/app/[appId]/collection/[collectionId].html"},{"regex":"^/app/([^/]+?)/collections(?:/)?$","path":"/app/[appId]/collections.html"},{"regex":"^/app/([^/]+?)/flow/create(?:/)?$","path":"/app/[appId]/flow/create.html"},{"regex":"^/app/([^/]+?)/flow/([^/]+?)/edit(?:/)?$","path":"/app/[appId]/flow/[flowId]/edit.html"},{"regex":"^/app/([^/]+?)/flows(?:/)?$","path":"/app/[appId]/flows.html"},{"regex":"^/app/([^/]+?)/integrations(?:/)?$","path":"/app/[appId]/integrations.html"},{"regex":"^/app/([^/]+?)/settings(?:/)?$","path":"/app/[appId]/settings.html"}],"cleanUrls":true},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2023-02-11T00:50:06.169166Z","createUser":{"email":"zachsents@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AEdFTp71AsL3vCW4WbTy2O8YRGz62eFmp0A5Wk6o1M80Nl4"},"finalizeTime":"2023-02-11T00:50:08.111186Z","finalizeUser":{"email":"zachsents@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AEdFTp71AsL3vCW4WbTy2O8YRGz62eFmp0A5Wk6o1M80Nl4"}},"type":"DEPLOY","releaseTime":"2023-02-11T00:50:07.898Z","releaseUser":{"email":"zachsents@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/AEdFTp71AsL3vCW4WbTy2O8YRGz62eFmp0A5Wk6o1M80Nl4"}}
+[info] +  hosting[nameless-948a8]: release complete 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/nameless-948a8/overview
+[info] Hosting URL: https://nameless-948a8.web.app
+[debug] [2023-02-11T00:50:18.679Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\zachs\AppData\Roaming\nvm\v16.10.0\node_modules\firebase-tools\lib\utils.js:253:49)
+    at listOnTimeout (node:internal/timers:557:17)
+    at processTimers (node:internal/timers:500:7)
+[error] 
+[error] Error: An unexpected error has occurred.

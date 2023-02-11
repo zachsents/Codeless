@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
 import { useInterval, useSetState } from "@mantine/hooks"
 import shallow from "zustand/shallow"
@@ -14,7 +14,7 @@ export function useNodeState(nodeId, defaultState) {
     const rf = useReactFlow()
     const state = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.state)
 
-    const setState = (changes, overwrite = false) => rf.setNodes(nodes =>
+    const setState = useCallback((changes, overwrite = false) => rf.setNodes(nodes =>
         produce(nodes, draft => {
             const node = draft.find(node => node.id == nodeId)
 
@@ -31,7 +31,7 @@ export function useNodeState(nodeId, defaultState) {
                 ...changes,
             }
         })
-    )
+    ), [rf])
 
     // set default state
     useEffect(() => {
@@ -54,7 +54,7 @@ export function useNodeData(nodeId) {
     const rf = useReactFlow()
     const data = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data)
 
-    const setData = changes => rf.setNodes(nodes =>
+    const setData = useCallback(changes => rf.setNodes(nodes =>
         produce(nodes, draft => {
             const node = draft.find(node => node.id == nodeId)
 
@@ -70,7 +70,7 @@ export function useNodeData(nodeId) {
                 ...changes,
             }
         })
-    )
+    ), [rf])
 
     return [data, setData]
 }
@@ -84,7 +84,7 @@ export function useNodeDisplayProps(id) {
     const flowId = useFlowId()
 
     const node = rf.getNode(id)
-    const nodeType = Nodes[node?.type]
+    const nodeType = getNodeType(node)
 
     const [state, setState] = useNodeState(id, nodeType?.defaultState)
     const [inputConnections, outputConnections] = useNodeConnections(id, { nodeType: nodeType ?? null })
@@ -135,7 +135,6 @@ export function useListHandles(nodeId) {
 
     const rf = useReactFlow()
     const listHandles = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.listHandles)
-    const connectedEdges = useConnectedEdges(nodeId)
 
     const modifyListHandles = mutator => rf.setNodes(nodes =>
         produce(nodes, draft => {
@@ -213,18 +212,6 @@ export function useConnectedEdges(id) {
 }
 
 
-export function useNodeType({ id, type }) {
-
-    if (id) {
-        const rf = useReactFlow()
-        return Nodes[rf.getNode(id).type]
-    }
-
-    if (type)
-        return Nodes[type]
-}
-
-
 export function useSmoothlyUpdateNode(id, deps = [], {
     interval = 20
 } = {}) {
@@ -273,22 +260,6 @@ export function useHandleAlignment() {
 }
 
 
-export function useDeleteNode(id, { reactFlow } = {}) {
-    const rf = reactFlow ?? useReactFlow()
-    return () => {
-        removeNode(id, rf)
-    }
-}
-
-
-export function useDeleteEdge(id, { reactFlow } = {}) {
-    const rf = reactFlow ?? useReactFlow()
-    return () => {
-        removeEdge(id, rf)
-    }
-}
-
-
 export function useNodeScreenPosition(id) {
 
     useViewport()
@@ -320,27 +291,9 @@ export function useNodeScreenPosition(id) {
 }
 
 
-export function useNodeSelection(id, { reactFlow } = {}) {
-    const rf = reactFlow ?? useReactFlow()
-
-    const selected = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.selected)
-
-    const setSelected = val => {
-        rf.setNodes(produce(draft => {
-            const node = draft.find(node => node.id == id)
-            if (node)
-                node.selected = val
-        }))
-    }
-
-    return [selected, () => setSelected(true), () => setSelected(false), setSelected]
-}
-
-
 export function useNodeDragging(id) {
     const dragging = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.dragging)
-
-    return [dragging]
+    return dragging
 }
 
 
@@ -429,33 +382,23 @@ export function useNodeSnapping(id, x, y, {
  * Node & Edge Actions
  */
 
-export function removeNode(nodeId, reactFlow) {
-    removeNodes([nodeId], reactFlow)
+export function deleteElementsById(rf, { nodeIds = [], edgeIds = [] } = {}) {
+    rf.deleteElements({
+        nodes: nodeIds.map(id => rf.getNode(id)),
+        edges: edgeIds.map(id => rf.getEdge(id)),
+    })
 }
 
-export function removeNodes(nodeIds, reactFlow) {
-    const edgeChanges = getConnectedEdges(
-        nodeIds.map(id => reactFlow.getNode(id)),
-        reactFlow.getEdges()
-    )
-        .map(({ id }) => ({ id, type: "remove", }))
 
-    const nodeChanges = nodeIds
-        .filter(id => id != "trigger")
-        .map(id => ({ id, type: "remove" }))
-
-    reactFlow.setEdges(edges => applyEdgeChanges(edgeChanges, edges))
-    reactFlow.setNodes(nodes => applyNodeChanges(nodeChanges, nodes))
+export function deleteNodeById(rf, nodeId) {
+    deleteElementsById(rf, { nodeIds: [nodeId] })
 }
 
-export function removeEdge(edgeId, reactFlow) {
-    removeEdges([edgeId], reactFlow)
+
+export function deleteEdgeById(rf, edgeId) {
+    deleteElementsById(rf, { edgeIds: [edgeId] })
 }
 
-export function removeEdges(edgeIds, reactFlow) {
-    const edgeChanges = edgeIds.map(id => ({ id, type: "remove" }))
-    reactFlow.setEdges(edges => applyEdgeChanges(edgeChanges, edges))
-}
 
 export function createNode(nodeType, position) {
     // added this offset because that's how far off RF's project function was -- not sure why
@@ -470,33 +413,23 @@ export function createNode(nodeType, position) {
     }
 }
 
-export function findEdgeFromConnection(connection, edges) {
-    return edges.find(
-        edge => edge.source == connection.source && edge.sourceHandle == connection.sourceHandle &&
-            edge.target == connection.target && edge.targetHandle == connection.targetHandle
-    )
+
+export function deselectNode(rf, nodeId) {
+    rf.setNodes(applyNodeChanges([{
+        id: nodeId,
+        type: "select",
+        selected: false,
+    }], rf.getNodes()))
 }
 
-export function validateEdgeConnection(connection, edges) {
-    // ensure edge doesn't already exist
-    // const unique = edges.every(edge =>
-    //     edge.source != connection.source ||
-    //     edge.sourceHandle != connection.sourceHandle ||
-    //     edge.target != connection.target ||
-    //     edge.targetHandle != connection.targetHandle
-    // )
 
-    // only connect when handles have matching data types
-    const sourceHandle = new Handle(connection.sourceHandle)
-    const targetHandle = new Handle(connection.targetHandle)
-    const sameDataType = sourceHandle.dataType == targetHandle.dataType
-
-    // if all tests are passed, make the connection
-    return sameDataType && sourceHandle.dataType
+export function getNodeType(node) {
+    return node && Nodes[node.type]
 }
 
-export function getNodeElement(id) {
-    return document.querySelector(`.react-flow__node[data-id="${id}"]`)
+
+export function getNodeTypeById(rf, nodeId) {
+    return Nodes[rf.getNode(nodeId).type]
 }
 
 
@@ -511,23 +444,17 @@ export function serializeGraph(nodes = [], edges = []) {
     })
 }
 
+
 export function deserializeGraph(str = "{}") {
     const { nodes, edges } = JSON.parse(str)
     return { nodes, edges }
 }
+
 
 export function parseListHandle(id) {
     const [, name, index] = id.match(/(.+?)(?:\.(\d+))?$/) ?? []
     return {
         name,
         index: parseInt(index),
-    }
-}
-
-export class Handle {
-    constructor(handleId) {
-        const split = handleId.match(/\<([\w\W]*?)\>(.*)/)
-        this.dataType = split?.[1]
-        this.name = split?.[2]
     }
 }

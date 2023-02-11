@@ -1,11 +1,11 @@
 import { useEffect } from "react"
-import { Position, useKeyPress } from "reactflow"
+import { Position, useKeyPress, useReactFlow } from "reactflow"
 import { Card, Group, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 
-import { useDeleteNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSelection, useNodeSnapping } from "../../modules/graph-util"
+import { deleteNodeById, deselectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
 import Handle, { HandleDirection } from "./Handle"
 import { Nodes } from "../../modules/nodes"
 
@@ -13,6 +13,7 @@ import { Nodes } from "../../modules/nodes"
 export default function Node({ id, type, selected, dragging, xPos, yPos, ...props }) {
 
     const theme = useMantineTheme()
+    const rf = useReactFlow()
 
     // get node type
     const nodeType = Nodes[type]
@@ -21,8 +22,6 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
     const displayProps = useNodeDisplayProps(id)                                // props to pass to display override components
     const [stackHeight, addHeightRef] = useNodeMinHeight()                      // making sure card is correct size
     const [handleAlignments, alignHandles, headerRef] = useHandleAlignment()    // handle alignment
-    const handleDelete = useDeleteNode(id)
-    const [, , deselect] = useNodeSelection(id)
 
     // hover for showing handle labels
     const { hovered, ref: hoverRef } = useHover()
@@ -41,7 +40,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
 
     // side effect: when dragging, deselect
     useEffect(() => {
-        dragging && deselect()
+        dragging && deselectNode(rf, id)
     }, [dragging])
 
     const commonHandleGroupProps = {
@@ -142,11 +141,11 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
                         >
                             <Card shadow="sm" p={5} radius="md" sx={{ pointerEvents: "all" }}>
                                 <Group spacing="xs" noWrap>
-                                    <ActionIcon size="md" radius="sm">
+                                    <ActionIcon disabled size="md" radius="sm">
                                         <TbCopy size={16} />
                                     </ActionIcon>
                                     {nodeType.deletable !== false &&
-                                        <ActionIcon size="md" radius="sm" color="red" onClick={handleDelete}>
+                                        <ActionIcon size="md" radius="sm" color="red" onClick={() => deleteNodeById(rf, id)}>
                                             <TbTrash size={16} />
                                         </ActionIcon>}
                                 </Group>

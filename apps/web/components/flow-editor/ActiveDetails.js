@@ -4,7 +4,7 @@ import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, B
 import { motion, AnimatePresence } from "framer-motion"
 import {  TbAlertTriangle, TbTrash, TbX } from "react-icons/tb"
 
-import { removeEdges, removeNodes, useNodeDisplayProps, useNodeDragging, useNodeSelection, useNodeType } from '../../modules/graph-util'
+import { deselectNode, getNodeType, useNodeDisplayProps, useNodeDragging } from '../../modules/graph-util'
 
 
 export default function ActiveDetails() {
@@ -16,13 +16,13 @@ export default function ActiveDetails() {
     const onSelectionChange = useCallback(({ nodes, edges }) => {
         setSelectedNodes(nodes)
         setSelectedEdges(edges)
-    })
+    }, [])
     useOnSelectionChange({ onChange: onSelectionChange })
 
     const emptySelection = selectedNodes.length == 0 && selectedEdges.length == 0
     const singleNodeSelected = selectedNodes.length == 1 && selectedEdges.length == 0
 
-    const [dragging] = useNodeDragging(selectedNodes[0]?.id)
+    const dragging = useNodeDragging(selectedNodes[0]?.id)
     
 
     return (
@@ -43,13 +43,11 @@ function NodeConfig({ node }) {
 
     const rf = useReactFlow()
     const theme = useMantineTheme()
-
-    const nodeType = useNodeType({ type: node.type })
-    const hasConfiguration = !!nodeType.configuration
-
+    
     const displayProps = useNodeDisplayProps(node.id)
-    const [, , deselect] = useNodeSelection(node.id, { reactFlow: rf })
-
+    const nodeType = getNodeType(node)
+    const hasConfiguration = !!nodeType.configuration
+    
     const [accordionValue, setAccordionValue] = useState(hasConfiguration ? "options" : null)
 
     const numUnconnectedInputs = Object.values(displayProps.inputConnections).reduce((sum, cur) => sum + !cur, 0)
@@ -92,7 +90,7 @@ function NodeConfig({ node }) {
                                     </Group>
                                 </Stack>
 
-                                <ActionIcon radius="md" onClick={deselect}>
+                                <ActionIcon radius="md" onClick={() => deselectNode(rf, node.id)}>
                                     <TbX />
                                 </ActionIcon>
                             </Group>
@@ -216,8 +214,7 @@ function DeleteButton({ nodes, edges, label, ...props }) {
     const reactFlow = useReactFlow()
 
     const handleClick = () => {
-        edges.length && removeEdges(edges.map(e => e.id), reactFlow)
-        nodes.length && removeNodes(nodes.map(n => n.id), reactFlow)
+        reactFlow.deleteElements({ nodes, edges })
     }
 
     return (
