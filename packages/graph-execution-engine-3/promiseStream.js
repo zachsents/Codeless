@@ -1,33 +1,40 @@
 
-// who to notify when there are no more pending promises
-const subscribers = []
+export const PromiseStream = {
 
-// track total and resolved promises to determine if there are pending ones
-let totalPromises = 0
-let resolvedPromises = 0
-let failedPromises = 0
+    // who to notify when there are no more pending promises
+    subscribers: [],
 
-export function subscribe() {
-    return new Promise(resolve => {
-        subscribers.push(resolve)
-    })
-}
+    // track total and resolved promises to determine if there are pending ones
+    totalPromises: 0,
+    resolvedPromises: 0,
+    failedPromises: 0,
 
-export function watch(promise, catchError) {
-    if (promise?.then) {
-        totalPromises++
+    add(promise, { onResolve, onReject } = {}) {
+
+        if (!promise?.then)
+            return
+
+        this.totalPromises++
         promise
-            .then(() => {
-                resolvedPromises++
+            .then(result => {
+                this.resolvedPromises++
+                onResolve?.(result)
             })
             .catch(error => {
-                failedPromises++
-                catchError?.(error)
+                this.failedPromises++
+                onReject?.(error)
             })
             .finally(() => {
                 // if all promises are fulfilled
-                if(resolvedPromises + failedPromises >= totalPromises)
-                    subscribers.forEach(resolve => resolve())   // notify subscribers
+                if (this.resolvedPromises + this.failedPromises >= this.totalPromises)
+                    // notify subscribers
+                    this.subscribers.forEach(resolve => resolve())
             })
+    },
+
+    finished() {
+        return new Promise(resolve => {
+            this.subscribers.push(resolve)
+        })
     }
 }

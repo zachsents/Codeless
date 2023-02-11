@@ -1,5 +1,5 @@
-import { reportError } from "./errors.js"
-import { watch } from "./promiseStream.js"
+import { Errors, Outputs, Returns } from "./outputs.js"
+import { PromiseStream } from "./promiseStream.js"
 
 
 export async function startGraph(nodes, setupPayload) {
@@ -11,14 +11,14 @@ export async function startGraph(nodes, setupPayload) {
     )
 
     // fire start event
-    nodes.forEach(node => {
-        watch(
-            node.type.onStart?.bind(node)(setupPayload)
-        )
-    })
+    nodes.forEach(node => PromiseStream.add(
+        node.type.onStart?.bind(node)(setupPayload)
+    ))
 
     // watch empty promise to indicate starting finished
-    watch(Promise.resolve())
+    PromiseStream.add(Promise.resolve())
+
+    return PromiseStream.finished()
 }
 
 
@@ -52,9 +52,14 @@ function prepNode(node, nodeType, nodes, edges) {
 
     // set up other node properties
     node.timesRan = 0
+    node.returnToFlow = Returns.report.bind(Returns)
 
     // create publish function -- pushes output values to connected input
     node.publish = function publish(valuesObject) {
+
+        // report published values
+        Outputs.report(node.id, valuesObject)
+
         Object.entries(valuesObject).forEach(([output, value]) => {
             node.outgoingConnections[output]?.forEach(conn => {
                 // ensure what we need exists
@@ -107,23 +112,17 @@ function prepNode(node, nodeType, nodes, edges) {
                     // increment run counter
                     node.timesRan++
 
-                    // error tracking
-                    const catchError = error => reportError(conn.node.id, {
-                        type: conn.node.type.id,
-                        message: error.message,
-                        fullError: error,
-                    })
+                    // call node's onInputsReady function
+                    const nodeOutput = conn.node.type.onInputsReady?.bind(conn.node)(nodeInputs)
 
-                    try {
-                        // call node's input ready function
-                        watch(
-                            conn.node.type.onInputsReady?.bind(conn.node)(nodeInputs),
-                            catchError
-                        )
-                    }
-                    catch (error) {
-                        catchError(error)
-                    }
+                    // use PromiseStream to await nodes and process outputs/errors
+                    PromiseStream.add(Promise.resolve(nodeOutput), {
+                        onReject: error => Errors.report(conn.node.id, {
+                            type: conn.node.type.id,
+                            message: error.message,
+                            fullError: error,
+                        }),
+                    })
                 }
             })
         })

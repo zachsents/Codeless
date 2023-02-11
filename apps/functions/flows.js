@@ -66,13 +66,13 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
                 app: flow.app,
                 appId: flow.app.id,
             }
-            const { errors } = await flow.run(run.payload)
+            const result = await flow.run(run.payload)
 
             // update doc with run info
-            const status = Object.keys(errors).length ? RunStatus.FinishedWithErrors : RunStatus.Finished
+            const status = Object.keys(result.errors).length ? RunStatus.FinishedWithErrors : RunStatus.Finished
             change.after.ref.update({
                 status,
-                errors,
+                ...result,
                 ranAt: FieldValue.serverTimestamp(),
             })
 

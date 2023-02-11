@@ -1,5 +1,4 @@
-import { clearErrors, getErrors } from "./errors.js"
-import { subscribe } from "./promiseStream.js"
+import { Errors, Outputs, Returns } from "./outputs.js"
 import { findUnknownTypes, prepGraph, startGraph } from "./util.js"
 
 
@@ -12,8 +11,10 @@ export async function runFlow({
     // clear variables
     global.variables = {}
 
-    // clear errors
-    clearErrors()
+    // clear trackers
+    Outputs.reset()
+    Errors.reset()
+    Returns.reset()
 
     // ensure that all node types exist
     findUnknownTypes(nodes, nodeTypes)
@@ -21,11 +22,12 @@ export async function runFlow({
     // prep the graph for execution
     prepGraph(nodes, edges, nodeTypes)
 
-    // start the graph execution
+    // start the graph execution & wait for graph to finish executing
     await startGraph(nodes, setupPayload)
 
-    // wait for graph to finish executing
-    await subscribe()
-
-    return { errors: getErrors() }
+    return {
+        outputs: Outputs.get(),
+        errors: Errors.get(),
+        returns: Returns.get(),
+    }
 }
