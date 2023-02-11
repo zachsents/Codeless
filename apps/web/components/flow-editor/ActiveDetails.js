@@ -149,7 +149,7 @@ function NodeConfig({ node }) {
                                                     <thead>
                                                         <tr>
                                                             <th style={{ whiteSpace: "nowrap" }}>Output</th>
-                                                            <th>Value</th>
+                                                            <th>Last Value</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

@@ -5,20 +5,26 @@ export default {
     name: "Text Length",
 
     inputs: ["text"],
-    outputs: ["length"],
+    outputs: ["count"],
 
     onInputsReady({ text }) {
         this.publish({
-            length: safeMap(pickOp(this.state.mode), text)
+            count: safeMap(text => {
+
+                if(typeof text !== "string")
+                    throw new Error("All inputs must be strings")
+
+                return operation(this.state.mode, text)
+            }, text)
         })
     },
 }
 
-function pickOp(mode) {
+function operation(mode, text) {
     switch (mode) {
         case "Character":
-            return text => text.length
+            return text.length
         case "Word":
-            return text => text.split(/\s+/).length
+            return text.split(/\s+/).length
     }
 }

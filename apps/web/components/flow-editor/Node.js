@@ -1,23 +1,22 @@
 import { useEffect } from "react"
-import { Position, useKeyPress, useReactFlow } from "reactflow"
+import { useKeyPress, useReactFlow } from "reactflow"
 import { Card, Group, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 
-import { deleteNodeById, deselectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
+import { deleteNodeById, deselectNode, getNodeType, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
+import { useFlowContext } from "../../modules/context"
 import Handle, { HandleDirection } from "./Handle"
-import { Nodes } from "../../modules/nodes"
 
 
 export default function Node({ id, type, selected, dragging, xPos, yPos, ...props }) {
 
     const theme = useMantineTheme()
     const rf = useReactFlow()
+    const { latestRun } = useFlowContext()
 
-    // get node type
-    const nodeType = Nodes[type]
-
+    const nodeType = getNodeType({ type })
     const [data, setData] = useNodeData(id)                                     // node's internal data
     const displayProps = useNodeDisplayProps(id)                                // props to pass to display override components
     const [stackHeight, addHeightRef] = useNodeMinHeight()                      // making sure card is correct size
@@ -25,10 +24,6 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
 
     // hover for showing handle labels
     const { hovered, ref: hoverRef } = useHover()
-
-    // look at our errors from the last run
-    // const errors = lastRun?.errors?.[id] ?? []
-    const errors = []
 
     // alt-dragging for duplication -- TO DO: implement this
     const duplicating = useKeyPress("Alt") && hovered
@@ -127,7 +122,11 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
                 }
             </Card>
 
-            <ErrorIcon show={!!errors.length} errors={errors} />
+
+            <AnimatePresence>
+                {latestRun.errors[id]?.length > 0 &&
+                    <ErrorIcon />}
+            </AnimatePresence>
 
             {/* Controls */}
             <AnimatePresence>
@@ -159,10 +158,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
 
 
 
-function ErrorIcon({ show = false, errors, onClick }) {
-
-    const theme = useMantineTheme()
-
+function ErrorIcon() {
     return (
         <Box
             sx={{
@@ -172,23 +168,18 @@ function ErrorIcon({ show = false, errors, onClick }) {
                 zIndex: 11,
             }}
         >
-            <AnimatePresence>
-                {show &&
-                    <motion.div initial={{ scale: 0, rotate: -135 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -135 }} transition={{ duration: 0.1 }}>
-                        <Tooltip label="View Error" size="xs">
-                            <ActionIcon
-                                size="xs"
-                                radius="xl"
-                                variant="filled"
-                                color="red.7"
-                                onClick={onClick}
-                            >
-                                <TbExclamationMark />
-                            </ActionIcon>
-                        </Tooltip>
-                    </motion.div>
-                }
-            </AnimatePresence>
+            <motion.div initial={{ scale: 0, rotate: -135 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -135 }} transition={{ duration: 0.1 }}>
+                <Tooltip withArrow label={<Text size="xs">There were errors on the last run</Text>}>
+                    <ActionIcon
+                        size="xs"
+                        radius="sm"
+                        variant="filled"
+                        color="red.7"
+                    >
+                        <TbExclamationMark size={12} />
+                    </ActionIcon>
+                </Tooltip>
+            </motion.div>
         </Box>
     )
 }

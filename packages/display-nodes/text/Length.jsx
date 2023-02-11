@@ -11,7 +11,7 @@ export default {
     badge: "text",
 
     inputs: ["text"],
-    outputs: ["length"],
+    outputs: ["count"],
 
     defaultState: {
         mode: "Character",
