@@ -20,36 +20,46 @@ export default {
             label: "Run Now",
             icon: Run,
 
-            onClick: async ({ flow, loading, setLoading, success, setSuccess, error, setError }) => {
+            onClick: async ({ flow, setLoading, setSuccess, setError }) => {
 
                 setLoading(true)
-                console.debug(`Running "${flow.name}" (${flow.id}) manually...`)
+                console.log(`Running "${flow.name}"...`)
 
                 try {
-                    var flowRun = await runFlow(flow.id, null)
+                    var { runId, finished } = await runFlow(flow.id, null)
+
+                    console.log(`Created run ${runId}`)
+
+                    const flowRun = await finished
 
                     if (Object.keys(flowRun.errors).length > 0) {
                         setError(true)
-                        console.debug("😢 Returned errors:\n", flowRun.errors)
+                        console.log("Finished with errors.")
                     }
-                    else
+                    else {
                         setSuccess(true)
+                        console.log("Finished successfully.")
+                    }
 
-                    console.debug("Done. Here's the run:")
+                    if(flowRun.returns.logs) {
+                        console.groupCollapsed("Run Logs")
+                        flowRun.returns.logs.forEach(log => console.log(log))
+                        console.groupEnd()
+                    }
+
                     console.debug(flowRun)
-
-                    setTimeout(() => {
-                        setError(false)
-                        setSuccess(false)
-                    }, 2000)
                 }
                 catch (err) {
                     console.error("Run failed")
                     console.error(err)
-                    return
+                    setError(true)
                 }
                 finally {
                     setLoading(false)
+                    setTimeout(() => {
+                        setError(false)
+                        setSuccess(false)
+                    }, 2000)
                 }
             }
         },

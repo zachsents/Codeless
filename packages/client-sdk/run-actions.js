@@ -90,7 +90,10 @@ export async function runFlow(flowId, payload) {
 
     const runId = await startFlowRun(flowId, payload)
 
-    return waitForRunToEnd(runId)
+    return {
+        runId,
+        finished: waitForRunToEnd(runId),
+    }
 }
 
 
