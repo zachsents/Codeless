@@ -1,5 +1,6 @@
 import { Errors, Outputs, Returns } from "./outputs.js"
 import { PromiseStream } from "./promiseStream.js"
+import * as util from "util"
 
 
 export async function startGraph(nodes, setupPayload) {
@@ -58,7 +59,15 @@ function prepNode(node, nodeType, nodes, edges) {
     node.publish = function publish(valuesObject) {
 
         // report published values
-        Outputs.report(node.id, valuesObject)
+        Outputs.report(
+            node.id,
+            // need to map values to primitives
+            Object.fromEntries(
+                Object.entries(valuesObject).map(([key, val]) =>
+                    [key, val && cleanOutput(val)]
+                )
+            )
+        )
 
         Object.entries(valuesObject).forEach(([output, value]) => {
             node.outgoingConnections[output]?.forEach(conn => {
@@ -190,4 +199,18 @@ function parseListHandle(id) {
         name,
         index: index && parseInt(index),
     }
+}
+
+
+function cleanOutput(dirty) {
+    const value = dirty.valueOf()
+    const isPrimitive = value !== Object(value)
+    const isPlainObject = value.constructor === Object
+    const isArray = value.constructor === Array
+    const isCircular = util.format("%j", value) == "[Circular]"
+
+    if ((isPrimitive || isPlainObject || isArray) && !isCircular)
+        return value
+
+    return dirty.toString()
 }

@@ -153,12 +153,14 @@ function NodeConfig({ node }) {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {Object.entries(latestRun.outputs[node.id]).map(
-                                                            ([key, val]) => <tr key={key}>
-                                                                <td style={{ whiteSpace: "nowrap" }}>{key}</td>
-                                                                <td>{val.toString()}</td>
-                                                            </tr>
-                                                        )}
+                                                        {Object.entries(latestRun.outputs[node.id])
+                                                            .sort((a, b) => a > b)
+                                                            .map(
+                                                                ([key, val]) => <tr key={key}>
+                                                                    <td style={{ whiteSpace: "nowrap" }}>{key}</td>
+                                                                    <td>{val.toString()}</td>
+                                                                </tr>
+                                                            )}
                                                     </tbody>
                                                 </Table> :
                                                 <Text color="dimmed" size="sm" align="center">No data to show. Try running your flow!</Text>}
