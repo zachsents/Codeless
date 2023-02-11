@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo } from "react"
-import produce from "immer"
-import ReactFlow, { Background, useReactFlow, useNodes, useEdges, useKeyPress } from "reactflow"
+import { useEffect, useMemo } from "react"
+import ReactFlow, { Background, useNodes, useEdges, useKeyPress } from "reactflow"
 import { useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
@@ -19,7 +18,6 @@ import 'reactflow/dist/style.css'
 export default function NodeBuilder({ }) {
 
     const theme = useMantineTheme()
-    const rf = useReactFlow()
 
     const { flowGraph } = useFlowContext()
     const updateFlowGraph = useUpdateFlowGraph(flowGraph?.id)
@@ -30,7 +28,7 @@ export default function NodeBuilder({ }) {
         [flowGraph?.graph]
     )
 
-    // debounce graph changes and update
+    // debounce graph changes and update flow document
     const [, setGraph] = useDebouncedCustomState(flowGraph?.graph, updateFlowGraph, 1000)
 
     // watch shift key tp enable snapping

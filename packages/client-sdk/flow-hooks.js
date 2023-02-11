@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useQuery } from "react-query"
-import { createFlow, createFlowsForAppQuery, createOtherRunnableFlowsQuery, deleteFlow, getFlow, getFlowCountForApp, getFlowGraph, getFlowGraphRef, getFlowRef, getFlowsForApp, getOtherRunnableFlows, publishFlow, renameFlow, unpublishFlow, updateFlowGraph } from "./flow-actions.js"
+import { createFlow, createFlowsForAppQuery, createOtherRunnableFlowsQuery, deleteFlow, getFlow, getFlowCountForApp, getFlowGraph, getFlowGraphRef, getFlowRef, getFlowsForApp, getOtherRunnableFlows, publishFlow, renameFlow, unpublishFlow, updateFlowGraph, updateFlowLastEdited } from "./flow-actions.js"
 import { useRealtime } from "./firestore-util.js"
 import { useCallbackWithRequirements } from "./util.js"
 
@@ -147,6 +147,21 @@ export function useUpdateFlowGraph(flowGraphId) {
     return useCallback(
         newGraph => updateFlowGraph(flowGraphId, newGraph),
         [flowGraphId]
+    )
+}
+
+
+/**
+ * Hook that creates a callback that updates a flow's
+ * lastEdited field.
+ *
+ * @export
+ * @param {string} flowId
+ */
+export function useUpdateFlowLastEdited(flowId) {
+    return useCallback(
+        lastEdited => updateFlowLastEdited(flowId, lastEdited),
+        [flowId]
     )
 }
 

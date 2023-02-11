@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ReactFlowProvider } from "reactflow"
 import { AppShell } from "@mantine/core"
-import { useDisclosure } from "@mantine/hooks"
+import { useDisclosure, useInterval } from "@mantine/hooks"
+import { useUpdateFlowLastEdited } from "@minus/client-sdk"
 
-import { useMustBeSignedIn } from "../../../../../modules/hooks"
+import { useFlowId, useMustBeSignedIn } from "../../../../../modules/hooks"
 import { FlowProvider } from "../../../../../modules/context"
 import NodeBuilder from "../../../../../components/flow-editor/NodeBuilder"
 import Header from "../../../../../components/flow-editor/Header"
@@ -43,8 +44,31 @@ export default function EditFlow() {
                         suggestedTab={suggestedTab}
                         onOpenedSuggestedTab={() => setSuggestedTab(null)}
                     />
+
+                    <LastEdited />
                 </AppShell>
             </ReactFlowProvider>
         </FlowProvider>
     )
+}
+
+
+function LastEdited() {
+
+    const flowId = useFlowId()
+
+    // update lastEdited field on mount and every minute
+    const _updateLastEdited = useUpdateFlowLastEdited(flowId)
+    const updateLastEdited = () => console.log("update") || _updateLastEdited()
+    const lastEditedInterval = useInterval(updateLastEdited, 60 * 1000)
+
+    useEffect(() => {
+        if (flowId) {
+            updateLastEdited()
+            lastEditedInterval.start()
+            return lastEditedInterval.stop
+        }
+    }, [flowId])
+
+    return <></>
 }

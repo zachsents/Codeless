@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, query, serverTimestamp, Timestamp, updateDoc, where } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { firestore, functions } from "./firebase-init.js"
 import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
@@ -141,6 +141,32 @@ export function updateFlowGraph(flowGraphId, newGraph) {
         throw new Error("Must include a new graph string when updating a flow graph.")
 
     return updateDoc(getFlowGraphRef(flowGraphId), { graph: newGraph })
+}
+
+
+/**
+ * Updates a flow with a change object.
+ *
+ * @export
+ * @param {string} flowId
+ * @param {object} [changes={}]
+ */
+export function updateFlow(flowId, changes = {}) {
+    assertFlowId(flowId)
+
+    return updateDoc(getFlowRef(flowId), changes)
+}
+
+
+/**
+ * Updates a flow's lastEdited field. Defaults to the current time.
+ *
+ * @export
+ * @param {string} flowId
+ * @param {Timestamp} [lastEdited=serverTimestamp()]
+ */
+export function updateFlowLastEdited(flowId, lastEdited = serverTimestamp()) {
+    return updateFlow(flowId, { lastEdited })
 }
 
 
