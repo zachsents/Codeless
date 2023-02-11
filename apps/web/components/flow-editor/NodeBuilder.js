@@ -51,6 +51,7 @@ export default function NodeBuilder({ }) {
             selectionKeyCode={"Shift"}
             multiSelectionKeyCode={"Shift"}
             zoomActivationKeyCode={null}
+            deleteKeyCode={deleteKeyCodes}
         >
             <Background
                 // variant="lines" 
@@ -85,6 +86,8 @@ function ChangeWatcher({ onChange }) {
 
     return <></>
 }
+
+const deleteKeyCodes = ["Delete", "Backspace"]
 
 const nodeTypes = Object.fromEntries(
     Object.keys(Nodes).map(type => [type, Node])
