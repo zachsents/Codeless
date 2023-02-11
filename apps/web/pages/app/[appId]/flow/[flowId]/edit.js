@@ -58,8 +58,7 @@ function LastEdited() {
     const flowId = useFlowId()
 
     // update lastEdited field on mount and every minute
-    const _updateLastEdited = useUpdateFlowLastEdited(flowId)
-    const updateLastEdited = () => console.log("update") || _updateLastEdited()
+    const updateLastEdited = useUpdateFlowLastEdited(flowId)
     const lastEditedInterval = useInterval(updateLastEdited, 60 * 1000)
 
     useEffect(() => {
