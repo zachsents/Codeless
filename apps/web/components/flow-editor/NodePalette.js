@@ -66,6 +66,9 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
             case "ArrowDown":
                 Array(numColumns).fill(0).reduce(el => el?.nextSibling, focused)?.focus()
                 break
+            case "Enter":
+            case "Tab":
+                break
             default:
                 searchRef.current?.focus()
                 goToEndOfInput(searchRef.current)
@@ -97,7 +100,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
                 ref={gridRef}
             >
                 {filteredNodes.map(
-                    nodeType => <NodeTile
+                    (nodeType, i) => <NodeTile
                         onClick={() => addNode(nodeType)}
                         type={nodeType}
                         expanded={!!query}
