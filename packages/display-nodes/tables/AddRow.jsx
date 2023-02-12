@@ -1,8 +1,5 @@
-import { ActionIcon, Button, Grid, Group, Space, Stack, Text, TextInput } from "@mantine/core"
-import produce from "immer"
-import { Fragment } from "react"
-import { Table, Plus, X, ArrowRight } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent, SkeletonWithHandle } from "../components"
+import { Table} from "tabler-icons-react"
+import { ControlStack, ListHandlesControl, ListHandlesNodeContent, SkeletonWithHandle } from "../components"
 
 
 export default {
@@ -20,7 +17,7 @@ export default {
             list: true,
         }
     ],
-    outputs: ["tableOut"],
+    outputs: [],
 
     defaultState: {
         dataLabels: [],
@@ -29,7 +26,7 @@ export default {
 
     renderNode: ({ state, alignHandles, listHandles }) => {
 
-        alignHandles(["table", "tableOut"])
+        alignHandles("table")
 
         return <ListHandlesNodeContent
             handleName="$data"

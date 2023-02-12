@@ -5,7 +5,7 @@ export default {
     name: "Add Row",
 
     inputs: ["table", "$data"],
-    outputs: ["tableOut"],
+    outputs: [],
 
     async onInputsReady({ table, $data }) {
 
@@ -14,7 +14,5 @@ export default {
                 $data.map((item, i) => [this.state.dataLabels[i] ?? i, item])
             )
         )
-
-        this.publish({ tableOut: table })
     },
 }

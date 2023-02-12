@@ -6,7 +6,7 @@ import { SheetNameControl, SpreadsheetIDControl } from "./shared"
 
 export default {
     id: "googlesheets:Spreadsheet",
-    name: "Google Sheet",
+    name: "Use Google Sheet",
     description: "Gets a sheet from your Google Drive.",
     icon: SiGooglesheets,
     color: "green",
@@ -16,7 +16,7 @@ export default {
     outputs: ["_sheetRef"],
 
     defaultState: {
-        spreadsheetId: "",
+        spreadsheetId: null,
         sheetName: "",
     },
 
