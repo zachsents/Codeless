@@ -190,7 +190,11 @@ function NodeConfig({ node }) {
                                                             .map(
                                                                 ([key, val]) => <tr key={key}>
                                                                     <td style={{ whiteSpace: "nowrap" }}>{key}</td>
-                                                                    <td>{val.toString()}</td>
+                                                                    <td>
+                                                                        <Text sx={{ whiteSpace: "pre-wrap" }}>
+                                                                            {val.length == 1 ? val[0] : val.toString()}
+                                                                        </Text>
+                                                                    </td>
                                                                 </tr>
                                                             )}
                                                     </tbody>
