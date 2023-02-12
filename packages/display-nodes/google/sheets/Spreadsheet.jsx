@@ -13,7 +13,16 @@ export default {
     badge: "Google Sheets",
 
     inputs: [],
-    outputs: ["_sheetRef"],
+    outputs: [
+        {
+            name: "_sheetRef",
+            label: "Sheet",
+            suggested: [
+                "googlesheets:Table",
+                "googlesheets:Range",
+            ],
+        }
+    ],
 
     defaultState: {
         spreadsheetId: null,

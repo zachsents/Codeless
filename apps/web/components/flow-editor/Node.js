@@ -5,9 +5,10 @@ import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 
-import { deleteNodeById, deselectNode, getNodeType, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
+import { createEdge, createNode, deleteNodeById, deselectNode, getNodeType, selectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
 import { useFlowContext } from "../../modules/context"
 import Handle, { HandleDirection } from "./Handle"
+import { useCallback } from "react"
 
 
 export default function Node({ id, type, selected, dragging, xPos, yPos, ...props }) {
@@ -38,6 +39,22 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
         dragging && deselectNode(rf, id)
     }, [dragging])
 
+    // callback for adding neighbor node
+    const addNeighborNode = useCallback((targetType, targetHandle, sourceHandle) => {
+
+        const { position: { x, y }, width } = rf.getNode(id)
+
+        const newNode = createNode(targetType, {
+            x: x + width + 150,
+            y: y,
+        })
+        const newEdge = createEdge(id, sourceHandle, newNode.id, targetHandle)
+
+        rf.addNodes(newNode)
+        rf.addEdges(newEdge)
+        selectNode(rf, newNode.id)
+    }, [rf])
+
     const commonHandleGroupProps = {
         includeContainer: true,
         queryListHandle: name => data?.listHandles?.[name] ?? 0,
@@ -45,6 +62,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
             showLabel: hovered,
             connected: displayProps.connections[handleId],
             align: handleAlignments[handleId],
+            onAddSuggested: (targetType, targetHandle) => addNeighborNode(targetType, targetHandle, handleId),
         }),
     }
 

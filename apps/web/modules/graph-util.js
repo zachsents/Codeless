@@ -414,12 +414,46 @@ export function createNode(nodeType, position) {
 }
 
 
+export function createEdge(source, sourceHandle, target, targetHandle) {
+    return {
+        id: `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`,
+        source,
+        sourceHandle,
+        target,
+        targetHandle,
+        type: "dataEdge",
+    }
+}
+
+
 export function deselectNode(rf, nodeId) {
     rf.setNodes(applyNodeChanges([{
         id: nodeId,
         type: "select",
         selected: false,
     }], rf.getNodes()))
+}
+
+
+export function selectNode(rf, nodeId, {
+    deselectOthers = true,
+} = {}) {
+    let changes = [{
+        id: nodeId,
+        type: "select",
+        selected: true,
+    }]
+
+    if (deselectOthers)
+        rf.getNodes().forEach(node => {
+            node.id != nodeId && changes.push({
+                id: node.id,
+                type: "select",
+                selected: false,
+            })
+        })
+    
+    rf.setNodes(applyNodeChanges(changes, rf.getNodes()))
 }
 
 

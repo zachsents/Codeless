@@ -32,7 +32,6 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
         context.closeModal(id)
     }, [rf])
 
-
     // Moving focus with arrow keys
     const numColumns = query ? 1 : 2
 
@@ -139,7 +138,7 @@ const NodeTile = forwardRef(({ type, expanded, ...props }, ref) => {
                 </Group>
                 <HoverCard openDelay={500}>
                     <HoverCard.Target>
-                        <Text truncate color="dimmed" size="sm">
+                        <Text lineClamp={1} color="dimmed" size="sm">
                             {type.description}
                         </Text>
                     </HoverCard.Target>

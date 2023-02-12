@@ -5,14 +5,22 @@ import { Control, ControlLabel, ControlStack } from "../../components"
 
 export default {
     id: "googlesheets:Table",
-    name: "Use Sheet as Table",
-    description: "Turns a Google Sheet into a Table.",
+    name: "Interpret Sheet as Table",
+    description: "Uses a Google Sheet as if it were a table.",
     icon: SiGooglesheets,
     color: "green",
     badge: "Google Sheets",
 
     inputs: ["$sheet"],
-    outputs: ["table"],
+    outputs: [
+        {
+            name: "table",
+            suggested: [
+                { node: "tables:RowWhere", handle: "table" },
+                { node: "tables:AddRow", handle: "table" },
+            ],
+        }
+    ],
 
     defaultState: {
         useEntireSheet: true,

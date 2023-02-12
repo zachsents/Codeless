@@ -1,10 +1,12 @@
 import { forwardRef, memo, useRef } from "react"
 import { Handle as RFHandle, Position } from "reactflow"
-import { Box, useMantineTheme, Text, Stack } from "@mantine/core"
+import { Box, useMantineTheme, Text, Stack, Button } from "@mantine/core"
 import { motion } from "framer-motion"
+import { TbPlus } from "react-icons/tb"
+import { Nodes } from "../../modules/nodes"
 
 
-export default function Handle({ id, name, label, direction, position,
+export default function Handle({ id, name, label, direction, position, suggested, onAddSuggested,
     connected, align, showLabel = false }) {
 
     const theme = useMantineTheme()
@@ -22,7 +24,7 @@ export default function Handle({ id, name, label, direction, position,
     )
 
     // animation variants
-    const variants = {
+    const handleAnimVariants = {
         hovered: { scale: 2.5 },
         unconnected: { scale: 1.3 },
     }
@@ -34,7 +36,7 @@ export default function Handle({ id, name, label, direction, position,
             style={handleWrapperStyle(alignHeight)}
             ref={wrapperRef}
         >
-            <motion.div variants={variants} transition={{ type: "spring", duration: 0.15 }}>
+            <motion.div variants={handleAnimVariants} transition={{ type: "spring", duration: 0.15 }}>
                 <RFHandle
                     id={id}
                     type={direction}
@@ -47,10 +49,35 @@ export default function Handle({ id, name, label, direction, position,
                     }}
                 />
             </motion.div>
-            {showLabel && tooltipLabel &&
+            {showLabel && (tooltipLabel || suggested) &&
                 <Box sx={tooltipWrapperStyle(position)}>
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} >
-                        <Text sx={tooltipStyle}>{tooltipLabel}{isUnconnectedInput ? " (not connected)" : ""}</Text>
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.2 }}>
+                        <Stack spacing={5} align="start" py="sm" ml={-15} pl={15}>
+                            {tooltipLabel &&
+                                <Text sx={tooltipStyle(false)}>{tooltipLabel}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
+
+                            {suggested && <>
+                                <Text size={8} color="dimmed" mt={3} mb={-2}>Suggested Nodes</Text>
+
+                                {suggested?.map(
+                                    (suggestion, i) => {
+                                        // suggestion can either be just a node type ID or an object
+
+                                        const { node, handle } = typeof suggestion === "string" ? {
+                                            node: suggestion,
+                                            handle: Nodes[suggestion]?.inputs?.[0]?.name ?? Nodes[suggestion]?.inputs?.[0],
+                                        } : suggestion
+
+                                        return <Suggestion
+                                            typeId={node}
+                                            onClick={() => onAddSuggested?.(node, handle)}
+                                            index={i}
+                                            key={i}
+                                        />
+                                    }
+                                )}
+                            </>}
+                        </Stack>
                     </motion.div>
                 </Box>}
         </motion.div>
@@ -72,10 +99,11 @@ Handle.Group = memo(forwardRef(({
     const handleElements = handles?.map(handle => {
 
         // handle can either be just a name or an object
-        const { name, label, list } = typeof handle === "string" ? {
+        const { name, label, list, suggested } = typeof handle === "string" ? {
             name: handle,
             label: null,
             list: false,
+            suggested: null,
         } : handle
 
         // if it's a list handle, get current number of handles
@@ -92,6 +120,7 @@ Handle.Group = memo(forwardRef(({
                 label={label}
                 position={position ?? inferredPosition}
                 direction={direction}
+                suggested={suggested}
                 // spread additional props to handle -- can be object or function
                 {...(typeof handleProps == "function" ? handleProps(handleId) : handleProps)}
                 key={handleId}
@@ -137,6 +166,40 @@ export const HandleDirection = {
 }
 
 
+function Suggestion({ typeId, index, ...props }) {
+
+    const suggestionAnimVariants = {
+        hide: { opacity: 0, y: -40 },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                spring: 0.5,
+                duration: 0.2,
+                delay: index * 0.05 + 0.1,
+            },
+        },
+    }
+
+    return (
+        <motion.div initial="hide" animate="show" variants={suggestionAnimVariants} >
+            <Button
+                size="xs"
+                compact
+                variant="light"
+                color="gray"
+                leftIcon={<TbPlus />}
+                styles={suggestionStyles}
+                {...props}
+            >
+                <Text size={10} weight={400}>{Nodes[typeId].name}</Text>
+            </Button>
+        </motion.div>
+    )
+}
+
+
 const handleSize = 8
 
 
@@ -175,20 +238,30 @@ const handleStyle = theme => ({
     // outline: "3px solid " + (theme.other.editorBackgroundColor ?? theme.colors.gray[2])
 })
 
-const tooltipWrapperStyle = position => ({
+const tooltipWrapperStyle = position => theme => ({
     position: "absolute",
     top: "50%",
     [position]: 0,
-    transform: `translate(${position == "left" ? "-" : ""}100%, -50%)`,
+    transform: `translate(${position == "left" ? "-" : ""}100%, -${theme.spacing.sm + 10}px)`,
 })
 
-const tooltipStyle = theme => ({
+const tooltipStyle = (button = false) => theme => ({
     fontSize: 10,
     borderRadius: theme.radius.xl,
     backgroundColor: theme.colors.dark[4],
     color: theme.colors.gray[0],
     padding: "2px 8px",
     whiteSpace: "nowrap",
+
+    "&:hover": button ? {
+        backgroundColor: theme.colors.dark[5],
+    } : {},
+})
+
+const suggestionStyles = theme => ({
+    inner: {
+        justifyContent: "flex-start",
+    }
 })
 
 function formatName(name) {
