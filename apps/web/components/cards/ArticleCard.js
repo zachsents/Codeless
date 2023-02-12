@@ -10,6 +10,7 @@ export default function ArticleCard({ placeholder = 1, title }) {
                 <Image
                     radius="lg"
                     src={`/article-placeholder-${placeholder}.svg`}
+                    alt=""
                 />
 
                 <Group position="apart">

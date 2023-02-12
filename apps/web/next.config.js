@@ -11,6 +11,15 @@ const nextConfig = {
         unoptimized: true,
     },
     // productionBrowserSourceMaps: true,
+    async redirects() {
+        return [
+            {
+                source: '/',
+                destination: '/dashboard',
+                permanent: true,
+            },
+        ]
+    },
 }
 
 module.exports = withTM(nextConfig)
