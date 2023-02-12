@@ -124,7 +124,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
 
 
             <AnimatePresence>
-                {latestRun.errors[id]?.length > 0 &&
+                {latestRun?.errors[id]?.length > 0 &&
                     <ErrorIcon />}
             </AnimatePresence>
 
