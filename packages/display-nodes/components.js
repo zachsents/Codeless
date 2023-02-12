@@ -96,7 +96,7 @@ export function ListHandlesNodeContent({
                 >
                     {arrowSide == "in" && <ArrowRight size={14} />}
                     <Text>
-                        {state[stateKey]?.[i] ?? (typeof unnamedMessage === "function" ? unnamedMessage(i) : unnamedMessage)}
+                        {state[stateKey]?.[i] || (typeof unnamedMessage === "function" ? unnamedMessage(i) : unnamedMessage)}
                     </Text>
                     {arrowSide == "out" && <ArrowRight size={14} />}
                 </Group>

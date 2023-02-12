@@ -16,9 +16,11 @@
         "@mantine/hooks": "^5.6.3",
         "@minus/client-sdk": "*",
         "firebase": "^9.13.0",
+        "highlight.js": "^11.7.0",
         "immer": "^9.0.16",
         "react": "18.2.0",
         "react-icons": "^4.6.0",
+        "react-simple-code-editor": "^0.13.1",
         "tabler-icons-react": "^1.56.0"
     }
 }

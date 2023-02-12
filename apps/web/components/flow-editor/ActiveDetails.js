@@ -160,7 +160,7 @@ function NodeConfig({ node }) {
                                         </Accordion.Control>
                                         <Accordion.Panel>
                                             {rf.getNode(node.id) &&
-                                                <nodeType.configuration {...displayProps} />}
+                                                <nodeType.configuration {...displayProps} maximized={panelMaximized} />}
                                         </Accordion.Panel>
                                     </Accordion.Item>}
 

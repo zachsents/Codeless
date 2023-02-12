@@ -7,6 +7,7 @@ import Switch from "./basics/Switch"
 import Text from "./basics/Text"
 import SetVariable from "./basics/SetVariable"
 import UseVariable from "./basics/UseVariable"
+import CustomCode from "./basics/CustomCode"
 
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
@@ -71,7 +72,7 @@ export const Nodes = createObject([
     // ===== Basics =====
 
     // Data
-    Number, Text, Switch, DateTime, Template, SetVariable, UseVariable,
+    Number, Text, Switch, DateTime, Template, SetVariable, UseVariable, CustomCode,
     // Actions
     Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
@@ -120,6 +121,7 @@ export const NodeCategories = {
             "basic:DateTime",
             "basic:SetVariable",
             "basic:UseVariable",
+            "basic:CustomCode",
 
             "basic:Print", 
             "basic:RunFlow", 

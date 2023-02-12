@@ -7,6 +7,7 @@ import Switch from "./basics/Switch.js"
 import Text from "./basics/Text.js"
 import SetVariable from "./basics/SetVariable.js"
 import UseVariable from "./basics/UseVariable.js"
+import CustomCode from "./basics/CustomCode.js"
 
 import Print from "./basics/actions/Print.js"
 import RunFlow from "./basics/actions/RunFlow.js"
@@ -72,7 +73,7 @@ export default createObject([
     // ===== Basics =====
 
     // Data
-    Number, Text, Switch, DateTime, Template, SetVariable, UseVariable,
+    Number, Text, Switch, DateTime, Template, SetVariable, UseVariable, CustomCode,
     // Actions
     Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
