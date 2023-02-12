@@ -1,12 +1,14 @@
 import { useState, useCallback } from 'react'
 import { useOnSelectionChange, useReactFlow } from 'reactflow'
 import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, Table } from '@mantine/core'
+import { useDisclosure } from "@mantine/hooks"
 import { motion, AnimatePresence } from "framer-motion"
-import { TbAlertTriangle, TbCheck, TbExclamationMark, TbTrash, TbX } from "react-icons/tb"
+import { TbAlertTriangle, TbArrowsMaximize, TbArrowsMinimize, TbChevronLeft, TbChevronRight, TbExclamationMark, TbTrash, TbX } from "react-icons/tb"
 
 import { deselectNode, getNodeType, useNodeDisplayProps, useNodeDragging } from '../../modules/graph-util'
 import { useFlowContext } from '../../modules/context'
-import { Check } from 'tabler-icons-react'
+import create from "zustand"
+import { produce } from "immer"
 
 
 export default function ActiveDetails() {
@@ -26,7 +28,6 @@ export default function ActiveDetails() {
 
     const dragging = useNodeDragging(selectedNodes[0]?.id)
 
-
     return (
         <AnimatePresence>
             {!emptySelection &&
@@ -41,6 +42,21 @@ export default function ActiveDetails() {
     )
 }
 
+
+const useConfigStore = create(set => ({
+    actions: {
+        setAccordionValue: (id, val) => set(produce(draft => {
+            draft[id] ??= {}
+            draft[id].accordionValue = val
+        })),
+        togglePanelMaximized: id => set(produce(draft => {
+            draft[id] ??= {}
+            draft[id].panelMaximized = !draft[id].panelMaximized
+        })),
+    },
+}))
+
+
 function NodeConfig({ node }) {
 
     const rf = useReactFlow()
@@ -51,7 +67,10 @@ function NodeConfig({ node }) {
     const nodeType = getNodeType(node)
     const hasConfiguration = !!nodeType.configuration
 
-    const [accordionValue, setAccordionValue] = useState(hasConfiguration ? "options" : null)
+    // pull some state from our store 
+    const panelMaximized = useConfigStore(s => s[node.id]?.panelMaximized ?? false)
+    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue ?? (hasConfiguration ? "options" : null))
+    const { togglePanelMaximized, setAccordionValue } = useConfigStore(s => s.actions)
 
     const numUnconnectedInputs = Object.values(displayProps.inputConnections).reduce((sum, cur) => sum + !cur, 0)
     const numOutputs = latestRun?.outputs?.[node.id] ? Object.keys(latestRun?.outputs?.[node.id]).length : 0
@@ -68,14 +87,26 @@ function NodeConfig({ node }) {
             <ScrollArea w="100%" h="100%">
                 <Flex p="lg" direction="column" align="flex-end" justify="flex-start">
                     <Card
-                        radius="md" shadow="sm" w={300} mah="100%"
+                        radius="md" shadow="sm" mah="100%"
                         sx={{ pointerEvents: "all", overflow: "visible" }}
+
+                        component={motion.div}
+                        animate={{ width: panelMaximized ? 500 : 300 }}
+                        transition={{ type: "spring", duration: 0.3, spring: 0.5 }}
                     >
                         <Stack spacing="xl">
 
                             {/* Header */}
                             <Group spacing="xs" position="apart" noWrap align="start">
                                 <Stack spacing="xs">
+                                    <ActionIcon
+                                        onClick={() => togglePanelMaximized(node.id)}
+                                        radius="md"
+                                        variant="light"
+                                    >
+                                        {panelMaximized ? <TbChevronRight /> : <TbChevronLeft />}
+                                    </ActionIcon>
+
                                     <Group noWrap>
                                         {nodeType.color ?
                                             <ThemeIcon color={nodeType.color} size="lg" radius="xl">
@@ -86,6 +117,7 @@ function NodeConfig({ node }) {
                                         }
                                         <Title order={3}>{nodeType.name}</Title>
                                     </Group>
+
                                     <Group>
                                         {nodeType.badge &&
                                             <Badge color={nodeType.color ?? "gray"}>
@@ -114,7 +146,7 @@ function NodeConfig({ node }) {
                             {/* Body */}
                             <Accordion
                                 variant="separated"
-                                value={accordionValue} onChange={setAccordionValue}
+                                value={accordionValue} onChange={val => setAccordionValue(node.id, val)}
                                 styles={theme => ({
                                     item: { border: "none" },
                                     content: { padding: theme.spacing.xs },
@@ -204,7 +236,7 @@ const configContainerStyle = theme => ({
     pointerEvents: "none",
     zIndex: 100,
     // padding: theme.spacing.lg,
-    width: 500,
+    width: 600,
     // display: "flex",
     // flexDirection: "column",
     // justifyContent: "flex-start",
