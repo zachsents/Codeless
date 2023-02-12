@@ -6,7 +6,7 @@ import { TbCheck, TbClock } from "react-icons/tb"
 import { scheduleFlowRun } from "@minus/client-sdk"
 
 
-export function ScheduleFlowModal({ context, id, innerProps: { flowId } }) {
+export default function ScheduleFlowModal({ context, id, innerProps: { flowId } }) {
 
     const theme = useMantineTheme()
 

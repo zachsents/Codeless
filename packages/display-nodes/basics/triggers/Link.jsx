@@ -12,6 +12,7 @@ export default {
     outputs: ["$"],
 
     deletable: false,
+    hideInBrowser: true,
 
     deploy: ({ appId, flowId }) => {
 
