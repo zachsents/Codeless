@@ -153,6 +153,8 @@ const NodeTile = forwardRef(({ type, expanded, ...props }, ref) => {
         </UnstyledButton>
     )
 })
+NodeTile.displayName = "NodePalette.NodeTile"
+
 
 const tileStyle = theme => ({
     backgroundColor: theme.colors.gray[0],
