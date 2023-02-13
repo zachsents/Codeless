@@ -5,7 +5,7 @@ import { useDisclosure, useInterval } from "@mantine/hooks"
 import { useUpdateFlowLastEdited } from "@minus/client-sdk"
 
 import { useFlowId, useMustBeSignedIn } from "../../../../../modules/hooks"
-import { FlowProvider } from "../../../../../modules/context"
+import { AppProvider, FlowProvider } from "../../../../../modules/context"
 import NodeBuilder from "../../../../../components/flow-editor/NodeBuilder"
 import Header from "../../../../../components/flow-editor/Header"
 import SettingsDrawer from "../../../../../components/flow-editor/SettingsDrawer"
@@ -25,30 +25,32 @@ export default function EditFlow() {
     }
 
     return (
-        <FlowProvider redirectOnNotExist="/dashboard">
-            <ReactFlowProvider>
-                <AppShell
-                    padding={0}
-                    header={
-                        <Header
-                            openSettings={openSettings}
+        <AppProvider redirectOnNotExist="/dashboard">
+            <FlowProvider redirectOnNotExist="/dashboard">
+                <ReactFlowProvider>
+                    <AppShell
+                        padding={0}
+                        header={
+                            <Header
+                                openSettings={openSettings}
+                            />
+                        }
+                        navbar={<Sidebar />}
+                    >
+                        <NodeBuilder />
+
+                        <SettingsDrawer
+                            opened={settingsOpened}
+                            onClose={settingsHandlers.close}
+                            suggestedTab={suggestedTab}
+                            onOpenedSuggestedTab={() => setSuggestedTab(null)}
                         />
-                    }
-                    navbar={<Sidebar />}
-                >
-                    <NodeBuilder />
 
-                    <SettingsDrawer
-                        opened={settingsOpened}
-                        onClose={settingsHandlers.close}
-                        suggestedTab={suggestedTab}
-                        onOpenedSuggestedTab={() => setSuggestedTab(null)}
-                    />
-
-                    <LastEdited />
-                </AppShell>
-            </ReactFlowProvider>
-        </FlowProvider>
+                        <LastEdited />
+                    </AppShell>
+                </ReactFlowProvider>
+            </FlowProvider>
+        </AppProvider>
     )
 }
 

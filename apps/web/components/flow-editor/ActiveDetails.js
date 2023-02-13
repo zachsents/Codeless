@@ -1,14 +1,14 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useOnSelectionChange, useReactFlow } from 'reactflow'
-import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, Table } from '@mantine/core'
-import { useDisclosure } from "@mantine/hooks"
+import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, Table, Alert, Button, Center } from '@mantine/core'
 import { motion, AnimatePresence } from "framer-motion"
-import { TbAlertTriangle, TbArrowsMaximize, TbArrowsMinimize, TbChevronLeft, TbChevronRight, TbExclamationMark, TbTrash, TbX } from "react-icons/tb"
+import { TbAlertTriangle, TbChevronLeft, TbChevronRight, TbExclamationMark, TbTrash, TbX } from "react-icons/tb"
 
 import { deselectNode, getNodeType, useNodeDisplayProps, useNodeDragging } from '../../modules/graph-util'
-import { useFlowContext } from '../../modules/context'
+import { useAppContext, useFlowContext } from '../../modules/context'
 import create from "zustand"
 import { produce } from "immer"
+import { Integrations } from '@minus/client-nodes'
 
 
 export default function ActiveDetails() {
@@ -62,6 +62,7 @@ function NodeConfig({ node }) {
     const rf = useReactFlow()
     const theme = useMantineTheme()
 
+    const { app } = useAppContext()
     const { latestRun } = useFlowContext()
     const displayProps = useNodeDisplayProps(node.id)
     const nodeType = getNodeType(node)
@@ -96,6 +97,7 @@ function NodeConfig({ node }) {
 
         return [problems, numErrors, numWarnings]
     }, [latestRun, numUnconnectedInputs])
+
 
     return (
         <motion.div
@@ -152,6 +154,25 @@ function NodeConfig({ node }) {
                                     <TbX />
                                 </ActionIcon>
                             </Group>
+
+                            {nodeType.requiredIntegrations?.map(intId => {
+                                const int = Integrations[intId]
+                                return int.manager.isAppAuthorized(app) ?
+                                    <Alert
+                                        pb={5}
+                                        title={<Group spacing={5}>Connected to <int.icon /> {int.name}</Group>}
+                                        color="green"
+                                        key={int.id}
+                                    /> :
+                                    <Alert title="Integration Required!" color="red" key={int.id}>
+                                        This node uses <b>{int.name}</b>.
+                                        <Center mt="xs">
+                                            <Button compact color={int.color} onClick={() => int.manager.oneClickAuth(app.id)}>
+                                                <Group spacing={5}>Connect <int.icon /> {int.name}</Group>
+                                            </Button>
+                                        </Center>
+                                    </Alert>
+                            })}
 
                             {/* Body */}
                             <Accordion

@@ -23,6 +23,8 @@ export default {
             ],
         }
     ],
+    
+    requiredIntegrations: ["integration:GoogleSheets"],
 
     defaultState: {
         spreadsheetId: null,

@@ -7,7 +7,7 @@ export default {
     id: "integration:GoogleSheets",
     name: "Google Sheets",
     icon: SiGooglesheets,
-    color: "teal.5",
+    color: "green",
 
     manager: GoogleSheetsAuthManager,
     

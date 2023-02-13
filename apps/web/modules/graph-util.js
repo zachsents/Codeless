@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import { applyEdgeChanges, applyNodeChanges, getConnectedEdges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
+import { applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
 import { useInterval, useSetState } from "@mantine/hooks"
 import shallow from "zustand/shallow"
 import { produce } from "immer"
@@ -106,8 +106,10 @@ export function useNodeDisplayProps(id) {
 
 export function useNodeConnections(id, { nodeType: providedNodeType } = {}) {
 
+    const rf = useReactFlow()
     const connectedEdges = useConnectedEdges(id)
-    const nodeType = providedNodeType === undefined ? useNodeType({ id }) : providedNodeType
+
+    const nodeType = providedNodeType ?? getNodeTypeById(rf, id)
 
     return useMemo(() => {
         // find connected edges
@@ -463,7 +465,7 @@ export function getNodeType(node) {
 
 
 export function getNodeTypeById(rf, nodeId) {
-    return Nodes[rf.getNode(nodeId).type]
+    return Nodes[rf.getNode(nodeId)?.type]
 }
 
 

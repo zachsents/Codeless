@@ -12,6 +12,8 @@ import GradientBox from "../../../components/GradientBox"
 import LoadingSkeleton from "../../../components/LoadingSkeleton"
 import PageTitle from "../../../components/PageTitle"
 import OurCard from "../../../components/cards/OurCard"
+import { Integrations } from "@minus/client-nodes"
+import { useMemo } from "react"
 
 
 export default function AppOverview() {
@@ -24,6 +26,8 @@ export default function AppOverview() {
     const { plan } = usePlan({ ref: app?.plan })
     const { flowCount } = useFlowCountForApp(app?.id)
     const flowInfoLoaded = flowCount != null && !!plan
+
+    const [integrations, numIntegrations, overflow] = useConnectedIntegrations(app, 5)
 
     return (
         <AppDashboard>
@@ -124,15 +128,16 @@ export default function AppOverview() {
                                 size="lg"
                                 weight={600}
                             >
-                                5 services integrated
+                                {numIntegrations || "No"} services integrated
                             </Text>
 
                             <Center>
                                 <Avatar.Group>
-                                    <Avatar color="red" radius="xl" size="lg"><TbBrandGmail /></Avatar>
-                                    <Avatar color="green" radius="xl" size="lg"><SiGooglesheets /></Avatar>
-                                    <Avatar color="yellow" radius="xl" size="lg"><TbBrandAirtable /></Avatar>
-                                    <Avatar radius="xl" size="md">+2</Avatar>
+                                    {integrations.map(int =>
+                                        <Avatar color={int.color} radius="xl" size="lg" key={int.id}>
+                                            <int.icon /></Avatar>
+                                    )}
+                                    {overflow && <Avatar radius="xl" size="md">+{overflow}</Avatar>}
                                 </Avatar.Group>
                             </Center>
                         </Stack>
@@ -142,4 +147,15 @@ export default function AppOverview() {
             </Stack>
         </AppDashboard>
     )
+}
+
+
+function useConnectedIntegrations(app, maxShown) {
+    const connected = useMemo(
+        () => Object.values(Integrations).filter(int => int.manager.isAppAuthorized(app)),
+        [app]
+    )
+    const overflow = connected.length - maxShown
+
+    return [connected.slice(0, maxShown), connected.length, overflow < 1 ? null : overflow]
 }

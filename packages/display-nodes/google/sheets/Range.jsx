@@ -13,6 +13,8 @@ export default {
     inputs: ["$sheet"],
     outputs: ["data"],
 
+    requiredIntegrations: ["integration:GoogleSheets"],
+
     defaultState: { range: ["", "", "", ""] },
 
     renderNode: ({ state }) => {

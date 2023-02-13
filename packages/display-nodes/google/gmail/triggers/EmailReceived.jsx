@@ -19,6 +19,8 @@ export default {
         }
     ],
 
+    requiredIntegrations: ["integration:Gmail"],
+
     signalIn: false,
     signalOut: "trigger",
 

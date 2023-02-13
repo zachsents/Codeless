@@ -24,6 +24,8 @@ class OAuthAuthManager {
             !!app?.integrations?.[this.name]?.refreshToken
     }
 
+    oneClickAuth = this.authorizeAppInPopup
+
     async revoke(appId) {
         await revokeIntegration(appId, this.name)
     }
