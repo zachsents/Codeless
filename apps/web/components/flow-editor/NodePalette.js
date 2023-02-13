@@ -89,7 +89,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
                 gridProps={({ query }) => {
                     numColumnsRef.current = query ? 1 : 2
                     return {
-                        cols: console.log("grid props", numColumnsRef.current) || numColumnsRef.current,
+                        cols: numColumnsRef.current,
                         spacing: "sm",
                         onKeyDown: gridKeyHandler,
                     }

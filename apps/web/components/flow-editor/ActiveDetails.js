@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useOnSelectionChange, useReactFlow } from 'reactflow'
 import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, Table } from '@mantine/core'
 import { useDisclosure } from "@mantine/hooks"
@@ -67,14 +67,35 @@ function NodeConfig({ node }) {
     const nodeType = getNodeType(node)
     const hasConfiguration = !!nodeType.configuration
 
-    // pull some state from our store 
+    // pull some state from config store -- doesn't need to be persisted between refreshes 
     const panelMaximized = useConfigStore(s => s[node.id]?.panelMaximized ?? false)
     const accordionValue = useConfigStore(s => s[node.id]?.accordionValue ?? (hasConfiguration ? "options" : null))
     const { togglePanelMaximized, setAccordionValue } = useConfigStore(s => s.actions)
 
+    // calculate some numbers
     const numUnconnectedInputs = Object.values(displayProps.inputConnections).reduce((sum, cur) => sum + !cur, 0)
     const numOutputs = latestRun?.outputs?.[node.id] ? Object.keys(latestRun?.outputs?.[node.id]).length : 0
-    const numErrors = latestRun?.errors?.[node.id]?.length ?? 0
+
+    // problems
+    const [problems, numErrors, numWarnings] = useMemo(() => {
+        const problems = []
+
+        if (numUnconnectedInputs > 0)
+            problems.push({
+                type: ProblemType.Warning,
+                message: `This node has ${numUnconnectedInputs} input${numUnconnectedInputs == 1 ? " that isn't" : "s that aren't"} connected.`
+            })
+
+        latestRun.errors[node.id]?.forEach(err => problems.push({
+            type: ProblemType.Error,
+            message: err.message,
+        }))
+
+        const numErrors = problems.filter(prob => prob.type == ProblemType.Error).length
+        const numWarnings = problems.filter(prob => prob.type == ProblemType.Warning).length
+
+        return [problems, numErrors, numWarnings]
+    }, [latestRun, numUnconnectedInputs])
 
     return (
         <motion.div
@@ -131,17 +152,6 @@ function NodeConfig({ node }) {
                                     <TbX />
                                 </ActionIcon>
                             </Group>
-
-                            {numUnconnectedInputs > 0 &&
-                                <Group noWrap p="xs" sx={theme => ({ backgroundColor: theme.colors.gray[0], borderRadius: theme.radius.md })}>
-                                    <ThemeIcon color="yellow">
-                                        <TbAlertTriangle />
-                                    </ThemeIcon>
-                                    <Text size="sm" color="dimmed">
-                                        This node has {numUnconnectedInputs} input{numUnconnectedInputs == 1 ? " that isn't " : "s that aren't "}
-                                        connected.
-                                    </Text>
-                                </Group>}
 
                             {/* Body */}
                             <Accordion
@@ -203,21 +213,24 @@ function NodeConfig({ node }) {
                                         </Accordion.Panel>
                                     </Accordion.Item>}
 
+                                {/* Problems */}
                                 <Accordion.Item value="errors">
                                     <Accordion.Control>
                                         <AccordionTitle
                                             active={accordionValue == "errors"}
-                                            icon={numErrors > 0 && <Text size="xs">{numErrors}</Text>}
-                                            iconProps={{ color: "red" }}
+                                            rightSection={<>
+                                                {numErrors > 0 && <SmallIcon color="red"><Text size="xs">{numErrors}</Text></SmallIcon>}
+                                                {numWarnings > 0 && <SmallIcon color="yellow"><Text size="xs">{numWarnings}</Text></SmallIcon>}
+                                            </>}
                                         >
                                             Problems
                                         </AccordionTitle>
                                     </Accordion.Control>
                                     <Accordion.Panel>
-                                        {numErrors ?
+                                        {problems.length ?
                                             <Stack>
-                                                {latestRun.errors[node.id].map(
-                                                    (err, i) => <ErrorRow key={i}>{err.message}</ErrorRow>
+                                                {problems.map(
+                                                    (prob, i) => <ProblemRow type={prob.type} key={i}>{prob.message}</ProblemRow>
                                                 )}
                                             </Stack> :
                                             <Text color="dimmed" size="sm" align="center">No problems!</Text>}
@@ -230,6 +243,11 @@ function NodeConfig({ node }) {
             </ScrollArea>
         </motion.div>
     )
+}
+
+const ProblemType = {
+    Error: "error",
+    Warning: "warning",
 }
 
 const configContainerStyle = theme => ({
@@ -247,7 +265,7 @@ const configContainerStyle = theme => ({
     // alignItems: "flex-end",
 })
 
-function AccordionTitle({ children, active, icon, iconProps = {} }) {
+function AccordionTitle({ children, active, icon, iconProps = {}, rightSection }) {
     return (
         <motion.div
             initial={{ x: 0 }}
@@ -256,20 +274,32 @@ function AccordionTitle({ children, active, icon, iconProps = {} }) {
             <Group>
                 <Title order={5}>{children}</Title>
                 {icon &&
-                    <ThemeIcon size="sm" radius="sm" {...iconProps}>
+                    <SmallIcon {...iconProps}>
                         {icon}
-                    </ThemeIcon>}
+                    </SmallIcon>}
+                {rightSection}
             </Group>
         </motion.div>
     )
 }
 
 
-function ErrorRow({ children }) {
+function SmallIcon({ children, ...props }) {
+    return <ThemeIcon size="sm" radius="sm" {...props}>
+        {children}
+    </ThemeIcon>
+}
+
+
+function ProblemRow({ children, type = ProblemType.Error }) {
+
+    const color = type == ProblemType.Error ? "red" : "yellow"
+    const icon = type == ProblemType.Error ? <TbExclamationMark /> : <TbAlertTriangle />
+
     return (
         <Group noWrap align="center">
-            <ThemeIcon size="sm" radius="sm" color="red" variant="light">
-                <TbExclamationMark />
+            <ThemeIcon size="sm" radius="sm" color={color} variant="light">
+                {icon}
             </ThemeIcon>
             <Text size="sm">{children}</Text>
         </Group>
