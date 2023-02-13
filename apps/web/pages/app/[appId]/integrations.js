@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Box, Group, Stack, Text, ThemeIcon } from "@mantine/core"
+import { Box, Flex, Group, Stack, Text, ThemeIcon } from "@mantine/core"
 import { useInterval } from "@mantine/hooks"
 import { Carousel } from "@mantine/carousel"
 import { TbBrandAirtable, TbBrandGmail, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from "react-icons/tb"
@@ -86,7 +86,7 @@ export default function AppSettings() {
                     </Group>
                 </GradientBox>
 
-                <Search 
+                <Search
                     list={Integrations}
                     selector={int => int.title}
                     noun="integration"
@@ -103,7 +103,7 @@ function IntegrationCard({ integration, app }) {
 
     return (
         <OurCard>
-            <Group position="apart">
+            <Group position="apart" h="100%">
                 <Group>
                     <ThemeIcon color={integration.color ?? ""} size="xl"><integration.icon size={22} /></ThemeIcon>
                     <Text size="xl" weight={500}>{integration.title}</Text>

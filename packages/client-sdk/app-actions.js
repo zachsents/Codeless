@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, DocumentReference, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, deleteField, doc, DocumentReference, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
 import { firestore } from "./firebase-init.js"
 import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
 import { getPlanRef } from "./plans.js"
@@ -86,6 +86,20 @@ export function updateApp(appId, changes = {}) {
     assertAppId(appId)
 
     return updateDoc(getAppRef(appId), changes)
+}
+
+
+/**
+ * Deletes the field for an integration from an app.
+ *
+ * @export
+ * @param {string} appId
+ * @param {string} integrationName
+ */
+export function revokeIntegration(appId, integrationName) {
+    return updateApp(appId, {
+        [`integrations.${integrationName}`]: deleteField(),
+    })
 }
 
 

@@ -1,6 +1,6 @@
-import { forwardRef, Fragment } from "react"
-import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip } from "@mantine/core"
-import { ArrowRight, InfoCircle, Plus, X } from "tabler-icons-react"
+import { forwardRef, Fragment, useEffect, useState } from "react"
+import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip, Loader, ThemeIcon, Flex } from "@mantine/core"
+import { ArrowRight, Check, InfoCircle, Plus, X } from "tabler-icons-react"
 import produce from "immer"
 
 
@@ -177,5 +177,56 @@ export function ListHandlesControl({
                 {addLabel}
             </Button>
         </Control>
+    )
+}
+
+
+export function OAuthIntegration({ app, integration }) {
+
+    const [loading, setLoading] = useState(true)
+
+    const isAuthorized = integration.isAppAuthorized(app)
+
+    const handleConnect = () => {
+        setLoading(true)
+        integration.authorizeAppInPopup(app.id)
+    }
+
+    const handleDisconnect = () => {
+        setLoading(true)
+        integration.revoke(app.id)
+    }
+
+    // when app is loaded or authorization state changes, clear loading state
+    useEffect(() => {
+        app && setLoading(false)
+    }, [typeof app, isAuthorized])
+
+    return (
+        <Box pr="md">
+            {loading ?
+                <Loader size="sm" />
+                :
+                isAuthorized ?
+                    <Group>
+                        <Stack spacing="xs">
+                            <Text color="green">Connected!</Text>
+                            <Button
+                                onClick={handleDisconnect}
+                                size="xs"
+                                compact
+                                variant="light"
+                                color="gray"
+                            >
+                                Disconnect
+                            </Button>
+                        </Stack>
+                        <ThemeIcon size="lg" color="green" radius="xl"><Check size={18} /></ThemeIcon>
+                    </Group>
+                    :
+                    <Button onClick={handleConnect}>
+                        Connect
+                    </Button>}
+        </Box>
     )
 }

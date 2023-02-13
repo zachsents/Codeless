@@ -1,10 +1,11 @@
 import { TbBrandGmail } from "react-icons/tb"
-import GoogleAuth from "../GoogleAuth"
+import { GmailIntegration } from "@minus/client-sdk"
+import { OAuthIntegration } from "../../components"
 
 
 export default {
     title: "Gmail",
     icon: TbBrandGmail,
     color: "red",
-    component: props => <GoogleAuth {...props} requiredScopes={["https://www.googleapis.com/auth/gmail.modify"]} />,
+    component: props => <OAuthIntegration integration={GmailIntegration} {...props} />,
 }
