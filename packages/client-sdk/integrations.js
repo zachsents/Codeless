@@ -3,21 +3,43 @@ import { revokeIntegration, updateApp } from "./app-actions.js"
 import { functionUrl } from "./functions.js"
 
 
-class GoogleIntegration {
+class OAuthIntegration {
 
-    constructor(scopes) {
+    constructor(name, { authorizeFunction } = {}) {
+        this.name = name
+        this.authorizeFunction = authorizeFunction
+    }
+
+    authorizeAppInPopup(appId, additionalParams = {}) {
+        const params = new URLSearchParams({
+            app_id: appId,
+            ...additionalParams,
+        })
+
+        window.open(`${functionUrl(this.authorizeFunction)}?${params.toString()}`)
+    }
+
+    isAppAuthorized(app) {
+        return (app ?? false) &&
+            !!app?.integrations?.[this.name]?.refreshToken
+    }
+
+    async revoke(appId) {
+        await revokeIntegration(appId, this.name)
+    }
+}
+
+class GoogleIntegration extends OAuthIntegration {
+
+    constructor(name, scopes) {
+        super(name, { authorizeFunction: "google-authorizeApp" })
         this.scopes = scopes
     }
 
     authorizeAppInPopup(appId) {
-        const params = new URLSearchParams({
-            app_id: appId,
+        super.authorizeAppInPopup(appId, {
             scopes: this.scopes,
         })
-
-        window.open(
-            `${functionUrl("google-authorizeApp")}?${params.toString()}`
-        )
     }
 
     isAppAuthorized(app) {
@@ -35,35 +57,19 @@ class GoogleIntegration {
     }
 }
 
+// Google Apps
 
-export const GmailIntegration = new GoogleIntegration([
+export const GmailIntegration = new GoogleIntegration("Gmail", [
     "https://www.googleapis.com/auth/gmail.modify",
 ])
 
-
-export const GoogleSheetsIntegration = new GoogleIntegration([
+export const GoogleSheetsIntegration = new GoogleIntegration("GoogleSheets", [
     "https://www.googleapis.com/auth/spreadsheets",
 ])
 
 
-export const AirTableIntegration = {
+// Other Apps
 
-    authorizeAppInPopup(appId) {
-        const params = new URLSearchParams({
-            app_id: appId,
-        })
-
-        window.open(
-            `${functionUrl("airtable-authorizeApp")}?${params.toString()}`
-        )
-    },
-
-    isAppAuthorized(app) {
-        return (app ?? false) &&
-            !!app?.integrations?.AirTable?.refreshToken
-    },
-
-    revoke(appId) {
-        revokeIntegration(appId, "AirTable")
-    },
-}
+export const AirTableIntegration = new OAuthIntegration("AirTable", { 
+    authorizeFunction: "airtable-authorizeApp" 
+})
