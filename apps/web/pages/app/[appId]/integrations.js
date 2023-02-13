@@ -5,8 +5,10 @@ import { Carousel } from "@mantine/carousel"
 import { TbBrandAirtable, TbBrandGmail, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from "react-icons/tb"
 import { SiGooglesheets } from "react-icons/si"
 import { useAppDetailsRealtime } from "@minus/client-sdk"
+
 import GoogleSheetsAuth from "@minus/client-nodes/google/sheets/auth"
 import GmailAuth from "@minus/client-nodes/google/gmail/auth"
+import AirTableAuth from "@minus/client-nodes/airtable/auth"
 
 import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
 import AppDashboard from "../../../components/AppDashboard"
@@ -80,6 +82,7 @@ export default function AppSettings() {
                 <SimpleGrid cols={1} spacing={35} verticalSpacing={25}>
                     <IntegrationCard integration={GoogleSheetsAuth} app={app} />
                     <IntegrationCard integration={GmailAuth} app={app} />
+                    <IntegrationCard integration={AirTableAuth} app={app} />
                 </SimpleGrid>
 
             </Stack>

@@ -16,6 +16,8 @@ db.settings({ ignoreUndefinedProperties: true })
 export const oauthClient = await getOAuth2Client()
 global.oauthClient = oauthClient
 
+// set up slot for integrations
+global.integrations = {}
 
 async function getOAuth2Client() {
     const { web: { client_id, client_secret, redirect_uris } } = JSON.parse(await fs.readFile("./oauth_client_secret.json", "utf-8"))

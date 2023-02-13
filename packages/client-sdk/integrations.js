@@ -19,3 +19,22 @@ export const GoogleIntegration = {
             requiredScopes.every(scope => app?.integrations?.Google?.scopes?.includes(scope))
     }
 }
+
+
+export const AirTableIntegration = {
+
+    authorizeAppInPopup(appId) {
+        const params = new URLSearchParams({
+            app_id: appId,
+        })
+
+        window.open(
+            `${functionUrl("airtable-authorizeApp")}?${params.toString()}`
+        )
+    },
+
+    isAppAuthorized(app) {
+        return (app ?? false) &&
+            !!app?.integrations?.AirTable?.refreshToken
+    }
+}
