@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Box, Group, SimpleGrid, Stack, Text, ThemeIcon } from "@mantine/core"
+import { Box, Group, Stack, Text, ThemeIcon } from "@mantine/core"
 import { useInterval } from "@mantine/hooks"
 import { Carousel } from "@mantine/carousel"
 import { TbBrandAirtable, TbBrandGmail, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from "react-icons/tb"
@@ -16,7 +16,14 @@ import GlassButton from "../../../components/GlassButton"
 import GradientBox from "../../../components/GradientBox"
 import PageTitle from "../../../components/PageTitle"
 import OurCard from "../../../components/cards/OurCard"
+import Search from "../../../components/Search"
 
+
+const Integrations = [
+    GoogleSheetsAuth,
+    GmailAuth,
+    AirTableAuth,
+]
 
 export default function AppSettings() {
 
@@ -79,12 +86,14 @@ export default function AppSettings() {
                     </Group>
                 </GradientBox>
 
-                <SimpleGrid cols={1} spacing={35} verticalSpacing={25}>
-                    <IntegrationCard integration={GoogleSheetsAuth} app={app} />
-                    <IntegrationCard integration={GmailAuth} app={app} />
-                    <IntegrationCard integration={AirTableAuth} app={app} />
-                </SimpleGrid>
-
+                <Search 
+                    list={Integrations}
+                    selector={int => int.title}
+                    noun="integration"
+                    component={IntegrationCard}
+                    componentItemProp="integration"
+                    componentProps={{ app }}
+                />
             </Stack>
         </AppDashboard>
     )

@@ -1,14 +1,13 @@
-import { useMemo, useState } from "react"
 import Link from "next/link"
-import fuzzy from "fuzzy"
-import { ActionIcon, Button, Container, Grid, Group, Header, Menu, SimpleGrid, Skeleton, Space, Stack, Text, TextInput, Title } from "@mantine/core"
+import { Button, Container, Grid, Group, Header, Menu, Stack, Text, Title } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
-import { TbPlus, TbSearch, TbUser, TbX } from "react-icons/tb"
+import { TbPlus, TbUser } from "react-icons/tb"
 import { signOut, useAppDetailsForUserRealtime } from "@minus/client-sdk"
 
-import { useMustBeSignedIn, useSearch } from "../modules/hooks"
+import { useMustBeSignedIn } from "../modules/hooks"
 import AppCard from "../components/cards/AppCard"
 import ArticleCard from "../components/cards/ArticleCard"
+import Search from "../components/Search"
 
 
 export default function Dashboard() {
@@ -24,9 +23,6 @@ export default function Dashboard() {
             size: "lg",
         })
     }
-
-    // handle searching apps
-    const [filteredApps, searchQuery, setSearchQuery] = useSearch(apps, app => app.name)
 
     return (
         <>
@@ -76,34 +72,14 @@ export default function Dashboard() {
                                 </Button>
                             </Group>
 
-                            <TextInput
-                                value={searchQuery}
-                                onChange={event => setSearchQuery(event.currentTarget.value)}
-                                size="lg"
-                                radius="lg"
-                                placeholder={`Search ${apps?.length ?? ""} app${apps?.length == 1 ? "" : "s"}...`}
-                                icon={<TbSearch />}
-                                rightSection={searchQuery &&
-                                    <ActionIcon radius="md" mr="xl" onClick={() => setSearchQuery("")}>
-                                        <TbX />
-                                    </ActionIcon>
-                                }
+                            <Search
+                                list={apps}
+                                selector={app => app.name}
+                                noun="app"
+                                component={AppCard}
+                                componentItemProp="app"
+                                inputProps={{ mb: "xl" }}
                             />
-                            <Space h="xs" />
-
-                            {filteredApps?.length == 0 &&
-                                <Text align="center" size="lg" color="dimmed">No apps found.</Text>}
-
-                            <SimpleGrid cols={2} verticalSpacing="xl" spacing="xl">
-                                {apps ?
-                                    filteredApps.map(app => <AppCard app={app} key={app.id} />)
-                                    :
-                                    <>
-                                        <Skeleton height={100} />
-                                        <Skeleton height={100} />
-                                    </>
-                                }
-                            </SimpleGrid>
                         </Stack>
                     </Grid.Col>
 

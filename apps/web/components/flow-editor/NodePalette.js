@@ -1,9 +1,9 @@
-import { Badge, Group, HoverCard, SimpleGrid, Stack, Text, TextInput, Title, UnstyledButton } from '@mantine/core'
-import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Badge, Group, HoverCard, Stack, Text, Title, UnstyledButton } from '@mantine/core'
+import { forwardRef, useCallback, useEffect, useRef } from 'react'
 import { Square } from 'tabler-icons-react'
 import { Nodes } from '../../modules/nodes'
-import fuzzy from "fuzzy"
 import { createNode } from '../../modules/graph-util'
+import Search from '../Search'
 
 
 const NodeList = Object.values(Nodes)
@@ -11,13 +11,6 @@ const NodeList = Object.values(Nodes)
 
 
 export default function NodePalette({ context, id, innerProps: { rf } }) {
-
-    // searching and filtering nodes
-    const [query, setQuery] = useState("")
-    const filteredNodes = useMemo(
-        () => query ? NodeList.filter(type => fuzzy.test(query, type.name + type.description)) : NodeList,
-        [query]
-    )
 
     // adding nodes
     const addNode = useCallback(type => {
@@ -33,8 +26,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
     }, [rf])
 
     // Moving focus with arrow keys
-    const numColumns = query ? 1 : 2
-
+    const numColumnsRef = useRef(2)
     const searchRef = useRef()
     const gridRef = useRef()
 
@@ -54,7 +46,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
                 focused?.previousSibling?.focus()
                 break
             case "ArrowUp":
-                const nextEl = Array(numColumns).fill(0).reduce(el => el?.previousSibling, focused)
+                const nextEl = Array(numColumnsRef.current).fill(0).reduce(el => el?.previousSibling, focused)
                 if (nextEl)
                     nextEl.focus()
                 else {
@@ -63,7 +55,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
                 }
                 break
             case "ArrowDown":
-                Array(numColumns).fill(0).reduce(el => el?.nextSibling, focused)?.focus()
+                Array(numColumnsRef.current).fill(0).reduce(el => el?.nextSibling, focused)?.focus()
                 break
             case "Enter":
             case "Tab":
@@ -73,7 +65,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
                 goToEndOfInput(searchRef.current)
                 break
         }
-    }, [gridRef.current, searchRef.current, numColumns])
+    }, [gridRef.current, searchRef.current, numColumnsRef.current])
 
     // focus search bar on mount
     useEffect(() => {
@@ -84,29 +76,28 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
 
     return (
         <Stack>
-            <TextInput
-                placeholder="Search nodes..."
-                size="lg"
-                value={query}
-                onChange={event => setQuery(event.currentTarget.value)}
-                onKeyDown={searchKeyHandler}
-                ref={searchRef}
+            <Search
+                list={NodeList}
+                selector={type => type.name + type.description}
+                noun="node"
+                component={NodeTile}
+                componentItemProp="type"
+                componentProps={(type, i, { query }) => ({
+                    onClick: () => addNode(type),
+                    expanded: !!query,
+                })}
+                gridProps={({ query }) => {
+                    numColumnsRef.current = query ? 1 : 2
+                    return {
+                        cols: console.log("grid props", numColumnsRef.current) || numColumnsRef.current,
+                        spacing: "sm",
+                        onKeyDown: gridKeyHandler,
+                    }
+                }}
+                gridRef={gridRef}
+                inputProps={{ onKeyDown: searchKeyHandler }}
+                inputRef={searchRef}
             />
-            <SimpleGrid
-                cols={numColumns}
-                spacing="sm"
-                onKeyDown={gridKeyHandler}
-                ref={gridRef}
-            >
-                {filteredNodes.map(
-                    (nodeType, i) => <NodeTile
-                        onClick={() => addNode(nodeType)}
-                        type={nodeType}
-                        expanded={!!query}
-                        key={nodeType.id}
-                    />
-                )}
-            </SimpleGrid>
         </Stack>
     )
 }

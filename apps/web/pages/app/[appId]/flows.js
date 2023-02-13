@@ -1,15 +1,16 @@
 import Link from "next/link"
-import { ActionIcon, Box, Button, Group, SimpleGrid, Skeleton, Stack, Text, TextInput } from "@mantine/core"
-import { TbExternalLink, TbPlus, TbArrowBigUpLines, TbX, TbSearch } from "react-icons/tb"
+import { Box, Button, Group, Stack, Text } from "@mantine/core"
+import { TbExternalLink, TbPlus, TbArrowBigUpLines } from "react-icons/tb"
 import { useAppDetailsRealtime, useFlowsForAppRealtime, usePlan } from "@minus/client-sdk"
 
-import { useAppId, useMustBeSignedIn, useSearch } from "../../../modules/hooks"
+import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
 import { plural } from "../../../modules/util"
 import GlassButton from "../../../components/GlassButton"
 import AppDashboard from "../../../components/AppDashboard"
 import PageTitle from "../../../components/PageTitle"
 import GradientBox from "../../../components/GradientBox"
 import FlowCard from "../../../components/cards/FlowCard"
+import Search from "../../../components/Search"
 
 
 export default function AppFlows() {
@@ -21,8 +22,6 @@ export default function AppFlows() {
     const [flows] = useFlowsForAppRealtime(appId)
 
     const flowsLeft = plan?.flowCount - flows?.length
-
-    const [filteredFlows, searchQuery, setSearchQuery] = useSearch(flows, flow => flow.name)
 
     return (
         <AppDashboard>
@@ -73,34 +72,13 @@ export default function AppFlows() {
                     </Group>
                 </GradientBox>
 
-                <TextInput
-                    value={searchQuery}
-                    onChange={event => setSearchQuery(event.currentTarget.value)}
-                    radius="lg"
-                    size="lg"
-                    placeholder={`Search ${flows?.length ?? ""} flow${flows?.length == 1 ? "" : "s"}...`}
-                    icon={<TbSearch />}
-                    rightSection={searchQuery &&
-                        <ActionIcon radius="md" mr="xl" onClick={() => setSearchQuery("")}>
-                            <TbX />
-                        </ActionIcon>
-                    }
+                <Search 
+                    list={flows}
+                    selector={flow => flow.name}
+                    noun="flow"
+                    component={FlowCard}
+                    componentItemProp="flow"
                 />
-
-                {filteredFlows?.length == 0 &&
-                    <Text align="center" size="lg" color="dimmed">No flows found.</Text>}
-
-                <SimpleGrid cols={2} spacing={35} verticalSpacing={25}>
-                    {flows ?
-                        filteredFlows?.map(flow => <FlowCard flow={flow} key={flow.id} />)
-                        :
-                        <>
-                            <Skeleton height={80} />
-                            <Skeleton height={80} />
-                            <Skeleton height={80} />
-                        </>
-                    }
-                </SimpleGrid>
             </Stack>
         </AppDashboard>
     )
