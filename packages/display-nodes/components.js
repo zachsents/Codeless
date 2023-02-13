@@ -181,20 +181,20 @@ export function ListHandlesControl({
 }
 
 
-export function OAuthIntegration({ app, integration }) {
+export function OAuthIntegration({ app, manager }) {
 
     const [loading, setLoading] = useState(true)
 
-    const isAuthorized = integration.isAppAuthorized(app)
+    const isAuthorized = manager.isAppAuthorized(app)
 
     const handleConnect = () => {
         setLoading(true)
-        integration.authorizeAppInPopup(app.id)
+        manager.authorizeAppInPopup(app.id)
     }
 
     const handleDisconnect = () => {
         setLoading(true)
-        integration.revoke(app.id)
+        manager.revoke(app.id)
     }
 
     // when app is loaded or authorization state changes, clear loading state

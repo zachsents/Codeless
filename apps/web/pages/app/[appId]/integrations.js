@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react"
-import { Box, Flex, Group, Stack, Text, ThemeIcon } from "@mantine/core"
+import { Box, Group, Stack, Text, ThemeIcon } from "@mantine/core"
 import { useInterval } from "@mantine/hooks"
 import { Carousel } from "@mantine/carousel"
 import { TbBrandAirtable, TbBrandGmail, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from "react-icons/tb"
 import { SiGooglesheets } from "react-icons/si"
 import { useAppDetailsRealtime } from "@minus/client-sdk"
-
-import GoogleSheetsAuth from "@minus/client-nodes/google/sheets/auth"
-import GmailAuth from "@minus/client-nodes/google/gmail/auth"
-import AirTableAuth from "@minus/client-nodes/airtable/auth"
+import { Integrations } from "@minus/client-nodes"
 
 import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
 import AppDashboard from "../../../components/AppDashboard"
@@ -19,11 +16,8 @@ import OurCard from "../../../components/cards/OurCard"
 import Search from "../../../components/Search"
 
 
-const Integrations = [
-    GoogleSheetsAuth,
-    GmailAuth,
-    AirTableAuth,
-]
+const IntegrationsList = Object.values(Integrations)
+
 
 export default function AppSettings() {
 
@@ -87,8 +81,8 @@ export default function AppSettings() {
                 </GradientBox>
 
                 <Search
-                    list={Integrations}
-                    selector={int => int.title}
+                    list={IntegrationsList}
+                    selector={int => int.name}
                     noun="integration"
                     component={IntegrationCard}
                     componentItemProp="integration"
@@ -99,6 +93,7 @@ export default function AppSettings() {
     )
 }
 
+
 function IntegrationCard({ integration, app }) {
 
     return (
@@ -106,9 +101,9 @@ function IntegrationCard({ integration, app }) {
             <Group position="apart" h="100%">
                 <Group>
                     <ThemeIcon color={integration.color ?? ""} size="xl"><integration.icon size={22} /></ThemeIcon>
-                    <Text size="xl" weight={500}>{integration.title}</Text>
+                    <Text size="xl" weight={500}>{integration.name}</Text>
                 </Group>
-                <integration.component app={app} />
+                <integration.render app={app} />
             </Group>
         </OurCard>
     )

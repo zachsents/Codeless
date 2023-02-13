@@ -67,6 +67,11 @@ import Ternary from "./basics/Ternary"
 import Extract from "./text/Extract"
 
 
+import GmailIntegration from "./google/gmail/integration"
+import GoogleSheetsIntegration from "./google/sheets/integration"
+import AirTableIntegration from "./airtable/integration"
+
+
 export const Nodes = createObject([
 
     // ===== Basics =====
@@ -82,7 +87,7 @@ export const Nodes = createObject([
     // ===== Text =====
     TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace, Remove,
     TextAround, Length, Extract,
-    
+
 
     // ===== Control =====
     If, Ternary,
@@ -123,8 +128,8 @@ export const NodeCategories = {
             "basic:UseVariable",
             "basic:CustomCode",
 
-            "basic:Print", 
-            "basic:RunFlow", 
+            "basic:Print",
+            "basic:RunFlow",
             "basic:ScheduleFlow",
             "basic:LoopFlow",
             "basic:SendEmail",
@@ -248,6 +253,13 @@ export const TriggerCategories = {
         ],
     },
 }
+
+
+export const Integrations = createObject([
+    GmailIntegration,
+    GoogleSheetsIntegration,
+    AirTableIntegration,
+])
 
 
 function createObject(arr) {

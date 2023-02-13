@@ -3,7 +3,7 @@ import { revokeIntegration, updateApp } from "./app-actions.js"
 import { functionUrl } from "./functions.js"
 
 
-class OAuthIntegration {
+class OAuthAuthManager {
 
     constructor(name, { authorizeFunction } = {}) {
         this.name = name
@@ -29,7 +29,7 @@ class OAuthIntegration {
     }
 }
 
-class GoogleIntegration extends OAuthIntegration {
+class GoogleAuthManager extends OAuthAuthManager {
 
     constructor(name, scopes) {
         super(name, { authorizeFunction: "google-authorizeApp" })
@@ -59,17 +59,17 @@ class GoogleIntegration extends OAuthIntegration {
 
 // Google Apps
 
-export const GmailIntegration = new GoogleIntegration("Gmail", [
+export const GmailAuthManager = new GoogleAuthManager("Gmail", [
     "https://www.googleapis.com/auth/gmail.modify",
 ])
 
-export const GoogleSheetsIntegration = new GoogleIntegration("GoogleSheets", [
+export const GoogleSheetsAuthManager = new GoogleAuthManager("GoogleSheets", [
     "https://www.googleapis.com/auth/spreadsheets",
 ])
 
 
 // Other Apps
 
-export const AirTableIntegration = new OAuthIntegration("AirTable", { 
+export const AirTableAuthManager = new OAuthAuthManager("AirTable", { 
     authorizeFunction: "airtable-authorizeApp" 
 })
