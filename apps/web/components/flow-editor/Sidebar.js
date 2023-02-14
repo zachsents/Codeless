@@ -1,14 +1,10 @@
-import { forwardRef, useEffect, useRef, useState, useMemo, useCallback } from "react"
+import { forwardRef, useEffect, useRef, useState, useCallback } from "react"
 import { useReactFlow } from "reactflow"
-import fuzzy from "fuzzy"
-import { ActionIcon, Box, Button, Group, Navbar, NavLink, ScrollArea, Stack, SimpleGrid, Space, Text, TextInput, Title, Kbd, Center, Grid, Tooltip } from "@mantine/core"
-import { useDisclosure, useDebouncedState, useHotkeys } from "@mantine/hooks"
-import { Tb3DCubeSphere, TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse, TbMaximize, TbPercentage, TbPlus, TbSearch, TbX } from "react-icons/tb"
+import { Box, Button, Navbar, NavLink, Stack, Space, Text, Title, Kbd, Grid, Tooltip } from "@mantine/core"
+import { useDisclosure, useHotkeys } from "@mantine/hooks"
+import { Tb3DCubeSphere, TbMaximize, TbPlus, TbSearch } from "react-icons/tb"
 
 import { createNode } from "../../modules/graph-util"
-import LinkIcon from "../LinkIcon"
-import NodeInfoPopover from "./NodeInfoPopover"
-import { NodeCategories } from "../../modules/nodes"
 
 import { motion } from "framer-motion"
 import { openContextModal } from "@mantine/modals"
@@ -26,6 +22,7 @@ export default function Sidebar() {
         title: <Title order={3}>Add a node</Title>,
         size: "lg",
         centered: true,
+        transitionDuration: 200,
     }), [rf])
 
     useHotkeys([
@@ -186,48 +183,3 @@ const NodeTile = forwardRef(({ node, ...props }, ref) => {
 })
 
 NodeTile.displayName = "NodeTile"
-
-
-function CategoryTile({ children, icon: Icon, ...props }) {
-
-    const iconSize = 32
-
-    return (
-        <NavLink
-            label={children}
-            variant="light"
-            py={20}
-            icon={Icon && <Icon size={iconSize} />}
-            {...props}
-
-            styles={theme => ({
-                root: {
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: theme.radius.lg,
-                    padding: "0 5px",
-
-                    backgroundColor: theme.colors.gray[0],
-                    "&:hover": {
-                        backgroundColor: theme.colors.gray[1],
-                    },
-                },
-                icon: {
-                    margin: 0,
-                    fontSize: iconSize,
-                },
-                label: {
-                    fontWeight: 500,
-                    fontSize: Math.max(
-                        Math.min(theme.fontSizes.sm, -0.3 * children.length + 16),
-                        0
-                    ),
-                },
-                body: {
-                    flex: "0 auto",
-                }
-            })}
-        />
-    )
-}
