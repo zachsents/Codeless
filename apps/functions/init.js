@@ -8,6 +8,7 @@ dotenv.config()
 admin.initializeApp()
 global.admin = admin
 export const db = admin.firestore()
+global.db = db
 
 // set firestore settings
 db.settings({ ignoreUndefinedProperties: true })

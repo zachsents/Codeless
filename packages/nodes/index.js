@@ -63,6 +63,8 @@ import Length from "./text/Length.js"
 import Ternary from "./basics/Ternary.js"
 import Extract from "./text/Extract.js"
 
+import ATUseTable from "./airtable/UseTable.js"
+
 
 export default createObject([
 
@@ -113,6 +115,10 @@ export default createObject([
 
     // ===== OpenAI =====
     AskGPT3, Parse,
+
+
+    // ===== AirTable =====
+    ATUseTable,
 ])
 
 

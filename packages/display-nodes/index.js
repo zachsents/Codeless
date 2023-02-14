@@ -49,7 +49,7 @@ import AddRow from "./tables/AddRow"
 import AskGPT3 from "./openai/AskGPT3"
 import Parse from "./openai/Parse"
 
-import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin, BrandGmail } from "tabler-icons-react"
+import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin, BrandGmail, BrandAirtable } from "tabler-icons-react"
 import { SiGooglesheets, SiOpenai } from "react-icons/si"
 
 import TrimWhitespace from "./text/TrimWhitespace"
@@ -66,6 +66,7 @@ import Length from "./text/Length"
 import Ternary from "./basics/Ternary"
 import Extract from "./text/Extract"
 
+import ATUseTable from "./airtable/UseTable"
 
 import GmailIntegration from "./google/gmail/integration"
 import GoogleSheetsIntegration from "./google/sheets/integration"
@@ -113,6 +114,10 @@ export const Nodes = createObject([
 
     // ===== OpenAI =====
     AskGPT3, Parse,
+
+
+    // ===== AirTable =====
+    ATUseTable,
 ])
 
 export const NodeCategories = {
@@ -204,16 +209,6 @@ export const NodeCategories = {
             "googlesheets:Spreadsheet",
             "googlesheets:Range",
             "googlesheets:Table",
-            // "googlesheets:CellRange",
-            // "googlesheets:RowRange",
-            // "googlesheets:ColumnRange",
-            // "googlesheets:GetRange",
-            // "googlesheets:SetRange",
-            // "googlesheets:GetSheet",
-            // "googlesheets:GetNamedColumn",
-            // "googlesheets:SetNamedColumn",
-            // "googlesheets:Append",
-            // "googlesheets:ClearRange",
         ],
     },
     OpenAI: {
@@ -222,6 +217,13 @@ export const NodeCategories = {
         members: [
             "openai:AskGPT3",
             "openai:Parse",
+        ],
+    },
+    AirTable: {
+        title: "Airtable",
+        icon: BrandAirtable,
+        members: [
+            "airtable:UseTable",
         ],
     },
 }

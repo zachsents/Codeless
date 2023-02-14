@@ -78,7 +78,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
         <Stack>
             <Search
                 list={NodeList}
-                selector={type => type.name + type.description}
+                selector={type => type.name + (type.badge ?? "") + type.description}
                 noun="node"
                 component={NodeTile}
                 componentItemProp="type"
