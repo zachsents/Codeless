@@ -1,5 +1,4 @@
-import { Box, Center, Group, Stack, Text, ThemeIcon } from "@mantine/core"
-import { httpsCallable } from "firebase/functions"
+import { Center, Group, Stack, Text, ThemeIcon } from "@mantine/core"
 import { Mail, Mailbox } from "tabler-icons-react"
 
 
@@ -46,19 +45,5 @@ export default {
                 </Stack>
             </Group>
         )
-    }
-}
-
-
-async function callGmailWatchFunction(functions, payload) {
-    try {
-        const { data } = await httpsCallable(functions, "gmail-watchGmailInbox")(payload)
-        return {
-            error: data?.error,
-        }
-    }
-    catch (err) {
-        console.error(err)
-        return { error: err.message }
     }
 }

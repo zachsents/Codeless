@@ -1,7 +1,6 @@
-import { Center, Stack, Text } from "@mantine/core"
+import { Center, Text, TextInput, Image } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
-import { ControlStack } from "../../components"
-import { SheetNameControl, SpreadsheetIDControl } from "./shared"
+import { Control, ControlLabel, ControlStack } from "../../components"
 
 
 export default {
@@ -23,12 +22,12 @@ export default {
             ],
         }
     ],
-    
+
     requiredIntegrations: ["integration:GoogleSheets"],
 
     defaultState: {
         spreadsheetId: null,
-        sheetName: "",
+        sheetName: null,
     },
 
     renderNode: ({ state }) => {
@@ -40,17 +39,54 @@ export default {
                         <Text component="span" weight={500} size="xs">"{state.sheetName}"</Text>
                     </>
                     :
-                    <Text color="dimmed" size="xs">Missing parameters</Text>
+                    <Text color="dimmed" size="xs">Click to configure</Text>
                 }
             </Center>
         )
     },
 
-    configuration: props => {
+    configuration: ({ state, setState }) => {
         return (
             <ControlStack>
-                <SpreadsheetIDControl {...props} />
-                <SheetNameControl {...props} />
+                <Control>
+                    <ControlLabel
+                        bold
+                        info={<>
+                            <Text>You can find this in the URL while editing in Google Sheets.</Text>
+                            <Text color="dimmed">
+                                Example:<br />
+                                https://docs.google.com/spreadsheets/d/<Text component="span" color="yellow" weight={500}>141NUUnvN8IYJgI9jLz_6SMn9b46hXhBRyVRvTMgKiHs</Text>/edit
+                            </Text>
+                        </>}
+                    >
+                        Google Sheet ID
+                    </ControlLabel>
+                    <TextInput
+                        name="spreadsheetId"
+                        placeholder="ID from Google Sheets URL"
+                        value={state.spreadsheetId}
+                        onChange={event => setState({ spreadsheetId: event.currentTarget.value })}
+                        error={state.spreadsheetId === null || /^[0-9A-Za-z_\-]{40,}$/.test(state.spreadsheetId) ? null : "This doesn't look like a valid Google Sheet ID"}
+                    />
+                </Control>
+
+                <Control>
+                    <ControlLabel info={<>
+                        <Text>The name of the sheet you want to use. Leave blank to use the first sheet.</Text>
+                        <Text color="dimmed">Example: "Sheet1" or "Customers" (don't include quotation marks)</Text>
+                        <Center px="xl" py="sm">
+                            <Image radius="md" src="/sheet-name-example.webp" alt="Sheet Name Example" maw={250} />
+                        </Center>
+                    </>}>
+                        Sheet (Tab) Name
+                    </ControlLabel>
+                    <TextInput
+                        name="sheetName"
+                        placeholder="Sheet1, Customers, etc."
+                        value={state.sheetName}
+                        onChange={event => setState({ sheetName: event.currentTarget.value })}
+                    />
+                </Control>
             </ControlStack>
         )
     }

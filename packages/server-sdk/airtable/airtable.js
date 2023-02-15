@@ -77,9 +77,9 @@ export async function getTokenFromGrantCode({ code, randomState, codeChallenge }
 }
 
 
-export async function getAirTableAPI(appId = global.info.appId) {
+export async function getAirTableAPI(appId = global.info.appId, options = {}) {
     const freshToken = await getFreshAccessToken(appId)
-    return new AirTableAPI({ apiKey: freshToken })
+    return new AirTableAPI({ apiKey: freshToken, ...options })
 }
 
 
@@ -104,7 +104,7 @@ async function getFreshAccessToken(appId = global.info.appId) {
 
         if (accessToken) {
             // console.debug(`Trying out access token... (${accessToken})`)
-            
+
             // try out access token
             let res = await (await fetch("https://api.airtable.com/v0/meta/whoami", {
                 headers: { "Authorization": "Bearer " + accessToken }

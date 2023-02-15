@@ -2,6 +2,7 @@ import functions from "firebase-functions"
 import { db } from "./init.js"
 import { logger } from "./logger.js"
 import { airtable } from "@minus/server-sdk"
+import fetch from "node-fetch"
 
 
 export const authorizeApp = functions.https.onRequest(async (request, response) => {
@@ -50,6 +51,32 @@ export const appAuthorizationRedirect = functions.https.onRequest(async (request
 
     // response with JS to close the popup window
     response.send("<script>window.close()</script>")
+})
+
+
+export const getTableNameFromId = functions.https.onCall(async (data, context) => {
+
+    const { appId, baseId, tableId } = data
+
+    // check params
+    if(!appId || !baseId || !tableId)
+        throw new functions.https.HttpsError("invalid-argument", "Must include Minus app ID and Airtable base ID and table ID")
+
+    // grab API
+    const at = await airtable.getAirTableAPI(appId)
+
+    // airtable.js doesn't provide access to the Metadata API
+    const res = await (await fetch(`https://api.airtable.com/v0/meta/bases/${baseId}/tables`, {
+        headers: {
+            "Authorization": "Bearer " + at._apiKey,
+        }
+    })).json()
+
+    // check for errors
+    if(res.error)
+        throw new functions.https.HttpsError("unknown", `${res.error.type}: ${res.error.message}`)
+
+    return res.tables?.find(table => table.id == tableId)?.name
 })
 
 
