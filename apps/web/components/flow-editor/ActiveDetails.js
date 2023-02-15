@@ -70,7 +70,7 @@ function NodeConfig({ node }) {
 
     // pull some state from config store -- doesn't need to be persisted between refreshes 
     const panelMaximized = useConfigStore(s => s[node.id]?.panelMaximized ?? false)
-    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue ?? (hasConfiguration ? "options" : null))
+    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue ?? null)
     const { togglePanelMaximized, setAccordionValue } = useConfigStore(s => s.actions)
 
     // calculate some numbers
