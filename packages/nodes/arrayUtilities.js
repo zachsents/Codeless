@@ -50,3 +50,9 @@ export function expectRegexToBeGlobal(reg) {
         new RegExp(reg.source, reg.flags + "g") :
         reg
 }
+
+export function deepFlat(arr) {
+    if(arr.some(item => item instanceof Array))
+        return deepFlat(arr.flat())
+    return arr
+}

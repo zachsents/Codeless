@@ -1,4 +1,5 @@
-import { Select, Stack, Switch, Text, TextInput } from "@mantine/core"
+import { Button, Group, NumberInput, Select, Stack, Switch, Text, TextInput } from "@mantine/core"
+import { useRef } from "react"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components"
 
@@ -6,18 +7,17 @@ import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../comp
 export default {
     id: "tables:RowWhere",
     name: "Find Rows",
-    description: "Gets a specific row from a table. Functions similarly to a VLOOKUP.",
+    description: "Searches a table for rows matching the configured filters.",
     icon: Table,
     color: "yellow",
     badge: "Tables",
 
-    inputs: ["$table", "$searchValue"],
+    inputs: ["$table", "filters",],
     outputs: ["row"],
 
     defaultState: {
-        searchColumn: "",
-        compareMethod: "Equals",
         multiple: false,
+        limit: null,
     },
 
     renderName: ({ state }) => `Find Row${state.multiple ? "s" : ""}`,
@@ -26,54 +26,39 @@ export default {
 
         alignHandles("$table")
 
-        return state.searchColumn ?
-            <Stack spacing={0} align="center">
+        return (
+            <Stack spacing="xs" align="center">
                 <Text color="dimmed">Find {state.multiple ? "rows" : "a row"} where</Text>
-                <Text weight={500}>"{state.searchColumn}"</Text>
-                <Text color="dimmed">{state.compareMethod}</Text>
-                <SkeletonWithHandle align="left" ref={el => alignHandles("$searchValue", el)} />
+                <SkeletonWithHandle align="left" ref={el => alignHandles("filters", el)} />
             </Stack>
-            :
-            <Text size="xs" color="dimmed">No parameters specified</Text>
+        )
     },
 
     configuration: ({ state, setState }) => {
+
         return (
             <ControlStack>
                 <Control>
-                    <ControlLabel info="The column you're searching in.">
-                        Search Column
+                    <ControlLabel info="The number of rows you want to find. Leave blank to not set a limit.">
+                        Limit
                     </ControlLabel>
-                    <TextInput
-                        value={state.searchColumn ?? ""}
-                        onChange={event => setState({ searchColumn: event.currentTarget.value })}
-                        placeholder="Column Name"
-                    />
-                </Control>
 
-                <Control>
-                    <ControlLabel info='The method used for searching. "Equals" will look for an exact match, while "Contains" will match any substring.'>
-                        Search Method
-                    </ControlLabel>
-                    <Select
-                        data={[
-                            { label: "Equals", value: "Equals" },
-                            { label: "Contains", value: "Contains" },
-                            { label: "Matches Regex", value: "MatchesRegex" },
-                        ]}
-                        value={state.compareMethod ?? ""}
-                        onChange={val => setState({ compareMethod: val })}
-                    />
-                </Control>
-
-                <Control>
-                    <ControlLabel info="Whether you want to find a single row or multiple rows.">
-                        Find Multiple Rows
-                    </ControlLabel>
-                    <Switch
-                        checked={state.multiple}
-                        onChange={event => setState({ multiple: event.currentTarget.checked })}
-                    />
+                    <Group noWrap>
+                        <NumberInput
+                            placeholder="No limit"
+                            value={state.limit}
+                            onChange={limit => setState({ limit })}
+                            min={0}
+                        />
+                        <Stack spacing={4}>
+                            <Button size="xs" compact variant="subtle" onClick={() => setState({ limit: 1 })}>
+                                Single Row
+                            </Button>
+                            <Button size="xs" compact variant="subtle" onClick={() => setState({ limit: undefined })}>
+                                No Limit
+                            </Button>
+                        </Stack>
+                    </Group>
                 </Control>
             </ControlStack>
         )

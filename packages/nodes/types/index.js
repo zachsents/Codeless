@@ -1,6 +1,5 @@
 
 export { Table } from "./Table.js"
-export { Condition } from "./Condition.js"
 
 
 export class ExecutionSignal {

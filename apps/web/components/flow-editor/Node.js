@@ -71,6 +71,9 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
     // handle snapping position 
     useNodeSnapping(id, xPos, yPos)
 
+    // integrations
+    const integrationsSatisfied = nodeType.requiredIntegrations?.every(intId => Integrations[intId].manager.isAppAuthorized(app)) ?? true
+
     return (
         <motion.div
             initial={{ outline: "none" }}
@@ -137,6 +140,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
                         <nodeType.renderNode
                             {...displayProps}
                             alignHandles={alignHandles}
+                            integrationsSatisfied={integrationsSatisfied}
                         />
                     </Box>
                 }
@@ -144,8 +148,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos, ...prop
 
             {/* Error Icon */}
             <AnimatePresence>
-                {(latestRun?.errors[id]?.length > 0 ||
-                    !(nodeType.requiredIntegrations?.every(intId => Integrations[intId].manager.isAppAuthorized(app)) ?? true)) &&
+                {(latestRun?.errors[id]?.length > 0 || !integrationsSatisfied) &&
                     <ErrorIcon />}
             </AnimatePresence>
 
@@ -190,7 +193,7 @@ function ErrorIcon() {
             }}
         >
             <motion.div initial={{ scale: 0, rotate: -135 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -135 }} transition={{ duration: 0.1 }}>
-                <Tooltip withArrow label={<Text size="xs">There were errors on the last run</Text>}>
+                {/* <Tooltip withArrow label={<Text size="xs">There were errors on the last run</Text>}> */}
                     <ActionIcon
                         size="xs"
                         radius="sm"
@@ -199,7 +202,7 @@ function ErrorIcon() {
                     >
                         <TbExclamationMark size={12} />
                     </ActionIcon>
-                </Tooltip>
+                {/* </Tooltip> */}
             </motion.div>
         </Box>
     )

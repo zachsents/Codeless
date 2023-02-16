@@ -1,34 +1,29 @@
-import { sheets } from "@minus/server-sdk"
+import { sheets, airtable, Condition } from "@minus/server-sdk"
+import { deepFlat } from "../arrayUtilities.js"
 
 
 export default {
     id: "tables:RowWhere",
     name: "Row Where",
 
-    inputs: ["$table", "$searchValue"],
+    inputs: ["$table", "filters"],
     outputs: ["row"],
 
     /**
      * @param {object} inputs
-     * @param {sheets.Table} inputs.$table
-     * @param {*} inputs.$searchValue
+     * @param {sheets.Table | airtable.Table} inputs.$table
+     * @param {Condition[]} inputs.filters
      */
-    async onInputsReady({ $table, $searchValue }) {
+    async onInputsReady({ $table, filters }) {
 
         if(!this.state.searchColumn)
             throw new Error("Must specify search column")
 
-        // set up filter
-        const filterFunc = sheets.FieldFilter[this.state.compareMethod]?.($searchValue)
-        if(!filterFunc)
-            throw new Error("Invalid filter function")
-
-        const filter = new sheets.FieldFilter(this.state.searchColumn, filterFunc)
-
         // execute query
         const rows = await $table.findRows({
-            filter,
-            limit: this.state.multiple ? undefined : 1,
+            // make sure filters are flat and all Conditions
+            filters: Condition.wrapPrimitives(deepFlat(filters)),
+            limit: this.state.multiple ? this.state.limit : 1,
         })
 
         this.publish({ row: rows })

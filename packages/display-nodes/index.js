@@ -45,6 +45,7 @@ import RowWhere from "./tables/RowWhere"
 import Column from "./tables/Column"
 import SetColumn from "./tables/SetColumn"
 import AddRow from "./tables/AddRow"
+import TableField from "./tables/TableField"
 
 import AskGPT3 from "./openai/AskGPT3"
 import Parse from "./openai/Parse"
@@ -105,7 +106,7 @@ export const Nodes = createObject([
 
 
     // ===== Tables =====
-    RowWhere, Column, SetColumn, AddRow,
+    RowWhere, Column, SetColumn, AddRow, TableField,
 
 
     // ===== Google Sheets =====
@@ -200,6 +201,7 @@ export const NodeCategories = {
             "tables:Column",
             "tables:SetColumn",
             "tables:AddRow",
+            "tables:TableField",
         ],
     },
     GoogleSheets: {

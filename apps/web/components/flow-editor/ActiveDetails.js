@@ -70,7 +70,7 @@ function NodeConfig({ node }) {
 
     // pull some state from config store -- doesn't need to be persisted between refreshes 
     const panelMaximized = useConfigStore(s => s[node.id]?.panelMaximized ?? false)
-    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue ?? null)
+    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue ?? (hasConfiguration ? "options" : null))
     const { togglePanelMaximized, setAccordionValue } = useConfigStore(s => s.actions)
 
     // calculate some numbers
@@ -87,7 +87,7 @@ function NodeConfig({ node }) {
                 message: `This node has ${numUnconnectedInputs} input${numUnconnectedInputs == 1 ? " that isn't" : "s that aren't"} connected.`
             })
 
-        latestRun.errors[node.id]?.forEach(err => problems.push({
+        latestRun?.errors[node.id]?.forEach(err => problems.push({
             type: ProblemType.Error,
             message: err.message,
         }))

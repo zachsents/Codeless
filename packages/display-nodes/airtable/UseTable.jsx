@@ -29,19 +29,19 @@ export default {
         tableId: null,
     },
 
-    renderNode: ({ state, setState, appId }) => {
+    renderNode: ({ state, setState, appId, integrationsSatisfied }) => {
 
         const [loading, setLoading] = useState(false)
 
         useEffect(() => {
-            if (state.tableId && state.baseId && !loading) {
+            if (integrationsSatisfied && state.tableId && state.baseId && !loading) {
                 setLoading(true)
                 getTableNameFromId({ appId, baseId: state.baseId, tableId: state.tableId })
                     .then(res => setState({ tableName: res.data }))
                     .catch(err => console.error(err))
                     .finally(() => setLoading(false))
             }
-        }, [state.tableId, state.baseId])
+        }, [state.tableId, state.baseId, integrationsSatisfied])
 
         return (
             <Center>

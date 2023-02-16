@@ -45,6 +45,7 @@ import RowWhere from "./tables/RowWhere.js"
 import Column from "./tables/Column.js"
 import SetColumn from "./tables/SetColumn.js"
 import AddRow from "./tables/AddRow.js"
+import TableField from "./tables/TableField.js"
 
 import AskGPT3 from "./openai/AskGPT3.js"
 import Parse from "./openai/Parse.js"
@@ -102,7 +103,7 @@ export default createObject([
 
 
     // ===== Tables =====
-    RowWhere, Column, SetColumn, AddRow,
+    RowWhere, Column, SetColumn, AddRow, TableField,
 
 
     // ===== Gmail =====
