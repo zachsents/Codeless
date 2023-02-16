@@ -1,4 +1,4 @@
-import { SheetReference } from "./types.js"
+import { sheets } from "@minus/server-sdk"
 
 
 export default {
@@ -8,9 +8,10 @@ export default {
     inputs: [],
     outputs: ["_sheetRef"],
 
-    onStart() {
+    async onStart() {
+        const sheetsApi = await sheets.getGoogleSheetsAPI()
         this.publish({
-            _sheetRef: new SheetReference(this.state.spreadsheetId, this.state.sheetName)
+            _sheetRef: sheetsApi.spreadsheet(this.state.spreadsheetId).sheet(this.state.sheetName)
         })
     },
 }

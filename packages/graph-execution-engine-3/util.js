@@ -53,7 +53,9 @@ function prepNode(node, nodeType, nodes, edges) {
 
     // set up other node properties
     node.timesRan = 0
-    node.returnToFlow = Returns.report.bind(Returns)
+    node.returnToFlow = (key, value) => {
+        Returns.report(key, cleanOutput(value, true))
+    }
 
     // create publish function -- pushes output values to connected input
     node.publish = function publish(valuesObject) {
@@ -126,7 +128,7 @@ function prepNode(node, nodeType, nodes, edges) {
 
                     // use PromiseStream to await nodes and process outputs/errors
                     PromiseStream.add(Promise.resolve().then(nodeOutput), {
-                        onReject: error => Errors.report(conn.node.id, {
+                        onReject: error => console.error(error) || Errors.report(conn.node.id, {
                             type: conn.node.type.id,
                             message: error.message,
                         }),
@@ -202,14 +204,17 @@ function parseListHandle(id) {
 }
 
 
-function cleanOutput(dirty) {
+function cleanOutput(dirty, inArray = false) {
     const value = dirty.valueOf()
     const isPrimitive = value !== Object(value)
     const isPlainObject = value.constructor === Object
     const isArray = value.constructor === Array
     const isCircular = util.format("%j", value) == "[Circular]"
 
-    if ((isPrimitive || isPlainObject || isArray) && !isCircular)
+    if(isArray)
+        return inArray ? dirty.join(", ") : dirty.map(x => cleanOutput(x, true))
+
+    if ((isPrimitive || isPlainObject) && !isCircular)
         return value
 
     return dirty.toString()

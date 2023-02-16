@@ -1,6 +1,4 @@
-import { Table } from "../../types/Table.js"
-import { authorizeGoogleSheetsAPI } from "./auth.js"
-import { Range } from "./types.js"
+import { sheets } from "@minus/server-sdk"
 
 
 export default {
@@ -10,35 +8,26 @@ export default {
     inputs: ["$sheet"],
     outputs: ["data"],
 
+    /**
+     * @param {object} inputs
+     * @param {sheets.Sheet} inputs.$sheet
+     */
     async onInputsReady({ $sheet }) {
-        // get Google Sheets API
-        const sheetsApi = await authorizeGoogleSheetsAPI()
-
-        // construct range
-        const range = new Range($sheet.sheetName, ...this.state.range)
-
-        // read values from range
-        const response = await sheetsApi.spreadsheets.values.get({
-            spreadsheetId: $sheet.spreadsheetId,
-            range: range.toString(),
-            majorDimension: "ROWS",
-            valueRenderOption: "UNFORMATTED_VALUE",
-        })
-        const values = response.data.values
+        
+        // create range and get data
+        const data = await $sheet.range(...this.state.range).getData()
 
         // return the values straight up if it's 1D or a single value
-        if (values.length == 1) {
-            if (values[0].length == 1) {
-                this.publish({ data: values[0][0] })
+        if (data.length == 1) {
+            if (data[0].length == 1) {
+                this.publish({ data: data[0][0] })
                 return
             }
-            this.publish({ data: values[0] })
+            this.publish({ data: data[0] })
             return
         }
 
-        // otherwise, return in Table form
-        const table = new Table()
-        table.loadFrom2DArray(values)
-        this.publish({ data: table })
+        // otherwise, return straight up
+        this.publish({ data })
     },
 }

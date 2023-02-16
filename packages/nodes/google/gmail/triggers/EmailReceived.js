@@ -1,4 +1,4 @@
-import { google } from "googleapis"
+import { gmail } from "@minus/server-sdk"
 
 
 export default {
@@ -17,69 +17,12 @@ export default {
         this.publish({ fromName, fromEmail, ...otherFields })
     },
 
-    async onDeploy({ flow, googleOAuthClient }) {
-        changeWatching(
-            await getGmailApi(flow.app, googleOAuthClient),
-            flow,
-            true
-        )
+    async onDeploy({ flow }) {
+        const gmailApi = await gmail.getGmailAPI(flow.app.id)
+        await gmail.watchInbox(gmailApi, { flow })
     },
 
-    async onUndeploy({ flow, googleOAuthClient }) {
-        changeWatching(
-            await getGmailApi(flow.app, googleOAuthClient),
-            flow,
-            false
-        )
+    async onUndeploy({ flow }) {
+        
     },
-}
-
-
-async function changeWatching(gmail, flow, watching = false) {
-
-    // stop watching
-    if (!watching) {
-        // TO DO: make this check for other flows in the app before unwatching
-        // const response = await gmail.users.stop({
-        //     userId: "me",
-        // })
-        // return response.data
-        return
-    }
-
-    // start watching
-    const { data: { historyId } } = await gmail.users.watch({
-        userId: "me",
-        labelIds: ["INBOX"],
-        labelFilterAction: "include",
-        topicName: "projects/nameless-948a8/topics/gmail",
-    })
-
-    // get email address for user
-    const { data: { emailAddress } } = await gmail.users.getProfile({
-        userId: "me",
-    })
-
-    // put email address & history ID in flow document
-    await flow.update({
-        gmailTriggerEmailAddress: emailAddress,
-        gmailTriggerHistoryId: historyId,
-    })
-}
-
-
-function getGmailApi(app, oauthClient) {
-    // grab stored refresh token
-    const refreshToken = app.integrations?.Google?.refreshToken
-
-    // throw error if there's no token
-    if (!refreshToken)
-        throw new Error("Gmail is not authorized")
-
-    // authorize OAuth2 client with stored token
-    oauthClient.setCredentials({
-        refresh_token: refreshToken,
-    })
-
-    return google.gmail({ version: "v1", auth: oauthClient })
 }

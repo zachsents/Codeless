@@ -11,12 +11,12 @@ export default {
     color: "yellow",
     badge: "Tables",
 
-    inputs: ["table", "$searchValue"],
+    inputs: ["$table", "$searchValue"],
     outputs: ["row"],
 
     defaultState: {
         searchColumn: "",
-        compareMethod: "equals",
+        compareMethod: "Equals",
         multiple: false,
     },
 
@@ -24,7 +24,7 @@ export default {
 
     renderNode: ({ state, alignHandles }) => {
 
-        alignHandles("table")
+        alignHandles("$table")
 
         return state.searchColumn ?
             <Stack spacing={0} align="center">
@@ -57,9 +57,9 @@ export default {
                     </ControlLabel>
                     <Select
                         data={[
-                            { label: "Equals", value: "equals" },
-                            { label: "Contains", value: "contains" },
-                            { label: "Matches Regex", value: "matches Regex" },
+                            { label: "Equals", value: "Equals" },
+                            { label: "Contains", value: "Contains" },
+                            { label: "Matches Regex", value: "MatchesRegex" },
                         ]}
                         value={state.compareMethod ?? ""}
                         onChange={val => setState({ compareMethod: val })}

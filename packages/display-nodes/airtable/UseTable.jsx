@@ -84,7 +84,7 @@ export default {
                     </ControlLabel>
                     <TextInput
                         name="airtableUrl"
-                        value={state.airtableUrl}
+                        value={state.airtableUrl ?? ""}
                         placeholder="https://airtable.com/..."
                         onChange={event => setState({ airtableUrl: event.currentTarget.value })}
                         error={state.airtableUrl === null || AirtableURLRegex.test(state.airtableUrl) ? null : "This doesn't look like a valid Airtable URL"}

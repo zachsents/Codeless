@@ -1,8 +1,11 @@
+import { google } from "@minus/server-sdk"
 import functions from "firebase-functions"
-import { oauthClient, db } from "./init.js"
+import { db } from "./init.js"
 
 
 export const authorizeApp = functions.https.onRequest(async (request, response) => {
+
+    const oauthClient = await google.getGoogleOAuthClient(null)
 
     const url = oauthClient.generateAuthUrl({
         access_type: "offline",
@@ -16,6 +19,8 @@ export const authorizeApp = functions.https.onRequest(async (request, response) 
 
 
 export const appAuthorizationRedirect = functions.https.onRequest(async (request, response) => {
+
+    const oauthClient = await google.getGoogleOAuthClient(null)
 
     // create tokens from code
     const { tokens } = await oauthClient.getToken(request.query.code)

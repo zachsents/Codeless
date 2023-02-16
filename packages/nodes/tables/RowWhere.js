@@ -1,33 +1,36 @@
+import { sheets } from "@minus/server-sdk"
 
 
 export default {
     id: "tables:RowWhere",
     name: "Row Where",
 
-    inputs: ["table", "$searchValue"],
+    inputs: ["$table", "$searchValue"],
     outputs: ["row"],
 
-    onInputsReady({ table, $searchValue }) {
+    /**
+     * @param {object} inputs
+     * @param {sheets.Table} inputs.$table
+     * @param {*} inputs.$searchValue
+     */
+    async onInputsReady({ $table, $searchValue }) {
 
-        switch(this.state.compareMethod) {
-            case "equals":
-                var compareFunc = (data, value) => data == value
-                break
-            case "contains":
-                var compareFunc = (data, value) => data.includes?.(value)
-                break
-            case "matches Regex":
-                var compareFunc = (data, value) => value.test?.(data)
-                break
-        }
+        if(!this.state.searchColumn)
+            throw new Error("Must specify search column")
 
-        // find either one row or multiple rows
-        const rows = table[this.state.multiple ? "filter" : "find"](
-            row => compareFunc(row.getColumn(this.state.searchColumn), $searchValue)
-        )
+        // set up filter
+        const filterFunc = sheets.FieldFilter[this.state.compareMethod]?.($searchValue)
+        if(!filterFunc)
+            throw new Error("Invalid filter function")
 
-        this.publish({
-            row: rows
+        const filter = new sheets.FieldFilter(this.state.searchColumn, filterFunc)
+
+        // execute query
+        const rows = await $table.findRows({
+            filter,
+            limit: this.state.multiple ? undefined : 1,
         })
+
+        this.publish({ row: rows })
     },
 }

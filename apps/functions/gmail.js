@@ -1,9 +1,9 @@
 import functions from "firebase-functions"
-import { oauthClient, db } from "./init.js"
-import { google } from "googleapis"
+import { db } from "./init.js"
 import { httpsCallable, url } from "firebase-admin-callable-functions"
 import { logger } from "./logger.js"
 import { RunStatus } from "./flows.js"
+import { gmail } from "@minus/server-sdk"
 
 
 export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
@@ -53,7 +53,7 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
     logger.log(`Trying ${flows.length} flow(s) for app: ${appId}`)
 
     // get Gmail API
-    const gmail = await getGmailApi(appId)
+    const gmailApi = await gmail.getGmailApi(appId)
 
     // loop through flows
     const flowPromises = flows.map(async flowId => {
@@ -79,7 +79,7 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
         console.log(`Getting history between ${startHistoryId} and ${newHistoryId}`)
 
         // fetch history
-        const { data: { history } } = await gmail.users.history.list({
+        const { data: { history } } = await gmailApi.users.history.list({
             userId: "me",
             startHistoryId,
             historyTypes: ["messageAdded"],
@@ -106,7 +106,7 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
 
                 // fetch message details
                 try {
-                    var { data: message } = await gmail.users.messages.get({
+                    var { data: message } = await gmailApi.users.messages.get({
                         userId: "me",
                         id: messageId,
                     })
@@ -177,10 +177,10 @@ export const refreshWatches = functions.pubsub.schedule("0 11 * * *").onRun(asyn
 export const refreshWatch = functions.https.onCall(async (data, context) => {
 
     // get Gmail API
-    const gmail = await getGmailApi(data.appId)
+    const gmailApi = await gmail.getGmailApi(data.appId)
 
     // refresh watch
-    await gmail.users.watch({
+    await gmailApi.users.watch({
         userId: "me",
         labelIds: ["INBOX"],
         labelFilterAction: "include",
@@ -189,24 +189,6 @@ export const refreshWatch = functions.https.onCall(async (data, context) => {
 
     console.log(`[App-${data.appId}] Refreshed Gmail watch.`)
 })
-
-
-async function getGmailApi(appId) {
-    // grab stored refresh token
-    const appSnapshot = await db.doc(`apps/${appId}`).get()
-    const refreshToken = appSnapshot.data().integrations?.Google?.refreshToken
-
-    // throw error if there's no token
-    if (!refreshToken)
-        throw new Error(`Gmail is not authorized for app ${appId}.`)
-
-    // authorize OAuth2 client with stored token
-    oauthClient.setCredentials({
-        refresh_token: refreshToken,
-    })
-
-    return google.gmail({ version: "v1", auth: oauthClient })
-}
 
 
 function getHeader(name, payload) {

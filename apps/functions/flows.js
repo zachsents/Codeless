@@ -1,7 +1,7 @@
 import { FieldValue } from "firebase-admin/firestore"
 import { getFunctions } from "firebase-admin/functions"
 import functions from "firebase-functions"
-import { db, oauthClient } from "./init.js"
+import { db } from "./init.js"
 import NodeTypes from "@minus/server-nodes"
 import { runFlow } from "@minus/gee3"
 import { logger } from "./logger.js"
@@ -100,7 +100,6 @@ export const publish = functions.https.onCall(async (data, context) => {
             flow.graph.nodes.map(
                 node => NodeTypes[node.type].onDeploy?.bind(node)({
                     flow,
-                    googleOAuthClient: oauthClient,
                 })
             )
         )
@@ -125,7 +124,6 @@ export const unpublish = functions.https.onCall(async (data, context) => {
             flow.graph.nodes.map(
                 node => NodeTypes[node.type].onUndeploy?.bind(node)({
                     flow,
-                    googleOAuthClient: oauthClient,
                 })
             )
         )
@@ -190,7 +188,6 @@ async function _validate(flowId) {
             flow.graph.nodes.map(
                 node => NodeTypes[node.type].validate?.bind(node)({
                     flow,
-                    googleOAuthClient: oauthClient,
                 })
             )
         )
