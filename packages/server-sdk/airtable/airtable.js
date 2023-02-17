@@ -167,7 +167,7 @@ async function getToken(bodyParams = {}) {
 
 async function getAuthDetails() {
     const detailsPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "./airtable_secret.json")
-    
+
     const { production, development, ...authDetails } = JSON.parse(await fs.readFile(detailsPath, "utf-8"))
     return {
         ...authDetails,

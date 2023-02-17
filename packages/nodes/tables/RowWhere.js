@@ -16,14 +16,11 @@ export default {
      */
     async onInputsReady({ $table, filters }) {
 
-        if(!this.state.searchColumn)
-            throw new Error("Must specify search column")
-
         // execute query
         const rows = await $table.findRows({
             // make sure filters are flat and all Conditions
             filters: Condition.wrapPrimitives(deepFlat(filters)),
-            limit: this.state.multiple ? this.state.limit : 1,
+            limit: this.state.limit,
         })
 
         this.publish({ row: rows })

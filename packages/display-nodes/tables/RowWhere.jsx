@@ -16,11 +16,10 @@ export default {
     outputs: ["row"],
 
     defaultState: {
-        multiple: false,
         limit: null,
     },
 
-    renderName: ({ state }) => `Find Row${state.multiple ? "s" : ""}`,
+    renderName: ({ state }) => `Find Row${state.limit == 1 ? "" : "s"}`,
 
     renderNode: ({ state, alignHandles }) => {
 
@@ -28,7 +27,7 @@ export default {
 
         return (
             <Stack spacing="xs" align="center">
-                <Text color="dimmed">Find {state.multiple ? "rows" : "a row"} where</Text>
+                <Text color="dimmed">Find {state.limit == 1 ? "a row" : "rows"} where</Text>
                 <SkeletonWithHandle align="left" ref={el => alignHandles("filters", el)} />
             </Stack>
         )

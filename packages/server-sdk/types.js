@@ -31,6 +31,10 @@ export class Condition {
         this.name = name
         this.compareFunction = compareFunction
         this.subjects = subjects
+        this.structure = {
+            subjects,
+            function: name,
+        }
     }
 
     /**
@@ -50,7 +54,11 @@ export class Condition {
                     this.compareFunction(...args.slice(0, this.subjects.length)),
                     condition.compareFunction(...args.slice(this.subjects.length))
                 )
-            }
+            },
+            structure: {
+                subjects: [this.structure, condition.structure],
+                function: joinText,
+            },
         })
     }
 

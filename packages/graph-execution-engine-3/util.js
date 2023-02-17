@@ -205,6 +205,9 @@ function parseListHandle(id) {
 
 
 function cleanOutput(dirty, inArray = false) {
+    if(dirty == null)
+        return dirty ?? null
+
     const value = dirty.valueOf()
     const isPrimitive = value !== Object(value)
     const isPlainObject = value.constructor === Object
