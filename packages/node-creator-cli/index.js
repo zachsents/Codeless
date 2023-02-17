@@ -8,8 +8,8 @@ import { fileURLToPath } from "url"
 import path from "path"
 
 
-const ClientNodesPath = "./packages/display-nodes"
-const ServerNodesPath = "./packages/nodes"
+const ClientNodesPath = "./packages/client-nodes"
+const ServerNodesPath = "./packages/server-nodes"
 
 
 // check if we're in project root

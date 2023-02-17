@@ -10,7 +10,13 @@ export default {
     
     onInputsReady({ _a, _b }) {
         this.publish({ 
-            $: safeMap((a, b) => !!a && !!b, _a, _b) 
+            $: safeMap((a, b) => {
+
+                if(a instanceof Sentinel || b instanceof Sentinel)
+                    return Condition.And(a, b)
+
+                return !!a && !!b
+            }, _a, _b) 
         })
     },
 }

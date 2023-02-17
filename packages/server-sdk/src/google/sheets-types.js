@@ -15,67 +15,6 @@ export class ExtendedGoogleSheetsAPI extends sheets_v4.Sheets {
 }
 
 
-export class FieldFilter {
-
-    static Equals = b => a => a == b
-    static Contains = b => a => a.includes(b)
-    static MatchesRegex = b => a => b.test(a)
-
-    /**
-     * Creates an instance of FieldFilter.
-     * @param {string} field
-     * @param {(x: *) => boolean} compareFunction
-     * @memberof FieldFilter
-     */
-    constructor(field, compareFunction) {
-        this._fields = [field]
-        this.compareFunction = compareFunction
-    }
-
-    get fields() {
-        return [...new Set(this._fields)]
-    }
-
-    /**
-     * Joins two field filters
-     *
-     * @param {(a: boolean, b: boolean) => boolean} operation
-     * @param {FieldFilter} fieldFilter
-     * @return {FieldFilter} 
-     * @memberof FieldFilter
-     */
-    join(operation, fieldFilter) {
-        return Object.assign(new FieldFilter(), {
-            fields: [...this._fields, ...fieldFilter._fields],
-            compareFunction: (...args) => {
-                return operation(
-                    this.compareFunction(...args.slice(0, this._fields.length)),
-                    fieldFilter.compareFunction(...args.slice(this._fields.length))
-                )
-            }
-        })
-    }
-
-    and(fieldFilter) {
-        return this.join((a, b) => a && b, fieldFilter)
-    }
-
-    or(fieldFilter) {
-        return this.join((a, b) => a || b, fieldFilter)
-    }
-
-    test(record) {
-        return this.compareFunction(
-            ...this._fields.map(field => record[field])
-        )
-    }
-
-    execute(records) {
-        return records.filter(this.test.bind(this))
-    }
-}
-
-
 export class Row {
 
     /**
@@ -115,11 +54,6 @@ export class Row {
     }
 }
 
-// WILO: converted the Find Rows node, now need to convert the rest of the Table nodes.
-// Also need to remove old sheets types.js. Then need to figure out if airtable should use
-// these same nodes. Probably should, as these are basic table operations. I just don't
-// want to limit Airtable nodes, b/c the API is super capable
-
 
 export class Table {
 
@@ -144,10 +78,6 @@ export class Table {
 
     get api() {
         return this.dataRange.api
-    }
-
-    get(field) {
-        return this.data?.[field]
     }
 
     row(...args) {
@@ -180,7 +110,7 @@ export class Table {
 
         // find which columns we need to get
         const filterFields = [...new Set(
-            joinedFilters.subjects.filter(subj => subj instanceof TableField).map(tf => tf.field)
+            joinedFilters.params.filter(subj => subj instanceof TableField).map(tf => tf.field)
         )]
 
         // build ranges for those fields

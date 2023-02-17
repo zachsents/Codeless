@@ -14,7 +14,9 @@ try {
     console.log("Found original package.json. Quitting.")
     process.exit(0)
 }
-catch(err) {}
+catch(err) {
+    console.log()
+}
 
 // make local_modules folder
 try {

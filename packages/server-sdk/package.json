@@ -2,8 +2,10 @@
     "name": "@minus/server-sdk",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "lib/index.js",
     "scripts": {
+        "build": "babel --config-file ../../babel.config.json src -d lib",
+        "dev": "babel --config-file ../../babel.config.json src -w -d lib"
     },
     "author": "",
     "license": "ISC",
@@ -14,10 +16,5 @@
         "googleapis": "^111.0.0",
         "nanoid": "^4.0.1",
         "node-fetch": "^3.3.0"
-    },
-    "devDependencies": {
-        "@babel/cli": "^7.20.7",
-        "@babel/core": "^7.20.12",
-        "@babel/plugin-proposal-pipeline-operator": "^7.18.9"
     }
 }
