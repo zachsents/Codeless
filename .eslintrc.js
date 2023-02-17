@@ -15,4 +15,14 @@ module.exports = {
     rules: {
         "no-extra-boolean-cast": 0,
     },
+    overrides: [
+        {
+            files: [
+                "**/*.test.js"
+            ],
+            env: {
+                jest: true,
+            },
+        }
+    ],
 }

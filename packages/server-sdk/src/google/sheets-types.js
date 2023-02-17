@@ -1,5 +1,6 @@
 import { sheets_v4 } from "googleapis"
-import { Condition, TableField } from "../types.js"
+import { TableField } from "../types/TableField.js"
+import { Operation } from "../types/Operation.js"
 import { logger } from "../logger.js"
 
 
@@ -86,7 +87,7 @@ export class Table {
 
     /**
      * @param {object} options
-     * @param {Condition[]} options.filters
+     * @param {Operation[]} options.filters
      * @param {number} [options.limit]
      * @param {string} [options.sortBy]
      * @param {"asc" | "desc"} [options.sortOrder]

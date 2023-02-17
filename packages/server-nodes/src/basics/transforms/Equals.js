@@ -1,4 +1,4 @@
-import { Condition, Sentinel } from "@minus/server-sdk"
+import { Operation, Sentinel } from "@minus/server-sdk"
 import { safeMap } from "../../arrayUtilities.js"
 
 
@@ -15,7 +15,7 @@ export default {
             $: safeMap((a, b) => {
 
                 if(a instanceof Sentinel || b instanceof Sentinel)
-                    return Condition.Equals(a, b)
+                    return Operation.Equals(a, b)
 
                 return a == b
             }, _a, _b) 
