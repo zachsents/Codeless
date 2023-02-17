@@ -5,7 +5,7 @@ import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../comp
 
 
 export default {
-    id: "tables:RowWhere",
+    id: "tables:FindRows",
     name: "Find Rows",
     description: "Searches a table for rows matching the configured filters.",
     icon: Table,

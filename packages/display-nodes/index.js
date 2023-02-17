@@ -41,7 +41,7 @@ import Spreadsheet from "./google/sheets/Spreadsheet"
 import Range from "./google/sheets/Range"
 import Table from "./google/sheets/Table"
 
-import RowWhere from "./tables/RowWhere"
+import FindRows from "./tables/FindRows"
 import Column from "./tables/Column"
 import SetColumn from "./tables/SetColumn"
 import AddRow from "./tables/AddRow"
@@ -106,7 +106,7 @@ export const Nodes = createObject([
 
 
     // ===== Tables =====
-    RowWhere, Column, SetColumn, AddRow, TableField,
+    FindRows, Column, SetColumn, AddRow, TableField,
 
 
     // ===== Google Sheets =====
@@ -197,7 +197,7 @@ export const NodeCategories = {
         title: "Tables",
         icon: TableIcon,
         members: [
-            "tables:RowWhere",
+            "tables:FindRows",
             "tables:Column",
             "tables:SetColumn",
             "tables:AddRow",

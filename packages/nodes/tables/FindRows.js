@@ -3,7 +3,7 @@ import { deepFlat } from "../arrayUtilities.js"
 
 
 export default {
-    id: "tables:RowWhere",
+    id: "tables:FindRows",
     name: "Row Where",
 
     inputs: ["$table", "filters"],

@@ -16,7 +16,7 @@ export default {
         {
             name: "table",
             suggested: [
-                { node: "tables:RowWhere", handle: "table" },
+                { node: "tables:FindRows", handle: "table" },
                 { node: "tables:AddRow", handle: "table" },
             ],
         }
