@@ -1,3 +1,4 @@
+import { Sentinel } from "./Sentinel.js"
 
 
 const OperationFactory = {
@@ -6,7 +7,7 @@ const OperationFactory = {
 }
 
 
-export class Operation {
+export class Operation extends Sentinel {
 
     // Primitives
     static True = new Operation("true", () => true)
@@ -44,9 +45,18 @@ export class Operation {
      * @memberof Operation
      */
     constructor(name, compareFunction, ...params) {
+        super()
         this.name = name
         this.compareFunction = compareFunction
         this.params = params
+    }
+
+
+    get flatParams() {
+        return this.params.reduce((acc, param) => [
+            ...acc,
+            ...(param instanceof Operation ? param.flatParams : [param]),
+        ], [])
     }
 
 
@@ -109,7 +119,7 @@ export class Operation {
      * @memberof Operation
      */
     valueOf() {
-        return this.params.map(param => param.valueOf())
+        return this.params.map(param => param?.valueOf())
             |> this.compareFunction(...^^)
     }
 }

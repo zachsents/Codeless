@@ -1,3 +1,4 @@
+import { Operation, Sentinel } from "@minus/server-sdk"
 import { safeMap } from "../../arrayUtilities.js"
 
 
@@ -9,6 +10,14 @@ export default {
     outputs: ["_out"],
 
     onInputsReady({ _in }) {
-        this.publish({ _out: safeMap(input => !input, _in) })
+        
+        (input => {
+            if (input instanceof Sentinel)
+                return Operation.Not(input)
+
+            return !input
+        })
+            |> safeMap(^^, _in)
+            |> this.publish({ _out: ^^ })
     },
 }

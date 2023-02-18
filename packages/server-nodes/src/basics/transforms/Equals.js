@@ -11,14 +11,13 @@ export default {
 
     onInputsReady({ _a, _b }) {
 
-        this.publish({ 
-            $: safeMap((a, b) => {
+        ((a, b) => {
+            if (a instanceof Sentinel || b instanceof Sentinel)
+                return Operation.Equals(a, b)
 
-                if(a instanceof Sentinel || b instanceof Sentinel)
-                    return Operation.Equals(a, b)
-
-                return a == b
-            }, _a, _b) 
+            return a == b
         })
+            |> safeMap(^^, _a, _b)
+            |> this.publish({ $: ^^ })
     },
 }

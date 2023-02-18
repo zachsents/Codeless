@@ -16,8 +16,8 @@ export default {
         {
             name: "table",
             suggested: [
-                { node: "tables:FindRows", handle: "table" },
-                { node: "tables:AddRow", handle: "table" },
+                { node: "tables:FindRows", handle: "$table" },
+                { node: "tables:AddRow", handle: "$table" },
             ],
         }
     ],

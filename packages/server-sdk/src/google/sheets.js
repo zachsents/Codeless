@@ -1,10 +1,20 @@
 import { google } from "googleapis"
 import { getGoogleOAuthClient } from "./google.js"
-import { ExtendedGoogleSheetsAPI } from "./sheets-types.js"
+import { ExtendedGoogleSheetsAPI } from "./sheets-types/ExtendedGoogleSheetsAPI.js"
 
 
 let sheetsApi
 
+
+/**
+ * Gets a wrapped version of the Google Sheets API. Returns a cached version
+ * if one's already been initialized, unless specified otherwise.
+ * 
+ * @param {string} [appId] 
+ * @param {object} [options]
+ * @param {boolean} [options.cache] 
+ * @return {Promise<ExtendedGoogleSheetsAPI>}
+ */
 export async function getGoogleSheetsAPI(appId = global.info.appId, {
     cache = true,
 } = {}) {
@@ -32,4 +42,4 @@ export async function getGoogleSheetsAPI(appId = global.info.appId, {
 }
 
 
-export * from "./sheets-types.js"
+export * from "./sheets-types/index.js"

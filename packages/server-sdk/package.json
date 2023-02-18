@@ -4,8 +4,8 @@
     "description": "",
     "main": "lib/index.js",
     "scripts": {
-        "build": "babel src -d lib --delete-dir-on-start --config-file ../../babel.config.json",
-        "dev": "babel src -w -d lib --config-file ../../babel.config.json",
+        "build": "babel src -d lib --delete-dir-on-start --config-file ../../babel.config.json --copy-files",
+        "dev": "babel src -w -d lib --config-file ../../babel.config.json --copy-files",
         "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
     },
     "author": "",

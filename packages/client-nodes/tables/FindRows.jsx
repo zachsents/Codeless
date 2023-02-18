@@ -27,7 +27,7 @@ export default {
 
         return (
             <Stack spacing="xs" align="center">
-                <Text color="dimmed">Find {state.limit == 1 ? "a row" : "rows"} where</Text>
+                <Text color="dimmed">Find {state.limit == 1 ? "a row" : state.limit == null ? "all rows" : `${state.limit} rows`} where</Text>
                 <SkeletonWithHandle align="left" ref={el => alignHandles("filters", el)} />
             </Stack>
         )
@@ -47,7 +47,7 @@ export default {
                             placeholder="No limit"
                             value={state.limit}
                             onChange={limit => setState({ limit })}
-                            min={0}
+                            min={1}
                         />
                         <Stack spacing={4}>
                             <Button size="xs" compact variant="subtle" onClick={() => setState({ limit: 1 })}>

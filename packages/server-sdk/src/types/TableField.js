@@ -6,4 +6,8 @@ export class TableField extends Sentinel {
         super()
         this.field = field
     }
+
+    toString() {
+        return `Table Field "${this.field}"`
+    }
 }

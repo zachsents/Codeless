@@ -1,5 +1,3 @@
-import { sheets, airtable, Operation } from "@minus/server-sdk"
-import { deepFlat } from "../arrayUtilities.js"
 
 
 export default {
@@ -11,18 +9,17 @@ export default {
 
     /**
      * @param {object} inputs
-     * @param {sheets.Table | airtable.Table} inputs.$table
+     * @param {import("@minus/server-sdk/airtable/airtable.js").Table | 
+     *  import("@minus/server-sdk/google/sheets.js").Table} inputs.$table
      * @param {Operation[]} inputs.filters
      */
     async onInputsReady({ $table, filters }) {
 
         // execute query
-        const rows = await $table.findRows({
-            // make sure filters are flat and all Conditions
-            filters: Operation.wrapPrimitives(deepFlat(filters)),
+        await $table.findRows({
+            filters,
             limit: this.state.limit,
         })
-
-        this.publish({ row: rows })
+            |> this.publish({ row: ^^ })
     },
 }
