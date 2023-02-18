@@ -7,7 +7,7 @@ import { runFlow } from "@minus/gee3"
 import { logger } from "./logger.js"
 
 
-export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change, context) => {
+export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {
 
     if (!change.after.exists)
         return
@@ -70,13 +70,22 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
 
             // update doc with run info
             const status = Object.keys(errors).length ? RunStatus.FinishedWithErrors : RunStatus.Finished
-            change.after.ref.update({
+            await change.after.ref.update({
                 status,
                 errors,
                 outputs,
                 returns,
                 ranAt: FieldValue.serverTimestamp(),
             })
+
+            // index the flow's edges if it was successful
+            try {
+                if (status == RunStatus.Finished)
+                    await flow.graph.indexEdges()
+            }
+            catch (err) {
+                console.error(err)
+            }
 
             logger.log(`Finished flow run ${run.id} with status: "${status}"`)
             return
@@ -91,7 +100,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
 })
 
 
-export const publish = functions.https.onCall(async (data, context) => {
+export const publish = functions.https.onCall(async (data) => {
     try {
         const flow = await Flow.fromId(data.flowId)
 
@@ -115,7 +124,7 @@ export const publish = functions.https.onCall(async (data, context) => {
 })
 
 
-export const unpublish = functions.https.onCall(async (data, context) => {
+export const unpublish = functions.https.onCall(async (data) => {
     try {
         const flow = await Flow.fromId(data.flowId)
 
@@ -139,7 +148,7 @@ export const unpublish = functions.https.onCall(async (data, context) => {
 })
 
 
-export const validate = functions.https.onCall((data, context) => _validate(data.flowId))
+export const validate = functions.https.onCall((data) => _validate(data.flowId))
 
 
 export const startScheduledRun = functions.tasks.taskQueue().onDispatch(async ({ flowRunId }) => {
@@ -282,6 +291,52 @@ class FlowGraph {
 
     update(data) {
         return this.ref.update(data)
+    }
+
+    /**
+     * Tracks which handles are commonly connected with other
+     * handles. This powers node suggestions.
+     *
+     * @memberof FlowGraph
+     */
+    async indexEdges() {
+
+        // create updates -- a double map of occurences of edges
+        const updates = {}
+        this.edges.forEach(edge => {
+            const sourceKey = `${this.findNodeWithId(edge.source).type.id}-${edge.sourceHandle}`
+            const targetKey = `${this.findNodeWithId(edge.target).type.id}-${edge.targetHandle}`
+
+            // update with source as key
+            updates[sourceKey] ??= {}
+            updates[sourceKey][targetKey] ??= 0
+            updates[sourceKey][targetKey]++
+
+            // update with target as key
+            updates[targetKey] ??= {}
+            updates[targetKey][sourceKey] ??= 0
+            updates[targetKey][sourceKey]++
+        })
+
+        const edgeIndexCollection = db.collection("edgeIndex")
+        const batch = db.batch()
+
+        Object.entries(updates).forEach(([docId, docUpdates]) => {
+
+            // convert doc update number to FieldValue.increment
+            Object.keys(docUpdates).forEach(key => {
+                docUpdates[key] = { timesSuccessful: FieldValue.increment(docUpdates[key]) }
+            })
+
+            // merge into document
+            batch.set(edgeIndexCollection.doc(docId), docUpdates, { merge: true })
+        })
+
+        await batch.commit()
+    }
+
+    findNodeWithId(nodeId) {
+        return this.nodes.find(node => node.id == nodeId)
     }
 }
 
