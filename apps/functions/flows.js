@@ -304,30 +304,28 @@ class FlowGraph {
         // create updates -- a double map of occurences of edges
         const updates = {}
         this.edges.forEach(edge => {
-            const sourceKey = `${this.findNodeWithId(edge.source).type.id}-${edge.sourceHandle}`
-            const targetKey = `${this.findNodeWithId(edge.target).type.id}-${edge.targetHandle}`
+            const sourceType = this.findNodeWithId(edge.source).type.id
+            const targetType = this.findNodeWithId(edge.target).type.id
 
             // update with source as key
-            updates[sourceKey] ??= {}
-            updates[sourceKey][targetKey] ??= 0
-            updates[sourceKey][targetKey]++
+            updates[sourceType] ??= {}
+            updates[sourceType][edge.sourceHandle] ??= {}
+            updates[sourceType][edge.sourceHandle][targetType] ??= {}
+            updates[sourceType][edge.sourceHandle][targetType][edge.targetHandle] ??= { timesSuccessful: FieldValue.increment(0) }
+            updates[sourceType][edge.sourceHandle][targetType][edge.targetHandle].timesSuccessful.operand++
 
             // update with target as key
-            updates[targetKey] ??= {}
-            updates[targetKey][sourceKey] ??= 0
-            updates[targetKey][sourceKey]++
+            updates[targetType] ??= {}
+            updates[targetType][edge.targetHandle] ??= {}
+            updates[targetType][edge.targetHandle][sourceType] ??= {}
+            updates[targetType][edge.targetHandle][sourceType][edge.sourceHandle] ??= { timesSuccessful: FieldValue.increment(0) }
+            updates[targetType][edge.targetHandle][sourceType][edge.sourceHandle].timesSuccessful.operand++
         })
 
         const edgeIndexCollection = db.collection("edgeIndex")
         const batch = db.batch()
 
         Object.entries(updates).forEach(([docId, docUpdates]) => {
-
-            // convert doc update number to FieldValue.increment
-            Object.keys(docUpdates).forEach(key => {
-                docUpdates[key] = { timesSuccessful: FieldValue.increment(docUpdates[key]) }
-            })
-
             // merge into document
             batch.set(edgeIndexCollection.doc(docId), docUpdates, { merge: true })
         })
