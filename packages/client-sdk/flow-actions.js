@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, query, serverTimestamp, Timestamp, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, getDoc, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { firestore, functions } from "./firebase-init.js"
 import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
@@ -277,6 +277,31 @@ export function getOtherRunnableFlows(flowId) {
     return flowId && getDocsWithIds(
         createOtherRunnableFlowsQuery(flowId)
     )
+}
+
+
+/**
+ * Gets node suggestions for a given node type.
+ *
+ * @export
+ * @param {string} nodeType
+ * @param {string} handle
+ */
+export async function getNodeSuggestions(nodeType, handle) {
+    if (!nodeType || !handle)
+        return []
+
+    const nodeTypeDoc = await getDoc(doc(firestore, `edgeIndex/${nodeType}`))
+
+    return Object.entries(nodeTypeDoc.data()[handle]).map(
+        ([outboundNodeType, outboundHandles]) => Object.entries(outboundHandles).map(
+            ([outboundHandle, data]) => ({
+                node: outboundNodeType,
+                handle: outboundHandle,
+                score: data.timesSuccessful,
+            })
+        )
+    ).flat().sort((a, b) => b.score - a.score)
 }
 
 
