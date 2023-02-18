@@ -50,7 +50,9 @@ export default {
                     }))
                     .catch(err => console.error(err))
                     .finally(() => setState({ loading: false }))
+                return
             }
+            setState({ loading: false })
         }, [state.spreadsheetId])
 
         return (
