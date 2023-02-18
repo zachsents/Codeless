@@ -2,7 +2,7 @@ import { Center, Text, TextInput, Image, Loader, Select } from "@mantine/core"
 import { useEffect } from "react"
 import { SiGooglesheets } from "react-icons/si"
 import { Control, ControlLabel, ControlStack } from "../../components"
-import { getSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
+import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
 
 
 const color = "green"
@@ -37,28 +37,31 @@ export default {
         sheetName: null,
     },
 
-    renderNode: ({ state, setState, appId }) => {
+    renderNode: ({ state, setState, appId, integrationsSatisfied }) => {
 
+        // fetch spreadsheet details
+        const { details, isLoading, isError } = useSpreadsheetDetails(appId, state.spreadsheetId)
+
+        // sync details into node state
         useEffect(() => {
-            if (state.spreadsheetId && !state.loading) {
-                setState({ loading: true })
-                getSpreadsheetDetails({ appId, spreadsheetId: state.spreadsheetId })
-                    .then(res => setState({
-                        spreadsheetName: res.data.name,
-                        sheets: res.data.sheets,
-                        sheetName: res.data.sheets.includes(state.sheetName) ? state.sheetName : null,
-                    }))
-                    .catch(err => console.error(err))
-                    .finally(() => setState({ loading: false }))
-                return
-            }
-            setState({ loading: false })
-        }, [state.spreadsheetId])
+            setState({
+                spreadsheetName: details?.name,
+                sheets: details?.sheets,
+                sheetName: details && !details.sheets.includes(state.sheetName) ? null : state.sheetName,
+                isLoading,
+            })
+        }, [details, isLoading])
+
+        // extract Spreadsheet ID when Spreadsheet URL changes
+        useEffect(() => {
+            const [, spreadsheetId] = state.spreadsheetUrl?.match(SheetsURLRegex) ?? []
+            setState({ spreadsheetId })
+        }, [state.spreadsheetUrl])
 
         return (
             <Center>
-                {state.sheetName && state.spreadsheetId ?
-                    state.loading ?
+                {state.sheetName && state.spreadsheetId && integrationsSatisfied && !isError ?
+                    isLoading ?
                         <Loader size="xs" color={color} />
                         :
                         <>
@@ -74,12 +77,7 @@ export default {
         )
     },
 
-    configuration: ({ state, setState, appId }) => {
-
-        useEffect(() => {
-            const [, spreadsheetId] = state.spreadsheetUrl?.match(SheetsURLRegex) ?? []
-            spreadsheetId && setState({ spreadsheetId })
-        }, [state.spreadsheetUrl])
+    configuration: ({ state, setState }) => {
 
         return (
             <ControlStack>
@@ -103,6 +101,8 @@ export default {
                         onChange={event => setState({ spreadsheetUrl: event.currentTarget.value })}
                         error={state.spreadsheetUrl === null || SheetsURLRegex.test(state.spreadsheetUrl) ? null : "This doesn't look like a valid Google Sheets URL"}
                     />
+                    {state.spreadsheetName &&
+                        <Text color="dimmed" size="xs">Using "{state.spreadsheetName}"</Text>}
                 </Control>
 
                 <Control>
@@ -117,12 +117,12 @@ export default {
                     </ControlLabel>
                     <Select
                         name="sheetName"
-                        placeholder={state.loading ? "Loading sheets..." : "Pick a sheet"}
+                        placeholder={state.isLoading ? "Loading sheets..." : "Pick a sheet"}
                         value={state.sheetName}
                         onChange={sheetName => setState({ sheetName })}
                         data={state.sheets ?? []}
-                        disabled={state.loading}
-                        rightSection={state.loading && <Loader size="xs" />}
+                        disabled={state.isLoading || !state.spreadsheetId}
+                        rightSection={state.isLoading && <Loader size="xs" />}
                     />
                 </Control>
             </ControlStack>

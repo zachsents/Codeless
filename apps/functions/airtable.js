@@ -54,7 +54,7 @@ export const appAuthorizationRedirect = functions.https.onRequest(async (request
 })
 
 
-export const getTableNameFromId = functions.https.onCall(async (data, context) => {
+export const getTableNameFromId = functions.https.onCall(async (data) => {
 
     const { appId, baseId, tableId } = data
 

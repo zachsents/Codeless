@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Center, Loader, Text, TextInput } from "@mantine/core"
 import { BrandAirtable } from "tabler-icons-react"
-import { getTableNameFromId } from "@minus/client-sdk/integrations/airtable"
+import { useTableNameFromId } from "@minus/client-sdk/integrations/airtable"
 
 import { Control, ControlLabel, ControlStack } from "../components"
 
@@ -31,27 +31,29 @@ export default {
 
     renderNode: ({ state, setState, appId, integrationsSatisfied }) => {
 
-        const [loading, setLoading] = useState(false)
+        // fetch table name
+        const { tableName, isLoading, isError } = useTableNameFromId(appId, state.baseId, state.tableId)
 
+        // sync table name with node state
         useEffect(() => {
-            if (integrationsSatisfied && state.tableId && state.baseId && !loading) {
-                setLoading(true)
-                getTableNameFromId({ appId, baseId: state.baseId, tableId: state.tableId })
-                    .then(res => setState({ tableName: res.data }))
-                    .catch(err => console.error(err))
-                    .finally(() => setLoading(false))
-            }
-        }, [state.tableId, state.baseId, integrationsSatisfied])
+            setState({ tableName })
+        }, [tableName])
+
+        // extract base ID and table ID when Airtable URL changes
+        useEffect(() => {
+            const [, baseId, tableId] = state.airtableUrl?.match(AirtableURLRegex) ?? []
+            setState({ baseId, tableId })
+        }, [state.airtableUrl])
 
         return (
             <Center>
-                {state.baseId && state.tableId ?
-                    loading ?
+                {state.baseId && state.tableId && integrationsSatisfied && !isError ?
+                    isLoading ?
                         <Loader size="xs" color={color} />
                         :
                         <>
                             <Text color="dimmed" component="span" size="xs">Using table&nbsp;</Text>
-                            <Text component="span" weight={500} size="xs">"{state.tableName ?? "..."}"</Text>
+                            <Text component="span" weight={500} size="xs">"{tableName ?? "..."}"</Text>
                         </>
                     :
                     <Text color="dimmed" size="xs">Click to configure</Text>
@@ -61,11 +63,6 @@ export default {
     },
 
     configuration: ({ state, setState }) => {
-
-        useEffect(() => {
-            const [, baseId, tableId] = state.airtableUrl?.match(AirtableURLRegex) ?? []
-            baseId && tableId && setState({ baseId, tableId })
-        }, [state.airtableUrl])
 
         return (
             <ControlStack>
@@ -89,6 +86,8 @@ export default {
                         onChange={event => setState({ airtableUrl: event.currentTarget.value })}
                         error={state.airtableUrl === null || AirtableURLRegex.test(state.airtableUrl) ? null : "This doesn't look like a valid Airtable URL"}
                     />
+                    {state.tableName &&
+                        <Text color="dimmed" size="xs">Using "{state.tableName}"</Text>}
                 </Control>
             </ControlStack>
         )
