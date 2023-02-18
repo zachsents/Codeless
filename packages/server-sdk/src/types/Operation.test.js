@@ -1,5 +1,5 @@
 import { TableField } from "./TableField.js"
-import { Operation } from "./Operation"
+import { Operation } from "./Operation.js"
 
 
 // create random test data

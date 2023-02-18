@@ -35,7 +35,7 @@ export class Operation extends Sentinel {
     static Subtract = OperationFactory.Variadic("subtract", (a, b) => a - b)
     static Multiply = OperationFactory.Variadic("multiply", (a, b) => a * b)
     static Divide = OperationFactory.Variadic("divide", (a, b) => a / b)
-    static Power = OperationFactory.Variadic("power", (a, b) => a ** b)
+    static Power = OperationFactory.Fixed("power", (a, b) => a ** b)
 
 
     /**
@@ -121,5 +121,26 @@ export class Operation extends Sentinel {
     valueOf() {
         return this.params.map(param => param?.valueOf())
             |> this.compareFunction(...^^)
+    }
+
+
+    /**
+     * Converts to a string. Useful for generating formulas.
+     *
+     * @param {object} [paramMappings={}]
+     * @param {object} [operationMappings={}]
+     * @return {string} 
+     * @memberof Operation
+     */
+    toString(paramMappings = {}, operationMappings = {}) {
+        const defaultOp = (...params) => `(${params.join(` ${this.name} `)})`
+
+        // prep parameters -- will recurse for Operations if it is not in the mappings
+        return this.params.map(param => {
+            const mapFunc = paramMappings[param?.constructor?.name] ?? paramMappings[typeof param]
+            return mapFunc?.(param) ?? param.toString?.(paramMappings, operationMappings)
+        })
+            // pipe into operation function
+            |> (operationMappings[this.name] ?? defaultOp)(...^^)
     }
 }
