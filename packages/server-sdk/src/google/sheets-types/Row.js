@@ -30,9 +30,18 @@ export class Row {
         return this.table.dataRange.absolute(rowNumber, null, rowNumber, null)
     }
 
-    async getData() {
+    async getData({ refetch = false } = {}) {
+        if (this.data && !refetch)
+            return this.data
+
         this.data = await this.range().getData()
         return this.data
+    }
+
+    async getField(field, { refetch = false } = {}) {
+        // TO DO: make it just fetch single field
+        return await this.getData({ refetch })
+            |> ^^ [field]
     }
 
     toString() {

@@ -38,11 +38,18 @@ export function safeMap(operation, ...lists) {
         (longest, current) => current.length > longest.length ? current : longest
     )
 
-    return longest.map(
+    // map result
+    const result = longest.map(
         (_, i) => operation(
             ...lists.map(list => list[i] ?? list[0])
         )
     )
+
+    // check for promises
+    if (result.some(res => res instanceof Promise))
+        return Promise.all(result)
+
+    return result
 }
 
 export function expectRegexToBeGlobal(reg) {
@@ -52,7 +59,7 @@ export function expectRegexToBeGlobal(reg) {
 }
 
 export function deepFlat(arr) {
-    if(arr.some(item => item instanceof Array))
+    if (arr.some(item => item instanceof Array))
         return deepFlat(arr.flat())
     return arr
 }

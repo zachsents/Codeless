@@ -42,7 +42,7 @@ import Range from "./google/sheets/Range.js"
 import Table from "./google/sheets/Table.js"
 
 import FindRows from "./tables/FindRows.js"
-import Column from "./tables/Column.js"
+import GetField from "./tables/GetField.js"
 import SetColumn from "./tables/SetColumn.js"
 import AddRow from "./tables/AddRow.js"
 import TableField from "./tables/TableField.js"
@@ -103,7 +103,7 @@ export default createObject([
 
 
     // ===== Tables =====
-    FindRows, Column, SetColumn, AddRow, TableField,
+    FindRows, GetField, SetColumn, AddRow, TableField,
 
 
     // ===== Gmail =====

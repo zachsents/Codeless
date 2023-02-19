@@ -110,8 +110,14 @@ export class Range {
     }
 
     async getData({
-        majorDimension = "ROWS", valueRenderOption = "UNFORMATTED_VALUE", ...otherOptions
+        refetch = false,
+        majorDimension = "ROWS", 
+        valueRenderOption = "UNFORMATTED_VALUE", 
+        ...otherOptions
     } = {}) {
+        if(this.data && !refetch)
+            return this.data
+
         const { data } = await this.api.spreadsheets.values.get({
             spreadsheetId: this.spreadsheet.id,
             range: this.toString(),
@@ -119,7 +125,8 @@ export class Range {
             valueRenderOption,
             ...otherOptions
         })
-        return data.values
+        this.data = data.values
+        return this.data
     }
 
     toString(format = Range.FORMAT_A1) {

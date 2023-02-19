@@ -20,7 +20,7 @@ export class Row {
         return this.atRecord.fields
     }
 
-    get(field) {
+    getField(field) {
         return this.data[field]
     }
 
@@ -28,6 +28,7 @@ export class Row {
         return "Airtable Record"
     }
 }
+
 
 export class Table {
 
@@ -85,6 +86,11 @@ export class Table {
             filterByFormula: filterFormula,
             ...(limit != null && { maxRecords: limit }),
         }).all()
+
+        // without sorting, Airtable tends to give these records in
+        // reverse order
+        if(!sortBy)
+            records.reverse()
 
         // turn into row objects
         const rows = records.map(record => this.row(record))

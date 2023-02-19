@@ -4,38 +4,38 @@ import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../comp
 
 
 export default {
-    id: "tables:Column",
-    name: "Get Column",
-    description: "Gets a specific column from a table.",
+    id: "tables:GetField",
+    name: "Get Field",
+    description: "Gets a specific field from a row or set of rows.",
     icon: Table,
     color: "yellow",
     badge: "Tables",
 
     inputs: [
         {
-            name: "table",
-            label: "Table or Row",
+            name: "rows",
+            label: "Row(s)",
         }
     ],
-    outputs: ["column"],
+    outputs: ["field"],
 
     defaultState: {
-        column: "",
+        field: "",
     },
 
 
     renderNode: ({ state, alignHandles }) => {
-        const align = el => alignHandles(["table", "column"], el)
+        const align = el => alignHandles(["rows", "field"], el)
 
         return (
             <Stack spacing={0} align="center" ref={align}>
-                {state.column ?
+                {state.field ?
                     <>
-                        <Text color="dimmed">Get column</Text>
-                        <Text weight={500}>"{state.column}"</Text>
+                        <Text color="dimmed">Get field</Text>
+                        <Text weight={500}>"{state.field}"</Text>
                     </>
                     :
-                    <Text color="dimmed" size="xs">No column specified</Text>
+                    <Text color="dimmed" size="xs">No field specified</Text>
                 }
             </Stack>
         )
@@ -45,13 +45,13 @@ export default {
         return (
             <ControlStack>
                 <Control>
-                    <ControlLabel info="The column you want the data from.">
-                        Column
+                    <ControlLabel info="The field you want the data from.">
+                        Field
                     </ControlLabel>
                     <TextInput
-                        value={state.column ?? ""}
-                        onChange={event => setState({ column: event.currentTarget.value })}
-                        placeholder="Column Name"
+                        value={state.field ?? ""}
+                        onChange={event => setState({ field: event.currentTarget.value })}
+                        placeholder="Field Name"
                     />
                 </Control>
             </ControlStack>
