@@ -6,7 +6,7 @@ import { useTableNameFromId } from "@minus/client-sdk/integrations/airtable"
 import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components"
 
 
-const color = "yellow"
+const color = "blue"
 const AirtableURLRegex = /(app[0-9A-Za-z]{12,16})\/(tbl[0-9A-Za-z]{12,16})/
 
 

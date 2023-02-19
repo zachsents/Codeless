@@ -59,7 +59,7 @@ export default function AppSettings() {
                                         </ThemeIcon>
                                     </Carousel.Slide>
                                     <Carousel.Slide>
-                                        <ThemeIcon size="xl" radius="xl" color="yellow">
+                                        <ThemeIcon size="xl" radius="xl" color="blue">
                                             <TbBrandAirtable size={22} />
                                         </ThemeIcon>
                                     </Carousel.Slide>

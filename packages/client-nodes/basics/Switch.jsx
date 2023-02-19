@@ -16,6 +16,7 @@ export default {
         return (
             <Center ref={el => alignHandles("$", el)}>
                 <Switch
+                    color="green"
                     mt={4}
                     checked={state.$ ?? false}
                     onChange={event => setState({ $: event.currentTarget.checked })}

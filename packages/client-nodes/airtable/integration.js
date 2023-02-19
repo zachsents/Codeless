@@ -7,7 +7,7 @@ export default {
     id: "integration:AirTable",
     name: "AirTable",
     icon: BrandAirtable,
-    color: "yellow",
+    color: "blue",
 
     manager: AirTableAuthManager,
 
