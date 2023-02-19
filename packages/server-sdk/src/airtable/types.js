@@ -114,7 +114,30 @@ export class Table {
      */
     async addRows(newRowData = []) {
         return newRowData.map(fields => ({ fields }))
-            |> await this.atTable.create(^^)
+            |> await this.atTable.create(^^, {
+                typecast: true,
+            })
+            |> ^^.map(record => this.row(record))
+    }
+
+    /**
+     * Batch updates rows in the Airtable table.
+     *
+     * @param {Array<{ row: Row, data: object }>} [updates=[]]
+     * @return {Row[]}
+     * @memberof Table
+     */
+    async updateRows(updates = []) {
+        // map into form the API accepts
+        return updates.map(update => ({
+            id: update.row.atRecord.id,
+            fields: update.data,
+        }))
+            // make request
+            |> await this.atTable.update(^^, {
+                typecast: true,
+            })
+            // map to our Row objects
             |> ^^.map(record => this.row(record))
     }
 
@@ -126,4 +149,3 @@ export class Table {
         return "Airtable Table"
     }
 }
-

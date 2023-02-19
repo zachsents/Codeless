@@ -46,6 +46,7 @@ import FindRowsByField from "./tables/FindRowsByField.js"
 import GetField from "./tables/GetField.js"
 import SetColumn from "./tables/SetColumn.js"
 import AddRow from "./tables/AddRow.js"
+import UpdateRows from "./tables/UpdateRows.js"
 import TableField from "./tables/TableField.js"
 
 import AskGPT3 from "./openai/AskGPT3.js"
@@ -104,7 +105,7 @@ export default createObject([
 
 
     // ===== Tables =====
-    FindRows, FindRowsByField, GetField, SetColumn, AddRow, TableField,
+    FindRows, FindRowsByField, GetField, SetColumn, AddRow, UpdateRows, TableField,
 
 
     // ===== Gmail =====

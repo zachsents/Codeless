@@ -92,11 +92,61 @@ export class Spreadsheet {
             .map(vr => oneDimensional ? vr.valueRange.values[0] : vr.valueRange.values)
 
         // if keys are provided, map them in and return an object
-        if(keys)
+        if (keys)
             return result.map((data, i) => [keys[i], data])
-            |> Object.fromEntries(^^)
+                |> Object.fromEntries(^^)
 
         // otherwise, just return array
+        return result
+    }
+
+    /**
+     * Batch updates ranges in a spreadsheet.
+     * 
+     * Updated rows are returned in the same order in which the updates were provided.
+     *
+     * @param {Array<{ range: Range | string, values: *[][] }>} updates
+     * @param {object} [options]
+     * @param {"USER_ENTERED" | "RAW"} [options.valueInputOption]
+     * @param {boolean} [options.includeValuesInResponse]
+     * @param {"UNFORMATTED_VALUE" | "FORMATTED_VALUE" | "FORMULA"} [options.valueInputOption]
+     * @param {"ROWS" | "COLUMNS"} [options.majorDimension]
+     * @param {boolean} [options.oneDimensional]
+     * @memberof Spreadsheet
+     */
+    async batchUpdate(updates = [], {
+        valueInputOption = "USER_ENTERED",
+        includeValuesInResponse = true,
+        responseValueRenderOption = "UNFORMATTED_VALUE",
+        majorDimension = "ROWS",
+        oneDimensional = false,
+    } = {}) {
+
+        // make request
+        const { data: { responses } } = await this.api.spreadsheets.values.batchUpdate({
+            spreadsheetId: this.id,
+            requestBody: {
+                valueInputOption,
+                includeValuesInResponse,
+                responseValueRenderOption,
+                data: updates.map(update => ({
+                    values: oneDimensional ? [update.values] : update.values,
+                    range: update.range.toString(),
+                    majorDimension,
+                })),
+            }
+        })
+
+        // function to help with upcoming sort
+        const sortTransform = x => updates.findIndex(up => Range.stringsEqual(up.range, x.updatedData.range))
+
+        // sort and map
+        const result = responses
+            // sort into same order as original ranges array
+            .sort((a, b) => sortTransform(a) - sortTransform(b))
+            // if the data is 1D, then we'll just grab the first element
+            .map(resp => oneDimensional ? resp.updatedData.values[0] : resp.updatedData.values)
+
         return result
     }
 }

@@ -1,32 +1,32 @@
-import { TableImport } from "tabler-icons-react"
+import { TableShortcut } from "tabler-icons-react"
 import { ControlStack, ListHandlesControl, ListHandlesNodeContent, SkeletonWithHandle } from "../components"
 
 
 export default {
-    id: "tables:AddRow",
-    name: "Add Row",
-    description: "Adds a row to a table.",
-    icon: TableImport,
+    id: "tables:UpdateRows",
+    name: "Update Rows",
+    description: "Updates rows in a table.",
+    icon: TableShortcut,
     color: "yellow",
     badge: "Tables",
 
     inputs: [
-        "$table",
+        "rows",
         {
             name: "data",
             list: true,
         }
     ],
-    outputs: ["newRow"],
+    outputs: ["updatedRows"],
+
 
     defaultState: {
         dataLabels: [],
     },
 
-
     renderNode: ({ state, alignHandles, listHandles }) => {
 
-        alignHandles(["$table", "newRow"])
+        alignHandles(["rows", "updatedRows"])
 
         return (
             <ListHandlesNodeContent

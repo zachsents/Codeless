@@ -202,7 +202,7 @@ export class Table {
 
         // parse range of new rows
         const newDataRange = Range.fromString(updatedData.range)
-        
+
         // map to rows and return
         return updatedData.values.map(
             (rowData, i) => this.row(
@@ -210,5 +210,29 @@ export class Table {
                 this.fields.map((field, j) => [field, rowData[j]]) |> Object.fromEntries(^^)
             )
         )
+    }
+
+    /**
+     * Batch updates rows in the Google Sheets table.
+     *
+     * @param {Array<{ row: Row, data: object }>} [updates=[]]
+     * @return {Row[]}
+     * @memberof Table
+     */
+    async updateRows(updates = []) {
+
+        // put updates in a form the API accepts
+        return updates.map(update => ({
+            range: update.row.range(),
+            values: Row.recordToArray(update.data, this.fields),
+        }))
+            // make request
+            |> await this.spreadsheet.batchUpdate(^^, {
+                oneDimensional: true,
+            })
+            // map to new row objects with updated data
+            |> ^^.map((updatedData, i) => Object.assign(this.row(), updates[i].row, {
+                data: Row.arrayToRecord(updatedData, this.fields)
+            }))
     }
 }

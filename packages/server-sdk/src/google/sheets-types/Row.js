@@ -2,6 +2,14 @@
 
 export class Row {
 
+    static recordToArray(record, fields) {
+        return fields.map(field => record[field])
+    }
+
+    static arrayToRecord(arr, fields) {
+        return arr.map((item, i) => [fields[i], item]) |> Object.fromEntries(^^)
+    }
+
     /**
      * Creates an instance of Row.
      * @param {import("./Table.js").Table} table
