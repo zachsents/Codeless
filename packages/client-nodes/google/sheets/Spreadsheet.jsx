@@ -1,7 +1,7 @@
 import { Center, Text, TextInput, Image, Loader, Select } from "@mantine/core"
 import { useEffect } from "react"
 import { SiGooglesheets } from "react-icons/si"
-import { Control, ControlLabel, ControlStack } from "../../components"
+import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../../components"
 import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
 
 
@@ -59,9 +59,14 @@ export default {
         }, [state.spreadsheetUrl])
 
         return (
-            <Center>
-                {state.sheetName && state.spreadsheetId && integrationsSatisfied && !isError ?
-                    isLoading ?
+            <RequiresConfiguration dependencies={[
+                state.spreadsheetId,
+                state.sheetName,
+                integrationsSatisfied,
+                !isError,
+            ]}>
+                <Center>
+                    {isLoading ?
                         <Loader size="xs" color={color} />
                         :
                         <>
@@ -69,11 +74,9 @@ export default {
                             <Text component="span" weight={500} size="xs">{state.sheetName}&nbsp;</Text>
                             <Text color="dimmed" component="span" size="xs">from&nbsp;</Text>
                             <Text component="span" weight={500} size="xs">{state.spreadsheetName}</Text>
-                        </>
-                    :
-                    <Text color="dimmed" size="xs">Click to configure</Text>
-                }
-            </Center>
+                        </>}
+                </Center>
+            </RequiresConfiguration>
         )
     },
 

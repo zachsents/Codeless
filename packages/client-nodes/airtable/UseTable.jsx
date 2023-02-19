@@ -3,7 +3,7 @@ import { Center, Loader, Text, TextInput } from "@mantine/core"
 import { BrandAirtable } from "tabler-icons-react"
 import { useTableNameFromId } from "@minus/client-sdk/integrations/airtable"
 
-import { Control, ControlLabel, ControlStack } from "../components"
+import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components"
 
 
 const color = "yellow"
@@ -46,19 +46,22 @@ export default {
         }, [state.airtableUrl])
 
         return (
-            <Center>
-                {state.baseId && state.tableId && integrationsSatisfied && !isError ?
-                    isLoading ?
+            <RequiresConfiguration dependencies={[
+                state.baseId,
+                state.tableId,
+                integrationsSatisfied,
+                !isError,
+            ]}>
+                <Center>
+                    {isLoading ?
                         <Loader size="xs" color={color} />
                         :
                         <>
                             <Text color="dimmed" component="span" size="xs">Using table&nbsp;</Text>
                             <Text component="span" weight={500} size="xs">"{tableName ?? "..."}"</Text>
-                        </>
-                    :
-                    <Text color="dimmed" size="xs">Click to configure</Text>
-                }
-            </Center>
+                        </>}
+                </Center>
+            </RequiresConfiguration>
         )
     },
 

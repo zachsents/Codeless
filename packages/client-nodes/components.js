@@ -1,5 +1,5 @@
 import { forwardRef, Fragment, useEffect, useState } from "react"
-import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip, Loader, ThemeIcon, Flex } from "@mantine/core"
+import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip, Loader, ThemeIcon, Flex, Center } from "@mantine/core"
 import { ArrowRight, Check, InfoCircle, Plus, X } from "tabler-icons-react"
 import produce from "immer"
 
@@ -229,4 +229,14 @@ export function OAuthIntegration({ app, manager }) {
                     </Button>}
         </Box>
     )
+}
+
+
+export function RequiresConfiguration({ children, dependencies = [], message = "Click to configure" }) {
+
+    return dependencies.every(dep => !!dep) ?
+        children :
+        <Center>
+            <Text color="dimmed" size="xs">{message}</Text>
+        </Center>
 }
