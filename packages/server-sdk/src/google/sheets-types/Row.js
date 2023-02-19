@@ -30,8 +30,9 @@ export class Row {
         return this.table.dataRange.absolute(rowNumber, null, rowNumber, null)
     }
 
-    getData() {
-        return this.range().getData()
+    async getData() {
+        this.data = await this.range().getData()
+        return this.data
     }
 
     toString() {

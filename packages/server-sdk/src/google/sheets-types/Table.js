@@ -1,7 +1,6 @@
 import { logger } from "../../logger.js"
 import { deepFlat } from "../../util.js"
 import { Operation, TableField } from "../../types/index.js"
-import { Range } from "./Range.js"
 import { Row } from "./Row.js"
 
 
@@ -9,7 +8,7 @@ export class Table {
 
     /**
      * Creates an instance of Table.
-     * @param {Range} dataRange
+     * @param {import("./Range.js").Range} dataRange
      * @param {object} [options]
      * @param {string[]} [options.fields]
      * @memberof Table
@@ -66,8 +65,8 @@ export class Table {
 
         // build ranges for those fields
         const ranges = filterFields.map(field => {
-            const column = this.dataRange.startColumn + this.fields.indexOf(field)
-            return this.dataRange.absolute(null, column, null, column).toString()
+            return this.dataRange.startColumn + this.fields.indexOf(field)
+                |> this.dataRange.absolute(null, ^^, null, ^^)
         })
 
         let filteredRows
@@ -108,24 +107,21 @@ export class Table {
             logger.debug("Querying field ranges")
 
             // query the column ranges
-            const { data } = await this.api.spreadsheets.values.batchGetByDataFilter({
-                spreadsheetId: this.spreadsheet.id,
-                requestBody: {
-                    dataFilters: ranges.map(a1Range => ({ a1Range })),
-                    majorDimension: "COLUMNS",
-                    valueRenderOption: "UNFORMATTED_VALUE",
-                }
+            const columnData = await this.spreadsheet.batchGet(ranges, {
+                majorDimension: "COLUMNS",
+                keys: filterFields,
+                oneDimensional: true,
             })
 
+            // calculate number of rows we have
+            const numRows = Object.values(columnData).map(data => data.length)
+                |> Math.max(...^^)
+
             // transform the data into records
-            const values = filterFields.map(
-                (_, i) => data.valueRanges.find(vr => Range.stringsEqual(vr.valueRange.range, ranges[i]))?.valueRange.values[0]
-            )
-            const numRows = values[0]?.length ?? 0
             const records = Array(numRows).fill(0).map(
                 (_, i) => ({
                     ...Object.fromEntries(
-                        filterFields.map((field, j) => [field, values[j][i]])
+                        filterFields.map(field => [field, columnData[field][i]])
                     ),
                     _index: i
                 })
@@ -146,26 +142,20 @@ export class Table {
             if (filteredRecords.length == 0)
                 return []
 
+            // create rows
             filteredRows = filteredRecords.map(record => this.row(record._index))
-            const filteredRowRanges = filteredRows.map(row => row.range().toString())
 
-            // fetch those ranges
-            const { data: rowData } = await this.api.spreadsheets.values.batchGetByDataFilter({
-                spreadsheetId: this.spreadsheet.id,
-                requestBody: {
-                    dataFilters: filteredRowRanges.map(a1Range => ({ a1Range })),
-                    majorDimension: "ROWS",
-                    valueRenderOption: "UNFORMATTED_VALUE",
-                }
-            })
+            // fetch those rows' ranges
+            const rowData = await this.spreadsheet.batchGet(
+                filteredRows.map(row => row.range()),
+                { oneDimensional: true }
+            )
 
             // add data to each row object
-            rowData.valueRanges.forEach(vr => {
-                const index = filteredRowRanges.findIndex(range => Range.stringsEqual(range, vr.valueRange.range))
-
-                filteredRows[index].data = this.fields ?
-                    vr.valueRange.values[0].map((val, i) => [this.fields[i], val]) |> Object.fromEntries(^^) :
-                    vr.valueRange.values[0]
+            rowData.forEach((data, i) => {
+                filteredRows[i].data = this.fields ?
+                    data.map((val, j) => [this.fields[j], val]) |> Object.fromEntries(^^) :
+                    data
             })
         }
 

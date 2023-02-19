@@ -28,7 +28,7 @@ export class Range {
     }
 
     static stringsEqual(a, b) {
-        const format = x => x.replaceAll("'", "")
+        const format = x => x.toString().replaceAll("'", "")
         return format(a) == format(b)
     }
 
