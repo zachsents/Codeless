@@ -8,9 +8,10 @@ export class Row {
      * @param {number} index
      * @memberof Row
      */
-    constructor(table, index) {
+    constructor(table, index, data) {
         this.table = table
         this.index = index
+        this.data = data
     }
 
     get sheet() {

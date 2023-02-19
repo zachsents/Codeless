@@ -25,10 +25,8 @@ export default {
 
 
     renderNode: ({ state, alignHandles }) => {
-        const align = el => alignHandles(["rows", "field"], el)
-
         return (
-            <Stack spacing={0} align="center" ref={align}>
+            <Stack spacing={0} align="center">
                 {state.field ?
                     <>
                         <Text color="dimmed">Get field</Text>

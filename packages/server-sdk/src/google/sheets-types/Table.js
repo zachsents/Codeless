@@ -2,6 +2,7 @@ import { logger } from "../../logger.js"
 import { deepFlat } from "../../util.js"
 import { Operation, TableField } from "../../types/index.js"
 import { Row } from "./Row.js"
+import { Range } from "./Range.js"
 
 
 export class Table {
@@ -96,11 +97,10 @@ export class Table {
 
             // map into rows
             filteredRows = data.values.map((rowValues, i) => {
-                const row = this.row(i)
-                row.data = this.fields ?
+                const rowData = this.fields ?
                     rowValues.map((val, i) => [this.fields[i], val]) |> Object.fromEntries(^^) :
                     rowValues
-                return row
+                return this.row(i, rowData)
             })
         }
         else {
@@ -175,5 +175,40 @@ export class Table {
         }
 
         return filteredRows
+    }
+
+    /**
+     * Adds new rows to the Google Sheets table.
+     *
+     * @param {object[]} [newRowData=[]]
+     * @return {Row[]} 
+     * @memberof Table
+     */
+    async addRows(newRowData = []) {
+
+        // make request
+        const { data: { updates: { updatedData } } } = await this.api.spreadsheets.values.append({
+            spreadsheetId: this.spreadsheet.id,
+            range: this.dataRange.toString(),
+            valueInputOption: "USER_ENTERED",
+            insertDataOption: "INSERT_ROWS",
+            includeValuesInResponse: true,
+            responseValueRenderOption: "UNFORMATTED_VALUE",
+            requestBody: {
+                majorDimension: "ROWS",
+                values: newRowData.map(newRow => this.fields.map(field => newRow[field] ?? null)),
+            }
+        })
+
+        // parse range of new rows
+        const newDataRange = Range.fromString(updatedData.range)
+        
+        // map to rows and return
+        return updatedData.values.map(
+            (rowData, i) => this.row(
+                newDataRange.startRow + i - 1,
+                this.fields.map((field, j) => [field, rowData[j]]) |> Object.fromEntries(^^)
+            )
+        )
     }
 }

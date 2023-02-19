@@ -6,11 +6,18 @@ import { AirtableFormula } from "./formulas.js"
 
 /**
  * @typedef {import("airtable").Table<import("airtable").FieldSet>} ATTable
+ * @typedef {import("airtable").Record<import("airtable").FieldSet>} ATRecord
  */
 
 
 export class Row {
 
+    /**
+     * Creates an instance of Row.
+     * @param {Table} table
+     * @param {ATRecord} atRecord
+     * @memberof Row
+     */
     constructor(table, atRecord) {
         this.table = table
         this.atRecord = atRecord
@@ -89,13 +96,26 @@ export class Table {
 
         // without sorting, Airtable tends to give these records in
         // reverse order
-        if(!sortBy)
+        if (!sortBy)
             records.reverse()
 
         // turn into row objects
         const rows = records.map(record => this.row(record))
 
         return rows
+    }
+
+    /**
+     * Adds rows to the Airtable table.
+     *
+     * @param {object[]} [newRowData=[]]
+     * @return {Row[]} 
+     * @memberof Table
+     */
+    async addRows(newRowData = []) {
+        return newRowData.map(fields => ({ fields }))
+            |> await this.atTable.create(^^)
+            |> ^^.map(record => this.row(record))
     }
 
     row(...args) {

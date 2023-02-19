@@ -11,13 +11,13 @@ export default {
     badge: "Tables",
 
     inputs: [
-        "table",
+        "$table",
         {
-            name: "$data",
+            name: "data",
             list: true,
         }
     ],
-    outputs: [],
+    outputs: ["newRow"],
 
     defaultState: {
         dataLabels: [],
@@ -26,17 +26,17 @@ export default {
 
     renderNode: ({ state, alignHandles, listHandles }) => {
 
-        alignHandles("table")
+        alignHandles(["$table", "newRow"])
 
         return (
             <ListHandlesNodeContent
-                handleName="$data"
+                handleName="data"
                 listHandles={listHandles}
                 alignHandles={alignHandles}
                 state={state}
                 arrowSide="in"
-                emptyMessage="No columns specified"
-                unnamedMessage={i => `Column ${i + 1}`}
+                emptyMessage="No fields specified"
+                unnamedMessage={i => `Field ${i + 1}`}
             />
         )
     },
@@ -46,14 +46,14 @@ export default {
         return (
             <ControlStack>
                 <ListHandlesControl
-                    handleName="$data"
+                    handleName="data"
                     listHandles={listHandles}
                     state={state}
                     setState={setState}
-                    controlTitle="Column Names"
-                    controlInfo="The names of the columns to attach to the data. Leave blank if you just want them data added in order."
-                    addLabel="Add Column"
-                    inputPlaceholder="Column Name"
+                    controlTitle="Field Names"
+                    controlInfo="The names of the fields to attach to the data."
+                    addLabel="Add Field"
+                    inputPlaceholder="Field Name"
                 />
             </ControlStack>
         )

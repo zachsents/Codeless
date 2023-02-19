@@ -33,6 +33,32 @@ export class Range {
     }
 
     /**
+     * Creates a Range from a string in A1 notation.
+     *
+     * @static
+     * @param {string} a1String
+     * @return {Range} 
+     * @memberof Range
+     */
+    static fromString(a1String) {
+        const [, sheetName, start, end] = a1String.match(/(?:'?(.+?)'?!)?((?:[A-Za-z]+\d+)|[A-Za-z]+|\d+)(?::([A-Za-z]*\d*))?/) ?? []
+
+        if (!start)
+            throw new Error("Invalid range string")
+
+        const [, startColumn, startRow] = start.match(/([A-Za-z]*)(\d*)/) ?? []
+        const [, endColumn, endRow] = end?.match(/([A-Za-z]*)(\d*)/) ?? []
+
+        return new Range(
+            sheetName,
+            startRow && parseInt(startRow),
+            startColumn,
+            endRow && parseInt(endRow),
+            endColumn
+        )
+    }
+
+    /**
      * Creates an instance of Range.
      * @param {import("./Sheet.js").Sheet} sheet
      * @param {number} startRow
@@ -111,11 +137,11 @@ export class Range {
 
     async getData({
         refetch = false,
-        majorDimension = "ROWS", 
-        valueRenderOption = "UNFORMATTED_VALUE", 
+        majorDimension = "ROWS",
+        valueRenderOption = "UNFORMATTED_VALUE",
         ...otherOptions
     } = {}) {
-        if(this.data && !refetch)
+        if (this.data && !refetch)
             return this.data
 
         const { data } = await this.api.spreadsheets.values.get({
@@ -131,7 +157,7 @@ export class Range {
 
     toString(format = Range.FORMAT_A1) {
         // create sheet prefix (e.g. 'Sheet1'!)
-        const sheetPrefix = this.sheet?.name ? `'${this.sheet.name}'!` : ""
+        const sheetPrefix = this.sheet ? `'${this.sheet.name ?? this.sheet}'!` : ""
 
         // create range string in A1 notation (e.g. A1:C5, D6)
         if (format == Range.FORMAT_A1)
