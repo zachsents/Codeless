@@ -1,8 +1,8 @@
 import { useRouter } from "next/router"
-import { useReactFlow } from "reactflow"
-import { Group, Header as MantineHeader, Text, Title } from "@mantine/core"
+import Link from "next/link"
+import { Group, Header as MantineHeader, Text, Title, Tooltip, Button } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
-import { TbArrowLeft, TbCloud, TbCloudUpload, TbMaximize, TbPencil, TbSettings, TbExclamationMark, TbCheck } from "react-icons/tb"
+import { TbArrowLeft, TbCloud, TbCloudUpload, TbPencil, TbSettings, TbExclamationMark, TbCheck, TbLayoutList } from "react-icons/tb"
 import { Triggers } from "@minus/client-nodes"
 
 import { useFlowContext } from "../../modules/context"
@@ -15,8 +15,6 @@ export default function Header({ openSettings }) {
 
     const { query: { appId, flowId } } = useRouter()
     const { flow } = useFlowContext()
-
-    const rf = useReactFlow()
 
     // renaming
     const handleOpenRenameModal = () => {
@@ -36,23 +34,15 @@ export default function Header({ openSettings }) {
             <MantineHeader height={HeaderHeight} sx={{ overflow: "visible", zIndex: 200 }}>
                 <Group position="center" sx={{ width: "100%", height: "100%" }} px={20}>
                     <Group spacing="xl" sx={{ flex: "1 0 0" }}>
-                        <LinkIcon
-                            label="Back to Dashboard"
-                            href={`/app/${appId}/flows`}
-                            variant="light" mr={20}><TbArrowLeft fontSize={24} /></LinkIcon>
-
-                        <Group spacing="sm">
-                            {/* <LinkIcon
-                                label="Random Control"
-                                variant="light"><TbFileAnalytics fontSize={24} /></LinkIcon>
-                            <LinkIcon
-                                label="Random Control"
-                                variant="light"><TbMoon2 fontSize={24} /></LinkIcon> */}
-                            <LinkIcon
-                                onClick={() => rf.fitView()}
-                                label="Fit View to Nodes"
-                                variant="light"><TbMaximize fontSize={24} /></LinkIcon>
-                        </Group>
+                        <Link href={`/app/${appId}/flows`}>
+                            <Tooltip label="Back to Flows">
+                                <Button color="gray" variant="light">
+                                    <Group spacing="xs">
+                                        <TbArrowLeft size={16} /><TbLayoutList size={20} />
+                                    </Group>
+                                </Button>
+                            </Tooltip>
+                        </Link>
                     </Group>
                     <Group spacing="xs">
                         <Text>{flow?.name}</Text>

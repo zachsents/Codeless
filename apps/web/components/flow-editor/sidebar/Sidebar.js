@@ -1,33 +1,22 @@
-import { forwardRef, useEffect, useRef, useState, useCallback } from "react"
+import { forwardRef, useEffect, useRef, useState } from "react"
 import { useReactFlow } from "reactflow"
-import { Box, Button, Navbar, NavLink, Stack, Space, Text, Title, Kbd, Grid, Tooltip } from "@mantine/core"
-import { useDisclosure, useHotkeys } from "@mantine/hooks"
-import { Tb3DCubeSphere, TbMaximize, TbPlus, TbSearch } from "react-icons/tb"
-
-import { createNode } from "../../modules/graph-util"
-
+import { Box, Navbar, NavLink, Stack, Space, SimpleGrid, Group } from "@mantine/core"
+import { useDisclosure } from "@mantine/hooks"
+import { TbMaximize, TbSearch, TbTypography } from "react-icons/tb"
 import { motion } from "framer-motion"
-import { openContextModal } from "@mantine/modals"
+
+import { createNode } from "../../../modules/graph-util"
+
+import CollapseButton from "./CollapseButton"
+import ActionButton from "./ActionButton"
+import AddNodeButton from "./AddNodeButton"
+import ColorSelector from "./ColorSelector"
 
 
 export default function Sidebar() {
 
     const rf = useReactFlow()
-
-    const [expanded, sidebarHandlers] = useDisclosure(true)
-
-    const openNodePalette = useCallback(() => openContextModal({
-        modal: "NodePalette",
-        innerProps: { rf },
-        title: <Title order={3}>Add a node</Title>,
-        size: "lg",
-        centered: true,
-        transitionDuration: 200,
-    }), [rf])
-
-    useHotkeys([
-        ["ctrl+P", openNodePalette]
-    ])
+    const [expanded, expandHandlers] = useDisclosure(true)
 
     return (
         <Navbar
@@ -35,50 +24,37 @@ export default function Sidebar() {
             p="md"
             sx={navbarStyle}
         >
-            <Space h="xl" />
-            <Stack>
-                <Grid>
-                    <Grid.Col span={4}>
-                        <Tooltip label="Fit View to Nodes">
-                            <Button p={0} fullWidth color="gray" size="md" variant="light">
-                                <TbMaximize size={24} />
-                            </Button>
-                        </Tooltip>
-                    </Grid.Col>
-                    <Grid.Col span={4}>
-                        <Tooltip label="Find Node">
-                            <Button p={0} fullWidth disabled color="gray" size="md" variant="light">
-                                <TbSearch size={24} />
-                            </Button>
-                        </Tooltip>
-                    </Grid.Col>
-                    <Grid.Col span={4}>
-                        <Tooltip label="Fit View to Nodes">
-                            <Button p={0} fullWidth disabled color="gray" size="md" variant="light">
-                                <Tb3DCubeSphere size={24} />
-                            </Button>
-                        </Tooltip>
-                    </Grid.Col>
-                    <Grid.Col span={12}>
-                        <Tooltip color="transparent" position="bottom" label={
-                            <Text size="xs" align="center">
-                                <Kbd>Ctrl</Kbd> + <Kbd>P</Kbd>
-                            </Text>
-                        }>
-                            <Button
-                                size="md"
-                                variant="light"
-                                fullWidth
-                                leftIcon={<TbPlus />}
-                                mb="xs"
-                                onClick={openNodePalette}
-                            >
-                                Add Node
-                            </Button>
-                        </Tooltip>
+            <Group position="right">
+                <CollapseButton expanded={expanded} open={expandHandlers.open} close={expandHandlers.close} />
+            </Group>
 
-                    </Grid.Col>
-                </Grid>
+            <Space h="xl" />
+
+            <Stack>
+                <AddNodeButton expanded={expanded} />
+
+                <SimpleGrid cols={expanded ? 3 : 1}>
+                    <ActionButton
+                        expanded={expanded}
+                        label="Fit View to Nodes"
+                        icon={TbMaximize}
+                        onClick={() => rf.fitView({ duration: 200 })}
+                    />
+                    <ActionButton
+                        expanded={expanded}
+                        label="Find Node"
+                        icon={TbSearch}
+                    />
+                    <ActionButton
+                        expanded={expanded}
+                        label="Add Caption"
+                        icon={TbTypography}
+                    />
+                </SimpleGrid>
+
+                <Space h="xl" />
+
+                {expanded && <ColorSelector />}
             </Stack>
         </Navbar >
     )
@@ -92,7 +68,12 @@ const navbarStyle = theme => ({
 })
 
 
-const NodeTile = forwardRef(({ node, ...props }, ref) => {
+
+
+/**
+ * Keeping this around b/c it has all the dragging stuff in it
+ */
+const NodeTile = forwardRef(({ node }, ref) => {
 
     // adding nodes to graph
     const rf = useReactFlow()

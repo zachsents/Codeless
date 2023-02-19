@@ -1,4 +1,4 @@
-import { Table} from "tabler-icons-react"
+import { Table } from "tabler-icons-react"
 import { ControlStack, ListHandlesControl, ListHandlesNodeContent, SkeletonWithHandle } from "../components"
 
 
@@ -28,15 +28,17 @@ export default {
 
         alignHandles("table")
 
-        return <ListHandlesNodeContent
-            handleName="$data"
-            listHandles={listHandles}
-            alignHandles={alignHandles}
-            state={state}
-            arrowSide="in"
-            emptyMessage="No columns specified"
-            unnamedMessage={i => `Column ${i + 1}`}
-        />
+        return (
+            <ListHandlesNodeContent
+                handleName="$data"
+                listHandles={listHandles}
+                alignHandles={alignHandles}
+                state={state}
+                arrowSide="in"
+                emptyMessage="No columns specified"
+                unnamedMessage={i => `Column ${i + 1}`}
+            />
+        )
     },
 
     configuration: ({ state, setState, listHandles }) => {

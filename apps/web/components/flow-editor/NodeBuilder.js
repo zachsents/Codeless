@@ -6,7 +6,7 @@ import { useUpdateFlowGraph } from "@minus/client-sdk"
 
 import { serializeGraph, deserializeGraph } from "../../modules/graph-util"
 import { useDebouncedCustomState } from "../../modules/hooks"
-import { useFlowContext } from "../../modules/context"
+import { useAppContext, useFlowContext } from "../../modules/context"
 import { Nodes } from "../../modules/nodes"
 import Node from "./Node"
 import ActiveDetails from "./ActiveDetails"
@@ -15,10 +15,11 @@ import DataEdge from "./DataEdge"
 import 'reactflow/dist/style.css'
 
 
-export default function NodeBuilder({ }) {
+export default function NodeBuilder() {
 
     const theme = useMantineTheme()
 
+    const { app } = useAppContext()
     const { flowGraph } = useFlowContext()
     const updateFlowGraph = useUpdateFlowGraph(flowGraph?.id)
 
@@ -59,7 +60,8 @@ export default function NodeBuilder({ }) {
                 size={1}
                 color="transparent"
                 style={{
-                    backgroundColor: theme.other.editorBackgroundColor ?? theme.colors.gray[2]
+                    // backgroundColor: theme.other.editorBackgroundColor ?? theme.colors.gray[2]
+                    backgroundColor: app?.editorBackgroundColor ?? theme.colors.gray[2],
                 }}
             />
             <ActiveDetails />

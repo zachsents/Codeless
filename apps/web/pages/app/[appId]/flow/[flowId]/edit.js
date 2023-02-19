@@ -9,7 +9,7 @@ import { AppProvider, FlowProvider } from "../../../../../modules/context"
 import NodeBuilder from "../../../../../components/flow-editor/NodeBuilder"
 import Header from "../../../../../components/flow-editor/Header"
 import SettingsDrawer from "../../../../../components/flow-editor/SettingsDrawer"
-import Sidebar from "../../../../../components/flow-editor/Sidebar"
+import Sidebar from "../../../../../components/flow-editor/sidebar/Sidebar"
 
 
 export default function EditFlow() {
