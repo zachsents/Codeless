@@ -30,14 +30,14 @@ function Swatch({ color, lightCheck = false }) {
 
     const [hue, shade] = color?.split(".") ?? []
     const hexColor = theme.colors[hue][shade]
-    const active = hexColor == (app?.editorBackgroundColor ?? theme.colors.gray[2])
+    const active = hexColor == (app?.theme?.editorBackgroundColor ?? theme.colors.gray[2])
 
     return (
         <ColorSwatch
             color={hexColor}
             component="button"
             sx={swatchStyle}
-            onClick={() => updateApp({ editorBackgroundColor: hexColor })}
+            onClick={() => updateApp({ "theme.editorBackgroundColor": hexColor })}
         >
             <AnimatePresence>
                 {active &&

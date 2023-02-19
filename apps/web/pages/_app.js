@@ -60,13 +60,5 @@ const theme = {
         lg: "rgba(0, 0, 0, 0.05) 0px 5px 4px 0px, rgba(0, 0, 0, 0.1) 0px 10px 30px 0px",
         xl: "rgba(0, 0, 0, 0.05) 0px 20px 40px 0px",
     },
-    other: {
-        // editorBackgroundColor: DEFAULT_THEME.colors.indigo[1],
-        // editorBackgroundColor: DEFAULT_THEME.colors.indigo[5],
-        // editorBackgroundColor: DEFAULT_THEME.colors.yellow[5],
-        editorBackgroundColor: DEFAULT_THEME.colors.dark[5],
-        // editorBackgroundColor: DEFAULT_THEME.colors.gray[9],
-        // editorBackgroundColor: DEFAULT_THEME.colors.gray[2],
-    }
     // transitionTimingFunction: "steps(5, end)"
 }

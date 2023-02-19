@@ -42,7 +42,7 @@ export default function Handle({ id, name, label, direction, position, suggested
                     type={direction}
                     position={position}
                     style={{
-                        ...handleStyle(theme),
+                        ...handleStyle,
                         backgroundColor: isUnconnectedInput ?
                             theme.colors.red[8] :
                             theme.colors.gray[5],
@@ -228,14 +228,13 @@ const handleWrapperStyle = align => ({
     }),
 })
 
-const handleStyle = theme => ({
+const handleStyle = ({
     position: "static",
     transform: "none",
     boxSizing: "content-box",
     width: handleSize,
     height: handleSize,
     border: "none",
-    // outline: "3px solid " + (theme.other.editorBackgroundColor ?? theme.colors.gray[2])
 })
 
 const tooltipWrapperStyle = position => theme => ({

@@ -60,8 +60,7 @@ export default function NodeBuilder() {
                 size={1}
                 color="transparent"
                 style={{
-                    // backgroundColor: theme.other.editorBackgroundColor ?? theme.colors.gray[2]
-                    backgroundColor: app?.editorBackgroundColor ?? theme.colors.gray[2],
+                    backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
                 }}
             />
             <ActiveDetails />
