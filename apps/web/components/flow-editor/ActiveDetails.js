@@ -70,7 +70,7 @@ function NodeConfig({ node }) {
 
     // pull some state from config store -- doesn't need to be persisted between refreshes 
     const panelMaximized = useConfigStore(s => s[node.id]?.panelMaximized ?? false)
-    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue ?? (hasConfiguration ? "options" : null))
+    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue)
     const { togglePanelMaximized, setAccordionValue } = useConfigStore(s => s.actions)
 
     // calculate some numbers
@@ -177,7 +177,8 @@ function NodeConfig({ node }) {
                             {/* Body */}
                             <Accordion
                                 variant="separated"
-                                value={accordionValue} onChange={val => setAccordionValue(node.id, val)}
+                                value={accordionValue === undefined ? (hasConfiguration ? "options" : null) : accordionValue}
+                                onChange={val => setAccordionValue(node.id, val)}
                                 styles={theme => ({
                                     item: { border: "none" },
                                     content: { padding: theme.spacing.xs },
