@@ -6,20 +6,25 @@ import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../comp
 
 export default {
     id: "tables:FindRows",
-    name: "Find Rows",
+    name: "Query Rows",
     description: "Searches a table for rows matching the configured filters.",
     icon: Table,
     color: "yellow",
     badge: "Tables",
 
     inputs: ["$table", "filters",],
-    outputs: ["row"],
+    outputs: [
+        {
+            name: "row",
+            label: "Row(s)",
+        }
+    ],
 
     defaultState: {
         limit: null,
     },
 
-    renderName: ({ state }) => `Find Row${state.limit == 1 ? "" : "s"}`,
+    renderName: ({ state }) => `Query Row${state.limit == 1 ? "" : "s"}`,
 
     renderNode: ({ state, alignHandles }) => {
 

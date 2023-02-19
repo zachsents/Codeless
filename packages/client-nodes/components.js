@@ -55,10 +55,11 @@ export const SkeletonWithHandle = forwardRef(({ align = "left", h = 15, ...props
                     backgroundColor: theme.colors.gray[2],
                     borderRadius: h / 2,
                 })}
+                {...props}
             ></Box>
             <Box
                 sx={theme => ({
-                    width: align == "both" ? `calc(100% + ${theme.spacing.md * 2}px)` : theme.spacing.md + 10,
+                    width: align == "both" ? `calc(100% + ${theme.spacing.md * 2}px)` : "50%",
                     height: 3,
                     position: "absolute",
                     top: "50%",
