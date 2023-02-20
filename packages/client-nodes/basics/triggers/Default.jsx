@@ -6,7 +6,7 @@ import { runFlow } from "@minus/client-sdk"
 
 export default {
     id: "basic:DefaultTrigger",
-    name: "Trigger",
+    name: "When the flow is ran from Minus",
     description: "Can be triggered manually, triggered by other flows, or scheduled to run later.",
     icon: Run,
 

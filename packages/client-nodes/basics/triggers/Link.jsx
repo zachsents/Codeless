@@ -4,7 +4,7 @@ import { Copy, Check, ExternalLink, Link } from "tabler-icons-react"
 
 export default {
     id: "basic:LinkTrigger",
-    name: "Link",
+    name: "When a URL is visited",
     description: "Triggered when URL is accessed.",
     icon: Link,
 

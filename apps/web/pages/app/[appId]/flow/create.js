@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
-import { ActionIcon, Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput } from "@mantine/core"
+import { ActionIcon, Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput, Tooltip } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { TbArrowLeft, TbArrowNarrowRight } from "react-icons/tb"
+import { TbArrowNarrowRight } from "react-icons/tb"
 import { useAppDetailsRealtime, useCreateFlow, useFlowCountForApp, usePlan } from "@minus/client-sdk"
 import { Triggers, TriggerCategories } from "@minus/client-nodes"
 
@@ -12,6 +12,7 @@ import { serializeGraph } from "../../../../modules/graph-util"
 import AppDashboard from "../../../../components/AppDashboard"
 import FormSubsection from "../../../../components/forms/FormSubsection"
 import FormSection from "../../../../components/forms/FormSection"
+import { ArrowLeft } from "tabler-icons-react"
 
 
 export default function CreateFlow() {
@@ -91,7 +92,9 @@ export default function CreateFlow() {
         <AppDashboard>
             <Group position="apart">
                 <Link href={`/app/${appId}/flows`}>
-                    <ActionIcon><TbArrowLeft /></ActionIcon>
+                    <Tooltip position="right" label="Cancel">
+                        <ActionIcon variant="light" size="xl"><ArrowLeft /></ActionIcon>
+                    </Tooltip>
                 </Link>
             </Group>
             <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -114,16 +117,15 @@ export default function CreateFlow() {
                             styles={triggerTypesStyles}
                         />
                     </FormSubsection>
-                    {triggers?.length > 1 &&
-                        <FormSubsection label="Choose a trigger">
-                            <Select
-                                placeholder="When..."
-                                disabled={formLoading}
-                                data={triggers ?? []}
-                                {...form.getInputProps("trigger")}
-                                sx={{ width: 400 }}
-                            />
-                        </FormSubsection>}
+                    <FormSubsection label="Choose a trigger">
+                        <Select
+                            placeholder="When..."
+                            disabled={formLoading}
+                            data={triggers ?? []}
+                            {...form.getInputProps("trigger")}
+                            sx={{ width: 400 }}
+                        />
+                    </FormSubsection>
                 </FormSection>
                 <FormSection>
                     {form.isValid() ?
