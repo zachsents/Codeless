@@ -16,7 +16,8 @@ export default {
 
     deploy: ({ appId, flowId }) => {
 
-        const deploymentUrl = `http://localhost:5001/nameless-948a8/us-central1/runWithUrl/${appId}/${flowId}`
+        // const deploymentUrl = `http://localhost:5001/nameless-948a8/us-central1/runWithUrl/${appId}/${flowId}`
+        const deploymentUrl = `WORK IN PROGRESS`
     
         return (
             <Stack>
