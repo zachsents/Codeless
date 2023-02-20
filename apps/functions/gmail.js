@@ -53,7 +53,7 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
     logger.log(`Trying ${flows.length} flow(s) for app: ${appId}`)
 
     // get Gmail API
-    const gmailApi = await gmail.getGmailApi(appId)
+    const gmailApi = await gmail.getGmailAPI(appId)
 
     // loop through flows
     const flowPromises = flows.map(async flowId => {
@@ -177,7 +177,7 @@ export const refreshWatches = functions.pubsub.schedule("0 11 * * *").onRun(asyn
 export const refreshWatch = functions.https.onCall(async (data, context) => {
 
     // get Gmail API
-    const gmailApi = await gmail.getGmailApi(data.appId)
+    const gmailApi = await gmail.getGmailAPI(data.appId)
 
     // refresh watch
     await gmailApi.users.watch({

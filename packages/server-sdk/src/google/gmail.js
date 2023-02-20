@@ -12,7 +12,7 @@ export async function getGmailAPI(appId = global.info.appId, {
         return gmailApi
 
     const auth = await getGoogleOAuthClient(appId)
-    gmailApi = google.sheets({ version: "v4", auth })
+    gmailApi = google.gmail({ version: "v1", auth })
     
     return gmailApi
 }
