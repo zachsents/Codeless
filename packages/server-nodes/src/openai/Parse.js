@@ -11,6 +11,9 @@ export default {
 
     async onInputsReady({ text }) {
 
+        if(!this.state.dataLabels?.length)
+            throw new Error("No outputs specified")
+
         // format data labels for prompt
         const formatter = new Intl.ListFormat("en")
         const formattedList = formatter.format(this.state.dataLabels)
@@ -30,14 +33,14 @@ Here is the ${formattedList} from this text in JSON form with keys ${formattedLi
 
                 // try to parse
                 try {
+                    console.log(resp)
                     // GPT responds with weird stuff sometimes -- we're gonna try to pick out JSON
                     return JSON.parse(
                         resp?.match(/{.+}/s)[0]
                     )
                 }
                 catch (err) {
-                    console.debug(`Unable to parse GPT response as JSON:\n${resp}`)
-                    return {}
+                    throw new Error("Failed to parse text")
                 }
             },
             text
