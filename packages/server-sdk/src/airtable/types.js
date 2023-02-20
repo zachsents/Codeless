@@ -109,7 +109,7 @@ export class Table {
      * Adds rows to the Airtable table.
      *
      * @param {object[]} [newRowData=[]]
-     * @return {Row[]} 
+     * @return {Row[]} The newly added rows
      * @memberof Table
      */
     async addRows(newRowData = []) {
@@ -124,7 +124,7 @@ export class Table {
      * Batch updates rows in the Airtable table.
      *
      * @param {Array<{ row: Row, data: object }>} [updates=[]]
-     * @return {Row[]}
+     * @return {Row[]} The updated rows
      * @memberof Table
      */
     async updateRows(updates = []) {
@@ -139,6 +139,19 @@ export class Table {
             })
             // map to our Row objects
             |> ^^.map(record => this.row(record))
+    }
+
+    /**
+     * Batch deletes rows from the Airtable table.
+     *
+     * @param {Row[]} [rows=[]]
+     * @memberof Table
+     */
+    async deleteRows(rows = []) {
+        // map to record IDs
+        rows.map(row => row.atRecord.id)
+            // make request
+            |> await this.atTable.destroy(^^)
     }
 
     row(...args) {

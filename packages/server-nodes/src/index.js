@@ -43,10 +43,10 @@ import Table from "./google/sheets/Table.js"
 
 import FindRows from "./tables/FindRows.js"
 import FindRowsByField from "./tables/FindRowsByField.js"
-import GetField from "./tables/GetField.js"
-import SetColumn from "./tables/SetColumn.js"
 import AddRow from "./tables/AddRow.js"
 import UpdateRows from "./tables/UpdateRows.js"
+import DeleteRows from "./tables/DeleteRows.js"
+import GetField from "./tables/GetField.js"
 import TableField from "./tables/TableField.js"
 
 import AskGPT3 from "./openai/AskGPT3.js"
@@ -105,7 +105,7 @@ export default createObject([
 
 
     // ===== Tables =====
-    FindRows, FindRowsByField, GetField, SetColumn, AddRow, UpdateRows, TableField,
+    FindRows, FindRowsByField, AddRow, UpdateRows, DeleteRows, GetField, TableField,
 
 
     // ===== Gmail =====

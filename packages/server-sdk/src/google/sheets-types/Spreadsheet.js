@@ -114,7 +114,7 @@ export class Spreadsheet {
      * @param {boolean} [options.oneDimensional]
      * @memberof Spreadsheet
      */
-    async batchUpdate(updates = [], {
+    async batchUpdate(updates, {
         valueInputOption = "USER_ENTERED",
         includeValuesInResponse = true,
         responseValueRenderOption = "UNFORMATTED_VALUE",
@@ -148,5 +148,70 @@ export class Spreadsheet {
             .map(resp => oneDimensional ? resp.updatedData.values[0] : resp.updatedData.values)
 
         return result
+    }
+
+    /**
+     * Batch clears values from a Spreadsheet.
+     *
+     * @param {Array<Range | string>} ranges
+     * @memberof Spreadsheet
+     */
+    async batchClear(ranges) {
+
+        // make request
+        await this.api.spreadsheets.values.batchClear({
+            spreadsheetId: this.id,
+            requestBody: {
+                ranges: ranges.map(range => range.toString())
+            }
+        })
+    }
+
+    /**
+     * Deletes rows.
+     *
+     * @param {string} sheetName
+     * @param {number[]} rows Row number (1-indexed)
+     * @memberof Spreadsheet
+     */
+    async deleteRows(sheetName, rows) {
+
+        // find sheet ID
+        const fullDetails = await this.getDetails({ returnFullOutput: true })
+        const sheetId = fullDetails.sheets.find(sheet => sheet.properties.title == sheetName)?.properties.sheetId
+
+        if(!sheetId)
+            throw new Error(`Can't find sheet "${sheetName}"`)
+
+        // combine into ranges of rows
+        const sorted = [...rows].sort((a, b) => a - b)
+        const ranges = [{ start: sorted[0], end: sorted[0] }]
+        sorted.reduce((last, current) => {
+            if(current - last <= 1)
+                ranges[0].end = current
+            else
+                ranges.unshift({ start: current })
+            return current
+        })
+
+        // build requests
+        const requests = ranges.map(range => ({
+            deleteDimension: {
+                range: {
+                    sheetId,
+                    dimension: "ROWS",
+                    startIndex: range.start - 1,
+                    endIndex: range.end,
+                }
+            }
+        }))
+
+        // make request
+        await this.api.spreadsheets.batchUpdate({
+            spreadsheetId: this.id,
+            requestBody: {
+                requests,
+            }
+        })
     }
 }

@@ -4,7 +4,7 @@ import { SiGooglesheets } from "react-icons/si"
 
 export default {
     id: "googlesheets:Range",
-    name: "Range",
+    name: "Get Range",
     description: "Gets a range of values from a Google Sheet.",
     icon: SiGooglesheets,
     color: "green",

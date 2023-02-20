@@ -1,4 +1,3 @@
-import { sheets } from "@minus/server-sdk"
 
 
 export default {
@@ -10,7 +9,7 @@ export default {
 
     /**
      * @param {object} inputs
-     * @param {sheets.Sheet} inputs.$sheet
+     * @param {import("@minus/server-sdk").sheets.Sheet} inputs.$sheet
      */
     async onInputsReady({ $sheet }) {
         

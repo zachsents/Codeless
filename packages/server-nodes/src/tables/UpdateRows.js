@@ -11,11 +11,11 @@ export default {
     async onInputsReady({ rows, data }) {
 
         if (rows.length == 0)
-            throw new Error("No rows to update")
+            return this.publish({ updateRows: [] })
 
-        const $table = rows[0].table
+        const table = rows[0].table
 
-        if (!rows.every(row => row.table == $table))
+        if (!rows.every(row => row.table == table))
             throw new Error("All rows must be from the same table")
 
         // map to update objects
@@ -25,7 +25,7 @@ export default {
                 |> Object.fromEntries(^^)
         }), rows, ...data)
             // make the updates
-            |> await $table.updateRows(^^)
+            |> await table.updateRows(^^)
             // output newly added rows
             |> this.publish({ updatedRows: ^^ })
     },

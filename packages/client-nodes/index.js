@@ -43,10 +43,10 @@ import Table from "./google/sheets/Table"
 
 import FindRows from "./tables/FindRows"
 import FindRowsByField from "./tables/FindRowsByField"
-import GetField from "./tables/GetField"
-import SetColumn from "./tables/SetColumn"
 import AddRow from "./tables/AddRow"
 import UpdateRows from "./tables/UpdateRows"
+import DeleteRows from "./tables/DeleteRows"
+import GetField from "./tables/GetField"
 import TableField from "./tables/TableField"
 
 import AskGPT3 from "./openai/AskGPT3"
@@ -108,7 +108,7 @@ export const Nodes = createObject([
 
 
     // ===== Tables =====
-    FindRows, FindRowsByField, GetField, AddRow, UpdateRows, TableField, SetColumn,
+    FindRows, FindRowsByField, AddRow, UpdateRows, DeleteRows, GetField, TableField,
 
 
     // ===== Google Sheets =====
@@ -202,9 +202,9 @@ export const NodeCategories = {
             "tables:FindRows",
             "tables:FindRowsByField",
             "tables:GetField",
-            "tables:SetColumn",
             "tables:AddRow",
             "tables:UpdateRows",
+            "tables:DeleteRows",
             "tables:TableField",
         ],
     },

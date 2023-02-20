@@ -181,7 +181,7 @@ export class Table {
      * Adds new rows to the Google Sheets table.
      *
      * @param {object[]} [newRowData=[]]
-     * @return {Row[]} 
+     * @return {Row[]} The newly added rows
      * @memberof Table
      */
     async addRows(newRowData = []) {
@@ -206,7 +206,7 @@ export class Table {
         // map to rows and return
         return updatedData.values.map(
             (rowData, i) => this.row(
-                newDataRange.startRow + i - 1,
+                newDataRange.startRow + i - this.dataRange.startRow,
                 this.fields.map((field, j) => [field, rowData[j]]) |> Object.fromEntries(^^)
             )
         )
@@ -216,7 +216,7 @@ export class Table {
      * Batch updates rows in the Google Sheets table.
      *
      * @param {Array<{ row: Row, data: object }>} [updates=[]]
-     * @return {Row[]}
+     * @return {Row[]} The updated rows
      * @memberof Table
      */
     async updateRows(updates = []) {
@@ -234,5 +234,16 @@ export class Table {
             |> ^^.map((updatedData, i) => Object.assign(this.row(), updates[i].row, {
                 data: Row.arrayToRecord(updatedData, this.fields)
             }))
+    }
+
+    /**
+     * Batch deletes rows from the Google Sheets table.
+     *
+     * @param {Row[]} [rows=[]]
+     * @memberof Table
+     */
+    async deleteRows(rows = []) {
+        rows.map(row => row.range().startRow)
+            |> await this.spreadsheet.deleteRows(this.sheet.name, ^^)
     }
 }
