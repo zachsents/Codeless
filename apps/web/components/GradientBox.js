@@ -1,4 +1,4 @@
-import { Card, useMantineTheme } from "@mantine/core"
+import { Box, Card, useMantineTheme } from "@mantine/core"
 import { createLinearGradient } from "../modules/colors"
 
 export default function GradientBox({ children, from = "indigo", to = "cyan", centerAround, shade = 5 }) {

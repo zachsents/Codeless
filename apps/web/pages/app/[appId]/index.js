@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
-import { TbArrowRight, TbTrendingUp } from "react-icons/tb"
+import { Sparklines, SparklinesBars } from "react-sparklines"
+import { TbArrowRight, TbBrandAirtable, TbBrandGmail, TbTrendingUp } from "react-icons/tb"
+import { SiGooglesheets } from "react-icons/si"
 import { useAppDetailsRealtime, useFlowCountForApp, usePlan } from "@minus/client-sdk"
 
 

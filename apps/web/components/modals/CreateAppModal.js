@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { useCreateApp } from "@minus/client-sdk"
 
 
-export default function CreateAppModal({ context, id, /*  innerProps */ }) {
+export default function CreateAppModal({ context, id, innerProps }) {
 
     const router = useRouter()
 

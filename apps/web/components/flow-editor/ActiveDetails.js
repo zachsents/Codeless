@@ -272,7 +272,7 @@ const ProblemType = {
     Warning: "warning",
 }
 
-const configContainerStyle = ({
+const configContainerStyle = theme => ({
     position: "absolute",
     right: 0,
     top: 0,
@@ -377,12 +377,12 @@ function DeleteButton({ nodes, edges, label, ...props }) {
 }
 
 
-const cardStyle = ({
+const cardStyle = theme => ({
     borderRadius: "100vw",
     overflow: "visible",
 })
 
-const underScreenContainerStyle = ({
+const underScreenContainerStyle = theme => ({
     position: "absolute",
     // bottom: 40,
     top: "100%",
