@@ -23,26 +23,24 @@ ${text.trim()}
 Here is the ${formattedList} from this text in JSON form with keys ${formattedListQuotes}. Nonexistent values are null.
 `
 
-        const result = await Promise.all(
-            safeMap(
-                async text => {
-                    // call API
-                    const resp = await openaiApi.createCompletion(prompt(text))
+        const result = await safeMap(
+            async text => {
+                // call API
+                const resp = await openaiApi.createCompletion(prompt(text))
 
-                    // try to parse
-                    try {
-                        // GPT responds with weird stuff sometimes -- we're gonna try to pick out JSON
-                        return JSON.parse(
-                            resp?.match(/{.+}/s)[0]
-                        )
-                    }
-                    catch (err) {
-                        console.debug(`Unable to parse GPT response as JSON:\n${resp}`)
-                        return {}
-                    }
-                },
-                text
-            )
+                // try to parse
+                try {
+                    // GPT responds with weird stuff sometimes -- we're gonna try to pick out JSON
+                    return JSON.parse(
+                        resp?.match(/{.+}/s)[0]
+                    )
+                }
+                catch (err) {
+                    console.debug(`Unable to parse GPT response as JSON:\n${resp}`)
+                    return {}
+                }
+            },
+            text
         )
 
         this.publish(
