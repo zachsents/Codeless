@@ -36,6 +36,7 @@ export default function FlowCard({ flow }) {
             title: <Title order={3}>Rename "{flow.name}"</Title>,
             size: "lg",
         })
+        setExpanded(false)
     }
     const handleOpenDeleteModal = () => {
         openContextModal({
@@ -44,6 +45,7 @@ export default function FlowCard({ flow }) {
             title: <Title order={3}>Delete "{flow.name}"</Title>,
             size: "lg",
         })
+        setExpanded(false)
     }
 
     // trigger icon
