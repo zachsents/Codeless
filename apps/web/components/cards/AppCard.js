@@ -112,7 +112,7 @@ function SwatchArray({ colors, shade = 5, onChange, value }) {
     </Group>
 }
 
-const swatchStyle = (active = false) => theme => ({
+const swatchStyle = (active = false) => ({
     cursor: "pointer",
     transform: `scale(${active ? 1.3 : 1})`,
     transition: "transform 0.1s",

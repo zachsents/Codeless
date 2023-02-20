@@ -233,7 +233,7 @@ function RunRow({ strong = false, date }) {
 const leftButtonProps = {
     radius: "xl",
     variant: "subtle",
-    styles: theme => ({
+    styles: ({
         inner: {
             justifyContent: "flex-start",
         }

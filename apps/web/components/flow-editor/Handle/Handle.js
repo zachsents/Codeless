@@ -1,9 +1,11 @@
-import { forwardRef, memo, useRef } from "react"
-import { Handle as RFHandle, Position } from "reactflow"
-import { Box, useMantineTheme, Text, Stack, Button } from "@mantine/core"
+import { useRef } from "react"
+import { Handle as RFHandle } from "reactflow"
+import { Box, useMantineTheme, Text, Stack } from "@mantine/core"
 import { motion } from "framer-motion"
-import { TbPlus } from "react-icons/tb"
-import { Nodes } from "../../modules/nodes"
+
+import { Nodes } from "../../../modules/nodes"
+import { HandleDirection } from "."
+import Suggestion from "./Suggestion"
 
 
 export default function Handle({ id, name, label, direction, position, suggested, onAddSuggested,
@@ -85,139 +87,8 @@ export default function Handle({ id, name, label, direction, position, suggested
 }
 
 
-Handle.Group = memo(forwardRef(({
-    handles,
-    direction,
-    position,
-    includeContainer = false,
-    queryListHandle = () => 1,
-    handleProps = {},
-}, ref) => {
-
-    const inferredPosition = direction == HandleDirection.Input ? Position.Left : Position.Right
-
-    const handleElements = handles?.map(handle => {
-
-        // handle can either be just a name or an object
-        const { name, label, list, suggested } = typeof handle === "string" ? {
-            name: handle,
-            label: null,
-            list: false,
-            suggested: null,
-        } : handle
-
-        // if it's a list handle, get current number of handles
-        const numberOfHandles = list ? queryListHandle(name) : 1
-
-        // map out to elements
-        return Array(numberOfHandles).fill(0).map((_, i) => {
-            // include index in handle ID for list handles
-            const handleId = list ? `${name}.${i}` : name
-
-            return <Handle
-                id={handleId}
-                name={name}
-                label={label}
-                position={position ?? inferredPosition}
-                direction={direction}
-                suggested={suggested}
-                // spread additional props to handle -- can be object or function
-                {...(typeof handleProps == "function" ? handleProps(handleId) : handleProps)}
-                key={handleId}
-            />
-        })
-    }).flat() ?? <></>
-
-    return includeContainer ?
-        <Handle.VerticalContainer position={position ?? inferredPosition} ref={ref}>
-            {handleElements}
-        </Handle.VerticalContainer>
-        :
-        handleElements
-}
-))
-Handle.Group.displayName = "Handle.Group"
-
-
-Handle.VerticalContainer = forwardRef(({ children, position, ...props }, ref) => {
-    return (
-        <Stack
-            justify="center"
-            sx={stackStyle(position)}
-            {...props}
-        >
-            <Stack
-                justify="space-evenly"
-                align="center"
-                spacing={0}
-                ref={ref}
-            >
-                {children}
-            </Stack>
-        </Stack>
-    )
-})
-Handle.VerticalContainer.displayName = "Handle.VerticalContainer"
-
-
-export const HandleDirection = {
-    Input: "target",
-    Output: "source",
-}
-
-
-function Suggestion({ typeId, index, ...props }) {
-
-    const suggestionAnimVariants = {
-        hide: { opacity: 0, y: -40 },
-        show: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                type: "spring",
-                spring: 0.5,
-                duration: 0.2,
-                delay: index * 0.05 + 0.1,
-            },
-        },
-    }
-
-    return (
-        <motion.div initial="hide" animate="show" variants={suggestionAnimVariants} >
-            <Button
-                size="xs"
-                compact
-                variant="light"
-                color="gray"
-                leftIcon={<TbPlus />}
-                styles={suggestionStyles}
-                {...props}
-            >
-                <Text size={10} weight={400}>{Nodes[typeId].name}</Text>
-            </Button>
-        </motion.div>
-    )
-}
-
-
 const handleSize = 8
 
-
-const stackStyle = position => ({
-    position: "absolute",
-    top: "50%",
-    zIndex: 10,
-    minHeight: "100%",
-
-    ...(position == Position.Left && {
-        left: 0,
-        transform: "translate(-50%, -50%)",
-    }),
-    ...(position == Position.Right && {
-        right: 0,
-        transform: "translate(50%, -50%)",
-    }),
-})
 
 const handleWrapperStyle = align => ({
     borderRadius: "100%",
@@ -257,11 +128,6 @@ const tooltipStyle = (button = false) => theme => ({
     } : {},
 })
 
-const suggestionStyles = theme => ({
-    inner: {
-        justifyContent: "flex-start",
-    }
-})
 
 function formatName(name) {
 

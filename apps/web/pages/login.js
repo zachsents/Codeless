@@ -64,7 +64,7 @@ export default function Login() {
     )
 }
 
-const containerStyle = theme => ({
+const containerStyle = ({
     width: "100vw",
     height: "100vh",
 })

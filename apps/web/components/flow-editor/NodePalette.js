@@ -46,6 +46,7 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
                 focused?.previousSibling?.focus()
                 break
             case "ArrowUp":
+                // eslint-disable-next-line no-case-declarations
                 const nextEl = Array(numColumnsRef.current).fill(0).reduce(el => el?.previousSibling, focused)
                 if (nextEl)
                     nextEl.focus()

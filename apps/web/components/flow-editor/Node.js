@@ -1,18 +1,18 @@
 import { useEffect } from "react"
 import { useKeyPress, useReactFlow } from "reactflow"
-import { Card, Group, Tooltip, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
+import { Card, Group, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 
 import { createEdge, createNode, deleteNodeById, deselectNode, getNodeType, selectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
 import { useAppContext, useFlowContext } from "../../modules/context"
-import Handle, { HandleDirection } from "./Handle"
 import { useCallback } from "react"
 import { Integrations } from "@minus/client-nodes"
+import Handle, { HandleDirection } from "./Handle"
 
 
-export default function Node({ id, type, selected, dragging, xPos, yPos, ...props }) {
+export default function Node({ id, type, selected, dragging, xPos, yPos }) {
 
     const theme = useMantineTheme()
     const rf = useReactFlow()
@@ -209,13 +209,11 @@ function ErrorIcon() {
 }
 
 
-const cardStyle = (id, { copyCursor, selected }) => theme => ({
+const cardStyle = (id, { copyCursor, /* selected */ }) => ({
     overflow: "visible",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    // outline: selected ? `3px solid ${theme.colors.yellow[5]}` : "none",
-    // border: id == "trigger" ? `4px solid ${theme.colors.dark[2]}` : "none",
     cursor: copyCursor ? "copy" : undefined,
 })
 
