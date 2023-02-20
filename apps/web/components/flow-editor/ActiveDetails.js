@@ -223,7 +223,7 @@ function NodeConfig({ node }) {
                                                                     <td style={{ whiteSpace: "nowrap" }}>{key}</td>
                                                                     <td>
                                                                         <Text sx={{ whiteSpace: "pre-wrap" }}>
-                                                                            {val?.length == 1 ? val[0] : val?.toString()}
+                                                                            {val?.length == 1 ? val[0]?.toString() : val?.toString()}
                                                                         </Text>
                                                                     </td>
                                                                 </tr>
