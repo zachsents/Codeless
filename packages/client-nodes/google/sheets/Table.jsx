@@ -5,7 +5,7 @@ import { Control, ControlLabel, ControlStack } from "../../components"
 
 export default {
     id: "googlesheets:Table",
-    name: "Interpret Sheet as Table",
+    name: "Use Sheet as Table",
     description: "Uses a Google Sheet as if it were a table.",
     icon: SiGooglesheets,
     color: "green",

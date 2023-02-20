@@ -107,20 +107,20 @@ const valueEdgeProps = {
     // },
 }
 
-const signalEdgeProps = theme => ({
-    // type: "smoothstep",
-    animated: true,
-    focusable: false,
-    // pathOptions: {
-    //     borderRadius: 20,
-    // },
-    // markerEnd: {
-    //     type: MarkerType.ArrowClosed,
-    //     width: 20,
-    //     height: 20,
-    //     color: theme.colors.dark[5]
-    // },
-    style: {
-        stroke: theme.colors.dark[5],
-    }
-})
+// const signalEdgeProps = theme => ({
+//     // type: "smoothstep",
+//     animated: true,
+//     focusable: false,
+//     // pathOptions: {
+//     //     borderRadius: 20,
+//     // },
+//     // markerEnd: {
+//     //     type: MarkerType.ArrowClosed,
+//     //     width: 20,
+//     //     height: 20,
+//     //     color: theme.colors.dark[5]
+//     // },
+//     style: {
+//         stroke: theme.colors.dark[5],
+//     }
+// })

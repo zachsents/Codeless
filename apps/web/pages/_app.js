@@ -1,4 +1,4 @@
-import { DEFAULT_THEME, MantineProvider } from "@mantine/core"
+import { MantineProvider } from "@mantine/core"
 import { ModalsProvider } from "@mantine/modals"
 import { QueryClientProvider, QueryClient } from "react-query"
 

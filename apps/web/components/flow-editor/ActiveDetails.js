@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useOnSelectionChange, useReactFlow } from 'reactflow'
-import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, useMantineTheme, Accordion, Flex, Table, Alert, Button, Center } from '@mantine/core'
+import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, Accordion, Flex, Table, Alert, Button, Center } from '@mantine/core'
 import { motion, AnimatePresence } from "framer-motion"
 import { TbAlertTriangle, TbChevronLeft, TbChevronRight, TbExclamationMark, TbTrash, TbX } from "react-icons/tb"
 
@@ -60,7 +60,6 @@ const useConfigStore = create(set => ({
 function NodeConfig({ node }) {
 
     const rf = useReactFlow()
-    const theme = useMantineTheme()
 
     const { app } = useAppContext()
     const { latestRun } = useFlowContext()
@@ -105,7 +104,7 @@ function NodeConfig({ node }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", duration: 0.5, spring: 0.5 }}
-            style={configContainerStyle(theme)}
+            style={configContainerStyle}
         >
             <ScrollArea w="100%" h="100%">
                 <Flex p="lg" direction="column" align="flex-end" justify="flex-start">
@@ -272,7 +271,7 @@ const ProblemType = {
     Warning: "warning",
 }
 
-const configContainerStyle = theme => ({
+const configContainerStyle = ({
     position: "absolute",
     right: 0,
     top: 0,
@@ -377,12 +376,12 @@ function DeleteButton({ nodes, edges, label, ...props }) {
 }
 
 
-const cardStyle = theme => ({
+const cardStyle = ({
     borderRadius: "100vw",
     overflow: "visible",
 })
 
-const underScreenContainerStyle = theme => ({
+const underScreenContainerStyle = ({
     position: "absolute",
     // bottom: 40,
     top: "100%",
