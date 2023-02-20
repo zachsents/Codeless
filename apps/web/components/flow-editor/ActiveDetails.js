@@ -100,17 +100,16 @@ function NodeConfig({ node }) {
 
     return (
         <motion.div
-            initial={{ x: "100%" }}
+            initial={{ x: "120%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: "120%" }}
             transition={{ type: "spring", duration: 0.5, spring: 0.5 }}
             style={configContainerStyle}
         >
-            <ScrollArea w="100%" h="100%">
-                <Flex p="lg" direction="column" align="flex-end" justify="flex-start">
+            <ScrollArea  h="100%">
+                <Flex py="lg" pr="lg" direction="column" align="flex-end" justify="flex-start">
                     <Card
                         radius="md" shadow="sm" mah="100%"
-                        sx={{ pointerEvents: "all", overflow: "visible" }}
 
                         component={motion.div}
                         animate={{ width: panelMaximized ? 500 : 300 }}
@@ -121,13 +120,15 @@ function NodeConfig({ node }) {
                             {/* Header */}
                             <Group spacing="xs" position="apart" noWrap align="start">
                                 <Stack spacing="xs">
-                                    <ActionIcon
-                                        onClick={() => togglePanelMaximized(node.id)}
-                                        radius="md"
-                                        variant="light"
-                                    >
-                                        {panelMaximized ? <TbChevronRight /> : <TbChevronLeft />}
-                                    </ActionIcon>
+                                    <Tooltip label={panelMaximized ? "Collapse" : "Expand"} position="left" withinPortal>
+                                        <ActionIcon
+                                            onClick={() => togglePanelMaximized(node.id)}
+                                            radius="md"
+                                            variant="light"
+                                        >
+                                            {panelMaximized ? <TbChevronRight /> : <TbChevronLeft />}
+                                        </ActionIcon>
+                                    </Tooltip>
 
                                     <Group noWrap>
                                         {nodeType.color ?
@@ -276,14 +277,7 @@ const configContainerStyle = ({
     right: 0,
     top: 0,
     bottom: 0,
-    pointerEvents: "none",
     zIndex: 100,
-    // padding: theme.spacing.lg,
-    width: 600,
-    // display: "flex",
-    // flexDirection: "column",
-    // justifyContent: "flex-start",
-    // alignItems: "flex-end",
 })
 
 function AccordionTitle({ children, active, icon, iconProps = {}, rightSection }) {
