@@ -7,10 +7,8 @@ export default {
     inputs: ["to", "subject", "body"],
     outputs: [],
 
-    onInputsReady({ to, subject, body }) {
-        return Promise.all(
-            safeMap(sendEmail, to, subject, body)
-        )
+    async onInputsReady({ to, subject, body }) {
+        await safeMap(sendEmail, to, subject, body)
     },
 }
 

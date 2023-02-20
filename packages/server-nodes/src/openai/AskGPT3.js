@@ -11,14 +11,12 @@ export default {
 
     async onInputsReady({ prompt }) {
 
-        const response = await Promise.all(
-            safeMap(
-                prompt => openaiApi.createCompletion(prompt, { 
-                    model: this.state.model,
-                    temperature: this.state.temperature,
-                }),
-                prompt
-            )
+        const response = await safeMap(
+            prompt => openaiApi.createCompletion(prompt, { 
+                model: this.state.model,
+                temperature: this.state.temperature,
+            }),
+            prompt
         )
 
         this.publish({ response })
