@@ -5,6 +5,7 @@ import shallow from "zustand/shallow"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
 
+import { Integrations } from "@minus/client-nodes"
 import { useAppId, useFlowId } from "./hooks"
 import { Nodes } from "./nodes"
 
@@ -305,6 +306,7 @@ export function useNodeSnapping(id, x, y, {
     horizontalLookaround = 500,
     preventSnappingKey = "Shift"
 } = {}) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const rf = reactFlow ?? useReactFlow()
 
     const [keyPressed, setKeyPressed] = useState(false)
@@ -466,6 +468,14 @@ export function getNodeType(node) {
 
 export function getNodeTypeById(rf, nodeId) {
     return Nodes[rf.getNode(nodeId)?.type]
+}
+
+
+export function getNodeIntegrationsStatus(nodeType, appIntegrations) {
+    return nodeType.requiredIntegrations?.map(intId => ({
+        ...Integrations[intId],
+        status: appIntegrations[intId] ?? {},
+    })) ?? []
 }
 
 

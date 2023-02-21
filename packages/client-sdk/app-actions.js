@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, deleteField, doc, DocumentReference, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, deleteField, doc, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
 import { firestore } from "./firebase-init.js"
 import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
 import { getPlanRef } from "./plans.js"
@@ -96,10 +96,13 @@ export function updateApp(appId, changes = {}) {
  * @param {string} appId
  * @param {string} integrationName
  */
-export function revokeIntegration(appId, integrationName) {
-    return updateApp(appId, {
+export function disconnectIntegration(appId, integrationName) {
+    console.log(appId, integrationName)
+    const updateObj = {
         [`integrations.${integrationName}`]: deleteField(),
-    })
+    }
+    console.log(updateObj)
+    return updateApp(appId, updateObj)
 }
 
 

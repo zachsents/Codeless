@@ -4,7 +4,7 @@ import functions from "firebase-functions"
 import { db } from "./init.js"
 import NodeTypes from "@minus/server-nodes"
 import { runFlow } from "@minus/gee3"
-import { logger } from "./logger.js"
+import { logger } from "@minus/server-sdk"
 
 
 export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {
@@ -31,6 +31,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
             })
 
             logger.log(`Finished validation with status: "${status}"`)
+            logger.done()
             return
         }
 
@@ -49,6 +50,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
             })
 
             logger.log(`Scheduled flow`)
+            logger.done()
             return
         }
 
@@ -88,6 +90,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
             }
 
             logger.log(`Finished flow run ${run.id} with status: "${status}"`)
+            logger.done()
             return
         }
     }
@@ -96,6 +99,7 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
             status: RunStatus.Failed,
             failureError: JSON.stringify(error, Object.getOwnPropertyNames(error)),
         })
+        logger.done()
     }
 })
 

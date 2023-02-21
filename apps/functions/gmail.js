@@ -1,12 +1,11 @@
 import functions from "firebase-functions"
 import { db } from "./init.js"
 import { httpsCallable, url } from "firebase-admin-callable-functions"
-import { logger } from "./logger.js"
 import { RunStatus } from "./flows.js"
-import { gmail } from "@minus/server-sdk"
+import { gmail, logger } from "@minus/server-sdk"
 
 
-export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message, context) => {
+export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message) => {
 
     logger.setPrefix("Gmail")
 
@@ -44,10 +43,12 @@ export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (me
             appId => httpsCallable(url("gmail-runFlowsForApp"))(appMap[appId])
         )
     )
+
+    logger.done()
 })
 
 
-export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newHistoryId }, context) => {
+export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newHistoryId }) => {
 
     logger.setPrefix("Gmail")
     logger.log(`Trying ${flows.length} flow(s) for app: ${appId}`)
@@ -147,10 +148,12 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
     })
 
     await Promise.all(flowPromises)
+
+    logger.done()
 })
 
 
-export const refreshWatches = functions.pubsub.schedule("0 11 * * *").onRun(async (context) => {
+export const refreshWatches = functions.pubsub.schedule("0 11 * * *").onRun(async () => {
 
     // get published flows with Gmail trigger
     const querySnapshot = await db.collection("flows")
@@ -174,7 +177,7 @@ export const refreshWatches = functions.pubsub.schedule("0 11 * * *").onRun(asyn
 })
 
 
-export const refreshWatch = functions.https.onCall(async (data, context) => {
+export const refreshWatch = functions.https.onCall(async (data) => {
 
     // get Gmail API
     const gmailApi = await gmail.getGmailAPI(data.appId)

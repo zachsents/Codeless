@@ -5,6 +5,7 @@ dotenv.config()
 // initialize firebase app globalize/export
 admin.initializeApp()
 global.admin = admin
+
 export const db = admin.firestore()
 global.db = db
 

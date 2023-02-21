@@ -2,10 +2,18 @@ import fs from "fs/promises"
 import path from "path"
 import { fileURLToPath } from "url"
 import { google } from "googleapis"
+import { getIntegrationAccount } from "../integrations.js"
+
 
 
 let oauthClient
 
+export const GoogleIntegrationKey = "google"
+
+
+/**
+ * @return {Promise<google.auth.OAuth2>} 
+ */
 export async function getGoogleOAuthClient(appId = global.info.appId, {
     cache = true,
 } = {}) {
@@ -26,8 +34,10 @@ export async function getGoogleOAuthClient(appId = global.info.appId, {
         return oauthClient
 
     // grab stored refresh token
-    const appSnapshot = await db.doc(`apps/${appId}`).get()
-    const refreshToken = appSnapshot.data().integrations?.Google?.refreshToken
+    const { refreshToken } = await getIntegrationAccount({
+        appId,
+        integrationKey: GoogleIntegrationKey,
+    })
 
     if (!refreshToken)
         throw new Error("Google apps are not authorized")

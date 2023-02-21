@@ -4,10 +4,16 @@ import { nanoid } from "nanoid"
 import fetch from "node-fetch"
 import path from "path"
 import { fileURLToPath } from "url"
-import { FieldValue } from "firebase-admin/firestore"
 import AirTableAPI from "airtable"
+import { logger } from "../logger.js"
+import { getIntegrationAccount, removeIntegrationAccount, storeIntegrationAccount } from "../integrations.js"
 
 
+/** @type {import("firebase-admin").firestore.Firestore} */
+const db = global.db
+
+
+export const AirTableIntegrationKey = "airtable"
 const AuthDetails = await getAuthDetails()
 const OAuthChallengesCollection = db.collection("oauthChallenges")
 
@@ -85,6 +91,8 @@ export async function getAirTableAPI(appId = global.info.appId, options = {}) {
 
 async function getFreshAccessToken(appId = global.info.appId) {
 
+    logger.setPrefix("Airtable Auth")
+
     if (!appId)
         throw new Error("Must include app ID")
 
@@ -96,39 +104,57 @@ async function getFreshAccessToken(appId = global.info.appId) {
      */
     const freshToken = await db.runTransaction(async t => {
         // get app
-        let appDoc = await t.get(appRef)
-        const { accessToken, refreshToken } = appDoc.data().integrations.AirTable
+        const appDoc = await t.get(appRef)
+        const app = { id: appDoc.id, ...appDoc.data() }
+
+        // get stored integration account
+        const { id: userId, accessToken, refreshToken } = await getIntegrationAccount({
+            app,
+            integrationKey: AirTableIntegrationKey,
+            transaction: t,
+        })
 
         if (!refreshToken)
             return null
 
+        // try out access token
         if (accessToken) {
-            // console.debug(`Trying out access token... (${accessToken})`)
-
-            // try out access token
-            let res = await (await fetch("https://api.airtable.com/v0/meta/whoami", {
-                headers: { "Authorization": "Bearer " + accessToken }
-            })).json()
-
-            // token is OK! send it
-            if (!res.error)
+            try {
+                await getWhoAmI(accessToken)
+                // token is OK! send it
+                logger.debug("Access token is OK!")
                 return accessToken
-
-            // console.debug("Access token is bad")
+            }
+            catch (err) {
+                logger.debug("Bad access token. Refreshing")
+            }
         }
 
         // refresh tokens
         const newTokens = await getToken({
             grant_type: "refresh_token",
             refresh_token: refreshToken,
-        }).catch(() => ({}))    // empty object as return will cause the next lines to delete bad tokens
+        }).catch(() => null)    // empty object as return will cause the next lines to delete bad tokens
 
-        // console.debug(`Got new token: ${newTokens.access_token}`)
+        // there was an error - let's delete the integration account
+        if (newTokens == null) {
+            logger.debug("Refresh token is bad. Deleting integration account")
+            await removeIntegrationAccount({
+                app,
+                integrationKey: AirTableIntegrationKey,
+                transaction: t,
+            })
+            return null
+        }
 
-        // write new tokens
-        await t.update(appRef, {
-            "integrations.AirTable.refreshToken": newTokens.refresh_token ?? FieldValue.delete(),
-            "integrations.AirTable.accessToken": newTokens.access_token ?? FieldValue.delete(),
+        logger.debug("Refreshed tokens.")
+
+        // store new tokens
+        await storeIntegrationAccount(AirTableIntegrationKey, userId, {
+            refreshToken: newTokens.refresh_token,
+            accessToken: newTokens.access_token,
+        }, {
+            transaction: t,
         })
 
         return newTokens.access_token
@@ -162,6 +188,26 @@ async function getToken(bodyParams = {}) {
         scopes: scope.split(" "),
         ...responseBody,
     }
+}
+
+
+/**
+ * Does a whoami request to Airtable
+ *
+ * @export
+ * @param {string} accessToken
+ * @return {Promise<{ id: string, scopes: string[] }>} 
+ */
+export async function getWhoAmI(accessToken) {
+
+    const res = await (await fetch("https://api.airtable.com/v0/meta/whoami", {
+        headers: { "Authorization": "Bearer " + accessToken }
+    })).json()
+
+    if (res.error)
+        throw new Error(res.error.message)
+
+    return res
 }
 
 

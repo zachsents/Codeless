@@ -1,8 +1,6 @@
 import functions from "firebase-functions"
-import { db } from "./init.js"
-import { logger } from "./logger.js"
-import { airtable } from "@minus/server-sdk"
 import fetch from "node-fetch"
+import { airtable, storeIntegrationAccount, logger } from "@minus/server-sdk"
 
 
 export const authorizeApp = functions.https.onRequest(async (request, response) => {
@@ -40,17 +38,34 @@ export const appAuthorizationRedirect = functions.https.onRequest(async (request
         codeChallenge: code_challenge,
     })
 
-    // success! store tokens & scopes
-    await db.doc(`apps/${appId}`).update({
-        "integrations.AirTable.refreshToken": refresh_token,
-        "integrations.AirTable.accessToken": access_token,
-        "integrations.AirTable.scopes": scopes,
-    })
+    // get user ID
+    const { id: userId } = await airtable.getWhoAmI(access_token)
+
+    // success! store airtable account
+    await storeIntegrationAccount(airtable.AirTableIntegrationKey, userId, {
+        refreshToken: refresh_token,
+        accessToken: access_token,
+        scopes,
+    }, { appId })
 
     logger.log(`Succesfully authorized AirTable for app "${appId}"`)
+    logger.done()
 
     // response with JS to close the popup window
     response.send("<script>window.close()</script>")
+})
+
+
+export const checkAuthorization = functions.https.onCall(async ({ appId }) => {
+    try {
+        await airtable.getAirTableAPI(appId)
+        console.log("Airtable is authorized :)")
+        return true
+    }
+    catch(err) {
+        console.log("Airtable is not authorized >:(")
+        return false
+    }
 })
 
 
@@ -59,7 +74,7 @@ export const getTableNameFromId = functions.https.onCall(async (data) => {
     const { appId, baseId, tableId } = data
 
     // check params
-    if(!appId || !baseId || !tableId)
+    if (!appId || !baseId || !tableId)
         throw new functions.https.HttpsError("invalid-argument", "Must include Minus app ID and Airtable base ID and table ID")
 
     // grab API
@@ -73,7 +88,7 @@ export const getTableNameFromId = functions.https.onCall(async (data) => {
     })).json()
 
     // check for errors
-    if(res.error)
+    if (res.error)
         throw new functions.https.HttpsError("unknown", `${res.error.type}: ${res.error.message}`)
 
     return res.tables?.find(table => table.id == tableId)?.name

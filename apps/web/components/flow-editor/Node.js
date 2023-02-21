@@ -5,10 +5,9 @@ import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 
-import { createEdge, createNode, deleteNodeById, deselectNode, getNodeType, selectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
+import { createEdge, createNode, deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType, selectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
 import { useAppContext, useFlowContext } from "../../modules/context"
 import { useCallback } from "react"
-import { Integrations } from "@minus/client-nodes"
 import Handle, { HandleDirection } from "./Handle"
 
 
@@ -16,7 +15,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
 
     const theme = useMantineTheme()
     const rf = useReactFlow()
-    const { app } = useAppContext()
+    const { integrations: appIntegrations } = useAppContext()
     const { latestRun } = useFlowContext()
 
     const nodeType = getNodeType({ type })
@@ -72,7 +71,8 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
     useNodeSnapping(id, xPos, yPos)
 
     // integrations
-    const integrationsSatisfied = nodeType.requiredIntegrations?.every(intId => Integrations[intId].manager.isAppAuthorized(app)) ?? true
+    const integrationsSatisfied = getNodeIntegrationsStatus(nodeType, appIntegrations).every(int => int.status.data)
+
 
     return (
         <motion.div

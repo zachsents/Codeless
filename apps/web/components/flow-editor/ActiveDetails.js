@@ -1,14 +1,16 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useOnSelectionChange, useReactFlow } from 'reactflow'
-import { ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, Accordion, Flex, Table, Alert, Button, Center } from '@mantine/core'
+import create from "zustand"
+import { produce } from "immer"
+import {
+    ActionIcon, Box, Card, Group, Text, Stack, Tooltip, Title, ThemeIcon, Badge, ScrollArea, Accordion, Flex,
+    Table, Alert, Button, Center, Loader
+} from '@mantine/core'
 import { motion, AnimatePresence } from "framer-motion"
 import { TbAlertTriangle, TbChevronLeft, TbChevronRight, TbExclamationMark, TbTrash, TbX } from "react-icons/tb"
 
-import { deselectNode, getNodeType, useNodeDisplayProps, useNodeDragging } from '../../modules/graph-util'
+import { deselectNode, getNodeIntegrationsStatus, getNodeType, useNodeDisplayProps, useNodeDragging } from '../../modules/graph-util'
 import { useAppContext, useFlowContext } from '../../modules/context'
-import create from "zustand"
-import { produce } from "immer"
-import { Integrations } from '@minus/client-nodes'
 
 
 export default function ActiveDetails() {
@@ -61,7 +63,7 @@ function NodeConfig({ node }) {
 
     const rf = useReactFlow()
 
-    const { app } = useAppContext()
+    const { app, integrations: appIntegrations } = useAppContext()
     const { latestRun } = useFlowContext()
     const displayProps = useNodeDisplayProps(node.id)
     const nodeType = getNodeType(node)
@@ -106,7 +108,7 @@ function NodeConfig({ node }) {
             transition={{ type: "spring", duration: 0.5, spring: 0.5 }}
             style={configContainerStyle}
         >
-            <ScrollArea  h="100%">
+            <ScrollArea h="100%">
                 <Flex py="lg" pr="lg" direction="column" align="flex-end" justify="flex-start">
                     <Card
                         radius="md" shadow="sm" mah="100%"
@@ -155,24 +157,33 @@ function NodeConfig({ node }) {
                                 </ActionIcon>
                             </Group>
 
-                            {nodeType.requiredIntegrations?.map(intId => {
-                                const int = Integrations[intId]
-                                return int.manager.isAppAuthorized(app) ?
+                            {getNodeIntegrationsStatus(nodeType, appIntegrations).map(int =>
+                                int.status.isFetching ?
                                     <Alert
                                         pb={5}
-                                        title={<Group spacing={5}>Connected to <int.icon /> {int.name}</Group>}
-                                        color="green"
+                                        title={<Group>
+                                            <Loader size="sm" />
+                                            <Group spacing={5}><int.icon /> {int.name}</Group>
+                                        </Group>}
+                                        color="gray"
                                         key={int.id}
                                     /> :
-                                    <Alert title="Integration Required!" color="red" key={int.id}>
-                                        This node uses <b>{int.name}</b>.
-                                        <Center mt="xs">
-                                            <Button compact color={int.color} onClick={() => int.manager.oneClickAuth(app.id)}>
-                                                <Group spacing={5}>Connect <int.icon /> {int.name}</Group>
-                                            </Button>
-                                        </Center>
-                                    </Alert>
-                            })}
+                                    int.status.data ?
+                                        <Alert
+                                            pb={5}
+                                            title={<Group spacing={5}>Connected to <int.icon /> {int.name}</Group>}
+                                            color="green"
+                                            key={int.id}
+                                        /> :
+                                        <Alert title="Integration Required!" color="red" key={int.id}>
+                                            This node uses <b>{int.name}</b>.
+                                            <Center mt="xs">
+                                                <Button compact color={int.color} onClick={() => int.manager.oneClickAuth(app.id)}>
+                                                    <Group spacing={5}>Connect <int.icon /> {int.name}</Group>
+                                                </Button>
+                                            </Center>
+                                        </Alert>
+                            )}
 
                             {/* Body */}
                             <Accordion

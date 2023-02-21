@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
 import { TbArrowRight, TbTrendingUp } from "react-icons/tb"
-import { useAppDetailsRealtime, useFlowCountForApp, usePlan } from "@minus/client-sdk"
-
+import { useAppDetailsRealtime, useAppIntegrations, useFlowCountForApp, usePlan } from "@minus/client-sdk"
+import { Integrations } from "@minus/client-nodes"
 
 import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
 import AppDashboard from "../../../components/AppDashboard"
@@ -10,8 +10,9 @@ import GradientBox from "../../../components/GradientBox"
 import LoadingSkeleton from "../../../components/LoadingSkeleton"
 import PageTitle from "../../../components/PageTitle"
 import OurCard from "../../../components/cards/OurCard"
-import { Integrations } from "@minus/client-nodes"
-import { useMemo } from "react"
+
+
+const MAX_SHOWN = 5
 
 
 export default function AppOverview() {
@@ -21,11 +22,15 @@ export default function AppOverview() {
     useMustBeSignedIn()
     const appId = useAppId()
     const [app] = useAppDetailsRealtime(appId)
+    const appIntegrations = useAppIntegrations(app, Integrations)
     const { plan } = usePlan({ ref: app?.plan })
     const { flowCount } = useFlowCountForApp(app?.id)
     const flowInfoLoaded = flowCount != null && !!plan
 
-    const [integrations, numIntegrations, overflow] = useConnectedIntegrations(app, 5)
+
+    const integrations = Object.keys(appIntegrations).map(intId => Integrations[intId])
+    const shown = integrations.slice(0, MAX_SHOWN)
+    const overflow = integrations.length - MAX_SHOWN
 
     return (
         <AppDashboard>
@@ -126,16 +131,16 @@ export default function AppOverview() {
                                 size="lg"
                                 weight={600}
                             >
-                                {numIntegrations || "No"} services integrated
+                                {integrations.length || "No"} services integrated
                             </Text>
 
                             <Center>
                                 <Avatar.Group>
-                                    {integrations.map(int =>
+                                    {shown.map(int =>
                                         <Avatar color={int.color} radius="xl" size="lg" key={int.id}>
                                             <int.icon /></Avatar>
                                     )}
-                                    {overflow && <Avatar radius="xl" size="md">+{overflow}</Avatar>}
+                                    {overflow > 0 && <Avatar radius="xl" size="md">+{overflow}</Avatar>}
                                 </Avatar.Group>
                             </Center>
                         </Stack>
@@ -145,15 +150,4 @@ export default function AppOverview() {
             </Stack>
         </AppDashboard>
     )
-}
-
-
-function useConnectedIntegrations(app, maxShown) {
-    const connected = useMemo(
-        () => Object.values(Integrations).filter(int => int.manager.isAppAuthorized(app)),
-        [app]
-    )
-    const overflow = connected.length - maxShown
-
-    return [connected.slice(0, maxShown), connected.length, overflow < 1 ? null : overflow]
 }

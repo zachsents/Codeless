@@ -1,6 +1,7 @@
-import { useAppDetailsRealtime, useFlowGraphRealtime, useFlowRealtime, useLatestRunRealtime } from "@minus/client-sdk"
-import { useRouter } from "next/router"
 import { createContext, useContext, useEffect } from "react"
+import { useRouter } from "next/router"
+import { useAppDetailsRealtime, useAppIntegrations, useFlowGraphRealtime, useFlowRealtime, useLatestRunRealtime } from "@minus/client-sdk"
+import { Integrations } from "@minus/client-nodes"
 import { useAppId, useFlowId } from "./hooks"
 
 
@@ -38,13 +39,14 @@ export function AppProvider({ children, redirectOnNotExist = false }) {
 
     const appId = useAppId()
     const [app] = useAppDetailsRealtime(appId)
+    const integrations = useAppIntegrations(app, Integrations)
 
     // redirect if flow doesn't exist
     useEffect(() => {
         redirectOnNotExist && app === false && router.push(redirectOnNotExist)
     }, [app])
 
-    return <AppContext.Provider value={{ app }}>
+    return <AppContext.Provider value={{ app, integrations }}>
         {children}
     </AppContext.Provider>
 }

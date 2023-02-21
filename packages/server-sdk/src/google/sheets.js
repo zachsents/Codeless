@@ -5,6 +5,8 @@ import { ExtendedGoogleSheetsAPI } from "./sheets-types/ExtendedGoogleSheetsAPI.
 
 let sheetsApi
 
+export const GoogleSheetsIntegrationKey = "sheets"
+
 
 /**
  * Gets a wrapped version of the Google Sheets API. Returns a cached version
@@ -24,18 +26,7 @@ export async function getGoogleSheetsAPI(appId = global.info.appId, {
 
     const auth = await getGoogleOAuthClient(appId)
 
-    // the sheets API is not extensible, but I'd like to add some features to it; thus, Proxy
-    // sheetsApi = new Proxy(google.sheets({ version: "v4", auth }), {
-    //     get: (target, prop, receiver) => {
-
-    //         if (prop == "spreadsheet")
-    //             return (...args) => new Spreadsheet(receiver, ...args)
-
-    //         return Reflect.get(target, prop, receiver)
-    //     }
-    // })
-
-    // instead, just using inheritance with Object.assign; if this causes problems, we'll switch back to Proxy
+    // just using inheritance with Object.assign; if this causes problems, we'll switch back to Proxy
     sheetsApi = Object.assign(new ExtendedGoogleSheetsAPI(), google.sheets({ version: "v4", auth }))
 
     return sheetsApi

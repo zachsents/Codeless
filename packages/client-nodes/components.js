@@ -2,6 +2,7 @@ import { forwardRef, Fragment, useEffect, useState } from "react"
 import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip, Loader, ThemeIcon, Flex, Center } from "@mantine/core"
 import { ArrowRight, Check, InfoCircle, Plus, X } from "tabler-icons-react"
 import produce from "immer"
+import { useQuery } from "react-query"
 
 
 export function ControlStack({ children, ...props }) {
@@ -186,26 +187,30 @@ export function OAuthIntegration({ app, manager }) {
 
     const [loading, setLoading] = useState(true)
 
-    const isAuthorized = manager.isAppAuthorized(app)
+    const { data: isAuthorized, isFetching, refetch, isLoading } = useQuery(
+        ["app-integration", app?.id, manager.name],
+        () => manager.isAppAuthorized(app),
+    )
 
     const handleConnect = () => {
         setLoading(true)
         manager.authorizeAppInPopup(app.id)
     }
 
-    const handleDisconnect = () => {
+    const handleDisconnect = async () => {
         setLoading(true)
-        manager.revoke(app.id)
+        await manager.disconnect(app.id)
+        refetch()
     }
 
     // when app is loaded or authorization state changes, clear loading state
     useEffect(() => {
-        app && setLoading(false)
-    }, [typeof app, isAuthorized])
+        setLoading(false)
+    }, [isAuthorized])
 
     return (
         <Box pr="md">
-            {loading ?
+            {loading || isLoading ?
                 <Loader size="sm" />
                 :
                 isAuthorized ?

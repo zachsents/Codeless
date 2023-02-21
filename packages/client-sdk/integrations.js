@@ -1,13 +1,18 @@
-import { arrayRemove } from "firebase/firestore"
-import { revokeIntegration, updateApp } from "./app-actions.js"
+import { httpsCallable } from "firebase/functions"
+import { disconnectIntegration } from "./app-actions.js"
+import { functions } from "./firebase-init.js"
 import { functionUrl } from "./functions.js"
 
 
 class OAuthAuthManager {
 
-    constructor(name, { authorizeFunction } = {}) {
+    constructor(name, {
+        authorizeFunction,
+        checkAuthorizationFunction,
+    } = {}) {
         this.name = name
         this.authorizeFunction = authorizeFunction
+        this.checkAuthorizationFunction = checkAuthorizationFunction
     }
 
     authorizeAppInPopup(appId, additionalParams = {}) {
@@ -19,22 +24,28 @@ class OAuthAuthManager {
         window.open(`${functionUrl(this.authorizeFunction)}?${params.toString()}`)
     }
 
-    isAppAuthorized(app) {
-        return (app ?? false) &&
-            !!app?.integrations?.[this.name]?.refreshToken
+    async isAppAuthorized(app) {
+        if (!app)
+            return false
+
+        const { data } = await httpsCallable(functions, this.checkAuthorizationFunction)({ appId: app.id })
+        return data
     }
 
     oneClickAuth = this.authorizeAppInPopup
 
-    async revoke(appId) {
-        await revokeIntegration(appId, this.name)
+    async disconnect(appId) {
+        await disconnectIntegration(appId, this.name)
     }
 }
 
 class GoogleAuthManager extends OAuthAuthManager {
 
-    constructor(name, scopes) {
-        super(name, { authorizeFunction: "google-authorizeApp" })
+    constructor(scopes) {
+        super("google", { 
+            authorizeFunction: "google-authorizeApp",
+            checkAuthorizationFunction: "google-checkAuthorization",
+        })
         this.scopes = scopes
     }
 
@@ -44,34 +55,35 @@ class GoogleAuthManager extends OAuthAuthManager {
         })
     }
 
-    isAppAuthorized(app) {
-        return (app ?? false) &&
-            this.scopes.every(scope => app?.integrations?.Google?.scopes?.includes(scope))
-    }
+    async isAppAuthorized(app) {
+        if (!app)
+            return false
 
-    async revoke(appId) {
-        await updateApp(appId, {
-            "integrations.Google.scopes": arrayRemove(...this.scopes)
+        const { data } = await httpsCallable(functions, this.checkAuthorizationFunction)({ 
+            appId: app.id, 
+            requiredScopes: this.scopes 
         })
-
-        // TO DO: get a new token with the scope actually revoked. for now we're just 
-        // deleting the scope stored in the database
+        return data
     }
+
+    // TO DO: get a new token with the scope actually revoked. for now we're just 
+    // deleting the scope stored in the database
 }
 
 // Google Apps
 
-export const GmailAuthManager = new GoogleAuthManager("Gmail", [
+export const GmailAuthManager = new GoogleAuthManager([
     "https://www.googleapis.com/auth/gmail.modify",
 ])
 
-export const GoogleSheetsAuthManager = new GoogleAuthManager("GoogleSheets", [
+export const GoogleSheetsAuthManager = new GoogleAuthManager([
     "https://www.googleapis.com/auth/spreadsheets",
 ])
 
 
 // Other Apps
 
-export const AirTableAuthManager = new OAuthAuthManager("AirTable", { 
-    authorizeFunction: "airtable-authorizeApp" 
+export const AirTableAuthManager = new OAuthAuthManager("airtable", {
+    authorizeFunction: "airtable-authorizeApp",
+    checkAuthorizationFunction: "airtable-checkAuthorization",
 })
