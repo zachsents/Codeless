@@ -5,7 +5,7 @@ import { logger } from "./logger.js"
 /** @type {import("firebase-admin").firestore.Firestore} */
 const db = global.db
 
-const IntegrationAccountsCollection = db.collection("integrationAccounts")
+export const IntegrationAccountsCollection = db.collection("integrationAccounts")
 const AppIntegrationPath = (...parts) => ["integrations", ...parts].join(".")
 
 
@@ -29,6 +29,9 @@ export async function storeIntegrationAccount(integrationKey, integrationUserId,
 
     if (!integrationKey)
         throw new Error("Must provide integration key")
+
+    if(!integrationUserId)
+        throw new Error("Must include user ID")
 
     // set the data in the integrationAuth collection -- this will look a little different
     // for every integration

@@ -183,12 +183,12 @@ export function ListHandlesControl({
 }
 
 
-export function OAuthIntegration({ app, manager }) {
+export function OAuthIntegration({ id, app, manager, disconnectLabel }) {
 
     const [loading, setLoading] = useState(true)
 
     const { data: isAuthorized, isFetching, refetch, isLoading } = useQuery(
-        ["app-integration", app?.id, manager.name],
+        ["app-integration", app?.id, id],
         () => manager.isAppAuthorized(app),
     )
 
@@ -208,8 +208,18 @@ export function OAuthIntegration({ app, manager }) {
         setLoading(false)
     }, [isAuthorized])
 
+    const disconnectButton = <Button
+        onClick={handleDisconnect}
+        size="xs"
+        compact
+        variant="light"
+        color="gray"
+    >
+        Disconnect
+    </Button>
+
     return (
-        <Box pr="md">
+        <Center pr="md">
             {loading || isLoading ?
                 <Loader size="sm" />
                 :
@@ -217,15 +227,9 @@ export function OAuthIntegration({ app, manager }) {
                     <Group>
                         <Stack spacing="xs">
                             <Text color="green">Connected!</Text>
-                            <Button
-                                onClick={handleDisconnect}
-                                size="xs"
-                                compact
-                                variant="light"
-                                color="gray"
-                            >
-                                Disconnect
-                            </Button>
+                            {disconnectLabel ?
+                                <Tooltip label={disconnectLabel}>{disconnectButton}</Tooltip> :
+                                disconnectButton}
                         </Stack>
                         <ThemeIcon size="lg" color="green" radius="xl"><Check size={18} /></ThemeIcon>
                     </Group>
@@ -233,7 +237,7 @@ export function OAuthIntegration({ app, manager }) {
                     <Button onClick={handleConnect}>
                         Connect
                     </Button>}
-        </Box>
+        </Center>
     )
 }
 

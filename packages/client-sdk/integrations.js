@@ -46,7 +46,10 @@ class GoogleAuthManager extends OAuthAuthManager {
             authorizeFunction: "google-authorizeApp",
             checkAuthorizationFunction: "google-checkAuthorization",
         })
-        this.scopes = scopes
+        this.scopes = [
+            "https://www.googleapis.com/auth/userinfo.profile",
+            ...scopes,
+        ]
     }
 
     authorizeAppInPopup(appId) {
@@ -60,8 +63,8 @@ class GoogleAuthManager extends OAuthAuthManager {
             return false
 
         const { data } = await httpsCallable(functions, this.checkAuthorizationFunction)({ 
-            appId: app.id, 
-            requiredScopes: this.scopes 
+            appId: app.id,
+            requiredScopes: this.scopes,
         })
         return data
     }

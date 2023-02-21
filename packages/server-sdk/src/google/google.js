@@ -18,9 +18,10 @@ export async function getGoogleOAuthClient(appId = global.info.appId, {
     cache = true,
 } = {}) {
 
-    if(cache && oauthClient)
+    if (cache && oauthClient)
         return oauthClient
 
+    // set up OAuth2 client
     const detailsPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "./google_secret.json")
     const { client_id, client_secret, redirect_uris } = JSON.parse(await fs.readFile(detailsPath, "utf-8"))
 
@@ -30,7 +31,7 @@ export async function getGoogleOAuthClient(appId = global.info.appId, {
         redirect_uris[process.env.FUNCTIONS_EMULATOR ? 0 : 1]
     )
 
-    if(!appId)
+    if (!appId)
         return oauthClient
 
     // grab stored refresh token
@@ -40,7 +41,7 @@ export async function getGoogleOAuthClient(appId = global.info.appId, {
     })
 
     if (!refreshToken)
-        throw new Error("Google apps are not authorized")
+        throw new Error("Google apps are not authorized", { cause: "missing refresh token" })
 
     // authorize OAuth2 client with stored token
     oauthClient.setCredentials({

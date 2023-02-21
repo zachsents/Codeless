@@ -139,11 +139,11 @@ export function useAppIntegrations(app, integrations) {
     const intIds = []
     const queries = app && Object.keys(app.integrations ?? {}).flatMap(integrationKey => {
         return intList.filter(int => int.manager.name == integrationKey).map(int => {
-            intIds.push(int?.id)
+            intIds.push(int.id)
 
             return {
-                queryKey: ["app-integration", app?.id, integrationKey],
-                queryFn: () => int?.manager.isAppAuthorized(app),
+                queryKey: ["app-integration", app?.id, int.id],
+                queryFn: () => int.manager.isAppAuthorized(app),
             }
         })
     })

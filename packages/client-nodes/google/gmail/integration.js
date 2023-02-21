@@ -3,13 +3,20 @@ import { GmailAuthManager } from "@minus/client-sdk"
 import { OAuthIntegration } from "../../components"
 
 
+const id = "integration:Gmail"
+
 export default {
-    id: "integration:Gmail",
+    id,
     name: "Gmail",
     icon: TbBrandGmail,
     color: "red",
 
     manager: GmailAuthManager,
 
-    render: props => <OAuthIntegration manager={GmailAuthManager} {...props} />,
+    render: props => <OAuthIntegration
+        id={id}
+        manager={GmailAuthManager}
+        disconnectLabel="This will disconnect all Google apps."
+        {...props}
+    />,
 }

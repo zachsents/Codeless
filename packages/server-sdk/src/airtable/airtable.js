@@ -137,7 +137,7 @@ async function getFreshAccessToken(appId = global.info.appId) {
         }).catch(() => null)    // empty object as return will cause the next lines to delete bad tokens
 
         // there was an error - let's delete the integration account
-        if (newTokens == null) {
+        if (!newTokens) {
             logger.debug("Refresh token is bad. Deleting integration account")
             await removeIntegrationAccount({
                 app,

@@ -3,13 +3,15 @@ import { AirTableAuthManager } from "@minus/client-sdk"
 import { OAuthIntegration } from "../components"
 
 
+const id = "integration:AirTable"
+
 export default {
-    id: "integration:AirTable",
+    id,
     name: "AirTable",
     icon: BrandAirtable,
     color: "blue",
 
     manager: AirTableAuthManager,
 
-    render: props => <OAuthIntegration manager={AirTableAuthManager} {...props} />,
+    render: props => <OAuthIntegration id={id} manager={AirTableAuthManager} {...props} />,
 }

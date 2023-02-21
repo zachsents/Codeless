@@ -3,13 +3,20 @@ import { GoogleSheetsAuthManager } from "@minus/client-sdk"
 import { OAuthIntegration } from "../../components"
 
 
+const id = "integration:GoogleSheets"
+
 export default {
-    id: "integration:GoogleSheets",
+    id,
     name: "Google Sheets",
     icon: SiGooglesheets,
     color: "green",
 
     manager: GoogleSheetsAuthManager,
-    
-    render: props => <OAuthIntegration manager={GoogleSheetsAuthManager} {...props} />,
+
+    render: props => <OAuthIntegration
+        id={id}
+        manager={GoogleSheetsAuthManager}
+        disconnectLabel="This will disconnect all Google apps."
+        {...props}
+    />,
 }
