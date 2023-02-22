@@ -10,7 +10,7 @@ export const GmailIntegrationKey = "gmail"
 
 
 export async function getGmailAPI(appId = global.info.appId, {
-    cache = true,
+    cache = false,
 } = {}) {
     
     if(cache && gmailApi)

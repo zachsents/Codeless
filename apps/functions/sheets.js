@@ -2,7 +2,7 @@ import functions from "firebase-functions"
 import { sheets } from "@minus/server-sdk"
 
 
-export const getSpreadsheetDetails = functions.https.onCall(async (data, context) => {
+export const getSpreadsheetDetails = functions.https.onCall(async (data) => {
 
     const { appId, spreadsheetId } = data
 

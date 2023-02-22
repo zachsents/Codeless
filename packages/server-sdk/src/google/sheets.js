@@ -18,7 +18,7 @@ export const GoogleSheetsIntegrationKey = "sheets"
  * @return {Promise<ExtendedGoogleSheetsAPI>}
  */
 export async function getGoogleSheetsAPI(appId = global.info.appId, {
-    cache = true,
+    cache = false,
 } = {}) {
 
     if (cache && sheetsApi)

@@ -47,7 +47,8 @@ class GoogleAuthManager extends OAuthAuthManager {
             checkAuthorizationFunction: "google-checkAuthorization",
         })
         this.scopes = [
-            "https://www.googleapis.com/auth/userinfo.profile",
+            // "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
             ...scopes,
         ]
     }

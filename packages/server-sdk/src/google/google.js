@@ -15,7 +15,7 @@ export const GoogleIntegrationKey = "google"
  * @return {Promise<google.auth.OAuth2>} 
  */
 export async function getGoogleOAuthClient(appId = global.info.appId, {
-    cache = true,
+    cache = false,
 } = {}) {
 
     if (cache && oauthClient)
