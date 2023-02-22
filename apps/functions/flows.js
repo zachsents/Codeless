@@ -196,6 +196,9 @@ async function _validate(flowId) {
     try {
         const flow = await Flow.fromId(flowId)
 
+        if(!flow.published)
+            throw new Error("Flow is not enabled")
+
         // run validate routine for each node
         await Promise.all(
             flow.graph.nodes.map(
@@ -204,8 +207,6 @@ async function _validate(flowId) {
                 })
             )
         )
-
-
     }
     catch (error) {
         console.error(error)
