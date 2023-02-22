@@ -21,7 +21,7 @@ export default {
             ],
         }
     ],
-    
+
     requiredIntegrations: ["integration:GoogleSheets"],
 
     defaultState: {
@@ -113,7 +113,9 @@ export default {
                 </Control>
 
                 <Control>
-                    <ControlLabel info="The row of the table which contains the headers (column names) for the table.">
+                    <ControlLabel info={<Text>
+                        The row of the table which contains the headers (column names) for the table. <br /> <b>Headers are required.</b>
+                    </Text>}>
                         Header Row
                     </ControlLabel>
                     <Group spacing="xl">
@@ -121,13 +123,9 @@ export default {
                             value={state.headerRow}
                             onChange={val => setState({ headerRow: val })}
                             placeholder="1"
-                            radius="md"
                             w={140}
-                            formatter={value => value == 0 ? "No headers" : value}
+                            min={1}
                         />
-                        <Button size="xs" compact variant="subtle" onClick={() => setState({ headerRow: 0 })}>
-                            No Headers
-                        </Button>
                     </Group>
                 </Control>
 
@@ -139,8 +137,8 @@ export default {
                         value={state.startRow}
                         onChange={val => setState({ startRow: val })}
                         placeholder="2"
-                        radius="md"
                         w={140}
+                        min={(state.headerRow ?? 1) + 1}
                     />
                 </Control>
             </ControlStack>
