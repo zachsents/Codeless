@@ -1,6 +1,5 @@
-import { Select } from "@mantine/core"
+import { ControlStack, OtherFlowsControl } from "../../components"
 import { ArrowIteration } from "tabler-icons-react"
-import { useOtherFlows } from "../../hooks"
 
 
 export default {
@@ -12,20 +11,12 @@ export default {
     inputs: ["list"],
     outputs: [],
 
-    configuration: ({ state, setState, flowId }) => {
-
-        const setFlow = flow => setState({ flow })
-
-        const [otherFlows] = useOtherFlows(flowId, setFlow)
+    configuration: ({ state, setState, flowId, appId }) => {
 
         return (
-            <Select
-                label="Flow"
-                placeholder="Pick a flow"
-                data={otherFlows}
-                value={state.flow ?? null}
-                onChange={setFlow}
-            />
+            <ControlStack>
+                <OtherFlowsControl {...{ state, setState, flowId, appId }} />
+            </ControlStack>
         )
     }
 }

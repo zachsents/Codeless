@@ -257,11 +257,12 @@ export async function unpublishFlow(flowId) {
  * @export
  * @param {string} flowId
  */
-export function createOtherRunnableFlowsQuery(flowId) {
+export function createOtherRunnableFlowsQuery(flowId, appId) {
     return flowId && query(
         FlowsCollection(),
         where(documentId(), "!=", flowId),
-        where("trigger", "==", "basic:DefaultTrigger")
+        where("trigger", "==", "basic:DefaultTrigger"),
+        where("app", "==", appId)
     )
 }
 

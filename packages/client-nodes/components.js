@@ -1,8 +1,10 @@
 import { forwardRef, Fragment, useEffect, useState } from "react"
-import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip, Loader, ThemeIcon, Flex, Center } from "@mantine/core"
+import { ActionIcon, Box, Button, Grid, Group, Stack, Text, TextInput, Tooltip, Loader, ThemeIcon, Flex, Center, Select } from "@mantine/core"
 import { ArrowRight, Check, InfoCircle, Plus, X } from "tabler-icons-react"
 import produce from "immer"
 import { useQuery } from "react-query"
+
+import { useOtherFlows } from "./hooks"
 
 
 export function ControlStack({ children, ...props }) {
@@ -19,6 +21,7 @@ export function ControlLabel({ children, bold = false, info }) {
             <Text size="sm" weight={bold ? 500 : 400}>{children}</Text>
             {info &&
                 <Tooltip
+                    withinPortal
                     label={typeof info == "string" ?
                         <Text maw={300}>{info}</Text> : info}
                     position="left"
@@ -249,4 +252,27 @@ export function RequiresConfiguration({ children, dependencies = [], message = "
         <Center>
             <Text color="dimmed" size="xs">{message}</Text>
         </Center>
+}
+
+
+export function OtherFlowsControl({ state, setState, flowId, appId }) {
+
+    const setFlow = flow => setState({ flow })
+
+    const [otherFlows] = useOtherFlows(flowId, appId, setFlow)
+
+    return (
+        <Control>
+            <ControlLabel info="The flow that will be ran. The input to this node will be the output of the trigger node in that flow.">
+                Flow
+            </ControlLabel>
+            <Select
+                placeholder={otherFlows ? otherFlows.length ? "Pick a flow" : "No other flows" : "Loading flows"}
+                data={otherFlows ?? []}
+                value={state.flow ?? null}
+                onChange={setFlow}
+                rightSection={!otherFlows && <Loader size="xs" />}
+            />
+        </Control>
+    )
 }

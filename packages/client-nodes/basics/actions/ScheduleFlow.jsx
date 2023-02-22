@@ -1,6 +1,5 @@
+import { ControlStack, OtherFlowsControl } from "../../components"
 import { CalendarTime } from "tabler-icons-react"
-import { Select } from "@mantine/core"
-import { useOtherFlows } from "../../hooks"
 
 
 export default {
@@ -12,20 +11,12 @@ export default {
     inputs: ["payload", "$time"],
     outputs: [],
 
-    configuration: ({ state, setState, flowId }) => {
-
-        const setFlow = flow => setState({ flow })
-
-        const [otherFlows] = useOtherFlows(flowId, setFlow)
+    configuration: ({ state, setState, flowId, appId }) => {
 
         return (
-            <Select
-                label="Flow"
-                placeholder="Pick a flow"
-                data={otherFlows}
-                value={state.flow ?? null}
-                onChange={setFlow}
-            />
+            <ControlStack>
+                <OtherFlowsControl {...{ state, setState, flowId, appId }} />
+            </ControlStack>
         )
     }
 }

@@ -233,6 +233,6 @@ export function useOtherRunnableFlows(flowId) {
  * @export
  * @param {string} flowId
  */
-export function useOtherRunnableFlowsRealtime(flowId) {
-    return useRealtime(createOtherRunnableFlowsQuery(flowId))
+export function useOtherRunnableFlowsRealtime(flowId, appId) {
+    return useRealtime(createOtherRunnableFlowsQuery(flowId, appId))
 }

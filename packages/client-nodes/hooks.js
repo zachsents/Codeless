@@ -3,27 +3,27 @@ import { useDebouncedValue } from "@mantine/hooks"
 import { useOtherRunnableFlowsRealtime } from "@minus/client-sdk"
 
 
-export function useOtherFlows(flowId, setFlow) {
+export function useOtherFlows(flowId, appId, setFlow) {
 
     // grab schedulable flows that aren't this one
-    const [otherFlows] = useOtherRunnableFlowsRealtime(flowId)
+    const [otherFlows] = useOtherRunnableFlowsRealtime(flowId, appId)
 
     // transform to what Mantine Selects like
     const otherFlowsData = useMemo(
         () => otherFlows?.map(flow => ({
             value: flow.id,
             label: flow.name,
-        })) ?? [],
+        })),
         [otherFlows]
     )
 
     // if there's only one other flow, set it
     useEffect(() => {
-        if (otherFlowsData.length == 1)
+        if (otherFlowsData?.length == 1)
             setFlow(otherFlowsData[0].value)
     }, [otherFlowsData])
 
-    return [otherFlowsData]
+    return [otherFlowsData] 
 }
 
 
