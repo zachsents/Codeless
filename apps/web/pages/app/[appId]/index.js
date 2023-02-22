@@ -1,7 +1,8 @@
 import Link from "next/link"
-import { Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
+import { Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title, 
+    useMantineTheme } from "@mantine/core"
 import { TbArrowRight, TbTrendingUp } from "react-icons/tb"
-import { useAppDetailsRealtime, useAppIntegrations, useFlowCountForApp, usePlan } from "@minus/client-sdk"
+import { useAppDetailsRealtime, useAppIntegrations, useFlowCountForApp, usePlan, useUpdateApp } from "@minus/client-sdk"
 import { Integrations } from "@minus/client-nodes"
 
 import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
@@ -10,6 +11,7 @@ import GradientBox from "../../../components/GradientBox"
 import LoadingSkeleton from "../../../components/LoadingSkeleton"
 import PageTitle from "../../../components/PageTitle"
 import OurCard from "../../../components/cards/OurCard"
+import AppDescriptionEditor from "../../../components/AppDescriptionEditor"
 
 
 const MAX_SHOWN = 5
@@ -22,15 +24,16 @@ export default function AppOverview() {
     useMustBeSignedIn()
     const appId = useAppId()
     const [app] = useAppDetailsRealtime(appId)
+    const updateApp = useUpdateApp(appId)
     const appIntegrations = useAppIntegrations(app, Integrations)
     const { plan } = usePlan({ ref: app?.plan })
     const { flowCount } = useFlowCountForApp(app?.id)
     const flowInfoLoaded = flowCount != null && !!plan
 
-
     const integrations = Object.keys(appIntegrations).map(intId => Integrations[intId])
     const shown = integrations.slice(0, MAX_SHOWN)
     const overflow = integrations.length - MAX_SHOWN
+
 
     return (
         <AppDashboard>
@@ -39,10 +42,8 @@ export default function AppOverview() {
                     {app ?
                         <Group position="apart" sx={{ alignItems: "stretch" }}>
                             <Box>
-                                <PageTitle white mb={20}>{app.name}</PageTitle>
-                                <Text color="white" miw={300} max={500}>
-                                    {app.description}
-                                </Text>
+                                <PageTitle white mb={20}>{app?.name}</PageTitle>
+                                <AppDescriptionEditor description={app?.description} updateApp={updateApp} />
                             </Box>
                             <Box>
                                 {plan &&

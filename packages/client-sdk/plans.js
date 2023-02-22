@@ -1,4 +1,4 @@
-import { collection, doc, DocumentReference } from "firebase/firestore"
+import { collection, doc } from "firebase/firestore"
 import { firestore } from "./firebase-init.js"
 import { useQuery } from "react-query"
 import { getDocWithId } from "./firestore-util.js"
@@ -24,8 +24,8 @@ export function getPlanRef(name) {
  *
  * @export
  * @param {object} options
- * @param {string?} options.name
- * @param {DocumentReference?} options.ref
+ * @param {string?} [options.name]
+ * @param {import("firebase/firestore").DocumentReference} [options.ref]
  */
 export async function getPlan({ name, ref } = {}) {
     const planRef = ref ?? getPlanRef(name)
@@ -39,7 +39,7 @@ export async function getPlan({ name, ref } = {}) {
  * @export
  * @param {object} options
  * @param {string?} options.name
- * @param {DocumentReference?} options.ref
+ * @param {import("firebase/firestore").DocumentReference?} options.ref
  */
 export function usePlan({ name, ref } = {}) {
 

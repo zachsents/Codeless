@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { format as timeAgo } from "timeago.js"
-import { ActionIcon, Box, ColorSwatch, Grid, Group, Indicator, Menu, Stack, Text, useMantineTheme } from "@mantine/core"
+import { ActionIcon, Box, ColorSwatch, Grid, Group, Indicator, Menu, Stack, Text, useMantineTheme, Tooltip, Center } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
 import * as TbIcons from "react-icons/tb"
 import { useFlowCountForApp, usePlan, useUpdateApp } from "@minus/client-sdk"
@@ -11,7 +11,8 @@ import { createLinearGradient } from "../../modules/colors"
 export default function AppCard({ app: { id, name, lastEdited, plan: planRef, color = "blue" } }) {
 
     const { flowCount } = useFlowCountForApp(id)
-    const { plan } = usePlan(planRef)
+
+    const { plan } = usePlan({ ref: planRef })
     const updateApp = useUpdateApp(id)
 
     const handleColorChange = newColor => {
@@ -45,18 +46,21 @@ export default function AppCard({ app: { id, name, lastEdited, plan: planRef, co
                 color={plan?.color}
                 size={30}
                 withBorder
-                label={PlanIcon && <PlanIcon />}
+                offset={5}
+                label={plan && <Tooltip withinPortal label={plan.name + " Plan"}>
+                    <Center px={4} py="xs">
+                        {PlanIcon ? <PlanIcon size={16} /> : <Text weight={600}>{plan.name.substring(0, 1).toUpperCase()}</Text>}
+                    </Center>
+                </Tooltip>}
+
             >
                 <Link href={`/app/${id}`}>
                     <Box p="lg" sx={cardTitleContainerStyle}>
-                        <Group position="apart">
-                            <Text size={24} weight={500} color="white">{name}</Text>
-                            <Box>
-                                <Text size="sm" weight={500} align="right" color="white">
-                                    {flowCount} flow{flowCount == 1 ? "" : "s"}
-                                </Text>
-                                <Text size="sm" weight={500} align="right" color="white">3 integrations</Text>
-                            </Box>
+                        <Group position="apart" noWrap>
+                            <Text size={name.length > 12 ? 20 : 24} weight={500} color="white">{name}</Text>
+                            <Text size="sm" weight={500} align="right" color="white" sx={{ whiteSpace: "nowrap" }}>
+                                {flowCount} flow{flowCount == 1 ? "" : "s"}
+                            </Text>
                         </Group>
                     </Box>
                 </Link>
