@@ -2,6 +2,7 @@ import { addDoc, collection, deleteDoc, deleteField, doc, query, serverTimestamp
 import { firestore } from "./firebase-init.js"
 import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
 import { getPlanRef } from "./plans.js"
+import {deleteFlow, getFlowsForApp} from "./flow-actions.js"
 
 
 export const AppsCollectionPath = "apps"
@@ -112,9 +113,14 @@ export function disconnectIntegration(appId, integrationName) {
  * @export
  * @param {string} appId
  */
-export function deleteApp(appId) {
+export async function deleteApp(appId) {
     assertAppId(appId)
-    return deleteDoc(getAppRef(appId))
+    const flows = await getFlowsForApp(appId)
+
+    return Promise.all([
+        ...flows.map(flow => deleteFlow(flow.id)),
+        deleteDoc(getAppRef(appId))
+    ])
 }
 
 

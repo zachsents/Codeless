@@ -1,4 +1,4 @@
-import { Button, Group, Stack, TextInput } from "@mantine/core"
+import { Button, Group, Stack, Text, TextInput } from "@mantine/core"
 import { useDeleteApp } from "@minus/client-sdk"
 import { useState } from "react"
 import { TbTrash } from "react-icons/tb"
@@ -26,6 +26,9 @@ export default function DeleteAppModal({ context, id, innerProps: { appId } }) {
     return (
         <form onSubmit={handleSubmit}>
             <Stack spacing="xl" mt="xl">
+                <Text color="dimmed">
+                    This will delete all of its flows, too.
+                </Text>
                 <TextInput
                     value={confirmation}
                     onChange={event => setConfirmation(event.currentTarget.value)}
