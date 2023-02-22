@@ -23,9 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# editor files
-.vscode
-
 # local env files
 .env.local
 .env.development.local
@@ -34,8 +31,6 @@ yarn-error.log*
 
 # turbo
 .turbo
-
-.vscode
 
 # build artifacts
 .firebase
