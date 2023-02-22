@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "nameless-948a8"
-  }
+    "default": "nameless-948a8",
+    "dev": "minus-dev",
+    "prod": "nameless-948a8"
+  },
+  "targets": {},
+  "etags": {}
 }
