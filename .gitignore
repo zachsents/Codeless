@@ -39,3 +39,5 @@ yarn-error.log*
 # secret configs
 *secret.json
 *secret.local.json
+
+desktop.ini
