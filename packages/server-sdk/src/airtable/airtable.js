@@ -212,13 +212,14 @@ export async function getWhoAmI(accessToken) {
 
 
 async function getAuthDetails() {
-    const detailsPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "./airtable_secret.json")
 
-    const { production, development, ...authDetails } = JSON.parse(await fs.readFile(detailsPath, "utf-8"))
-    return {
-        ...authDetails,
-        ...(process.env.FUNCTIONS_EMULATOR ? development : production)
-    }
+    const detailsPath = path.join(path.dirname(
+        fileURLToPath(import.meta.url)),
+        // use different file for local vs. live
+        `./airtable_secret${process.env.FUNCTIONS_EMULATOR ? ".local" : ""}.json`
+    )
+
+    return JSON.parse(await fs.readFile(detailsPath, "utf-8"))
 }
 
 

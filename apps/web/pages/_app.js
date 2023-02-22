@@ -13,7 +13,7 @@ import ScheduleFlowModal from "../components/modals/ScheduleFlowModal"
 import NodePalette from "../components/flow-editor/NodePalette"
 
 import { initializeFirebase } from "@minus/client-sdk"
-initializeFirebase(process.env.NEXT_PUBLIC_FIREBASE_API_KEY)
+initializeFirebase()
 
 
 const queryClient = new QueryClient()

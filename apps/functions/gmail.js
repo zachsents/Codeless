@@ -192,7 +192,7 @@ export const refreshWatch = functions.https.onCall(async (data) => {
         userId: "me",
         labelIds: ["INBOX"],
         labelFilterAction: "include",
-        topicName: "projects/nameless-948a8/topics/gmail",
+        topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/gmail`,
     })
 
     console.log(`[App-${data.appId}] Refreshed Gmail watch.`)

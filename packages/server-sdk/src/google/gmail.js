@@ -30,7 +30,7 @@ export async function watchInbox(gmail, { flow }) {
         userId: "me",
         labelIds: ["INBOX"],
         labelFilterAction: "include",
-        topicName: "projects/nameless-948a8/topics/gmail",
+        topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/gmail`,
     })
 
     // get email address for user

@@ -40,3 +40,7 @@ yarn-error.log*
 # build artifacts
 .firebase
 .firebase-local
+
+# secret configs
+*secret.json
+*secret.local.json

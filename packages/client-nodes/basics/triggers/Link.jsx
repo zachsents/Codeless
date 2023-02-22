@@ -14,10 +14,9 @@ export default {
     deletable: false,
     hideInBrowser: true,
 
-    deploy: ({ appId, flowId }) => {
+    deploy: ({ flowId }) => {
 
-        // const deploymentUrl = `http://localhost:5001/nameless-948a8/us-central1/runWithUrl/${appId}/${flowId}`
-        const deploymentUrl = `WORK IN PROGRESS`
+        const deploymentUrl = `${process.env.NEXT_PUBLIC_FUNCTIONS_BASE_URL}/flow-runFromUrl?flow_id=${flowId}`
     
         return (
             <Stack>

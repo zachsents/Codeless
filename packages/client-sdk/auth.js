@@ -29,7 +29,7 @@ export async function signInWithGoogle(scopes = []) {
 
 export async function sendEmailSignInLink(email) {
     const actionCodeSettings = {
-        url: `${process.env.NEXT_PUBLIC_APP_HOST}/finishEmailSignIn`,
+        url: `${window.location.origin}/finishEmailSignIn`,
         handleCodeInApp: true,
     }
 
