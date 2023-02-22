@@ -5,6 +5,9 @@ import { RunStatus } from "./flows.js"
 import { gmail, logger } from "@minus/server-sdk"
 
 
+const EXCLUDED_LABELS = ["DRAFT", "SENT", "TRASH", "SPAM"]
+
+
 export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message) => {
 
     logger.setPrefix("Gmail")
@@ -92,8 +95,10 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
             ?.filter(hist => hist.id < Math.max(startHistoryId, newHistoryId))
             .map(
                 hist => hist.messagesAdded
-                    // exclude drafts & sent mail
-                    ?.filter(({ message }) => !message.labelIds?.includes("DRAFT") && !message.labelIds?.includes("SENT"))
+                    // exclude drafts, sent mail, trash, spam, etc.
+                    ?.filter(({ message }) =>
+                        !message.labelIds?.some(label => EXCLUDED_LABELS.includes(label))
+                    )
                     .map(({ message }) => message.id) ?? []
             )
             .flat() ?? []
