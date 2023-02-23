@@ -1,12 +1,13 @@
 import { useReactFlow } from "reactflow"
 import { motion } from "framer-motion"
 import {
-    Card, Stack, Group, Tooltip, ActionIcon, ThemeIcon, Title, Badge, Accordion
+    Card, Stack, Group, Tooltip, ActionIcon, ThemeIcon, Title, Badge, Accordion, Button, Flex
 } from "@mantine/core"
-import { TbChevronLeft, TbChevronRight, TbX } from "react-icons/tb"
+import { TbChevronLeft, TbChevronRight, TbExternalLink, TbX } from "react-icons/tb"
 
 import { useConfigStore } from "./config-store"
 import { useAppContext } from "../../../modules/context"
+import { useAppId } from "../../../modules/hooks"
 import { deselectNode, getNodeIntegrationsStatus, getNodeType } from "../../../modules/graph-util"
 import ProblemsSection from "./ProblemsSection"
 import OutputsSection from "./OutputsSection"
@@ -18,6 +19,7 @@ export default function NodeConfig({ node }) {
 
     const rf = useReactFlow()
 
+    const appId = useAppId()
     const { integrations: appIntegrations } = useAppContext()
 
     const nodeType = getNodeType(node)
@@ -28,6 +30,7 @@ export default function NodeConfig({ node }) {
     const accordionValue = useConfigStore(s => s[node.id]?.accordionValue)
     const { togglePanelMaximized, setAccordionValue } = useConfigStore(s => s.actions)
 
+    const nodeIntegrations = getNodeIntegrationsStatus(nodeType, appIntegrations)
 
     return (
         <Card
@@ -79,9 +82,27 @@ export default function NodeConfig({ node }) {
                 </Group>
 
                 {/* Integration Alerts */}
-                {getNodeIntegrationsStatus(nodeType, appIntegrations).map(
-                    int => <IntegrationAlert integration={int} key={int.id} />
-                )}
+                <Stack spacing="sm">
+                    {nodeIntegrations.map(
+                        int => <IntegrationAlert integration={int} key={int.id} />
+                    )}
+
+                    {nodeIntegrations.length > 0 &&
+                        <Flex justify="flex-end">
+                            <Button
+                                component="a"
+                                href={`/app/${appId}/integrations`}
+                                target="_blank"
+                                rightIcon={<TbExternalLink />}
+                                size="xs"
+                                compact
+                                variant="light"
+                                color="gray"
+                            >
+                                Open Integrations
+                            </Button>
+                        </Flex>}
+                </Stack>
 
                 {/* Body */}
                 <Accordion
