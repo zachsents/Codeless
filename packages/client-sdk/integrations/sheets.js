@@ -15,7 +15,7 @@ import { functions } from "../firebase-init.js"
 export async function getSpreadsheetDetails(appId, spreadsheetId) {
 
     if (!appId || !spreadsheetId)
-        return console.warn("Invalid arguments")
+        return console.warn("Invalid arguments or not authenticated")
 
     const { data } = await httpsCallable(functions, "sheets-getSpreadsheetDetails")({ appId, spreadsheetId })
     return data

@@ -16,7 +16,7 @@ import { functions } from "../firebase-init.js"
 export async function getTableNameFromId(appId, baseId, tableId) {
 
     if (!appId || !baseId || !tableId)
-        return console.warn("Invalid arguments")
+        return console.warn("Invalid arguments or not authenticated")
 
     const { data } = await httpsCallable(functions, "airtable-getTableNameFromId")({ appId, baseId, tableId })
     return data

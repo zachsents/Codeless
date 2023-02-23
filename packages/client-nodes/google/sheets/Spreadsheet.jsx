@@ -40,7 +40,7 @@ export default {
     renderNode: ({ state, setState, appId, integrationsSatisfied }) => {
 
         // fetch spreadsheet details
-        const { details, isLoading, isError } = useSpreadsheetDetails(appId, state.spreadsheetId)
+        const { details, isLoading, isError } = useSpreadsheetDetails(integrationsSatisfied && appId, state.spreadsheetId)
 
         // sync details into node state
         useEffect(() => {
@@ -80,7 +80,7 @@ export default {
         )
     },
 
-    configuration: ({ state, setState, appIntegrations }) => {
+    configuration: ({ state, setState }) => {
 
         return (
             <ControlStack>

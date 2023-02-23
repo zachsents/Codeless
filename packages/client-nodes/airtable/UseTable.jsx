@@ -32,7 +32,7 @@ export default {
     renderNode: ({ state, setState, appId, integrationsSatisfied }) => {
 
         // fetch table name
-        const { tableName, isLoading, isError } = useTableNameFromId(appId, state.baseId, state.tableId)
+        const { tableName, isLoading, isError } = useTableNameFromId(integrationsSatisfied && appId, state.baseId, state.tableId)
 
         // sync table name with node state
         useEffect(() => {

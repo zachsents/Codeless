@@ -71,9 +71,10 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
     useNodeSnapping(id, xPos, yPos)
 
     // integrations
-    const integrationsSatisfied = getNodeIntegrationsStatus(nodeType, appIntegrations).every(int => int.status.data || int.status.isLoading)
+    const nodeIntegrations = getNodeIntegrationsStatus(nodeType, appIntegrations)
+    const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
+    const integrationsLoading = nodeIntegrations.some(int => int.status.isLoading)
 
-    
     return (
         <motion.div
             initial={{ outline: "none" }}
@@ -148,7 +149,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
 
             {/* Error Icon */}
             <AnimatePresence>
-                {(latestRun?.errors[id]?.length > 0 || !integrationsSatisfied) &&
+                {(latestRun?.errors[id]?.length > 0 || (!integrationsSatisfied && !integrationsLoading)) &&
                     <ErrorIcon />}
             </AnimatePresence>
 
