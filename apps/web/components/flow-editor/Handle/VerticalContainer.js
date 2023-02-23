@@ -13,7 +13,7 @@ const VerticalContainer = forwardRef(({ children, position, ...props }, ref) => 
             <Stack
                 justify="space-evenly"
                 align="center"
-                spacing={0}
+                spacing="xs"
                 ref={ref}
             >
                 {children}
