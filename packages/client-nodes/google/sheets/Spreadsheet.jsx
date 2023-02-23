@@ -80,7 +80,7 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: ({ state, setState, appIntegrations }) => {
 
         return (
             <ControlStack>

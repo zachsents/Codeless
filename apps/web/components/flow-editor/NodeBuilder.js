@@ -9,8 +9,9 @@ import { useDebouncedCustomState } from "../../modules/hooks"
 import { useAppContext, useFlowContext } from "../../modules/context"
 import { Nodes } from "../../modules/nodes"
 import Node from "./Node"
-import ActiveDetails from "./ActiveDetails"
 import DataEdge from "./DataEdge"
+import Toolbar from "./Toolbar"
+import ConfigPanel from "./config-panel/ConfigPanel"
 
 import 'reactflow/dist/style.css'
 
@@ -63,7 +64,8 @@ export default function NodeBuilder() {
                     backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
                 }}
             />
-            <ActiveDetails />
+            <Toolbar />
+            <ConfigPanel />
             <ChangeWatcher onChange={setGraph} />
         </ReactFlow>
         :
