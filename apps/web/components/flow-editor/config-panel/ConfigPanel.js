@@ -29,8 +29,9 @@ export default function ConfigPanel() {
                 initial={{ x: "120%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "120%" }}
-                transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+                transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                 style={configContainerStyle}
+                key={selectedNode?.id ?? "none"}
             >
                 <ScrollArea h="100%">
                     <Flex py="lg" pr="lg" direction="column" align="flex-end" justify="flex-start">
