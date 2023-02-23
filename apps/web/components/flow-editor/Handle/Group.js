@@ -20,11 +20,10 @@ const Group = memo(forwardRef(({
     const handleElements = handles?.map(handle => {
 
         // handle can either be just a name or an object
-        const { name, label, list, suggested } = typeof handle === "string" ? {
+        const { name, label, list } = typeof handle === "string" ? {
             name: handle,
             label: null,
             list: false,
-            suggested: null,
         } : handle
 
         // if it's a list handle, get current number of handles
@@ -41,7 +40,6 @@ const Group = memo(forwardRef(({
                 label={label}
                 position={position ?? inferredPosition}
                 direction={direction}
-                suggested={suggested}
                 // spread additional props to handle -- can be object or function
                 {...(typeof handleProps == "function" ? handleProps(handleId) : handleProps)}
                 key={handleId}

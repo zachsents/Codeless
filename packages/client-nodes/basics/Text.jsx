@@ -9,15 +9,7 @@ export default {
     badge: "Text",
 
     inputs: [],
-    outputs: [
-        {
-            name: "$",
-            suggested: [
-                { node: "basic:SendEmail", handle: "body" },
-                "openai:AskGPT3",
-            ],
-        }
-    ],
+    outputs: ["$"],
 
     defaultState: {
         $: "",

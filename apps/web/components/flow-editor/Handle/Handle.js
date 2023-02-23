@@ -1,15 +1,15 @@
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Handle as RFHandle } from "reactflow"
 import { Box, useMantineTheme, Text, Stack } from "@mantine/core"
-import { motion } from "framer-motion"
+import { useHover } from "@mantine/hooks"
+import { AnimatePresence, motion } from "framer-motion"
 
-import { Nodes } from "../../../modules/nodes"
 import { HandleDirection } from "."
 import Suggestion from "./Suggestion"
 
 
-export default function Handle({ id, name, label, direction, position, suggested, onAddSuggested,
-    connected, align, showLabel = false }) {
+export default function Handle({ id, name, label, direction, position, suggestions, onAddSuggested,
+    connected, align, nodeHovered = false, onHover }) {
 
     const theme = useMantineTheme()
 
@@ -25,79 +25,102 @@ export default function Handle({ id, name, label, direction, position, suggested
         align.offsetTop + align.offsetHeight / 2 - wrapperRef.current?.offsetHeight / 2
     )
 
-    // animation variants
-    const handleAnimVariants = {
-        hovered: { scale: 2.5 },
-        unconnected: { scale: 1.3 },
-    }
+    // entire container hover -- pass state up as well
+    const { hovered, ref: hoverRef } = useHover()
+    useEffect(() => {
+        onHover?.(hovered)
+    }, [hovered])
 
     return (
-        <motion.div
-            animate={isUnconnectedInput ? "unconnected" : undefined}
-            whileHover="hovered"
-            style={handleWrapperStyle(alignHeight)}
-            ref={wrapperRef}
-        >
-            <motion.div variants={handleAnimVariants} transition={{ type: "spring", duration: 0.15 }}>
-                <RFHandle
-                    id={id}
-                    type={direction}
-                    position={position}
-                    style={{
-                        ...handleStyle,
-                        backgroundColor: isUnconnectedInput ?
-                            theme.colors.red[8] :
-                            theme.colors.gray[5],
-                    }}
-                />
+        <Box sx={containerStyle(alignHeight)} ref={hoverRef}>
+
+            <motion.div
+                animate={isUnconnectedInput ? "unconnected" : undefined}
+                whileHover="hovered"
+                style={handleWrapperStyle}
+                ref={wrapperRef}
+            >
+                <motion.div variants={handleAnimVariants} transition={{ type: "spring", duration: 0.15 }}>
+                    <RFHandle
+                        id={id}
+                        type={direction}
+                        position={position}
+                        style={{
+                            ...handleStyle,
+                            backgroundColor: isUnconnectedInput ?
+                                theme.colors.red[8] :
+                                theme.colors.gray[5],
+                        }}
+                    />
+                </motion.div>
             </motion.div>
-            {showLabel && (tooltipLabel || suggested) &&
-                <Box sx={tooltipWrapperStyle(position)}>
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.2 }}>
-                        <Stack spacing={5} align="start" py="sm" ml={-15} pl={15}>
-                            {tooltipLabel &&
-                                <Text sx={tooltipStyle(false)}>{tooltipLabel}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
 
-                            {suggested && <>
-                                <Text size={8} color="dimmed" mt={3} mb={-2}>Suggested Nodes</Text>
+            <AnimatePresence>
+                {(nodeHovered || hovered) && (tooltipLabel || suggestions) &&
+                    <Box sx={tooltipWrapperStyle(position)}>
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0, opacity: 0, transition: { duration: 0.1 } }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <Stack spacing={5} align={position == "left" ? "end" : "start"} p={tooltipPadding} >
 
-                                {suggested?.map(
-                                    (suggestion, i) => {
-                                        // suggestion can either be just a node type ID or an object
+                                {tooltipLabel &&
+                                    <Text sx={tooltipStyle(false)}>{tooltipLabel}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
 
-                                        const { node, handle } = typeof suggestion === "string" ? {
-                                            node: suggestion,
-                                            handle: Nodes[suggestion]?.inputs?.[0]?.name ?? Nodes[suggestion]?.inputs?.[0],
-                                        } : suggestion
+                                {suggestions &&
+                                    <Text size={8} color="dimmed" mt={3} mb={-2} sx={{ whiteSpace: "nowrap" }}>
+                                        {hovered ?
+                                            "Suggested Nodes:" :
+                                            `${suggestions.length} Suggested Node${suggestions.length == 1 ? "" : "s"}`}
+                                    </Text>}
 
-                                        return <Suggestion
-                                            typeId={node}
-                                            onClick={() => onAddSuggested?.(node, handle)}
-                                            index={i}
-                                            key={i}
-                                        />
-                                    }
+                                {hovered && suggestions?.slice(0, 3).map((suggestion, i) =>
+                                    <Suggestion
+                                        typeId={suggestion.node}
+                                        onClick={() => onAddSuggested?.(suggestion.node, suggestion.handle, direction, hoverRef.current?.offsetTop)}
+                                        index={i}
+                                        key={i}
+                                    />
                                 )}
-                            </>}
-                        </Stack>
-                    </motion.div>
-                </Box>}
-        </motion.div>
+                            </Stack>
+                        </motion.div>
+                    </Box>}
+            </AnimatePresence>
+
+        </Box>
     )
 }
 
 
-const handleSize = 8
 
 
-const handleWrapperStyle = align => ({
-    borderRadius: "100%",
-    padding: 7,
+/* Container */
+
+const containerStyle = align => ({
     position: align ? "absolute" : "relative",
     ...(align && {
         top: align,
     }),
 })
+
+
+/* Handle */
+
+const handleSize = 8
+
+const handleWrapperStyle = {
+    padding: 7,
+    borderRadius: "50%",
+    position: "relative",
+    zIndex: 1,
+}
+
+const handleAnimVariants = {
+    hovered: { scale: 2.5 },
+    unconnected: { scale: 1.3 },
+}
 
 const handleStyle = ({
     position: "static",
@@ -108,12 +131,22 @@ const handleStyle = ({
     border: "none",
 })
 
-const tooltipWrapperStyle = position => theme => ({
-    position: "absolute",
-    top: "50%",
-    [position]: 0,
-    transform: `translate(${position == "left" ? "-" : ""}100%, -${theme.spacing.sm + 10}px)`,
-})
+
+/* Tooltip */
+
+const tooltipPadding = "md"
+
+const tooltipWrapperStyle = position => theme => {
+    const xTransform = `calc(${position == "left" ? "-100%" : "100%"
+        } ${position == "left" ? "+" : "-"} ${theme.spacing[tooltipPadding]}px)`
+
+    return {
+        position: "absolute",
+        top: "50%",
+        [position]: 0,
+        transform: `translate(${xTransform}, -${theme.spacing[tooltipPadding] + 10}px)`,
+    }
+}
 
 const tooltipStyle = (button = false) => theme => ({
     fontSize: 10,
@@ -127,6 +160,7 @@ const tooltipStyle = (button = false) => theme => ({
         backgroundColor: theme.colors.dark[5],
     } : {},
 })
+
 
 
 function formatName(name) {

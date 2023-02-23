@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useQuery } from "react-query"
-import { createFlow, createFlowsForAppQuery, createOtherRunnableFlowsQuery, deleteFlow, getFlow, getFlowCountForApp, getFlowGraph, getFlowGraphRef, getFlowRef, getFlowsForApp, getOtherRunnableFlows, publishFlow, renameFlow, unpublishFlow, updateFlowGraph, updateFlowLastEdited } from "./flow-actions.js"
+import { createFlow, createFlowsForAppQuery, createOtherRunnableFlowsQuery, deleteFlow, getFlow, getFlowCountForApp, getFlowGraph, getFlowGraphRef, getFlowRef, getFlowsForApp, getNodeSuggestions, getOtherRunnableFlows, publishFlow, renameFlow, unpublishFlow, updateFlowGraph, updateFlowLastEdited } from "./flow-actions.js"
 import { useRealtime } from "./firestore-util.js"
 import { useCallbackWithRequirements } from "./util.js"
 
@@ -235,4 +235,20 @@ export function useOtherRunnableFlows(flowId) {
  */
 export function useOtherRunnableFlowsRealtime(flowId, appId) {
     return useRealtime(createOtherRunnableFlowsQuery(flowId, appId))
+}
+
+
+/**
+ * Hook that gives suggestions for node handles.
+ *
+ * @export
+ * @param {string} nodeType
+ */
+export function useNodeSuggestions(nodeType) {
+    const { data: suggestions, ...result } = useQuery(
+        ["node-suggestions", nodeType],
+        () => getNodeSuggestions(nodeType)
+    )
+
+    return { suggestions, ...result }
 }

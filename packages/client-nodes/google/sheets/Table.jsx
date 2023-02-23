@@ -12,15 +12,7 @@ export default {
     badge: "Google Sheets",
 
     inputs: ["$sheet"],
-    outputs: [
-        {
-            name: "table",
-            suggested: [
-                { node: "tables:AddRow", handle: "$table" },
-                { node: "tables:FindRowsByField", handle: "$table" },
-            ],
-        }
-    ],
+    outputs: ["table"],
 
     requiredIntegrations: ["integration:GoogleSheets"],
 

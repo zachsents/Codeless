@@ -22,10 +22,6 @@ export default {
         {
             name: "_sheetRef",
             label: "Sheet",
-            suggested: [
-                "googlesheets:Table",
-                "googlesheets:Range",
-            ],
         }
     ],
 

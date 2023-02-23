@@ -1,13 +1,16 @@
-import { useEffect } from "react"
+import { useEffect, useCallback } from "react"
 import { useKeyPress, useReactFlow } from "reactflow"
 import { Card, Group, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
-import { useHover } from "@mantine/hooks"
+import { useHover, useSetState } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 
-import { createEdge, createNode, deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType, selectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping } from "../../modules/graph-util"
+import { useNodeSuggestions } from "@minus/client-sdk"
+import {
+    createEdge, createNode, deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType,
+    selectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping
+} from "../../modules/graph-util"
 import { useAppContext, useFlowContext } from "../../modules/context"
-import { useCallback } from "react"
 import Handle, { HandleDirection } from "./Handle"
 
 
@@ -26,6 +29,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
 
     // hover for showing handle labels
     const { hovered, ref: hoverRef } = useHover()
+    const [handlesHovered, setHandlesHovered] = useSetState({})
 
     // alt-dragging for duplication -- TO DO: implement this
     const duplicating = useKeyPress("Alt") && hovered
@@ -40,16 +44,23 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
         dragging && deselectNode(rf, id)
     }, [dragging])
 
-    // callback for adding neighbor node
-    const addNeighborNode = useCallback((targetType, targetHandle, sourceHandle) => {
+    // suggestions
+    const { suggestions } = useNodeSuggestions(type)
 
-        const { position: { x, y }, width } = rf.getNode(id)
+    // callback for adding neighbor node
+    const addNeighborNode = useCallback((sourceHandle, targetType, targetHandle, direction, topOffset) => {
+
+        const { position: { x, y }, width, height } = rf.getNode(id)
+        const xOffset = 150
 
         const newNode = createNode(targetType, {
-            x: x + width + 150,
-            y: y,
+            x: direction == HandleDirection.Input ? x - xOffset - 200 : x + width + xOffset,
+            y: y + 2 * (topOffset + 12 - height / 2),
         })
-        const newEdge = createEdge(id, sourceHandle, newNode.id, targetHandle)
+        
+        const newEdge = direction == HandleDirection.Input ?
+            createEdge(newNode.id, targetHandle, id, sourceHandle) :
+            createEdge(id, sourceHandle, newNode.id, targetHandle)
 
         rf.addNodes(newNode)
         rf.addEdges(newEdge)
@@ -60,10 +71,12 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
         includeContainer: true,
         queryListHandle: name => data?.listHandles?.[name] ?? 0,
         handleProps: handleId => ({
-            showLabel: hovered,
+            nodeHovered: hovered && !Object.values(handlesHovered).some(x => x),
             connected: displayProps.connections[handleId],
             align: handleAlignments[handleId],
-            onAddSuggested: (targetType, targetHandle) => addNeighborNode(targetType, targetHandle, handleId),
+            suggestions: suggestions?.[handleId],
+            onAddSuggested: (...args) => addNeighborNode(handleId, ...args),
+            onHover: handleHovered => setHandlesHovered({ [handleId]: handleHovered })
         }),
     }
 
@@ -195,14 +208,14 @@ function ErrorIcon() {
         >
             <motion.div initial={{ scale: 0, rotate: -135 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -135 }} transition={{ duration: 0.1 }}>
                 {/* <Tooltip withArrow label={<Text size="xs">There were errors on the last run</Text>}> */}
-                    <ActionIcon
-                        size="xs"
-                        radius="sm"
-                        variant="filled"
-                        color="red.7"
-                    >
-                        <TbExclamationMark size={12} />
-                    </ActionIcon>
+                <ActionIcon
+                    size="xs"
+                    radius="sm"
+                    variant="filled"
+                    color="red.7"
+                >
+                    <TbExclamationMark size={12} />
+                </ActionIcon>
                 {/* </Tooltip> */}
             </motion.div>
         </Box>

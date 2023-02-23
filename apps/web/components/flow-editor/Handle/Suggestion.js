@@ -33,9 +33,9 @@ const suggestionAnimVariants = index => ({
         y: 0,
         transition: {
             type: "spring",
-            spring: 0.5,
-            duration: 0.2,
-            delay: index * 0.05 + 0.1,
+            bounce: 0.4,
+            duration: 0.4,
+            delay: index * 0.05,
         },
     },
 })

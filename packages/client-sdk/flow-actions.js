@@ -288,21 +288,26 @@ export function getOtherRunnableFlows(flowId) {
  * @param {string} nodeType
  * @param {string} handle
  */
-export async function getNodeSuggestions(nodeType, handle) {
-    if (!nodeType || !handle)
-        return []
+export async function getNodeSuggestions(nodeType) {
+    if (!nodeType)
+        return {}
 
     const nodeTypeDoc = await getDoc(doc(firestore, `edgeIndex/${nodeType}`))
+    const nodeTypeData = nodeTypeDoc.data()
 
-    return Object.entries(nodeTypeDoc.data()[handle]).map(
-        ([outboundNodeType, outboundHandles]) => Object.entries(outboundHandles).map(
-            ([outboundHandle, data]) => ({
-                node: outboundNodeType,
-                handle: outboundHandle,
-                score: data.timesSuccessful,
-            })
-        )
-    ).flat().sort((a, b) => b.score - a.score)
+    nodeTypeData && Object.keys(nodeTypeData).forEach(handle => {
+        nodeTypeData[handle] = Object.entries(nodeTypeData[handle]).flatMap(
+            ([outboundNodeType, outboundHandles]) => Object.entries(outboundHandles).map(
+                ([outboundHandle, data]) => ({
+                    node: outboundNodeType,
+                    handle: outboundHandle,
+                    score: Math.sqrt(data.timesSuccessful),
+                })
+            )
+        ).sort((a, b) => b.score - a.score)
+    })
+
+    return nodeTypeData ?? {}
 }
 
 
