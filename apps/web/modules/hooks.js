@@ -1,4 +1,4 @@
-import {  useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useRouter } from "next/router"
 import fuzzy from "fuzzy"
@@ -16,13 +16,20 @@ export function useMustBeSignedIn() {
 }
 
 
-export function useSearch(list, selector) {
-    const [searchQuery, setSearchQuery] = useState("")
+export function useSearch(list, selector, searchQueryArg) {
+
+    if (searchQueryArg === undefined)
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        var [searchQuery, setSearchQuery] = useState("")
+
     const filtered = useMemo(
         () => list?.filter(
-            item => fuzzy.test(searchQuery, selector?.(item) ?? item?.toString())
+            item => fuzzy.test(
+                searchQueryArg ?? searchQuery,
+                selector?.(item) ?? item?.toString()
+            )
         ),
-        [list, searchQuery]
+        [list, searchQueryArg, searchQuery]
     )
 
     return [filtered, searchQuery, setSearchQuery]

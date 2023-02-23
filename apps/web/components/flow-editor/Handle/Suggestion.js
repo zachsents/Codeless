@@ -5,7 +5,7 @@ import { TbPlus } from "react-icons/tb"
 import { Nodes } from "../../../modules/nodes"
 
 
-export default function Suggestion({ typeId, index, ...props }) {
+export default function Suggestion({ typeId, index, children, icon, ...props }) {
 
     
     return (
@@ -15,11 +15,12 @@ export default function Suggestion({ typeId, index, ...props }) {
                 compact
                 variant="light"
                 color="gray"
-                leftIcon={<TbPlus />}
+                leftIcon={icon || <TbPlus />}
                 styles={suggestionStyles}
                 {...props}
             >
-                <Text size={10} weight={400}>{Nodes[typeId].name}</Text>
+                {typeId && <Text size={10} weight={400}>{Nodes[typeId].name}</Text>}
+                {children && <Text size={10} weight={400}>{children}</Text>}
             </Button>
         </motion.div>
     )

@@ -1,5 +1,5 @@
 import { Badge, Group, HoverCard, Stack, Text, Title, UnstyledButton } from '@mantine/core'
-import { forwardRef, useCallback, useEffect, useRef } from 'react'
+import { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Square } from 'tabler-icons-react'
 import { Nodes } from '../../modules/nodes'
 import { createNode } from '../../modules/graph-util'
@@ -10,7 +10,7 @@ const NodeList = Object.values(Nodes)
     .filter(nodeType => !nodeType.hideInBrowser)
 
 
-export default function NodePalette({ context, id, innerProps: { rf } }) {
+export default function NodePalette({ context, id, innerProps: { rf, suggestions } }) {
 
     // adding nodes
     const addNode = useCallback(type => {
@@ -75,10 +75,26 @@ export default function NodePalette({ context, id, innerProps: { rf } }) {
         }, 0)
     }, [searchRef.current])
 
+    // show suggestions in separate section
+    const suggestedSearchLists = useMemo(() => {
+        if (!suggestions)
+            return null
+
+        const otherNodes = []
+        const suggestedNodes = NodeList.filter(
+            node => suggestions.includes(node.id) || (otherNodes.push(node), false)
+        )
+
+        return [
+            { name: "Suggested", list: suggestedNodes },
+            { name: "Other Nodes", list: otherNodes },
+        ]
+    })
+
     return (
         <Stack>
             <Search
-                list={NodeList}
+                list={suggestedSearchLists ?? NodeList}
                 selector={type => type.name + (type.badge ?? "") + type.description}
                 noun="node"
                 component={NodeTile}

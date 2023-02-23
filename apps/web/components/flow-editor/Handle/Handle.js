@@ -1,17 +1,20 @@
-import { useEffect, useRef } from "react"
-import { Handle as RFHandle } from "reactflow"
-import { Box, useMantineTheme, Text, Stack } from "@mantine/core"
+import { useCallback, useEffect, useRef } from "react"
+import { Handle as RFHandle, useReactFlow } from "reactflow"
+import { Box, useMantineTheme, Text, Stack, Title } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 
 import { HandleDirection } from "."
 import Suggestion from "./Suggestion"
+import { TbSearch } from "react-icons/tb"
+import { openContextModal } from "@mantine/modals"
 
 
 export default function Handle({ id, name, label, direction, position, suggestions, onAddSuggested,
     connected, align, nodeHovered = false, onHover }) {
 
     const theme = useMantineTheme()
+    const rf = useReactFlow()
 
     // determine label -- prioritize label prop but fallback to formatted name
     const tooltipLabel = label ?? formatName(name)
@@ -30,6 +33,20 @@ export default function Handle({ id, name, label, direction, position, suggestio
     useEffect(() => {
         onHover?.(hovered)
     }, [hovered])
+
+
+    // opening node palette
+    const openNodePalette = useCallback(() => openContextModal({
+        modal: "NodePalette",
+        innerProps: { 
+            rf,
+            suggestions: suggestions?.length > 0 && suggestions.map(sugg => sugg.node)
+        },
+        title: <Title order={3}>Add a node</Title>,
+        size: "lg",
+        centered: true,
+        transitionDuration: 200,
+    }), [rf, suggestions])
 
     return (
         <Box sx={containerStyle(alignHeight)} ref={hoverRef}>
@@ -56,7 +73,7 @@ export default function Handle({ id, name, label, direction, position, suggestio
             </motion.div>
 
             <AnimatePresence>
-                {(nodeHovered || hovered) && (tooltipLabel || suggestions) &&
+                {(nodeHovered || hovered) &&
                     <Box sx={tooltipWrapperStyle(position)}>
                         <motion.div
                             initial={{ scale: 0 }}
@@ -69,8 +86,17 @@ export default function Handle({ id, name, label, direction, position, suggestio
                                 {tooltipLabel &&
                                     <Text sx={tooltipStyle(false)}>{tooltipLabel}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
 
+                                <Suggestion
+                                    onClick={openNodePalette}
+                                    icon={<TbSearch />}
+                                    color={null}
+                                    index={0}
+                                >
+                                    Search Nodes
+                                </Suggestion>
+
                                 {suggestions &&
-                                    <Text size={8} color="dimmed" mt={3} mb={-2} sx={{ whiteSpace: "nowrap" }}>
+                                    <Text size={8} color="dimmed" mb={-2} sx={{ whiteSpace: "nowrap" }}>
                                         {hovered ?
                                             "Suggested Nodes:" :
                                             `${suggestions.length} Suggested Node${suggestions.length == 1 ? "" : "s"}`}
@@ -80,7 +106,7 @@ export default function Handle({ id, name, label, direction, position, suggestio
                                     <Suggestion
                                         typeId={suggestion.node}
                                         onClick={() => onAddSuggested?.(suggestion.node, suggestion.handle, direction, hoverRef.current?.offsetTop)}
-                                        index={i}
+                                        index={i + 1}
                                         key={i}
                                     />
                                 )}

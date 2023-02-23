@@ -148,7 +148,7 @@ export function useAppIntegrations(app, integrations) {
         })
     })
 
-    const results = useQueries(queries ?? [])
+    const results = useQueries(queries || [])
 
     return Object.fromEntries(results.map((res, i) => [intIds[i], res]))
 }
