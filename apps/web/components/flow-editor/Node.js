@@ -71,9 +71,9 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
     useNodeSnapping(id, xPos, yPos)
 
     // integrations
-    const integrationsSatisfied = getNodeIntegrationsStatus(nodeType, appIntegrations).every(int => int.status.data)
+    const integrationsSatisfied = getNodeIntegrationsStatus(nodeType, appIntegrations).every(int => int.status.data || int.status.isLoading)
 
-
+    
     return (
         <motion.div
             initial={{ outline: "none" }}
