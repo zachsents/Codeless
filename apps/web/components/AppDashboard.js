@@ -5,16 +5,22 @@ import { TbReportAnalytics, TbPlugConnected, TbChevronDown, TbChevronLeft, TbBoo
 import { TiFlowMerge } from "react-icons/ti"
 
 import { useAppId, useMustBeSignedIn } from "../modules/hooks"
+import Head from "next/head"
 
 
-export default function AppDashboard({ children }) {
+export default function AppDashboard({ children, pageTitle, appName }) {
 
     useMustBeSignedIn()
 
     const appId = useAppId()
     const { pathname } = useRouter()
 
-    return (
+    return (<>
+        {pageTitle &&
+            <Head>
+                <title key="title">{pageTitle}{appName ? ` - ${appName}` : ""} | Minus</title>
+                <meta property="og:title" content={`${pageTitle}${appName ? ` - ${appName}` : ""} | Minus`} key="ogtitle" />
+            </Head>}
         <AppShell
             padding="lg"
             styles={shellStyles}
@@ -72,7 +78,7 @@ export default function AppDashboard({ children }) {
                 {children}
             </Container>
         </AppShell>
-    )
+    </>)
 }
 
 const shellStyles = theme => ({

@@ -24,7 +24,7 @@ export default function AppFlows() {
     const flowsLeft = plan?.flowCount - flows?.length
 
     return (
-        <AppDashboard>
+        <AppDashboard pageTitle="Flows" appName={app?.name}>
             <Stack spacing="xl">
                 <GradientBox centerAround={app?.color ?? null}>
                     <Group position="apart" sx={{ alignItems: "stretch" }}>

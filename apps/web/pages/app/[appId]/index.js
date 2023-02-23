@@ -1,6 +1,8 @@
 import Link from "next/link"
-import { Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title, 
-    useMantineTheme } from "@mantine/core"
+import {
+    Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title,
+    useMantineTheme
+} from "@mantine/core"
 import { TbArrowRight, TbTrendingUp } from "react-icons/tb"
 import { useAppDetailsRealtime, useAppIntegrations, useFlowCountForApp, usePlan, useUpdateApp } from "@minus/client-sdk"
 import { Integrations } from "@minus/client-nodes"
@@ -36,7 +38,7 @@ export default function AppOverview() {
 
 
     return (
-        <AppDashboard>
+        <AppDashboard pageTitle="Overview" appName={app?.name}>
             <Stack spacing="xl">
                 <GradientBox centerAround={app?.color ?? null}>
                     {app ?

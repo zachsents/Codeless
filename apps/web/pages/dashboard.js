@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Head from "next/head"
 import { Button, Container, Grid, Group, Header, Menu, Stack, Text, Title } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
 import { TbPlus, TbUser } from "react-icons/tb"
@@ -26,6 +27,11 @@ export default function Dashboard() {
 
     return (
         <>
+            <Head>
+                <title key="title">Your Apps | Minus</title>
+                <meta property="og:title" content="Your Apps | Minus" key="ogtitle" />
+            </Head>
+
             <Header px="xl" py="sm" sx={headerStyle} withBorder={false}>
                 <Grid align="center">
                     <Grid.Col span="content">
