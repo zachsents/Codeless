@@ -78,8 +78,9 @@ export async function watchInbox(gmail, { flow }) {
  * @param {string} params.subject
  * @param {string} [params.plainText]
  * @param {string} [params.html]
+ * @param {object} [requestBody]
  */
-export async function sendEmail(gmail, { to, cc, subject, plainText, html } = {}) {
+export async function sendEmail(gmail, { to, cc, subject, plainText, html } = {}, requestBody = {}) {
 
     // get sender email address
     const { data: { emailAddress: senderEmailAddress } } = await gmail.users.getProfile({
@@ -105,6 +106,7 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html } = {}
         userId: "me",
         requestBody: {
             raw: encodedMessage,
+            ...requestBody,
         }
     })
 }

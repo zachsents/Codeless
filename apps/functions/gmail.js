@@ -138,7 +138,7 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
                     html: decodeEmailBody(
                         message.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
                     ),
-                    snippet: message.snippet,
+                    rawMessage: message,
                 }
 
                 // add flow run

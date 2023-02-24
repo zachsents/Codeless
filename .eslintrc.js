@@ -14,6 +14,7 @@ module.exports = {
     },
     rules: {
         "no-extra-boolean-cast": 0,
+        "no-sparse-arrays": 0,
     },
     overrides: [
         {

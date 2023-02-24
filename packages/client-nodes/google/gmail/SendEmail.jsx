@@ -11,6 +11,6 @@ export default {
 
     requiredIntegrations: ["integration:Gmail"],
 
-    inputs: ["to", "cc", "subject", "body"],
+    inputs: ["to", { name: "cc", label: "CC" }, "subject", "body"],
     outputs: [],
 }

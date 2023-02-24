@@ -37,6 +37,7 @@ import RandomNumber from "./math/RandomNumber"
 
 import EmailReceivedTrigger from "./google/gmail/triggers/EmailReceived"
 import GmailSendEmail from "./google/gmail/SendEmail"
+import GmailReplyToEmail from "./google/gmail/ReplyToEmail"
 
 import Spreadsheet from "./google/sheets/Spreadsheet"
 import Range from "./google/sheets/Range"
@@ -116,7 +117,7 @@ export const Nodes = createObject([
     Spreadsheet, Range, Table,
     
     // ===== Gmail =====
-    GmailSendEmail,
+    GmailSendEmail, GmailReplyToEmail,
 
 
     // ===== OpenAI =====

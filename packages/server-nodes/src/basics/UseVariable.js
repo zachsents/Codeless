@@ -1,3 +1,4 @@
+import { VariablePort } from "@minus/server-sdk"
 
 export default {
     id: "basic:UseVariable",
@@ -7,23 +8,9 @@ export default {
     outputs: ["$"],
 
     onBeforeStart() {
-        global.variables ??= {}
-        global.variables[this.state.name] ??= new VariablePort()
-        global.variables[this.state.name].subscribe(value => {
+        VariablePort.setupPortOnGlobals(this.state.name).subscribe(value => {
             this.publish({ $: value })
         })
     },
 }
 
-class VariablePort {
-
-    subscribers = []
-
-    subscribe(callback) {
-        this.subscribers.push(callback)
-    }
-
-    publish(value) {
-        this.subscribers.forEach(sub => sub(value))
-    }
-}

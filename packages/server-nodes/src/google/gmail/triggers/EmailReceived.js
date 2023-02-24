@@ -1,4 +1,4 @@
-import { gmail } from "@minus/server-sdk"
+import { gmail, VariablePort } from "@minus/server-sdk"
 
 
 export default {
@@ -11,8 +11,12 @@ export default {
     onStart(setupPayload) {
         // "From" field sometimes looks like this: First Last <email@gmail.com>
         // let's parse it out first
-        const { from, ...otherFields } = setupPayload
+        // eslint-disable-next-line no-unused-vars
+        const { from, rawMessage, ...otherFields } = setupPayload
         const [, fromName, fromEmail] = from.match(/(.+?\s)<(.+?)>/) ?? [, , from]
+
+        // put message on port so we can access it in other places
+        VariablePort.publish("_triggerEmail", setupPayload)
 
         this.publish({ fromName, fromEmail, ...otherFields })
     },
@@ -22,7 +26,7 @@ export default {
         await gmail.watchInbox(gmailApi, { flow })
     },
 
-    async onUndeploy({ flow }) {
-        
+    async onUndeploy() {
+
     },
 }

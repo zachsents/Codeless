@@ -37,6 +37,7 @@ import RandomNumber from "./math/RandomNumber.js"
 
 import EmailReceivedTrigger from "./google/gmail/triggers/EmailReceived.js"
 import GmailSendEmail from "./google/gmail/SendEmail.js"
+import GmailReplyToEmail from "./google/gmail/ReplyToEmail.js"
 
 import Spreadsheet from "./google/sheets/Spreadsheet.js"
 import Range from "./google/sheets/Range.js"
@@ -110,7 +111,7 @@ export default createObject([
 
 
     // ===== Gmail =====
-    EmailReceivedTrigger, GmailSendEmail,
+    EmailReceivedTrigger, GmailSendEmail, GmailReplyToEmail,
 
 
     // ===== Google Sheets =====
