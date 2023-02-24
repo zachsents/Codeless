@@ -30,7 +30,7 @@ export function elementWise(aList, bList, operation) {
 export function safeMap(operation, ...lists) {
     // make sure everything's an array
     lists.forEach((list, i) => {
-        lists[i] = list.map ? list : [list]
+        lists[i] = list?.map ? list : [list]
     })
 
     // find longest array to map through
@@ -41,7 +41,12 @@ export function safeMap(operation, ...lists) {
     // map result
     const result = longest.map(
         (_, i) => operation(
-            ...lists.map(list => list[i] ?? list[0])
+            ...lists.map(list => {
+                if(i in list)
+                    return list[i]
+                
+                return list.length == 1 ? list[0] : undefined
+            })
         )
     )
 
