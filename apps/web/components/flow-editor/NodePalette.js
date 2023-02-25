@@ -1,8 +1,9 @@
-import { Badge, Group, HoverCard, Stack, Text, Title, UnstyledButton } from '@mantine/core'
 import { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react'
+import { Badge, Group, HoverCard, Stack, Text, Title, UnstyledButton } from '@mantine/core'
 import { Square } from 'tabler-icons-react'
+
 import { Nodes } from '../../modules/nodes'
-import { createNode } from '../../modules/graph-util'
+import { addNodeAtCenter } from '../../modules/graph-util'
 import Search from '../Search'
 
 
@@ -10,20 +11,16 @@ const NodeList = Object.values(Nodes)
     .filter(nodeType => !nodeType.hideInBrowser)
 
 
-export default function NodePalette({ context, id, innerProps: { rf, suggestions } }) {
+export default function NodePalette({ context, id, innerProps: { rf, suggestions, onAdd } }) {
 
     // adding nodes
-    const addNode = useCallback(type => {
-        // add node at center
-        const proj = rf.project({
-            x: (window.innerWidth - 240) / 2,
-            y: (window.innerHeight - 60) / 2,
-        })
-        proj.x -= 56 / 2
-        proj.y -= 56 / 2
-        rf.addNodes(createNode(type.id, proj))
+    const handleAddNode = type => {
+        if (onAdd)
+            onAdd(type)
+        else
+            addNodeAtCenter(rf, type.id)
         context.closeModal(id)
-    }, [rf])
+    }
 
     // Moving focus with arrow keys
     const numColumnsRef = useRef(2)
@@ -89,7 +86,8 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
             { name: "Suggested", list: suggestedNodes },
             { name: "Other Nodes", list: otherNodes },
         ]
-    })
+    }, [suggestions])
+
 
     return (
         <Stack>
@@ -100,7 +98,7 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
                 component={NodeTile}
                 componentItemProp="type"
                 componentProps={(type, i, { query }) => ({
-                    onClick: () => addNode(type),
+                    onClick: () => handleAddNode(type),
                     expanded: !!query,
                 })}
                 gridProps={({ query }) => {

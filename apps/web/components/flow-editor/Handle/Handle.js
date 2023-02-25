@@ -1,23 +1,20 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Handle as RFHandle, useReactFlow } from "reactflow"
-import { Box, useMantineTheme, Text, Stack, Title } from "@mantine/core"
+import { Box, useMantineTheme, Text, Stack } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
+import { TbSearch } from "react-icons/tb"
 
+import { addNeighborNode, openNodePalette } from "../../../modules/graph-util"
 import { HandleDirection } from "."
 import Suggestion from "./Suggestion"
-import { TbSearch } from "react-icons/tb"
-import { openContextModal } from "@mantine/modals"
 
 
-export default function Handle({ id, name, label, direction, position, suggestions, onAddSuggested,
-    connected, align, nodeHovered = false, onHover }) {
+export default function Handle({ id, label, direction, position, suggestions,
+    connected, align, nodeHovered = false, onHover, nodeId, nodeName }) {
 
-    const theme = useMantineTheme()
     const rf = useReactFlow()
-
-    // determine label -- prioritize label prop but fallback to formatted name
-    const tooltipLabel = label ?? formatName(name)
+    const theme = useMantineTheme()
 
     // unconnected inputs are styled special
     const isUnconnectedInput = !connected && direction == HandleDirection.Input
@@ -34,19 +31,37 @@ export default function Handle({ id, name, label, direction, position, suggestio
         onHover?.(hovered)
     }, [hovered])
 
+    // adding suggested nodes
+    const handleAddSuggested = (suggestion) => addNeighborNode(rf, {
+        originNodeId: nodeId,
+        originHandle: id,
+        type: suggestion?.node,
+        handle: suggestion?.handle,
+        direction,
+        topOffset: hoverRef.current?.offsetTop,
+    })
 
     // opening node palette
-    const openNodePalette = useCallback(() => openContextModal({
-        modal: "NodePalette",
-        innerProps: { 
-            rf,
-            suggestions: suggestions?.length > 0 && suggestions.map(sugg => sugg.node)
+    const handleOpenNodePalette = () => openNodePalette(rf, {
+        subtitle: `${direction == HandleDirection.Input ? "preceeding" : "following"} "${nodeName}"`,
+        innerProps: {
+            suggestions: suggestions?.length > 0 && [...new Set(
+                suggestions.map(sugg => sugg.node)
+            )],
+            onAdd: (type) => handleAddSuggested(
+                suggestions?.find(sugg => sugg.node == type.id) ?? {
+                    node: type.id,
+                    // we'll try to connect if there's only one (non-list) handle
+                    handle: type.inputs.length == 1 && !type.inputs[0].list ?
+                        (type.inputs[0].name ?? type.inputs[0]) :
+                        null
+                }
+            ),
         },
-        title: <Title order={3}>Add a node</Title>,
-        size: "lg",
-        centered: true,
-        transitionDuration: 200,
-    }), [rf, suggestions])
+    })
+
+    // only show 3 suggestions
+    const visibleSuggestions = suggestions?.slice(0, 3)
 
     return (
         <Box sx={containerStyle(alignHeight)} ref={hoverRef}>
@@ -83,11 +98,11 @@ export default function Handle({ id, name, label, direction, position, suggestio
                         >
                             <Stack spacing={5} align={position == "left" ? "end" : "start"} p={tooltipPadding} >
 
-                                {tooltipLabel &&
-                                    <Text sx={tooltipStyle(false)}>{tooltipLabel}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
+                                {label &&
+                                    <Text sx={tooltipStyle(false)}>{label}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
 
                                 <Suggestion
-                                    onClick={openNodePalette}
+                                    onClick={handleOpenNodePalette}
                                     icon={<TbSearch />}
                                     color={null}
                                     index={0}
@@ -102,10 +117,13 @@ export default function Handle({ id, name, label, direction, position, suggestio
                                             `${suggestions.length} Suggested Node${suggestions.length == 1 ? "" : "s"}`}
                                     </Text>}
 
-                                {hovered && suggestions?.slice(0, 3).map((suggestion, i) =>
+                                {hovered && visibleSuggestions?.map((suggestion, i) =>
                                     <Suggestion
                                         typeId={suggestion.node}
-                                        onClick={() => onAddSuggested?.(suggestion.node, suggestion.handle, direction, hoverRef.current?.offsetTop)}
+                                        // only include handle if this node shows up twice in the visible nodes
+                                        handle={visibleSuggestions.filter(sugg => sugg.node == suggestion.node).length > 1 ?
+                                            suggestion.handle : null}
+                                        onClick={() => handleAddSuggested(suggestion)}
                                         index={i + 1}
                                         key={i}
                                     />
@@ -187,17 +205,3 @@ const tooltipStyle = (button = false) => theme => ({
     } : {},
 })
 
-
-
-function formatName(name) {
-
-    if (name.startsWith("_"))
-        return ""
-
-    return name
-        .replace("$", "")
-        .trim()
-        .match(/[A-Z]?[^A-Z]+/g)
-        ?.map(word => word.slice(0, 1).toUpperCase() + word.slice(1))
-        .join(" ") ?? ""
-}

@@ -8,6 +8,9 @@ import shortUUID from "short-uuid"
 import { Integrations } from "@minus/client-nodes"
 import { useAppId, useFlowId } from "./hooks"
 import { Nodes } from "./nodes"
+import { openContextModal } from "@mantine/modals"
+import { Group, Text, Title } from "@mantine/core"
+import { HandleDirection } from "../components/flow-editor/Handle"
 
 
 export function useNodeState(nodeId, defaultState) {
@@ -382,6 +385,30 @@ export function useNodeSnapping(id, x, y, {
 }
 
 
+export function openNodePalette(rf, {
+    innerProps = {},
+    subtitle,
+    ...props
+} = {}) {
+    openContextModal({
+        modal: "NodePalette",
+        innerProps: {
+            rf,
+            ...innerProps,
+        },
+        title: <Group>
+            <Title order={3}>Add a node</Title>
+            {subtitle &&
+                <Text color="dimmed">{subtitle}</Text>}
+        </Group>,
+        size: "lg",
+        centered: true,
+        transitionDuration: 200,
+        ...props,
+    })
+}
+
+
 /**
  * Node & Edge Actions
  */
@@ -456,7 +483,7 @@ export function selectNode(rf, nodeId, {
                 selected: false,
             })
         })
-    
+
     rf.setNodes(applyNodeChanges(changes, rf.getNodes()))
 }
 
@@ -476,6 +503,48 @@ export function getNodeIntegrationsStatus(nodeType, appIntegrations) {
         ...Integrations[intId],
         status: appIntegrations[intId] ?? {},
     })) ?? []
+}
+
+
+export function addNodeAtCenter(rf, type) {
+    // add node at center
+    const proj = rf.project({
+        x: (window.innerWidth - 240) / 2,
+        y: (window.innerHeight - 60) / 2,
+    })
+    proj.x -= 56 / 2
+    proj.y -= 56 / 2
+    rf.addNodes(createNode(type, proj))
+}
+
+
+export function addNeighborNode(rf, {
+    originNodeId,
+    originHandle,
+    type,
+    handle,
+    direction,
+    topOffset,
+} = {}) {
+
+    const { position: { x, y }, width, height } = rf.getNode(originNodeId)
+    const xOffset = 150
+
+    const newNode = createNode(type, {
+        x: direction == HandleDirection.Input ? x - xOffset - 200 : x + width + xOffset,
+        y: y + 2 * (topOffset + 12 - height / 2),
+    })
+
+    const newEdge = originHandle && handle && (
+        direction == HandleDirection.Input ?
+            createEdge(newNode.id, handle, originNodeId, originHandle) :
+            createEdge(originNodeId, originHandle, newNode.id, handle)
+    )
+
+    rf.addNodes(newNode)
+    newEdge && rf.addEdges(newEdge)
+
+    selectNode(rf, newNode.id)
 }
 
 
@@ -503,4 +572,34 @@ export function parseListHandle(id) {
         name,
         index: parseInt(index),
     }
+}
+
+
+export function longhandHandle(handle) {
+    const handleObj = typeof handle === "string" ? { name: handle } : handle
+
+    handleObj.label ??= formatHandleName(handleObj.name)
+    handleObj.list ??= false
+
+    return handleObj
+}
+
+
+export function formatHandleName(handleName) {
+
+    if (handleName.startsWith("_"))
+        return ""
+
+    return handleName
+        .replace("$", "")
+        .trim()
+        .match(/[A-Z]?[^A-Z]+/g)
+        ?.map(word => word.slice(0, 1).toUpperCase() + word.slice(1))
+        .join(" ") ?? ""
+}
+
+
+export function getHandleLabel(nodeType, handleName) {
+    return Nodes[nodeType].inputs?.map(input => longhandHandle(input))
+        .find(input => input.name == handleName)?.label
 }

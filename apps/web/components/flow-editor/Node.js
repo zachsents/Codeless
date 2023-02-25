@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react"
+import { useEffect } from "react"
 import { useKeyPress, useReactFlow } from "reactflow"
 import { Card, Group, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
 import { useHover, useSetState } from "@mantine/hooks"
@@ -7,8 +7,8 @@ import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 
 import { useNodeSuggestions } from "@minus/client-sdk"
 import {
-    createEdge, createNode, deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType,
-    selectNode, useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping
+    deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType,
+    useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping
 } from "../../modules/graph-util"
 import { useAppContext, useFlowContext } from "../../modules/context"
 import Handle, { HandleDirection } from "./Handle"
@@ -47,35 +47,17 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
     // suggestions
     const { suggestions } = useNodeSuggestions(type)
 
-    // callback for adding neighbor node
-    const addNeighborNode = useCallback((sourceHandle, targetType, targetHandle, direction, topOffset) => {
-
-        const { position: { x, y }, width, height } = rf.getNode(id)
-        const xOffset = 150
-
-        const newNode = createNode(targetType, {
-            x: direction == HandleDirection.Input ? x - xOffset - 200 : x + width + xOffset,
-            y: y + 2 * (topOffset + 12 - height / 2),
-        })
-        
-        const newEdge = direction == HandleDirection.Input ?
-            createEdge(newNode.id, targetHandle, id, sourceHandle) :
-            createEdge(id, sourceHandle, newNode.id, targetHandle)
-
-        rf.addNodes(newNode)
-        rf.addEdges(newEdge)
-        selectNode(rf, newNode.id)
-    }, [rf])
-
+    // props for all handle groups
     const commonHandleGroupProps = {
         includeContainer: true,
         queryListHandle: name => data?.listHandles?.[name] ?? 0,
         handleProps: handleId => ({
             nodeHovered: hovered && !Object.values(handlesHovered).some(x => x),
+            nodeId: id,
+            nodeName: nodeType.name,
             connected: displayProps.connections[handleId],
             align: handleAlignments[handleId],
             suggestions: suggestions?.[handleId],
-            onAddSuggested: (...args) => addNeighborNode(handleId, ...args),
             onHover: handleHovered => setHandlesHovered({ [handleId]: handleHovered })
         }),
     }
@@ -118,7 +100,6 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
                 shadow="sm"
                 mih={stackHeight}
                 sx={cardStyle(id, { copyCursor: duplicating, selected })}
-            // onDoubleClick={() => setData({ expanded: true, focused: true })}
             >
                 {/* Header */}
                 <Card.Section withBorder p="xs">

@@ -1,6 +1,7 @@
-import { ActionIcon, SimpleGrid, Skeleton, Text, TextInput } from '@mantine/core'
 import { Fragment, useEffect, useState } from 'react'
+import { ActionIcon, SimpleGrid, Skeleton, Text, TextInput } from '@mantine/core'
 import { TbSearch, TbX } from 'react-icons/tb'
+
 import { useSearch } from '../modules/hooks'
 import { objectOrFunction } from "../modules/util"
 

@@ -1,6 +1,7 @@
 import { forwardRef, memo } from "react"
 import { Position } from "reactflow"
 
+import { longhandHandle } from "../../../modules/graph-util"
 import { HandleDirection } from "."
 import Handle from "./Handle"
 import VerticalContainer from "./VerticalContainer"
@@ -17,14 +18,10 @@ const Group = memo(forwardRef(({
 
     const inferredPosition = direction == HandleDirection.Input ? Position.Left : Position.Right
 
-    const handleElements = handles?.map(handle => {
+    const handleElements = handles?.flatMap(handle => {
 
         // handle can either be just a name or an object
-        const { name, label, list } = typeof handle === "string" ? {
-            name: handle,
-            label: null,
-            list: false,
-        } : handle
+        const { name, list, ...handleInfo } = longhandHandle(handle)
 
         // if it's a list handle, get current number of handles
         const numberOfHandles = list ? queryListHandle(name) : 1
@@ -37,7 +34,7 @@ const Group = memo(forwardRef(({
             return <Handle
                 id={handleId}
                 name={name}
-                label={label}
+                {...handleInfo} // includes label
                 position={position ?? inferredPosition}
                 direction={direction}
                 // spread additional props to handle -- can be object or function
@@ -45,7 +42,7 @@ const Group = memo(forwardRef(({
                 key={handleId}
             />
         })
-    }).flat() ?? <></>
+    }) ?? <></>
 
     return includeContainer ?
         <VerticalContainer position={position ?? inferredPosition} ref={ref}>

@@ -1,34 +1,26 @@
-import { useCallback } from 'react'
-import { Title, Text, Kbd } from '@mantine/core'
-import { useHotkeys } from '@mantine/hooks'
-import { openContextModal } from '@mantine/modals'
-import { TbPlus } from 'react-icons/tb'
-import ActionButton from './ActionButton'
-import { useReactFlow } from 'reactflow'
+import { useReactFlow } from "reactflow"
+import { Text, Kbd } from "@mantine/core"
+import { useHotkeys } from "@mantine/hooks"
+import { TbPlus } from "react-icons/tb"
+
+import { openNodePalette } from "../../../modules/graph-util"
+import ActionButton from "./ActionButton"
 
 
 export default function AddNodeButton({ expanded }) {
 
     const rf = useReactFlow()
-
-    const openNodePalette = useCallback(() => openContextModal({
-        modal: "NodePalette",
-        innerProps: { rf },
-        title: <Title order={3}>Add a node</Title>,
-        size: "lg",
-        centered: true,
-        transitionDuration: 200,
-    }), [rf])
+    const handleOpenNodePalette = () => openNodePalette(rf)
 
     useHotkeys([
-        ["ctrl+P", openNodePalette]
+        ["ctrl+P", handleOpenNodePalette]
     ])
 
     return expanded ?
         <ActionButton
             expanded={expanded}
             leftIcon={<TbPlus />}
-            onClick={openNodePalette}
+            onClick={handleOpenNodePalette}
             label={
                 <Text size="xs" align="center">
                     <Kbd>Ctrl</Kbd> + <Kbd>P</Kbd>
@@ -46,7 +38,7 @@ export default function AddNodeButton({ expanded }) {
             expanded={expanded}
             label="Add Node"
             icon={TbPlus}
-            onClick={openNodePalette}
+            onClick={handleOpenNodePalette}
             color={null}
         />
 }
