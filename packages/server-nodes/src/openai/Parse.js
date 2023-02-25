@@ -11,7 +11,7 @@ export default {
 
     async onInputsReady({ text }) {
 
-        if(!this.state.dataLabels?.length)
+        if (!this.state.dataLabels?.length)
             throw new Error("No outputs specified")
 
         // format data labels for prompt
@@ -26,25 +26,21 @@ ${text.trim()}
 Here is the ${formattedList} from this text in JSON form with keys ${formattedListQuotes}. Nonexistent values are null.
 `
 
-        const result = await safeMap(
-            async text => {
-                // call API
-                const resp = await openaiApi.createCompletion(prompt(text))
+        const result = await safeMap(async text => {
+            // call API
+            const resp = await openaiApi.createCompletion(prompt(text))
 
-                // try to parse
-                try {
-                    console.log(resp)
-                    // GPT responds with weird stuff sometimes -- we're gonna try to pick out JSON
-                    return JSON.parse(
-                        resp?.match(/{.+}/s)[0]
-                    )
-                }
-                catch (err) {
-                    throw new Error("Failed to parse text")
-                }
-            },
-            text
-        )
+            // try to parse
+            try {
+                // GPT responds with weird stuff sometimes -- we're gonna try to pick out JSON
+                return JSON.parse(
+                    resp?.match(/{.+}/s)[0]
+                )
+            }
+            catch (err) {
+                throw new Error("Failed to parse text")
+            }
+        }, text)
 
         this.publish(
             Object.fromEntries(

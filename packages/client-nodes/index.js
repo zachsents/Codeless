@@ -53,6 +53,7 @@ import TableField from "./tables/TableField"
 
 import AskGPT3 from "./openai/AskGPT3"
 import Parse from "./openai/Parse"
+import Rate from "./openai/Rate"
 
 import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin, BrandGmail, BrandAirtable } from "tabler-icons-react"
 import { SiGooglesheets, SiOpenai } from "react-icons/si"
@@ -121,7 +122,7 @@ export const Nodes = createObject([
 
 
     // ===== OpenAI =====
-    AskGPT3, Parse,
+    AskGPT3, Parse, Rate,
 
 
     // ===== AirTable =====
