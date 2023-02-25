@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
-import { ActionIcon, SimpleGrid, Skeleton, Text, TextInput } from '@mantine/core'
+import { ActionIcon, Group, SimpleGrid, Skeleton, Text, TextInput } from '@mantine/core'
 import { TbSearch, TbX } from 'react-icons/tb'
 
 import { useSearch } from '../modules/hooks'
@@ -15,6 +15,7 @@ export default function Search({ list: listArg, selector, noun,
     inputProps = {},
     inputRef,
     skeletonHeight = 80,
+    rightSection,
 
     onChange,
 }) {
@@ -39,21 +40,25 @@ export default function Search({ list: listArg, selector, noun,
 
     return (
         <>
-            <TextInput
-                value={query}
-                onChange={event => setQuery(event.currentTarget.value)}
-                radius="lg"
-                size="lg"
-                placeholder={`Search ${totalItems || ""} ${noun}${totalItems == 1 ? "" : "s"}...`}
-                icon={<TbSearch />}
-                rightSection={query &&
-                    <ActionIcon radius="md" mr="xl" onClick={() => setQuery("")}>
-                        <TbX />
-                    </ActionIcon>
-                }
-                {...objectOrFunction(inputProps, callbackOptions)}
-                ref={inputRef}
-            />
+            <Group spacing="xs">
+                <TextInput
+                    value={query}
+                    onChange={event => setQuery(event.currentTarget.value)}
+                    radius="lg"
+                    size="lg"
+                    placeholder={`Search ${totalItems || ""} ${noun}${totalItems == 1 ? "" : "s"}...`}
+                    icon={<TbSearch />}
+                    rightSection={query &&
+                        <ActionIcon radius="md" mr="xl" onClick={() => setQuery("")}>
+                            <TbX />
+                        </ActionIcon>
+                    }
+                    {...objectOrFunction(inputProps, callbackOptions)}
+                    ref={inputRef}
+                    sx={{ flexGrow: 1, flexBasis: 0 }}
+                />
+                {rightSection}
+            </Group>
 
             {lists.map(({ name, list }, i) =>
                 <Fragment key={i}>
@@ -93,11 +98,11 @@ export default function Search({ list: listArg, selector, noun,
 
 function isSingleList(arg) {
 
-    if(!arg?.[0])
+    if (!arg?.[0])
         return true
-    
-    if("name" in arg[0] && "list" in arg[0])
+
+    if ("name" in arg[0] && "list" in arg[0])
         return false
-    
+
     return true
 }

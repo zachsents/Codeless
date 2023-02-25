@@ -518,6 +518,25 @@ export function addNodeAtCenter(rf, type) {
 }
 
 
+export function addNodesAtCenter(rf, types) {
+    // calculate center
+    const center = rf.project({
+        x: (window.innerWidth - 240) / 2,
+        y: (window.innerHeight - 60) / 2,
+    })
+    center.x -= 56 / 2
+    center.y -= 56 / 2
+
+    // create nodes while staggering
+    rf.addNodes(
+        types.map((type, i) => createNode(type, {
+            x: center.x + i * 20,
+            y: center.y + i * 20,
+        }))
+    )
+}
+
+
 export function addNeighborNode(rf, {
     originNodeId,
     originHandle,

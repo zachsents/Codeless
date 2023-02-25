@@ -1,10 +1,12 @@
-import { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react'
-import { Badge, Group, HoverCard, Stack, Text, Title, UnstyledButton } from '@mantine/core'
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ActionIcon, Badge, Button, Group, HoverCard, Stack, Text, Title, UnstyledButton } from '@mantine/core'
 import { Square } from 'tabler-icons-react'
 
 import { Nodes } from '../../modules/nodes'
-import { addNodeAtCenter } from '../../modules/graph-util'
+import { addNodeAtCenter, addNodesAtCenter } from '../../modules/graph-util'
 import Search from '../Search'
+import { useSetState } from '@mantine/hooks'
+import { TbArrowRight, TbCheck, TbMinus, TbPlus } from 'react-icons/tb'
 
 
 const NodeList = Object.values(Nodes)
@@ -22,7 +24,17 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
         context.closeModal(id)
     }
 
-    // Moving focus with arrow keys
+    // checkbox adding
+    const [nodeCart, setNodeCart] = useSetState({})
+    const cartTotal = useMemo(() => Object.values(nodeCart).reduce((sum, cur) => sum + cur, 0), [nodeCart])
+    const handleAddCart = () => {
+        addNodesAtCenter(rf,
+            Object.entries(nodeCart).flatMap(([typeId, quantity]) => Array(quantity).fill(typeId))
+        )
+        context.closeModal(id)
+    }
+
+    // moving focus with arrow keys
     const numColumnsRef = useRef(2)
     const searchRef = useRef()
     const gridRef = useRef()
@@ -99,6 +111,8 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
                 componentItemProp="type"
                 componentProps={(type, i, { query }) => ({
                     onClick: () => handleAddNode(type),
+                    quantity: nodeCart[type.id] ?? 0,
+                    onQuantityChange: newQuantity => setNodeCart({ [type.id]: newQuantity }),
                     expanded: !!query,
                 })}
                 gridProps={({ query }) => {
@@ -112,13 +126,15 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
                 gridRef={gridRef}
                 inputProps={{ onKeyDown: searchKeyHandler }}
                 inputRef={searchRef}
+                rightSection={cartTotal > 0 && 
+                <Button onClick={handleAddCart} rightIcon={<TbArrowRight />}>Add {cartTotal} Nodes</Button>}
             />
         </Stack>
     )
 }
 
 
-const NodeTile = forwardRef(({ type, expanded, ...props }, ref) => {
+const NodeTile = forwardRef(({ type, expanded, quantity, onQuantityChange, ...props }, ref) => {
 
     const Icon = type.icon ?? Square
 
@@ -132,15 +148,19 @@ const NodeTile = forwardRef(({ type, expanded, ...props }, ref) => {
             ref={ref}
         >
             <Stack spacing="xs">
-                <Group>
-                    <Icon />
-                    <Title order={4}>{type.name}</Title>
-                    {type.badge &&
-                        <Group>
-                            {(type.badge.map ? type.badge : [type.badge]).map(
-                                (badge, i) => <Badge color={badge.color ?? type.color} key={i}>{badge}</Badge>
-                            )}
-                        </Group>}
+                <Group position="apart" noWrap align="start">
+                    <Group>
+                        <Icon />
+                        <Title order={4}>{type.name}</Title>
+                        {type.badge &&
+                            <Group>
+                                {(type.badge.map ? type.badge : [type.badge]).map(
+                                    (badge, i) => <Badge color={badge.color ?? type.color} key={i}>{badge}</Badge>
+                                )}
+                            </Group>}
+                    </Group>
+
+                    <QuantityCheckbox value={quantity} onChange={onQuantityChange} />
                 </Group>
                 <HoverCard openDelay={500}>
                     <HoverCard.Target>
@@ -161,11 +181,68 @@ const NodeTile = forwardRef(({ type, expanded, ...props }, ref) => {
 NodeTile.displayName = "NodePalette.NodeTile"
 
 
+const MAX_QUANTITY = 10
+
+function QuantityCheckbox({ value, onChange }) {
+
+    // stash value when turned off
+    const [stashedValue, setStashedValue] = useState(1)
+    useEffect(() => {
+        value != 0 && setStashedValue(value)
+    }, [value])
+
+    const handleGroupClick = event => {
+        event.stopPropagation()
+    }
+
+    const increment = event => onChange?.(event.ctrlKey ? MAX_QUANTITY : Math.min(MAX_QUANTITY, value + 1))
+    const decrement = event => onChange?.(event.ctrlKey ? 1 : Math.max(0, value - 1))
+    const toggle = () => onChange?.(value ? 0 : stashedValue)
+
+    return (
+        <Group 
+        spacing={3} 
+        noWrap 
+        onClick={handleGroupClick} 
+        sx={{ 
+            opacity: value > 0 ? 1 : 0.3,
+            transition: "opacity 0.1s",
+            "&:hover": {
+                opacity: 1,
+            }
+        }}
+        >
+            <ActionIcon radius="xl" size="md" onClick={decrement}><TbMinus size={12} /></ActionIcon>
+            <Button
+                component="div"
+
+                color={value == 0 ? "gray" : null}
+                variant={value == 0 ? "outline" : "filled"}
+                size="xs"
+                radius="xl"
+                compact
+                p={value == 1 ? 0 : undefined}
+
+                onClick={toggle}
+
+                sx={{
+                    aspectRatio: value < 10 ? "1" : "auto",
+                }}
+            >
+                {value == 0 ? "" : value == 1 ? <TbCheck /> : value}
+            </Button>
+            <ActionIcon radius="xl" size="md" onClick={increment}><TbPlus size={12} /></ActionIcon>
+        </Group>
+    )
+}
+
+
 const tileStyle = theme => ({
     backgroundColor: theme.colors.gray[0],
     borderRadius: theme.radius.md,
     display: "flex",
     flexDirection: "column",
+    alignItems: "stretch",
     transition: "backgroundColor 0.1s",
     "&:hover, &:focus": {
         backgroundColor: theme.colors.gray[1],
