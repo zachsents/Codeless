@@ -1,6 +1,6 @@
 import { SiGooglesheets } from "react-icons/si"
 import { GoogleSheetsAuthManager } from "@minus/client-sdk"
-import { OAuthIntegration } from "../../components"
+import { OAuthIntegration } from "../../components/index"
 
 
 const id = "integration:GoogleSheets"

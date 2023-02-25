@@ -1,6 +1,6 @@
 import { Center, Stack, Switch, Text, TextInput } from "@mantine/core"
 import { Table, Tex } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, RequiresConfiguration, SkeletonWithHandle } from "../components"
+import { Control, ControlLabel, ControlStack, RequiresConfiguration, SkeletonWithHandle } from "../components/index"
 
 
 export default {

@@ -1,6 +1,6 @@
 import { Center, Group, SimpleGrid, Switch, Text, TextInput, Tooltip } from "@mantine/core"
 import { Regex } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack } from "../components"
+import { Control, ControlLabel, ControlStack } from "../components/index"
 
 
 export default {

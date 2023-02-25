@@ -1,6 +1,6 @@
 import { CodeDots } from "tabler-icons-react"
 import CodeEditor from "react-simple-code-editor"
-import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components"
+import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 import { Box, Divider, Group, SimpleGrid } from "@mantine/core"
 
 import hljs from "highlight.js/lib/common"

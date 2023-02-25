@@ -1,7 +1,7 @@
 import { Center, Text, TextInput, Image, Loader, Select } from "@mantine/core"
 import { useEffect } from "react"
 import { SiGooglesheets } from "react-icons/si"
-import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../../components"
+import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../../components/index"
 import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
 
 

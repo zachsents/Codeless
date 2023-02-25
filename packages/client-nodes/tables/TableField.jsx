@@ -1,6 +1,6 @@
 import { Text, TextInput } from "@mantine/core"
 import { Table } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack } from "../components"
+import { Control, ControlLabel, ControlStack } from "../components/index"
 
 
 export default {

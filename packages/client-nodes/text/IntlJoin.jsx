@@ -1,6 +1,6 @@
 import { Select } from "@mantine/core"
 import { AlphabetLatin } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack } from "../components"
+import { Control, ControlLabel, ControlStack } from "../components/index"
 
 
 export default {

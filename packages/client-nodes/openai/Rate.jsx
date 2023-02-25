@@ -1,7 +1,7 @@
 import { SiOpenai } from "react-icons/si"
 import { NumberInput, Text, TextInput } from "@mantine/core"
 
-import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components"
+import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components/index"
 
 
 export default {

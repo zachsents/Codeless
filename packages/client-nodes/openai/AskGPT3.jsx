@@ -1,6 +1,6 @@
 import { Select, Slider } from "@mantine/core"
 import { SiOpenai } from "react-icons/si"
-import { Control, ControlLabel, ControlStack } from "../components"
+import { Control, ControlLabel, ControlStack } from "../components/index"
 import { useDebouncedSynchronizedState } from "../hooks"
 
 const DefaultTemperature = 0

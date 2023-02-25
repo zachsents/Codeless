@@ -1,6 +1,6 @@
 import { Space, Stack, Text } from "@mantine/core"
 import { ArrowsSplit } from "tabler-icons-react"
-import { SkeletonWithHandle } from "../components"
+import { SkeletonWithHandle } from "../components/index"
 
 
 export default {

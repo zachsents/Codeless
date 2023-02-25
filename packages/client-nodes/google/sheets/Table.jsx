@@ -1,6 +1,6 @@
 import { TextInput, Text, Grid, NumberInput, Checkbox, Group, Button } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
-import { Control, ControlLabel, ControlStack } from "../../components"
+import { Control, ControlLabel, ControlStack } from "../../components/index"
 
 
 export default {

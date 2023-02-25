@@ -1,4 +1,4 @@
-import { ControlStack, OtherFlowsControl } from "../../components"
+import { ControlStack, OtherFlowsControl } from "../../components/index"
 import { Run } from "tabler-icons-react"
 
 

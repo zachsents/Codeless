@@ -1,6 +1,6 @@
 import { TbBrandGmail } from "react-icons/tb"
 import { GmailAuthManager } from "@minus/client-sdk"
-import { OAuthIntegration } from "../../components"
+import { OAuthIntegration } from "../../components/index"
 
 
 const id = "integration:Gmail"

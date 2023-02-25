@@ -1,6 +1,6 @@
 import { NumberInput, Switch, Text } from "@mantine/core"
 import { Container } from "tabler-icons-react"
-import { ControlStack, Control, ControlLabel } from "../components"
+import { ControlStack, Control, ControlLabel } from "../components/index"
 
 
 export default {

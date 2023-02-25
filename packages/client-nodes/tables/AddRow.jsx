@@ -1,5 +1,5 @@
 import { TableImport } from "tabler-icons-react"
-import { ControlStack, ListHandlesControl, ListHandlesNodeContent, SkeletonWithHandle } from "../components"
+import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
 
 export default {

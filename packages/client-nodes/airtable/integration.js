@@ -1,6 +1,6 @@
 import { BrandAirtable } from "tabler-icons-react"
 import { AirTableAuthManager } from "@minus/client-sdk"
-import { OAuthIntegration } from "../components"
+import { OAuthIntegration } from "../components/index"
 
 
 const id = "integration:AirTable"

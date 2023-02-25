@@ -3,7 +3,7 @@ import { Center, Loader, Text, TextInput } from "@mantine/core"
 import { BrandAirtable } from "tabler-icons-react"
 import { useTableNameFromId } from "@minus/client-sdk/integrations/airtable"
 
-import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components"
+import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components/index"
 
 
 const color = "blue"

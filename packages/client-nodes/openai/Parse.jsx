@@ -1,5 +1,5 @@
 import { SiOpenai } from "react-icons/si"
-import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components"
+import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
 
 export default {

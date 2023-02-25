@@ -1,6 +1,6 @@
 import { AlphabetLatin } from "tabler-icons-react"
 import { SegmentedControl } from "@mantine/core"
-import { Control, ControlLabel, ControlStack } from "../components"
+import { Control, ControlLabel, ControlStack } from "../components/index"
 
 
 export default {

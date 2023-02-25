@@ -2,7 +2,7 @@ import { Fragment } from "react"
 import { ActionIcon, Button, Grid, Group, Space, Stack, Text, TextInput } from "@mantine/core"
 import produce from "immer"
 import { Template, Plus, X, ArrowRight } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components"
+import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
 
 export default {
