@@ -1,5 +1,6 @@
+import { Box, Textarea } from "@mantine/core"
 import { AlphabetLatin } from "tabler-icons-react"
-import { Box, Textarea, TextInput } from "@mantine/core"
+
 
 export default {
     id: "basic:Text",

@@ -21,6 +21,8 @@ module.exports = {
         "no-sparse-arrays": 0,
         "react/react-in-jsx-scope": 0,
         "react/prop-types": 0,
+        "react/no-unescaped-entities": 0,
+        "react-hooks/exhaustive-deps": 0,
     },
     overrides: [
         {
@@ -32,4 +34,9 @@ module.exports = {
             },
         }
     ],
+    settings: {
+        react: {
+            version: "detect",
+        }
+    }
 }

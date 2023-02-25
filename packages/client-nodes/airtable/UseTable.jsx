@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Center, Loader, Text, TextInput } from "@mantine/core"
 import { BrandAirtable } from "tabler-icons-react"
 import { useTableNameFromId } from "@minus/client-sdk/integrations/airtable"

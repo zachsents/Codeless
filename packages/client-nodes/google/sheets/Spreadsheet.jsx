@@ -6,7 +6,7 @@ import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
 
 
 const color = "green"
-const SheetsURLRegex = /d\/([0-9A-Za-z_\-]{40,})\/edit/
+const SheetsURLRegex = /d\/([0-9A-Za-z_-]{40,})\/edit/
 
 
 export default {

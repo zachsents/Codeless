@@ -1,4 +1,4 @@
-import { TextInput, Text, Grid, NumberInput, Checkbox, Group, Button } from "@mantine/core"
+import { Checkbox, Grid, Group, NumberInput, Text, TextInput } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
 import { Control, ControlLabel, ControlStack } from "../../components/index"
 
@@ -23,7 +23,7 @@ export default {
         startRow: 2,
     },
 
-    renderNode: ({ state, containerComponent: ContainerComponent }) => {
+    renderNode: ({ state }) => {
 
         const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
 

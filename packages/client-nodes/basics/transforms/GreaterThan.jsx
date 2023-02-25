@@ -1,6 +1,7 @@
-import { Space, Stack, Text } from "@mantine/core"
+import { Stack, Text } from "@mantine/core"
 import { ChevronRight } from "tabler-icons-react"
 import { SkeletonWithHandle } from "../../components/index"
+
 
 export default {
     id: "basic:GreaterThan",

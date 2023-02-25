@@ -1,7 +1,5 @@
-import { Box, Center, Group, Space, Stack, Text } from "@mantine/core"
-import { TbSquareCheck } from "react-icons/tb"
+import { Center, Group, Stack } from "@mantine/core"
 import { ArrowsJoin, SquareArrowRight, SquareCheck, SquareX } from "tabler-icons-react"
-import { SkeletonWithHandle } from "../components/index"
 
 
 export default {

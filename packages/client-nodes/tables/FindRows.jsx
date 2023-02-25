@@ -1,5 +1,4 @@
-import { Button, Group, NumberInput, Select, Stack, Switch, Text, TextInput } from "@mantine/core"
-import { useEffect, useRef } from "react"
+import { Button, Group, NumberInput, Stack, Text } from "@mantine/core"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components/index"
 

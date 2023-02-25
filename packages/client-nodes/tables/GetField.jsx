@@ -1,6 +1,6 @@
 import { Stack, Text, TextInput } from "@mantine/core"
 import { Table } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components/index"
+import { Control, ControlLabel, ControlStack } from "../components/index"
 
 
 export default {
@@ -24,7 +24,7 @@ export default {
     },
 
 
-    renderNode: ({ state, alignHandles }) => {
+    renderNode: ({ state }) => {
         return (
             <Stack spacing={0} align="center">
                 {state.field ?

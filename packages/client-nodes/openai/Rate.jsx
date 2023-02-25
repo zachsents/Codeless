@@ -20,7 +20,7 @@ export default {
         scale: 10,
     },
 
-    renderNode: ({ state, setState }) => {
+    renderNode: ({ state }) => {
         return (
             <RequiresConfiguration dependencies={[state.property, state.scale]}>
                 <Text align="center">Rating <b>{state.property}</b> (0-{state.scale})</Text>

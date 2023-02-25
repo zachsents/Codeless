@@ -1,8 +1,5 @@
-import { Fragment } from "react"
-import { ActionIcon, Button, Grid, Group, Space, Stack, Text, TextInput } from "@mantine/core"
-import produce from "immer"
-import { Template, Plus, X, ArrowRight } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
+import { Template } from "tabler-icons-react"
+import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
 
 export default {
