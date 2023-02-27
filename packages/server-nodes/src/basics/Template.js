@@ -10,18 +10,9 @@ export default {
 
     onInputsReady({ template, data }) {
 
-        const state = this.state
-
         const text = safeMap(
             (currentTemplate, ...currentData) => currentData.reduce(
-                (text, item, i) => {
-                    const variableName = state.dataLabels[i]
-
-                    if (!variableName)
-                        return text
-
-                    return text.replaceAll(`{${variableName}}`, item)
-                },
+                (text, item) => text.replaceAll(`{${item.label}}`, item.value),
                 currentTemplate
             ),
             template, ...data,

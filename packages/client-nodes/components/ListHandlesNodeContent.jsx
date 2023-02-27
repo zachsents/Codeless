@@ -1,32 +1,31 @@
 import { Group, Stack, Text } from "@mantine/core"
 import { ArrowRight } from "tabler-icons-react"
 
+import { useAlignHandles, useListHandle } from "@minus/graph-util"
+
 
 export default function ListHandlesNodeContent({
     handleName,
-    listHandles,
-    alignHandles,
-    state,
     arrowSide = "in",
     emptyMessage = "Nothing specified",
     unnamedMessage = "<none>",
-    stateKey = "dataLabels",
 }) {
 
-    const numberOfItems = listHandles.handles?.[handleName] ?? 0
+    const [labels] = useListHandle(null, handleName)
+    const alignHandle = useAlignHandles()
 
-    return numberOfItems ?
+    return labels?.length ?
         <Stack spacing="xs">
-            {Array(numberOfItems).fill(0).map((_, i) =>
+            {labels.map((label, i) =>
                 <Group
                     position={arrowSide == "out" ? "right" : "left"}
                     spacing="xs"
-                    ref={el => alignHandles(`${handleName}.${i}`, el)}
-                    key={handleName + i}
+                    ref={alignHandle(`${handleName}.${label.id}`)}
+                    key={label.id}
                 >
                     {arrowSide == "in" && <ArrowRight size={14} />}
                     <Text>
-                        {state[stateKey]?.[i] || (typeof unnamedMessage === "function" ? unnamedMessage(i) : unnamedMessage)}
+                        {label.value || (typeof unnamedMessage === "function" ? unnamedMessage(i) : unnamedMessage)}
                     </Text>
                     {arrowSide == "out" && <ArrowRight size={14} />}
                 </Group>

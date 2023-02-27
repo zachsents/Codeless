@@ -11,7 +11,7 @@ export default {
     async onInputsReady({ $table, data }) {
         // map to records
         safeMap((...data) => {
-            return data.map((item, i) => [this.state.dataLabels[i] ?? i, item])
+            return data.map((item, i) => [item.label || i, item.value])
                 |> Object.fromEntries(^^)
         }, ...data)
             // add rows to table

@@ -1,6 +1,8 @@
 import { Box, Textarea } from "@mantine/core"
 import { AlphabetLatin } from "tabler-icons-react"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "basic:Text",
@@ -16,18 +18,21 @@ export default {
         $: "",
     },
 
-    renderNode: ({ state, setState, alignHandles }) => (
-        <Box ref={el => alignHandles("$", el)}>
+    renderNode: () => {
+
+        const [state, setState] = useNodeState()
+        const alignHandle = useAlignHandles()
+
+        return <Box ref={alignHandle("$")}>
             <Textarea
                 value={state.$ ?? ""}
                 onChange={event => setState({ $: event.currentTarget.value })}
                 placeholder="Type something..."
-                radius="md"
                 size="xs"
                 autosize
                 minRows={1}
                 maxRows={15}
             />
         </Box>
-    ),
+    },
 }

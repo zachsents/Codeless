@@ -3,23 +3,34 @@ import { CalendarTime, Clock } from "tabler-icons-react"
 import { Stack } from "@mantine/core"
 import { Calendar, TimeInput } from "@mantine/dates"
 
+import { useNodeState } from "@minus/graph-util"
+
+
 export default {
     id: "basic:DateTime",
     name: "Date & Time",
     description: "Giving you the time of day.",
     icon: CalendarTime,
-    
+
     inputs: [],
     outputs: ["$"],
 
     defaultState: { $: new Date().getTime() },
 
-    renderName: ({ state }) => new Date(state.$).toLocaleString(undefined, {
-        timeStyle: "short",
-        dateStyle: "short",
-    }),
+    renderName: () => {
 
-    configuration: ({ state, setState }) => {
+        const [state] = useNodeState()
+
+        return new Date(state.$).toLocaleString(undefined, {
+            timeStyle: "short",
+            dateStyle: "short",
+        })
+    },
+
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         const [date, setDate] = useState(state.$ ? new Date(state.$) : null)
         const [time, setTime] = useState(state.$ ? new Date(state.$) : null)
 

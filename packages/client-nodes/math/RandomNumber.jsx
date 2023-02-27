@@ -1,6 +1,9 @@
 import { NumberInput, Stack, Switch, Group, Text } from "@mantine/core"
 import { Dice3 } from "tabler-icons-react"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
+
 export default {
     id: "math:RandomNumber",
     name: "Random Number",
@@ -17,15 +20,22 @@ export default {
         integer: true,
     },
 
-    renderNode: ({ state, alignHandles }) => {
+    renderNode: () => {
+
+        const [state] = useNodeState()
+        const alignHandle = useAlignHandles()
+
         return (
-            <Text size="xs" color="dimmed" align="center" ref={el => alignHandles("$", el)}>
+            <Text size="xs" color="dimmed" align="center" ref={alignHandle("$")}>
                 {state.integer ? "Integer" : "Number"} between {state.min} and {state.max}
             </Text>
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <Stack spacing="xs" align="center">
                 <Group w={240} grow>

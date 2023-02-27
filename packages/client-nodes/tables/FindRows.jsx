@@ -2,6 +2,8 @@ import { Button, Group, NumberInput, Stack, Text } from "@mantine/core"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components/index"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "tables:FindRows",
@@ -20,24 +22,32 @@ export default {
     ],
 
     defaultState: {
-        limit: null,
+        limit: undefined,
     },
 
-    renderName: ({ state }) => `Query Row${state.limit == 1 ? "" : "s"}`,
+    renderName: () => {
+        const [state] = useNodeState()
 
-    renderNode: ({ state, alignHandles }) => {
+        return `Query Row${state.limit == 1 ? "" : "s"}`
+    },
 
-        alignHandles("$table")
+    renderNode: () => {
+
+        const [state] = useNodeState()
+        const alignHandle = useAlignHandles()
+        alignHandle("$table")()
 
         return (
             <Stack spacing="xs" align="center">
                 <Text color="dimmed">Find {state.limit == 1 ? "a row" : state.limit == null ? "all rows" : `${state.limit} rows`} where</Text>
-                <SkeletonWithHandle align="left" ref={el => alignHandles("filters", el)} />
+                <SkeletonWithHandle align="left" ref={alignHandle("filters")} />
             </Stack>
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>

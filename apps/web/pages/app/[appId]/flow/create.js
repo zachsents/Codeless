@@ -8,7 +8,7 @@ import { useAppDetailsRealtime, useCreateFlow, useFlowCountForApp, usePlan } fro
 import { Triggers, TriggerCategories } from "@minus/client-nodes"
 
 import { useAppId, useMustBeSignedIn } from "../../../../modules/hooks"
-import { serializeGraph } from "../../../../modules/graph-util"
+import { serializeGraph } from "@minus/graph-util"
 import AppDashboard from "../../../../components/AppDashboard"
 import FormSubsection from "../../../../components/forms/FormSubsection"
 import FormSection from "../../../../components/forms/FormSection"

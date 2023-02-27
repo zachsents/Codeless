@@ -2,6 +2,8 @@ import { TextInput } from "@mantine/core"
 import { Variable } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "basic:UseVariable",
@@ -12,9 +14,16 @@ export default {
     inputs: [],
     outputs: ["$"],
     
-    renderName: ({ state }) => state.name,
+    renderName: () => {
+        const [state] = useNodeState()
 
-    configuration: ({ state, setState }) => {
+        return state.name
+    },
+
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <ControlStack>
                 <Control>

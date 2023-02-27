@@ -3,7 +3,11 @@ import { SiOpenai } from "react-icons/si"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 import { useDebouncedSynchronizedState } from "../hooks"
 
+import { useNodeState } from "@minus/graph-util"
+
+
 const DefaultTemperature = 0
+
 
 export default {
     id: "openai:AskGPT3",
@@ -21,7 +25,9 @@ export default {
         temperature: DefaultTemperature,
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         const [temperature, setTemperature] = useDebouncedSynchronizedState(
             state.temperature,

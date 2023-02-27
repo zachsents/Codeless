@@ -1,6 +1,8 @@
 import { SiOpenai } from "react-icons/si"
 import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
+import { useAlignHandles } from "@minus/graph-util"
+
 
 export default {
     id: "openai:Parse",
@@ -22,28 +24,23 @@ export default {
         dataLabels: [],
     },
 
-    renderNode: ({ state, alignHandles, listHandles }) => {
+    renderNode: () => {
 
-        alignHandles("text")
+        const alignHandle = useAlignHandles()
+        alignHandle("text")()
 
         return <ListHandlesNodeContent
             handleName="data"
-            listHandles={listHandles}
-            alignHandles={alignHandles}
-            state={state}
             arrowSide="out"
             emptyMessage="No outputs specified"
         />
     },
 
-    configuration: ({ state, setState, listHandles }) => {
+    configuration: () => {
         return (
             <ControlStack>
                 <ListHandlesControl
                     handleName="data"
-                    listHandles={listHandles}
-                    state={state}
-                    setState={setState}
                     controlTitle="Outputs"
                     controlInfo="The outputs you'd like to pull from the text."
                     addLabel="Add Output"

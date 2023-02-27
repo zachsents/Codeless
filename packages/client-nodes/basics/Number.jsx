@@ -1,6 +1,9 @@
 import { Numbers } from "tabler-icons-react"
 import { Box, NumberInput } from "@mantine/core"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
+
 export default {
     id: "basic:Number",
     name: "Number",
@@ -15,9 +18,12 @@ export default {
         $: null
     },
 
-    renderNode: ({ state, setState, alignHandles }) => (
+    renderNode: () => {
 
-        <Box ref={el => alignHandles("$", el)}>
+        const [state, setState] = useNodeState()
+        const alignHandle = useAlignHandles()
+
+        return <Box ref={alignHandle("$")}>
             <NumberInput
                 value={state.$}
                 onChange={val => setState({ $: val })}
@@ -26,5 +32,5 @@ export default {
                 maw={140}
             />
         </Box>
-    ),
+    },
 }

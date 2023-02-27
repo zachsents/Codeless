@@ -1,8 +1,10 @@
 import { Center, Text, TextInput, Image, Loader, Select } from "@mantine/core"
 import { useEffect } from "react"
 import { SiGooglesheets } from "react-icons/si"
+
 import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../../components/index"
 import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
+import { useNodeContext, useNodeState } from "@minus/graph-util"
 
 
 const color = "green"
@@ -33,7 +35,10 @@ export default {
         sheetName: null,
     },
 
-    renderNode: ({ state, setState, appId, integrationsSatisfied }) => {
+    renderNode: () => {
+
+        const {appId, integrationsSatisfied} = useNodeContext()
+        const [state, setState] = useNodeState()
 
         // fetch spreadsheet details
         const { details, isLoading, isError } = useSpreadsheetDetails(integrationsSatisfied && appId, state.spreadsheetId)
@@ -76,7 +81,9 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>
@@ -117,7 +124,7 @@ export default {
                     <Select
                         name="sheetName"
                         placeholder={state.isLoading ? "Loading sheets..." : "Pick a sheet"}
-                        value={state.sheetName}
+                        value={state.sheetName ?? null}
                         onChange={sheetName => setState({ sheetName })}
                         data={state.sheets ?? []}
                         disabled={state.isLoading || !state.spreadsheetId}

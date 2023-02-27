@@ -2,6 +2,8 @@ import { Stack, Text, TextInput } from "@mantine/core"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "tables:GetField",
@@ -23,8 +25,10 @@ export default {
         field: "",
     },
 
+    renderNode: () => {
 
-    renderNode: ({ state }) => {
+        const [state] = useNodeState()
+
         return (
             <Stack spacing={0} align="center">
                 {state.field ?
@@ -39,7 +43,10 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <ControlStack>
                 <Control>

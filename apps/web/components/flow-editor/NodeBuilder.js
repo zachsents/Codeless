@@ -4,7 +4,7 @@ import { useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
 
-import { serializeGraph, deserializeGraph } from "../../modules/graph-util"
+import { serializeGraph, deserializeGraph } from "@minus/graph-util"
 import { useDebouncedCustomState } from "../../modules/hooks"
 import { useAppContext, useFlowContext } from "../../modules/context"
 import { Nodes } from "../../modules/nodes"

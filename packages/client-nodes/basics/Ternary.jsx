@@ -1,6 +1,8 @@
 import { Center, Group, Stack } from "@mantine/core"
 import { ArrowsJoin, SquareArrowRight, SquareCheck, SquareX } from "tabler-icons-react"
 
+import { useAlignHandles } from "@minus/graph-util"
+
 
 export default {
     id: "basic:Ternary",
@@ -13,38 +15,25 @@ export default {
 
     renderName: () => "Choose",
 
-    renderNode: ({ alignHandles }) => {
+    renderNode: () => {
 
-        alignHandles("condition")
+        const alignHandle = useAlignHandles()
+        alignHandle("condition")()
 
         return (
             <Group>
                 <Stack spacing="xs">
-                    <Center ref={el => alignHandles("ifTrue", el)} >
+                    <Center ref={alignHandle("ifTrue")} >
                         <SquareCheck />
                     </Center>
-                    <Center ref={el => alignHandles("ifFalse", el)}>
+                    <Center ref={alignHandle("ifFalse")}>
                         <SquareX />
                     </Center>
                 </Stack>
-                <Center ref={el => alignHandles("output", el)}>
+                <Center ref={alignHandle("output")}>
                     <SquareArrowRight />
                 </Center>
             </Group>
-            // <Stack align="center" spacing={0}>
-            //     <Text size="xs">If</Text>
-            //     <SkeletonWithHandle align="left" ref={el => alignHandles("condition", el)} />
-            //     <Space h="xs" />
-            //     <Text size="xs">Then</Text>
-            //     <Box ref={el => alignHandles("output", el)}>
-            //         <SkeletonWithHandle align="left" ref={el => alignHandles("ifTrue", el)} />
-            //         <Space h="xs" />
-            //         <Text size="xs">Otherwise</Text>
-            //         <SkeletonWithHandle align="left" ref={el => alignHandles("ifFalse", el)} />
-            //     </Box>
-            // </Stack>
         )
     },
-
-
 }

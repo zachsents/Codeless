@@ -18,10 +18,10 @@ export default {
 
         // set inputs
         const inputs = Object.fromEntries(
-            this.state.inputLabels.map((label, i) => [
-                label,
-                input[i]?.length > 1 ? input[i] : input[i][0]
-            ])
+            input.map(input => {
+                const arr = input.map(inp => inp.value)
+                return [input._label, arr.length == 1 ? arr[0] : []]
+            })
         )
         await jail.set("inputs", new ivm.ExternalCopy(inputs).copyInto())
 
@@ -35,13 +35,17 @@ export default {
         // get outputs object
         const outputs = await (await jail.get("outputs")).copy()
 
-        this.publish(
-            Object.fromEntries(
-                this.state.outputLabels.map(
-                    (label, i) => [`output.${i}`, outputs[label]]
-                )
-            )
-        )
+        // transform outputs into something we can publish
+        Object.keys(outputs).forEach(key => {
+            const id = this.state._outputLabels.find(label => label.value == key)?.id
+
+            if (id)
+                outputs[`output.${id}`] = outputs[key]
+
+            delete outputs[key]
+        })
+
+        this.publish(outputs)
 
         isolate.dispose()
     },

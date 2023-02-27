@@ -14,3 +14,12 @@ export const useConfigStore = create(set => ({
         })),
     },
 }))
+
+
+export function usePanelMaximized(nodeId) {
+    return useConfigStore(s => s[nodeId]?.panelMaximized ?? false)
+}
+
+export function useAccordionValue(nodeId) {
+    return useConfigStore(s => s[nodeId]?.accordionValue)
+}

@@ -1,6 +1,9 @@
 import { CircuitSwitchOpen } from "tabler-icons-react"
 import { Center, Switch } from "@mantine/core"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
+
 export default {
     id: "basic:Switch",
     name: "Switch",
@@ -12,9 +15,13 @@ export default {
 
     defaultState: { $: false },
 
-    renderNode: ({ state, setState, alignHandles }) => {
+    renderNode: () => {
+
+        const [state, setState] = useNodeState()
+        const alignHandle = useAlignHandles()
+
         return (
-            <Center ref={el => alignHandles("$", el)}>
+            <Center ref={alignHandle("$")}>
                 <Switch
                     color="green"
                     mt={4}

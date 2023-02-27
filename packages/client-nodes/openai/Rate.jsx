@@ -1,6 +1,7 @@
 import { SiOpenai } from "react-icons/si"
 import { NumberInput, Text, TextInput } from "@mantine/core"
 
+import { useNodeState } from "@minus/graph-util"
 import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components/index"
 
 
@@ -20,7 +21,10 @@ export default {
         scale: 10,
     },
 
-    renderNode: ({ state }) => {
+    renderNode: () => {
+
+        const [state] = useNodeState()
+
         return (
             <RequiresConfiguration dependencies={[state.property, state.scale]}>
                 <Text align="center">Rating <b>{state.property}</b> (0-{state.scale})</Text>
@@ -28,7 +32,10 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <ControlStack>
                 <Control>

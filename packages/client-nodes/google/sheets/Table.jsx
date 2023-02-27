@@ -2,6 +2,8 @@ import { Checkbox, Grid, Group, NumberInput, Text, TextInput } from "@mantine/co
 import { SiGooglesheets } from "react-icons/si"
 import { Control, ControlLabel, ControlStack } from "../../components/index"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "googlesheets:Table",
@@ -23,7 +25,9 @@ export default {
         startRow: 2,
     },
 
-    renderNode: ({ state }) => {
+    renderNode: () => {
+        
+        const [state] = useNodeState()
 
         const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
 
@@ -36,7 +40,9 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
 
@@ -49,7 +55,7 @@ export default {
                 <Control>
                     <Checkbox
                         label="Use Entire Sheet"
-                        checked={state.useEntireSheet}
+                        checked={state.useEntireSheet ?? false}
                         onChange={event => setState({ useEntireSheet: event.currentTarget.checked })}
                     />
                 </Control>
@@ -112,7 +118,7 @@ export default {
                     </ControlLabel>
                     <Group spacing="xl">
                         <NumberInput
-                            value={state.headerRow}
+                            value={state.headerRow ?? null}
                             onChange={val => setState({ headerRow: val })}
                             placeholder="1"
                             w={140}
@@ -126,7 +132,7 @@ export default {
                         Data Start Row
                     </ControlLabel>
                     <NumberInput
-                        value={state.startRow}
+                        value={state.startRow ?? null}
                         onChange={val => setState({ startRow: val })}
                         placeholder="2"
                         w={140}

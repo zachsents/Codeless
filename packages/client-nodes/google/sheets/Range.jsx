@@ -1,6 +1,8 @@
 import { TextInput, Text, Grid, NumberInput, Center } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "googlesheets:Range",
@@ -17,7 +19,9 @@ export default {
 
     defaultState: { range: ["", "", "", ""] },
 
-    renderNode: ({ state }) => {
+    renderNode: () => {
+
+        const [state] = useNodeState()
 
         const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
 
@@ -33,7 +37,9 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
 

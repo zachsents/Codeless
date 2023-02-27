@@ -6,6 +6,8 @@ import { Box, Divider, Group, SimpleGrid } from "@mantine/core"
 import hljs from "highlight.js/lib/common"
 import "highlight.js/styles/github.css"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "basic:CustomCode",
@@ -32,14 +34,12 @@ export default {
         outputLabels: [],
     },
 
-    renderNode: ({ state, listHandles, alignHandles }) => {
+    renderNode: () => {
+
         return (
             <Group noWrap position="apart">
                 <ListHandlesNodeContent
                     handleName="input"
-                    listHandles={listHandles}
-                    alignHandles={alignHandles}
-                    state={state}
                     arrowSide="in"
                     emptyMessage="No inputs"
                     stateKey="inputLabels"
@@ -47,9 +47,6 @@ export default {
                 <Divider orientation="vertical" />
                 <ListHandlesNodeContent
                     handleName="output"
-                    listHandles={listHandles}
-                    alignHandles={alignHandles}
-                    state={state}
                     arrowSide="out"
                     emptyMessage="No outputs"
                     stateKey="outputLabels"
@@ -58,16 +55,15 @@ export default {
         )
     },
 
-    configuration: ({ state, setState, listHandles, maximized }) => {
+    configuration: ({ maximized }) => {
+
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>
                 <SimpleGrid cols={maximized ? 2 : 1} spacing="lg">
                     <ListHandlesControl
                         handleName="input"
-                        listHandles={listHandles}
-                        state={state}
-                        setState={setState}
                         controlTitle="Inputs"
                         controlInfo="The inputs to the code."
                         addLabel="Add Input"
@@ -76,9 +72,6 @@ export default {
                     />
                     <ListHandlesControl
                         handleName="output"
-                        listHandles={listHandles}
-                        state={state}
-                        setState={setState}
                         controlTitle="Outputs"
                         controlInfo="The outputs to the code."
                         addLabel="Add Output"
@@ -94,7 +87,7 @@ export default {
                     <Box sx={codeEditorStyle}>
                         <CodeEditor
                             placeholder="const firstInput = inputs[0];"
-                            value={state.code}
+                            value={state.code ?? ""}
                             onValueChange={code => setState({ code })}
                             highlight={code => hljs.highlight(code, { language: "js" }).value}
                             padding={10}

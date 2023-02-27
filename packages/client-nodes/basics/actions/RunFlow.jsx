@@ -1,6 +1,8 @@
 import { ControlStack, OtherFlowsControl } from "../../components/index"
 import { Run } from "tabler-icons-react"
 
+import { useNodeContext, useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "basic:RunFlow",
@@ -11,7 +13,10 @@ export default {
     inputs: ["payload"],
     outputs: [],
 
-    configuration: ({ state, setState, flowId, appId }) => {
+    configuration: () => {
+
+        const {flowId, appId} = useNodeContext()
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>

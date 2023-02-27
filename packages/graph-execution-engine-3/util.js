@@ -107,18 +107,7 @@ function prepNode(node, nodeType, nodes, edges) {
                     })
 
                     // combine list handle inputs into one array
-                    Object.keys(nodeInputs).forEach(inputId => {
-                        const { name: inputName, index } = parseListHandle(inputId)
-
-                        if (index == null)
-                            return
-
-                        nodeInputs[inputName] ??= []
-                        nodeInputs[inputName][index] = nodeInputs[inputId]
-
-                        // fix sparse arrays
-                        nodeInputs[inputName] = Array.from(nodeInputs[inputName], x => x)
-                    })
+                    fixListInputs(nodeInputs, conn.node.state)
 
                     // increment run counter
                     node.timesRan++
@@ -196,16 +185,13 @@ function expectSingleValue(input) {
 
 
 function parseListHandle(id) {
-    const [, name, index] = id.match(/(.+?)(?:\.(\d+))?$/) ?? []
-    return {
-        name,
-        index: index && parseInt(index),
-    }
+    const [, name, index] = id.match(/(.+?)(?:\.(\w+))?$/) ?? []
+    return { name, index }
 }
 
 
 function cleanOutput(dirty, inArray = false) {
-    if(dirty == null)
+    if (dirty == null)
         return dirty ?? null
 
     const value = dirty.valueOf()
@@ -214,11 +200,41 @@ function cleanOutput(dirty, inArray = false) {
     const isArray = value.constructor === Array
     const isCircular = util.format("%j", value) == "[Circular]"
 
-    if(isArray)
+    if (isArray)
         return inArray ? dirty.join(", ") : dirty.map(x => cleanOutput(x, true))
 
     if ((isPrimitive || isPlainObject) && !isCircular)
         return value
 
     return dirty.toString()
+}
+
+
+function fixListInputs(inputs, nodeState) {
+    Object.keys(inputs).forEach(inputId => {
+        const { name: inputName, index } = parseListHandle(inputId)
+
+        if (index == null)
+            return  // not a list input
+
+        // grab label from node state
+        const label = nodeState[`_${inputName}Labels`].find(label => label.id == index).value
+
+        // set up empty array
+        inputs[inputName] ??= []
+
+        // we'll transform each value to have the label attached
+        const transform = value => ({ id: index, label, value })
+
+        // if it's an array, we'll map it and add a special property
+        if(inputs[inputId] instanceof Array) {
+            const inputArr = inputs[inputId].map(transform)
+            inputArr._label = label
+            inputs[inputName].push(inputArr)
+            return
+        }
+
+        // otherwise, we'll just add the single value
+        inputs[inputName].push(transform(inputs[inputId]))
+    })
 }

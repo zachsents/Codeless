@@ -2,6 +2,8 @@ import { Stack, Text, TextInput } from "@mantine/core"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "tables:SetColumn",
@@ -30,15 +32,17 @@ export default {
     },
 
 
-    renderNode: ({ state, alignHandles }) => {
-        
-        alignHandles(["table", "tableOut"])
+    renderNode: () => {
+
+        const [state] = useNodeState()
+        const alignHandle = useAlignHandles()
+        alignHandle(["table", "tableOut"])()
 
         return (
             <Stack
                 spacing={0}
                 align="center"
-                ref={el => alignHandles("value", el)}
+                ref={alignHandle("value")}
             >
                 {state.column ?
                     <>
@@ -52,7 +56,10 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <ControlStack>
                 <Control>

@@ -5,7 +5,7 @@ import { useDisclosure } from "@mantine/hooks"
 import { TbMaximize, TbSearch, TbTypography } from "react-icons/tb"
 import { motion } from "framer-motion"
 
-import { createNode } from "../../../modules/graph-util"
+import { createNode } from "@minus/graph-util"
 
 import CollapseButton from "./CollapseButton"
 import ActionButton from "./ActionButton"

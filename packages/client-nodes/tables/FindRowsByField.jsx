@@ -2,6 +2,8 @@ import { Stack, Switch, Text, TextInput } from "@mantine/core"
 import { Table } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack, RequiresConfiguration, SkeletonWithHandle } from "../components/index"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "tables:FindRowsByField",
@@ -23,11 +25,17 @@ export default {
         multiple: true,
     },
 
-    renderName: ({ state }) => `Find Row${state.multiple ? "s" : ""} By Field`,
+    renderName: () => {   
+        const [state] = useNodeState()
+        
+        return `Find Row${state.multiple ? "s" : ""} By Field`
+    },
 
-    renderNode: ({ state, alignHandles }) => {
+    renderNode: () => {
 
-        alignHandles("$table")
+        const [state] = useNodeState()
+        const alignHandle = useAlignHandles()
+        alignHandle("$table")()
 
         return (
             <RequiresConfiguration dependencies={[state.field]}>
@@ -39,13 +47,16 @@ export default {
                         </Text> is
                     </Text>
 
-                    <SkeletonWithHandle maw={200} align="left" ref={el => alignHandles("value", el)} />
+                    <SkeletonWithHandle maw={200} align="left" ref={alignHandle("value")} />
                 </Stack>
             </RequiresConfiguration>
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <ControlStack>
                 <Control>

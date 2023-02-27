@@ -1,12 +1,13 @@
 import { useEffect } from "react"
 import { Center, Loader, Text, TextInput } from "@mantine/core"
 import { BrandAirtable } from "tabler-icons-react"
+
 import { useTableNameFromId } from "@minus/client-sdk/integrations/airtable"
+import { useNodeContext, useNodeState } from "@minus/graph-util"
 
 import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../components/index"
 
 
-const color = "blue"
 const AirtableURLRegex = /(app[0-9A-Za-z]{12,16})\/(tbl[0-9A-Za-z]{12,16})/
 
 
@@ -15,7 +16,7 @@ export default {
     name: "Use Table",
     description: "Configures a base and table from AirTable.",
     icon: BrandAirtable,
-    color,
+    color: "blue",
     badge: "airtable",
 
     inputs: [],
@@ -29,7 +30,10 @@ export default {
         tableId: null,
     },
 
-    renderNode: ({ state, setState, appId, integrationsSatisfied }) => {
+    renderNode: () => {
+
+        const { appId, integrationsSatisfied, type } = useNodeContext()
+        const [state, setState] = useNodeState()
 
         // fetch table name
         const { tableName, isLoading, isError } = useTableNameFromId(integrationsSatisfied && appId, state.baseId, state.tableId)
@@ -54,7 +58,7 @@ export default {
             ]}>
                 <Center>
                     {isLoading ?
-                        <Loader size="xs" color={color} />
+                        <Loader size="xs" color={type.color} />
                         :
                         <>
                             <Text color="dimmed" component="span" size="xs">Using table&nbsp;</Text>
@@ -65,7 +69,9 @@ export default {
         )
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>

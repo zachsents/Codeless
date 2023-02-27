@@ -3,7 +3,7 @@ import { ActionIcon, Badge, Button, Group, HoverCard, Stack, Text, Title, Unstyl
 import { Square } from 'tabler-icons-react'
 
 import { Nodes } from '../../modules/nodes'
-import { addNodeAtCenter, addNodesAtCenter } from '../../modules/graph-util'
+import { addNodeAtCenter, addNodesAtCenter } from "@minus/graph-util"
 import Search from '../Search'
 import { useSetState } from '@mantine/hooks'
 import { TbArrowRight, TbCheck, TbMinus, TbPlus } from 'react-icons/tb'
@@ -212,7 +212,7 @@ function QuantityCheckbox({ value, onChange }) {
             }
         }}
         >
-            <ActionIcon radius="xl" size="md" onClick={decrement}><TbMinus size={12} /></ActionIcon>
+            <ActionIcon component="div" radius="xl" size="md" onClick={decrement}><TbMinus size={12} /></ActionIcon>
             <Button
                 component="div"
 
@@ -231,7 +231,7 @@ function QuantityCheckbox({ value, onChange }) {
             >
                 {value == 0 ? "" : value == 1 ? <TbCheck /> : value}
             </Button>
-            <ActionIcon radius="xl" size="md" onClick={increment}><TbPlus size={12} /></ActionIcon>
+            <ActionIcon component="div" radius="xl" size="md" onClick={increment}><TbPlus size={12} /></ActionIcon>
         </Group>
     )
 }

@@ -21,7 +21,7 @@ export default {
         // map to update objects
         safeMap((row, ...data) => ({
             row,
-            data: data.map((item, i) => [this.state.dataLabels[i] ?? i, item])
+            data: data.map((item, i) => [item.label || i, item.value])
                 |> Object.fromEntries(^^)
         }), rows, ...data)
             // make the updates

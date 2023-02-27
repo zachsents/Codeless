@@ -2,6 +2,8 @@ import { NumberInput, Switch, Text } from "@mantine/core"
 import { Container } from "tabler-icons-react"
 import { ControlStack, Control, ControlLabel } from "../components/index"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "text:TextAround",
@@ -24,7 +26,10 @@ export default {
         onlyFirst: true,
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <ControlStack>
                 <Control>

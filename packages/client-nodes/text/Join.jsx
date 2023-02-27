@@ -2,6 +2,8 @@ import { Switch, TextInput } from "@mantine/core"
 import { AlphabetLatin } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "text:Join",
@@ -19,7 +21,9 @@ export default {
         useLast: true,
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>

@@ -3,7 +3,7 @@ import { Button, Text } from "@mantine/core"
 import { TbPlus } from "react-icons/tb"
 
 import { Nodes } from "../../../modules/nodes"
-import { getHandleLabel } from "../../../modules/graph-util"
+import { getHandleLabel } from "@minus/graph-util"
 import { useMemo } from "react"
 
 

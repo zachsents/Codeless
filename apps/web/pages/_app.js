@@ -13,7 +13,12 @@ import ScheduleFlowModal from "../components/modals/ScheduleFlowModal"
 import NodePalette from "../components/flow-editor/NodePalette"
 
 import { initializeFirebase } from "@minus/client-sdk"
+import { Integrations } from "@minus/client-nodes"
+import { initialize as initGraphUtil } from "@minus/graph-util"
+import { Nodes } from "../modules/nodes"
+
 initializeFirebase()
+initGraphUtil(Nodes, Integrations)
 
 
 const queryClient = new QueryClient()

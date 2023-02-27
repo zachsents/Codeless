@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const withTM = require("next-transpile-modules")([
-    "@minus/client-nodes",
+    "@minus/client-nodes", "@minus/graph-util",
 ])
 
 const nextConfig = {

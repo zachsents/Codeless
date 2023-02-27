@@ -2,6 +2,8 @@ import { Center, Group, SimpleGrid, Switch, Text, TextInput, Tooltip } from "@ma
 import { Regex } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 
+import { useAlignHandles, useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "text:Regex",
@@ -26,21 +28,26 @@ export default {
         },
     },
 
-    renderNode: ({ state, alignHandles }) => {
+    renderNode: () => {
+
+        const [state] = useNodeState()
+        const alignHandle = useAlignHandles()
 
         const flags = Object.entries(state.flags ?? {})
             .filter(([, enabled]) => enabled)
             .map(([flag]) => flag)
             .join("")
 
-        return <Center ref={el => alignHandles("$", el)}>
+        return <Center ref={alignHandle("$")}>
             <Text color="dimmed">/</Text>
             <Text>{state.$}</Text>
             <Text color="dimmed">/{flags}</Text>
         </Center>
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>

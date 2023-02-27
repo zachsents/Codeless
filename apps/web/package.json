@@ -20,6 +20,7 @@
     "@mantine/nprogress": "^5.10.3",
     "@minus/client-nodes": "*",
     "@minus/client-sdk": "*",
+    "@minus/graph-util": "*",
     "embla-carousel-react": "^7.0.5",
     "firebase": "^9.13.0",
     "framer-motion": "^7.6.7",
@@ -32,11 +33,11 @@
     "react-icons": "^4.6.0",
     "react-query": "^3.39.3",
     "react-sparklines": "^1.7.0",
-    "reactflow": "^11.4.0",
+    "reactflow": "~11.4.0",
     "short-uuid": "^4.2.2",
     "tabler-icons-react": "^1.55.0",
     "timeago.js": "^4.0.2",
-    "zustand": "^4.1.1"
+    "zustand": "^4.3.1"
   },
   "devDependencies": {
     "eslint": "8.25.0",

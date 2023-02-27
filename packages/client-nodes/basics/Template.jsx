@@ -1,6 +1,8 @@
 import { Template } from "tabler-icons-react"
 import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
+import { useAlignHandles } from "@minus/graph-util"
+
 
 export default {
     id: "basic:Template",
@@ -22,28 +24,23 @@ export default {
         dataLabels: [],
     },
 
-    renderNode: ({ state, alignHandles, listHandles }) => {
+    renderNode: () => {
 
-        alignHandles("template")
+        const alignHandle = useAlignHandles()
+        alignHandle("template")()
 
         return <ListHandlesNodeContent
             handleName="data"
-            listHandles={listHandles}
-            alignHandles={alignHandles}
-            state={state}
             arrowSide="in"
             emptyMessage="No variables"
         />
     },
 
-    configuration: ({ state, setState, listHandles }) => {
+    configuration: () => {
         return (
             <ControlStack>
                 <ListHandlesControl
                     handleName="data"
-                    listHandles={listHandles}
-                    state={state}
-                    setState={setState}
                     controlTitle="Variable Names"
                     controlInfo="The names of the variables in the template. They will be filled in spots surrounded with curly braces. e.g. {FirstName}, {Email}"
                     addLabel="Add Variable"

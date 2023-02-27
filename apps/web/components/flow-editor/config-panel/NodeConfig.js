@@ -5,10 +5,10 @@ import {
 } from "@mantine/core"
 import { TbChevronLeft, TbChevronRight, TbExternalLink, TbX } from "react-icons/tb"
 
-import { useConfigStore } from "./config-store"
+import { useAccordionValue, useConfigStore, usePanelMaximized } from "./config-store"
 import { useAppContext } from "../../../modules/context"
 import { useAppId } from "../../../modules/hooks"
-import { deselectNode, getNodeIntegrationsStatus, getNodeType } from "../../../modules/graph-util"
+import { deselectNode, getNodeIntegrationsStatus, getNodeType } from "@minus/graph-util"
 import ProblemsSection from "./ProblemsSection"
 import OutputsSection from "./OutputsSection"
 import OptionsSection from "./OptionsSection"
@@ -26,8 +26,8 @@ export default function NodeConfig({ node }) {
     const hasConfiguration = !!nodeType.configuration
 
     // pull some state from config store -- doesn't need to be persisted between refreshes 
-    const panelMaximized = useConfigStore(s => s[node.id]?.panelMaximized ?? false)
-    const accordionValue = useConfigStore(s => s[node.id]?.accordionValue)
+    const panelMaximized = usePanelMaximized(node.id)
+    const accordionValue = useAccordionValue(node.id)
     const { togglePanelMaximized, setAccordionValue } = useConfigStore(s => s.actions)
 
     const nodeIntegrations = getNodeIntegrationsStatus(nodeType, appIntegrations)

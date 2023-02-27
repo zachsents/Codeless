@@ -4,7 +4,7 @@ import { useHover } from '@mantine/hooks'
 import { motion, AnimatePresence } from "framer-motion"
 import { TbX } from 'react-icons/tb'
 
-import { deleteEdgeById } from '../../modules/graph-util'
+import { deleteEdgeById } from "@minus/graph-util"
 
 
 const InteractionPadding = 20

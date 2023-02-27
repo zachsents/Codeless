@@ -2,6 +2,8 @@ import { Select } from "@mantine/core"
 import { AlphabetLatin } from "tabler-icons-react"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "text:IntlJoin",
@@ -18,7 +20,9 @@ export default {
         type: "conjunction",
     },
 
-    configuration: ({ state, setState }) => {
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>

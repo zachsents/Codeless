@@ -1,6 +1,8 @@
 import { ControlStack, OtherFlowsControl } from "../../components/index"
 import { ArrowIteration } from "tabler-icons-react"
 
+import { useNodeContext, useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "basic:LoopFlow",
@@ -11,7 +13,10 @@ export default {
     inputs: ["list"],
     outputs: [],
 
-    configuration: ({ state, setState, flowId, appId }) => {
+    configuration: () => {
+
+        const { flowId, appId } = useNodeContext()
+        const [state, setState] = useNodeState()
 
         return (
             <ControlStack>

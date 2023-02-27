@@ -11,13 +11,14 @@ export default {
 
     async onInputsReady({ text }) {
 
-        if (!this.state.dataLabels?.length)
+        if (!this.state._dataLabels?.length)
             throw new Error("No outputs specified")
 
         // format data labels for prompt
+        const labels = this.state._dataLabels.map(label => label.value)
         const formatter = new Intl.ListFormat("en")
-        const formattedList = formatter.format(this.state.dataLabels)
-        const formattedListQuotes = formatter.format(this.state.dataLabels.map(label => `"${label}"`))
+        const formattedList = formatter.format(labels)
+        const formattedListQuotes = formatter.format(labels.map(label => `"${label}"`))
 
         // construct prompt
         const prompt = text => `\`\`\`
@@ -44,8 +45,8 @@ Here is the ${formattedList} from this text in JSON form with keys ${formattedLi
 
         this.publish(
             Object.fromEntries(
-                this.state.dataLabels.map(
-                    (label, i) => [`data.${i}`, result.map(res => res[label])]
+                this.state._dataLabels.map(
+                    label => [`data.${label.id}`, result.map(res => res[label.value])]
                 )
             )
         )

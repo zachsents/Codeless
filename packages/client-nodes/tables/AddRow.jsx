@@ -1,6 +1,8 @@
 import { TableImport } from "tabler-icons-react"
 import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
+import { useAlignHandles } from "@minus/graph-util"
+
 
 export default {
     id: "tables:AddRow",
@@ -24,16 +26,14 @@ export default {
     },
 
 
-    renderNode: ({ state, alignHandles, listHandles }) => {
+    renderNode: () => {
 
-        alignHandles(["$table", "newRow"])
+        const alignHandle = useAlignHandles()
+        alignHandle(["$table", "newRow"])()
 
         return (
             <ListHandlesNodeContent
                 handleName="data"
-                listHandles={listHandles}
-                alignHandles={alignHandles}
-                state={state}
                 arrowSide="in"
                 emptyMessage="No fields specified"
                 unnamedMessage={i => `Field ${i + 1}`}
@@ -41,15 +41,12 @@ export default {
         )
     },
 
-    configuration: ({ state, setState, listHandles }) => {
+    configuration: () => {
 
         return (
             <ControlStack>
                 <ListHandlesControl
                     handleName="data"
-                    listHandles={listHandles}
-                    state={state}
-                    setState={setState}
                     controlTitle="Field Names"
                     controlInfo="The names of the fields to attach to the data."
                     addLabel="Add Field"

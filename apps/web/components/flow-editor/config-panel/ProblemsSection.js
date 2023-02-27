@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { Accordion, ThemeIcon,Text, Stack } from "@mantine/core"
 
 import { useFlowContext } from "../../../modules/context"
-import { useNodeConnections } from "../../../modules/graph-util"
+import { useNodeConnections } from "@minus/graph-util"
 import AccordionTitle from './AccordionTitle'
 import ProblemRow from "./ProblemRow"
 

@@ -2,6 +2,8 @@ import { AlphabetLatin } from "tabler-icons-react"
 import { SegmentedControl } from "@mantine/core"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 
+import { useNodeState } from "@minus/graph-util"
+
 
 export default {
     id: "text:Length",
@@ -17,9 +19,16 @@ export default {
         mode: "Character",
     },
 
-    renderName: ({ state }) => `${state.mode} Count`,
+    renderName: () => {
+        const [state] = useNodeState()
 
-    configuration: ({ state, setState }) => {
+        return `${state.mode} Count`
+    },
+
+    configuration: () => {
+
+        const [state, setState] = useNodeState()
+
         return (
             <ControlStack>
                 <Control>
