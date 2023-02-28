@@ -216,10 +216,13 @@ async function getAuthDetails() {
     const detailsPath = path.join(path.dirname(
         fileURLToPath(import.meta.url)),
         // use different file for local vs. live
-        `./airtable_secret${process.env.FUNCTIONS_EMULATOR ? ".local" : ""}.json`
+        `./airtable_oauth${process.env.FUNCTIONS_EMULATOR ? ".local" : ""}.json`
     )
 
-    return JSON.parse(await fs.readFile(detailsPath, "utf-8"))
+    return {
+        ...JSON.parse(await fs.readFile(detailsPath, "utf-8")),
+        secret: process.env.AIRTABLE_OAUTH_CLIENT_SECRET,
+    }
 }
 
 

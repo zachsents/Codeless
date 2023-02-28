@@ -22,12 +22,12 @@ export async function getGoogleOAuthClient(appId = global.info.appId, {
         return oauthClient
 
     // set up OAuth2 client
-    const detailsPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "./google_secret.json")
-    const { client_id, client_secret, redirect_uris } = JSON.parse(await fs.readFile(detailsPath, "utf-8"))
+    const detailsPath = path.join(path.dirname(fileURLToPath(import.meta.url)), "./google_oauth.json")
+    const { client_id, redirect_uris } = JSON.parse(await fs.readFile(detailsPath, "utf-8"))
 
     oauthClient = new google.auth.OAuth2(
         client_id,
-        client_secret,
+        process.env.GOOGLE_OAUTH_CLIENT_SECRET,
         redirect_uris[process.env.FUNCTIONS_EMULATOR ? 0 : 1]
     )
 
