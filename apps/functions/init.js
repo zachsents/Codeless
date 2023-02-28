@@ -1,6 +1,8 @@
 import admin from "firebase-admin"
 import * as dotenv from "dotenv"
-dotenv.config()
+dotenv.config({
+    path: process.env.FUNCTIONS_EMULATOR ? ".env.local" : ".env",
+})
 
 // initialize firebase app globalize/export
 admin.initializeApp()

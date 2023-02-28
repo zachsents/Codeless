@@ -1,0 +1,3 @@
+airtable/airtable_oauth.json merge=ours
+airtable/airtable_oauth.local.json merge=ours
+google/google_oauth.json merge=ours
