@@ -9,7 +9,7 @@
         "webhook:manage",
         "schema.bases:read"
     ],
-    "client_id": "3822953c-5081-4ead-8efa-5f628a5da23e",
-    "redirect_uri": "http://localhost:5001/nameless-948a8/us-central1/airtable-appAuthorizationRedirect",
-    "environment": "prod-local"
+    "client_id": "02552a1f-9184-42de-a2ee-426fa99db0d7",
+    "redirect_uri": "http://localhost:5001/minus-dev/us-central1/airtable-appAuthorizationRedirect",
+    "environment": "dev-local"
 }

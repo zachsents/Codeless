@@ -9,7 +9,7 @@
         "webhook:manage",
         "schema.bases:read"
     ],
-    "client_id": "d38570c7-d64c-43b6-a558-234c9a4c0478",
-    "redirect_uri": "https://us-central1-nameless-948a8.cloudfunctions.net/airtable-appAuthorizationRedirect",
-    "environment": "prod"
+    "client_id": "f6a41412-8f04-4099-8703-25b85c3c5afd",
+    "redirect_uri": "https://us-central1-minus-dev.cloudfunctions.net/airtable-appAuthorizationRedirect",
+    "environment": "dev"
 }

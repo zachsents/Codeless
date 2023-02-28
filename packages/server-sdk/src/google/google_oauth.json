@@ -1,16 +1,16 @@
 {
-    "client_id": "526708433703-ukq6vsivoq4b9ntpq9qjbr7k13l67hs0.apps.googleusercontent.com",
-    "project_id": "nameless-948a8",
+    "client_id": "883292264721-fakvek729bjtdu0enlgibhfj0uuhr5n6.apps.googleusercontent.com",
+    "project_id": "minus-dev",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "redirect_uris": [
-        "http://localhost:5001/nameless-948a8/us-central1/google-appAuthorizationRedirect",
-        "https://us-central1-nameless-948a8.cloudfunctions.net/google-appAuthorizationRedirect"
+        "http://localhost:5001/minus-dev/us-central1/google-appAuthorizationRedirect",
+        "https://us-central1-minus-dev.cloudfunctions.net/google-appAuthorizationRedirect"
     ],
     "javascript_origins": [
         "http://localhost:3000",
-        "https://minuscode.app"
+        "https://dev.minuscode.app"
     ],
-    "environment": "prod"
+    "environment": "dev"
 }
