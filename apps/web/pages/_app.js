@@ -1,3 +1,4 @@
+import Head from "next/head"
 import { MantineProvider } from "@mantine/core"
 import { ModalsProvider } from "@mantine/modals"
 import { QueryClientProvider, QueryClient } from "react-query"
@@ -20,7 +21,13 @@ const queryClient = new QueryClient()
 
 
 export default function MyApp({ Component, pageProps }) {
-    return (
+    return (<>
+        <Head>
+            <title key="title">Minus</title>
+            <meta property="og:title" content="Minus" key="ogtitle" />
+            <meta name="description" content="Build automations with ease" key="description" />
+            <link rel="icon" href="/favicon.png" key="favicon" />
+        </Head>
         <QueryClientProvider client={queryClient}>
             <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
                 <ModalsProvider modals={modals}>
@@ -29,7 +36,7 @@ export default function MyApp({ Component, pageProps }) {
                 </ModalsProvider>
             </MantineProvider>
         </QueryClientProvider>
-    )
+    </>)
 }
 
 

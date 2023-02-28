@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { ReactFlowProvider } from "reactflow"
+import Head from "next/head"
 import { AppShell } from "@mantine/core"
 import { useDisclosure, useInterval } from "@mantine/hooks"
 import { useUpdateFlowLastEdited } from "@minus/client-sdk"
 
 import { useFlowId, useMustBeSignedIn } from "../../../../../modules/hooks"
-import { AppProvider, FlowProvider } from "../../../../../modules/context"
+import { AppProvider, FlowProvider, useFlowContext } from "../../../../../modules/context"
 import NodeBuilder from "../../../../../components/flow-editor/NodeBuilder"
 import Header from "../../../../../components/flow-editor/Header"
 import SettingsDrawer from "../../../../../components/flow-editor/SettingsDrawer"
@@ -27,6 +28,7 @@ export default function EditFlow() {
     return (
         <AppProvider redirectOnNotExist="/dashboard">
             <FlowProvider redirectOnNotExist="/dashboard">
+                <PageTitle />
                 <ReactFlowProvider>
                     <AppShell
                         padding={0}
@@ -72,4 +74,16 @@ function LastEdited() {
     }, [flowId])
 
     return <></>
+}
+
+
+function PageTitle() {
+    const { flow } = useFlowContext()
+
+    const title = `Edit${flow?.name ? ` "${flow.name}"` : ""} | Minus`
+
+    return <Head>
+        <title key="title">{title}</title>
+        <meta property="og:title" content={title} key="ogtitle" />
+    </Head>
 }

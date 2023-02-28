@@ -35,7 +35,7 @@ export default function AppSettings() {
     }, [carousel])
 
     return (
-        <AppDashboard>
+        <AppDashboard pageTitle="Integrations" appName={app?.name}>
             <Stack spacing="xl">
                 <GradientBox centerAround={app?.color ?? null}>
                     <Group position="apart" sx={{ alignItems: "stretch" }}>

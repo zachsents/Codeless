@@ -89,7 +89,7 @@ export default function CreateFlow() {
 
 
     return (
-        <AppDashboard>
+        <AppDashboard pageTitle="Create a flow" appName={app?.name}>
             <Group position="apart">
                 <Link href={`/app/${appId}/flows`}>
                     <Tooltip position="right" label="Cancel">
