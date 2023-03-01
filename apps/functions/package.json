@@ -10,7 +10,7 @@
         "deploy": "node ./buildDeps.js && firebase deploy --only functions && node ./cleanupBuild.js"
     },
     "engines": {
-        "node": "16"
+        "node": "18"
     },
     "main": "index.js",
     "dependencies": {
