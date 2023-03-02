@@ -12,13 +12,9 @@
     "license": "ISC",
     "type": "module",
     "dependencies": {
-        "@minus/server-sdk": "*",
-        "airtable": "^0.11.6",
+        "@minus/server-sdk": "workspace:*",
         "firebase-admin": "^11.5.0",
-        "firebase-admin-callable-functions": "*",
-        "googleapis": "^105.0.0",
         "isolated-vm": "^4.4.2",
-        "lodash": "^4.17.21",
         "openai": "^3.1.0"
     }
 }

@@ -1,16 +1,13 @@
 /** @type {import('next').NextConfig} */
 
-const withTM = require("next-transpile-modules")([
-    "@minus/client-nodes",
-])
-
 const nextConfig = {
     reactStrictMode: true,
     swcMinify: true,
     images: {
         unoptimized: true,
     },
-    // productionBrowserSourceMaps: true,
+    productionBrowserSourceMaps: true,
+    transpilePackages: ["@minus/client-nodes"],
     async redirects() {
         return [
             {
@@ -22,4 +19,4 @@ const nextConfig = {
     },
 }
 
-module.exports = withTM(nextConfig)
+module.exports = nextConfig

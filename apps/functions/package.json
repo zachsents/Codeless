@@ -1,5 +1,6 @@
 {
     "name": "functions",
+    "version": "1.0.0",
     "description": "Cloud Functions for Firebase",
     "scripts": {
         "firestore": "firebase emulators:start --only firestore --import=./.firebase-local --export-on-exit",
@@ -10,21 +11,17 @@
         "deploy": "node ./buildDeps.js && firebase deploy --only functions && node ./cleanupBuild.js"
     },
     "engines": {
-        "node": "16"
+        "node": "18"
     },
     "main": "index.js",
     "dependencies": {
-        "@minus/gee3": "*",
-        "@minus/server-nodes": "*",
-        "@minus/server-sdk": "*",
-        "airtable": "^0.11.6",
+        "@minus/gee3": "workspace:*",
+        "@minus/server-nodes": "workspace:*",
+        "@minus/server-sdk": "workspace:*",
         "dotenv": "^16.0.3",
         "firebase-admin": "^11.3.0",
-        "firebase-admin-callable-functions": "*",
+        "firebase-admin-callable-functions": "workspace:*",
         "firebase-functions": "^4.2.1",
-        "googleapis": "^109.0.1",
-        "nanoid": "^4.0.0",
-        "nanoid-dictionary": "^4.3.0",
         "node-fetch": "^3.3.0"
     },
     "devDependencies": {

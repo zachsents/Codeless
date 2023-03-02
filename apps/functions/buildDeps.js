@@ -11,8 +11,8 @@ const LocalModulesDir = "./local_modules"
 // check if we have an original package.json
 try {
     await fs.stat("./package_original.json")
-    console.log("Found original package.json. Quitting.")
-    process.exit(0)
+    console.log("Found original package.json. Clean the directory before trying again.")
+    process.exit(1)
 }
 catch(err) {
     console.log()
@@ -34,7 +34,7 @@ const packageJson = JSON.parse(
 
 // find my local deps -- ones with "*"
 const myDeps = Object.keys(packageJson.dependencies)
-    .filter(packageName => packageJson.dependencies[packageName] == "*")
+    .filter(packageName => packageJson.dependencies[packageName].includes("workspace:"))
 
 console.log(`Preparing ${myDeps.length} dependencies...`)
 
@@ -61,11 +61,15 @@ const packageMap = Object.fromEntries(
 const resultMap = Object.fromEntries(
     await Promise.all(
         myDeps.map(async dep => {
-            console.log(`\tPacking ${dep} from ${packageMap[dep]}`)
-            const { stdout } = await exec(`npm pack "${path.join("..", packageMap[dep])}"`, {
-                cwd: LocalModulesDir,
+            const command = `pnpm pack --pack-destination "${path.join("../../apps/functions", LocalModulesDir)}"`
+            const cwd = packageMap[dep]
+            console.log(`\tPacking ${dep} from ${cwd}`)
+
+            const { stdout } = await exec(command, {
+                cwd,
             })
-            return [dep, "file:.\\" + path.join(LocalModulesDir, stdout.trim())]
+
+            return [dep, "file:.\\" + path.join(LocalModulesDir, path.basename(stdout.trim()))]
         })
     )
 )
