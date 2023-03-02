@@ -1,0 +1,53 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - dev
+
+env:
+  NEXT_PUBLIC_FIREBASE_API_KEY: ${{secrets.NEXT_PUBLIC_FIREBASE_API_KEY}}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install Turbo
+        run: pnpm install -g turbo
+
+      - name: Install compiler for isolated-vm
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python2.7 g++ build-essential
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Set up Firebase
+        uses: w9jds/setup-firebase@main
+        with:
+          gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{vars.FIREBASE_PROJECT_ID}}
+
+      - name: Write functions environment variables
+        run: |
+          echo "OPENAI_SECRET_KEY=${{secrets.OPENAI_SECRET_KEY}}" >> apps/functions/.env
+          echo "GOOGLE_OAUTH_CLIENT_SECRET=${{secrets.GOOGLE_OAUTH_CLIENT_SECRET}}" >> apps/functions/.env
+          echo "AIRTABLE_OAUTH_CLIENT_SECRET=${{secrets.AIRTABLE_OAUTH_CLIENT_SECRET}}" >> apps/functions/.env
+      
+      - name: Build & Deploy
+        run: pnpm run deploy

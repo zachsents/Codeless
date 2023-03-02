@@ -3,7 +3,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - dev-github-actions
+      - main
 
 env:
   NEXT_PUBLIC_FIREBASE_API_KEY: ${{secrets.NEXT_PUBLIC_FIREBASE_API_KEY}}
@@ -11,7 +11,7 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: main
 
     steps:
       - name: Checkout code
@@ -29,15 +29,13 @@ jobs:
       - name: Install Turbo
         run: pnpm install -g turbo
 
-      # - name: Install compiler for isolated-vm
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y python2.7 g++ build-essential
+      - name: Install compiler for isolated-vm
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python2.7 g++ build-essential
 
       - name: Install dependencies
-        run: |
-          pnpm --filter "web^..."  install --frozen-lockfile
-          pnpm --filter "web" install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Set up Firebase
         uses: w9jds/setup-firebase@main
