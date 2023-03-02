@@ -31,7 +31,8 @@ jobs:
       - name: Install compiler for isolated-vm
         run: |
           sudo apt-get update
-          sudo apt-get install python g++ build-essential
+          sudo apt-get update
+          sudo apt-get install -y python g++ build-essential
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
