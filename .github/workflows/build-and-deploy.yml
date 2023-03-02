@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Set Firebase Project
+        run: firebase use ${{env.FIREBASE_PROJECT_ALIAS}}
+
       - name: Write functions environment variables
         run: |
           echo "OPENAI_SECRET_KEY=${{secrets.OPENAI_SECRET_KEY}}" >> apps/functions/.env
