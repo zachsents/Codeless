@@ -15,7 +15,7 @@
         "@mantine/form": "^5.10.3",
         "@mantine/hooks": "^5.10.3",
         "@mantine/modals": "^5.10.3",
-        "@minus/client-sdk": "*",
+        "@minus/client-sdk": "workspace:*",
         "firebase": "^9.13.0",
         "highlight.js": "^11.7.0",
         "immer": "^9.0.16",
