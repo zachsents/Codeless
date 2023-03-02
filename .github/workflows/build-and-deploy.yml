@@ -37,7 +37,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Set Firebase Project
-        run: firebase use ${{env.FIREBASE_PROJECT_ALIAS}}
+        run: pnpm exec -- firebase use ${{vars.FIREBASE_PROJECT_ALIAS}}
 
       - name: Write functions environment variables
         run: |
