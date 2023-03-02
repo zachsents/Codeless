@@ -36,8 +36,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Set Firebase Project
-        run: pnpm exec -- firebase use ${{vars.FIREBASE_PROJECT_ALIAS}}
+      - name: Set up Firebase
+        uses: w9jds/setup-firebase@main
+        with:
+          gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{vars.FIREBASE_PROJECT_ID}}
 
       - name: Write functions environment variables
         run: |
