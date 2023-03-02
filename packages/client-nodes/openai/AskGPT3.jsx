@@ -17,7 +17,7 @@ export default {
     outputs: ["response"],
 
     defaultState: {
-        model: "text-davinci-003",
+        model: "gpt-3.5-turbo",
         temperature: DefaultTemperature,
     },
 
@@ -37,7 +37,8 @@ export default {
                     </ControlLabel>
                     <Select
                         data={[
-                            { label: "Davinci Text 3 (recommended)", value: "text-davinci-003" },
+                            { label: "GPT 3.5 Turbo (recommended)", value: "gpt-3.5-turbo" },
+                            { label: "Davinci Text 3", value: "text-davinci-003" },
                             { label: "Curie", value: "text-curie-001" },
                             { label: "Babbage", value: "text-babbage-001" },
                             { label: "Ada", value: "text-ada-001" },

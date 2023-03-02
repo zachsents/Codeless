@@ -13,7 +13,7 @@ export default {
     ),
 
     async createCompletion(prompt, {
-        model = "text-davinci-003",
+        model = "gpt-3.5-turbo",
         temperature = 0,
         max_tokens = 1000,
         frequency_penalty = 0.0,
