@@ -54,6 +54,7 @@ import TableField from "./tables/TableField.js"
 import AskGPT3 from "./openai/AskGPT3.js"
 import Parse from "./openai/Parse.js"
 import Rate from "./openai/Rate.js"
+import Classify from "./openai/Classify.js"
 
 import TrimWhitespace from "./text/TrimWhitespace.js"
 import Template from "./basics/Template.js"
@@ -120,7 +121,7 @@ export default createObject([
 
 
     // ===== OpenAI =====
-    AskGPT3, Parse, Rate,
+    AskGPT3, Parse, Rate, Classify,
 
 
     // ===== AirTable =====

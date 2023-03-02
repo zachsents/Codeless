@@ -116,8 +116,11 @@ importers:
       '@mantine/hooks': ^5.10.3
       '@mantine/modals': ^5.10.3
       '@minus/client-sdk': workspace:*
+      framer-motion: ^7.6.7
       highlight.js: ^11.7.0
       immer: ^9.0.16
+      nanoid: ^4.0.1
+      nanoid-dictionary: ^4.3.0
       react: 18.2.0
       react-icons: ^4.6.0
       react-query: ^3.39.3
@@ -130,8 +133,11 @@ importers:
       '@mantine/hooks': 5.10.5_react@18.2.0
       '@mantine/modals': 5.10.5_7l7cohgiq6l4ncfy2pvlz3brzy
       '@minus/client-sdk': link:../client-sdk
+      framer-motion: 7.10.3_biqbaboplfbrettd7655fr4n2y
       highlight.js: 11.7.0
       immer: 9.0.19
+      nanoid: 4.0.1
+      nanoid-dictionary: 4.3.0
       react: 18.2.0
       react-icons: 4.7.1_react@18.2.0
       react-query: 3.39.3_biqbaboplfbrettd7655fr4n2y
@@ -1885,7 +1891,7 @@ packages:
       '@motionone/types': 10.15.1
       '@motionone/utils': 10.15.1
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@motionone/easing/10.15.1:
@@ -7626,6 +7632,10 @@ packages:
     resolution: {integrity: sha512-flnngywOoQ0lLQOTRNexn2gGSNuM9bKj9RZAWSzhQ+UJYaAFG9bac4DW9VHjUAzrOaIcajHybCTHe/bkvozQqA==}
     dependencies:
       big-integer: 1.6.51
+    dev: false
+
+  /nanoid-dictionary/4.3.0:
+    resolution: {integrity: sha512-Xw1+/QnRGWO1KJ0rLfU1xR85qXmAHyLbE3TUkklu9gOIDburP6CsUnLmTaNECGpBh5SHb2uPFmx0VT8UPyoeyw==}
     dev: false
 
   /nanoid/3.3.4:
