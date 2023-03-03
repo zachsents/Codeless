@@ -1,5 +1,3 @@
-import { ExecutionSignal } from "../types/index.js"
-
 
 export default {
     id: "control:If",

@@ -14,6 +14,7 @@
     "dependencies": {
         "@minus/server-sdk": "workspace:*",
         "firebase-admin": "^11.5.0",
+        "glob": "^9.2.1",
         "isolated-vm": "^4.4.2",
         "openai": "^3.1.0"
     }

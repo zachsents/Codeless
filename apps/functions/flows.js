@@ -2,7 +2,7 @@ import { FieldValue } from "firebase-admin/firestore"
 import { getFunctions } from "firebase-admin/functions"
 import functions from "firebase-functions"
 import { db } from "./init.js"
-import NodeTypes from "@minus/server-nodes"
+import { loadNodeDefinitions } from "@minus/server-nodes"
 import { runFlow } from "@minus/gee3"
 import { logger } from "@minus/server-sdk"
 
@@ -108,10 +108,12 @@ export const publish = functions.https.onCall(async (data) => {
     try {
         const flow = await Flow.fromId(data.flowId)
 
+        const NodeDefinitions = await loadNodeDefinitions()
+
         // run deploy routine for each node
         await Promise.all(
             flow.graph.nodes.map(
-                node => NodeTypes[node.type].onDeploy?.bind(node)({
+                node => NodeDefinitions[node.type].onDeploy?.bind(node)({
                     flow,
                 })
             )
@@ -132,10 +134,12 @@ export const unpublish = functions.https.onCall(async (data) => {
     try {
         const flow = await Flow.fromId(data.flowId)
 
+        const NodeDefinitions = await loadNodeDefinitions()
+
         // run undeploy routine for each node
         await Promise.all(
             flow.graph.nodes.map(
-                node => NodeTypes[node.type].onUndeploy?.bind(node)({
+                node => NodeDefinitions[node.type].onUndeploy?.bind(node)({
                     flow,
                 })
             )
@@ -199,10 +203,12 @@ async function _validate(flowId) {
         if(!flow.published)
             throw new Error("Flow is not enabled")
 
+        const NodeDefinitions = await loadNodeDefinitions()
+
         // run validate routine for each node
         await Promise.all(
             flow.graph.nodes.map(
-                node => NodeTypes[node.type].validate?.bind(node)({
+                node => NodeDefinitions[node.type].validate?.bind(node)({
                     flow,
                 })
             )
@@ -255,14 +261,14 @@ class Flow {
         return this.ref.update(data)
     }
 
-    run(payload) {
+    async run(payload) {
         if (!this.graph?.nodes || !this.graph?.edges)
             throw new Error("This flow's graph isn't loaded properly")
 
         return runFlow({
             nodes: this.graph.nodes,
             edges: this.graph.edges,
-            nodeTypes: NodeTypes,
+            nodeTypes: await loadNodeDefinitions(),
             setupPayload: payload,
         })
     }
