@@ -2,10 +2,6 @@ import glob from "glob"
 
 const loadMessage = "[Server Nodes] Loaded server node definitions"
 
-global.db = {
-    collection: () => {}
-}
-
 export async function loadNodeDefinitions() {
     console.time(loadMessage)
     const definitions = {}
