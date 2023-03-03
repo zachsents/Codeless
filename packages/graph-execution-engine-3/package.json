@@ -1,13 +1,12 @@
 {
-  "name": "@minus/gee3",
-  "version": "3.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "devtest": "npx nodemon ./tests/dev.js",
-    "test": "node ./tests/dev.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "type": "module"
+    "name": "@minus/gee3",
+    "version": "3.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "node ./tests/full.test.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "type": "module"
 }

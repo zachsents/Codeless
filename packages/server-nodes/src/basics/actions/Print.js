@@ -19,7 +19,7 @@ export default {
         line()
 
         // return to flow
-        this.returnToFlow("logs", printContent)
+        this.graph.return("logs", printContent)
     },
 }
 
