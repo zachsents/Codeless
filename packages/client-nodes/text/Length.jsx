@@ -5,7 +5,7 @@ import { Control, ControlLabel, ControlStack } from "../components/index"
 
 export default {
     id: "text:Length",
-    name: "Text Length",
+    name: "Word / Character Count",
     description: "Gives the length of text in either characters or words.",
     icon: AlphabetLatin,
     badge: "text",
