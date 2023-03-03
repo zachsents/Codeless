@@ -78,6 +78,7 @@ import ATUseTable from "./airtable/UseTable"
 import GmailIntegration from "./google/gmail/integration"
 import GoogleSheetsIntegration from "./google/sheets/integration"
 import AirTableIntegration from "./airtable/integration"
+import ListRepeat from "./basics/ListRepeat"
 
 
 export const Nodes = createObject([
@@ -89,7 +90,9 @@ export const Nodes = createObject([
     // Actions
     Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
     // Transforms
-    And, Or, Equals, NotEqual, Not, GreaterThan, Count,
+    And, Or, Equals, NotEqual, Not, GreaterThan,
+    // Lists
+    Count, ListRepeat,
 
 
     // ===== Text =====
