@@ -9,7 +9,7 @@ import path from "path"
 
 
 const ClientNodesPath = "./packages/client-nodes"
-const ServerNodesPath = "./packages/server-nodes"
+const ServerNodesPath = "./packages/server-nodes/src"
 
 
 // check if we're in project root
