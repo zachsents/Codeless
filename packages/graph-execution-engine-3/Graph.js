@@ -57,13 +57,21 @@ export class Graph {
 
     /**
      * Creates an instance of Graph.
-     * @param {string} jsonString JSON-encoded string containing a nodes and edges object.
+     * @param {string | object[]} jsonStringOrNodes JSON-encoded string containing a nodes
+     * and edges array, or, if passing in parsed nodes & edges, this is just
+     * the nodes array.
+     * @param {object[]} [edges] If passing in parsed nodes & edegs, this is the
+     * edges array.
      * @memberof Graph
      */
-    constructor(jsonString) {
+    constructor(jsonStringOrNodes, edges) {
+
+        // can either pass a graph string in or a nodes & edges array
+        const parsed = jsonStringOrNodes instanceof Array &&
+            edges instanceof Array ? { nodes: jsonStringOrNodes, edges } :
+            JSON.parse(jsonStringOrNodes)
 
         try {
-            const parsed = JSON.parse(jsonString)
             this.rfGraph = { nodes: parsed.nodes, edges: parsed.edges }
         }
         catch (err) {
@@ -109,7 +117,7 @@ export class Graph {
         // setup new Promise stream & trackers
         this.promiseStream = new PromiseStream(promiseStreamOptions)
         this.inputTracker = new ValueTracker()
-        this.outputTracker = new ValueTracker()
+        this.outputTracker = new ValueTracker(false)
         this.errorTracker = new ValueTracker()
         this.returnTracker = new ValueTracker()
 

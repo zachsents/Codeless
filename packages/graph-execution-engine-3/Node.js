@@ -1,6 +1,7 @@
 import { InputHandle, OutputHandle } from "./Handle.js"
 import { NodeDefinition } from "./NodeDefinition.js"
 import { processArray } from "./ArrayMode.js"
+import { ValueTracker } from "./ValueTracker.js"
 
 
 export class Node {
@@ -167,7 +168,14 @@ export class Node {
      */
     publish(outputs) {
         // track outputs
-        this.graph.outputTracker.report(this.id, outputs)
+        this.graph.outputTracker.report(
+            this.id, 
+            Object.fromEntries(
+                Object.entries(outputs).map(([key, val]) =>
+                    [key, val && ValueTracker.cleanValue(val)]
+                )
+            )
+        )
 
         // push outputs to edges
         Object.entries(outputs).forEach(([key, value]) => {

@@ -14,8 +14,8 @@ const randomNumberState = {
 // load definitions
 await NodeDefinition.registerPackage(new URL("./example-nodes/index.js", import.meta.url))
 
-// 1. Multiple & Long-Running Operations
-console.log(chalk.bold("\n1. Multiple & Long-Running Operations"))
+// 1a. Multiple & Long-Running Operations (passed as JSON)
+console.log(chalk.bold("\n1a. Multiple & Long-Running Operations (passed as JSON)"))
 const graphString1 = generateGraph(`
 random-number_1.$ -> power_1.base
 random-number_2.$ -> power_1.power
@@ -31,10 +31,21 @@ write-equation_1.equation -> print_2.$
     "random-number_4": randomNumberState,
     "random-number_5": randomNumberState,
 })
-const graph1 = new Graph(graphString1)
-await graph1.run()
+const graph1a = new Graph(graphString1)
+let result = await graph1a.run()
+if(Object.values(result.errors).length > 0)
+    console.log(chalk.red.bold("Returned errors."))
 
 // console.log(util.inspect(result, false, 5, true))
+
+
+// 1b. Multiple & Long-Running Operations (passed as arrays)
+console.log(chalk.bold("\n1b. Multiple & Long-Running Operations (passed as arrays)"))
+const {nodes: graph1bNodes, edges: graph1bEdges} = JSON.parse(graphString1)
+const graph1b = new Graph(graph1bNodes, graph1bEdges)
+result = await graph1b.run()
+if(Object.values(result.errors).length > 0)
+    console.log(chalk.red.bold("Returned errors."))
 
 
 // 2. All Instant
@@ -50,7 +61,9 @@ write-equation_1.equation -> print_2.$
     "random-number_5": randomNumberState,
 })
 const graph2 = new Graph(graphString2)
-await graph2.run()
+result = await graph2.run()
+if(Object.values(result.errors).length > 0)
+    console.log(chalk.red.bold("Returned errors."))
 
 
 // 3. Setup Payload
@@ -59,7 +72,9 @@ const graphString3 = generateGraph(`
 pass-payload_1.result -> print_1.$
 `)
 const graph3 = new Graph(graphString3)
-await graph3.run({ message: "this is the payload" })
+result = await graph3.run({ message: "this is the payload" })
+if(Object.values(result.errors).length > 0)
+    console.log(chalk.red.bold("Returned errors."))
 
 
 // 4. Errors

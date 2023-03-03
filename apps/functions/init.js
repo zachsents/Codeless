@@ -1,8 +1,11 @@
 import admin from "firebase-admin"
 import * as dotenv from "dotenv"
+import { registerPackage } from "@minus/gee3"
+
 dotenv.config({
     path: process.env.FUNCTIONS_EMULATOR ? ".env.local" : ".env",
 })
+
 
 // initialize firebase app globalize/export
 admin.initializeApp()
@@ -16,3 +19,6 @@ db.settings({ ignoreUndefinedProperties: true })
 
 // ? set up slot for integrations
 global.integrations = {}
+
+// register node definitions
+await registerPackage("@minus/server-nodes")

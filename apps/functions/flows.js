@@ -3,7 +3,7 @@ import { getFunctions } from "firebase-admin/functions"
 import functions from "firebase-functions"
 import { db } from "./init.js"
 import NodeTypes from "@minus/server-nodes"
-import { runFlow } from "@minus/gee3"
+import { Graph } from "@minus/gee3"
 import { logger } from "@minus/server-sdk"
 
 
@@ -259,11 +259,11 @@ class Flow {
         if (!this.graph?.nodes || !this.graph?.edges)
             throw new Error("This flow's graph isn't loaded properly")
 
-        return runFlow({
-            nodes: this.graph.nodes,
-            edges: this.graph.edges,
-            nodeTypes: NodeTypes,
-            setupPayload: payload,
+        const graph = new Graph(this.graph.nodes, this.graph.edges)
+        return graph.run(payload, {
+            promiseStreamOptions: {
+                logErrors: true,
+            }
         })
     }
 }
