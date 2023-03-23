@@ -12,8 +12,7 @@ export default {
     async onInputsReady({ prompt }) {
 
         const response = await safeMap(
-            prompt => openaiApi.createCompletion(prompt, { 
-                model: this.state.model,
+            prompt => openaiApi.createChatCompletion(prompt, { 
                 temperature: this.state.temperature,
             }),
             prompt

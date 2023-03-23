@@ -12,6 +12,27 @@ export default {
         })
     ),
 
+    async createChatCompletion(prompt, {
+        temperature = 1,
+    } = {}) {
+
+        checkCharacterLimit(prompt)
+
+        const resp = await this.api.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [{
+                role: "user",
+                content: prompt,
+            }],
+            temperature,
+        })
+
+        if (resp.status >= 400)
+            throw new Error(`OpenAI request failed: ${resp.statusText}`)
+
+        return resp.data.choices[0].message.content
+    },
+
     async createCompletion(prompt, {
         model = "text-davinci-003",
         temperature = 0,
@@ -21,7 +42,7 @@ export default {
     } = {}) {
 
         checkCharacterLimit(prompt)
-        
+
         const resp = await this.api.createCompletion({
             prompt,
             model,
@@ -31,7 +52,7 @@ export default {
             presence_penalty,
         })
 
-        if(resp.status >= 400)
+        if (resp.status >= 400)
             throw new Error(`OpenAI request failed: ${resp.statusText}`)
 
         return resp.data.choices[0].text
@@ -39,6 +60,6 @@ export default {
 }
 
 function checkCharacterLimit(prompt) {
-    if(prompt?.length > CHARACTER_LIMIT)
+    if (prompt?.length > CHARACTER_LIMIT)
         throw new Error(`Prompt exceeds character limit of ${CHARACTER_LIMIT} characters.`)
 }
