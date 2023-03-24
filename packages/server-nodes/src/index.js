@@ -19,8 +19,13 @@ export async function loadNodeDefinitions() {
     // import them all and add to definitions map
     await Promise.all(
         jsfiles.map(async file => {
-            const defModule = await import(new URL(`.\\${file}`, import.meta.url))
-            definitions[defModule.default.id] = defModule.default
+            try {
+                const defModule = await import(new URL(`.\\${file}`, import.meta.url))
+                definitions[defModule.default.id] = defModule.default
+            }
+            catch(err) {
+                console.log(`[Server Nodes] Error loading node definition from ${file}: ${err.message}`)
+            }
         })
     )
 
