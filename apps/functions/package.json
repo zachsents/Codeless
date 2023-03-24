@@ -5,6 +5,7 @@
     "scripts": {
         "firestore": "firebase emulators:start --only firestore --import=./.firebase-local --export-on-exit",
         "dev": "firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
+        "debugdev": "set DEBUG=\"firebase-functions:*\" && firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
         "serve": "firebase emulators:start --only functions",
         "shell": "firebase functions:shell --port 5002",
         "logs": "firebase functions:log",
