@@ -60,8 +60,11 @@ export class NodeDefinition {
      * @param {string} packageName 
      */
     static async registerPackage(packageName) {
-        const { default: definitions } = await import(packageName)
-        Object.values(definitions).forEach(
+        const { default: definitions, loadNodeDefinitions } = await import(packageName)
+
+        Object.values(
+            typeof loadNodeDefinitions === "function" ? await loadNodeDefinitions() : definitions
+        ).forEach(
             def => NodeDefinition.definitions[def.id] = new NodeDefinition(def)
         )
     }
