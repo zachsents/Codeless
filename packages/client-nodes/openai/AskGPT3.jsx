@@ -1,14 +1,14 @@
-import { Select, Slider } from "@mantine/core"
+import { Slider } from "@mantine/core"
 import { SiOpenai } from "react-icons/si"
 import { Control, ControlLabel, ControlStack } from "../components/index"
 import { useDebouncedSynchronizedState } from "../hooks"
 
-const DefaultTemperature = 0
+const DefaultTemperature = 1
 
 export default {
     id: "openai:AskGPT3",
-    name: "Ask GPT",
-    description: "Asks GPT a prompt.",
+    name: "ChatGPT",
+    description: "Asks ChatGPT a prompt.",
     icon: SiOpenai,
     color: "dark",
     badge: "Open AI",
@@ -17,7 +17,6 @@ export default {
     outputs: ["response"],
 
     defaultState: {
-        model: "text-davinci-003",
         temperature: DefaultTemperature,
     },
 
@@ -31,24 +30,6 @@ export default {
 
         return (
             <ControlStack>
-                <Control>
-                    <ControlLabel info="The language model used to answer the prompt.">
-                        Model
-                    </ControlLabel>
-                    <Select
-                        data={[
-                            { label: "Davinci Text 3 (recommended)", value: "text-davinci-003" },
-                            { label: "Curie", value: "text-curie-001" },
-                            { label: "Babbage", value: "text-babbage-001" },
-                            { label: "Ada", value: "text-ada-001" },
-                            { label: "Davinci Code 2", value: "code-davinci-002" },
-                            { label: "Cushman Code 2", value: "code-cushman-001" },
-                        ]}
-                        value={state.model}
-                        onChange={model => setState({ model })}
-                    />
-                </Control>
-
                 <Control>
                     <ControlLabel info="How random the response should be.">
                         Randomness
