@@ -78,9 +78,10 @@ export async function watchInbox(gmail, { flow }) {
  * @param {string} params.subject
  * @param {string} [params.plainText]
  * @param {string} [params.html]
+ * @param {string[][]} [params.headers]
  * @param {object} [requestBody]
  */
-export async function sendEmail(gmail, { to, cc, subject, plainText, html } = {}, requestBody = {}) {
+export async function sendEmail(gmail, { to, cc, subject, plainText, html, headers = [] } = {}, requestBody = {}) {
 
     // get sender email address
     const { data: { emailAddress: senderEmailAddress } } = await gmail.users.getProfile({
@@ -89,14 +90,22 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html } = {}
 
     console.debug(`Sending email  to ${to} for ${senderEmailAddress}`)
 
-    // build the email
+    // set up message
     const msg = createMimeMessage()
     msg.setSender(senderEmailAddress)
     msg.setRecipient(to)
     msg.setSubject(subject)
     cc && msg.setCc(cc)
+
+    // add content
     plainText && msg.setMessage("text/plain", plainText)
     html && msg.setMessage("text/html", html)
+
+    // add headers
+    msg.setHeader("X-Triggered-By", "Minus")
+    headers.forEach(([ name, value ]) => msg.setHeader(name, value))
+
+    // encode message
     const encodedMessage = Buffer.from(msg.asRaw()).toString("base64url")
 
     // console.debug(`Raw Content:\n${msg.asRaw()}`)
@@ -107,6 +116,6 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html } = {}
         requestBody: {
             raw: encodedMessage,
             ...requestBody,
-        }
+        },
     })
 }

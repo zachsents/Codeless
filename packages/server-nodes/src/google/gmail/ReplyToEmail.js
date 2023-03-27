@@ -21,6 +21,10 @@ export default {
         // get Gmail API
         const gmailApi = await gmail.getGmailAPI(global.info.appId)
 
+        // create References string
+        const references = triggerEmail.rawMessage.payload.headers.find(header => header.name == "References")?.value ?? ""
+            + ` <${triggerEmail.rawMessage.id}>`
+
         // send email(s)
         await safeMap((body) => {
             if (!body)
@@ -30,6 +34,12 @@ export default {
                 to: triggerEmail.from,
                 subject: triggerEmail.subject,
                 plainText: body,
+
+                // need these headers to make the reply RFC 2822 compliant
+                headers: [
+                    ["In-Reply-To", `<${triggerEmail.rawMessage.id}>`],
+                    ["References", references]
+                ]
             }, {
                 threadId: triggerEmail.rawMessage.threadId,
             })
