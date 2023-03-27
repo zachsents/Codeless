@@ -2,6 +2,7 @@ import { Edge } from "./Edge.js"
 import { Node } from "./Node.js"
 import { PromiseStream } from "./PromiseStream.js"
 import { ValueTracker } from "./ValueTracker.js"
+import { Variable } from "./Variable.js"
 
 
 export class Graph {
@@ -54,6 +55,13 @@ export class Graph {
      * @memberof Graph
      */
     returnTracker
+
+    /**
+     * Object that holds all variables on the graph.
+     * @type {Object.<string, Variable>}
+     * @memberof Graph
+     */
+    variables
 
     /**
      * Creates an instance of Graph.
@@ -120,6 +128,7 @@ export class Graph {
         this.outputTracker = new ValueTracker(false)
         this.errorTracker = new ValueTracker()
         this.returnTracker = new ValueTracker()
+        this.variables = {}
 
         // prepare nodes (onBeforeStart)
         await Promise.all(this.nodes.map(node => node.prepare()))
@@ -155,5 +164,21 @@ export class Graph {
      */
     get return() {
         return this.returnTracker.report.bind(this.returnTracker)
+    }
+
+    createVariable(name) {
+        this.variables ??= {}
+        return this.variables[name] ??= new Variable(this)
+    }
+
+    subscribeToVariable(name, callback) {
+        const variable = this.createVariable(name)
+
+        // if callback is exactly true, return a promise. otherwise, return a callback subscription
+        return callback === true ? variable.subscribePromise() : variable.subscribe(callback)
+    }
+
+    setVariable(name, value) {
+        return this.createVariable(name).publish(value)
     }
 }

@@ -1,4 +1,3 @@
-import { VariablePort } from "@minus/server-sdk"
 
 export default {
     id: "basic:SetVariable",
@@ -8,6 +7,6 @@ export default {
     outputs: [],
 
     onInputsReady({ $ }) {
-        VariablePort.publish(this.state.name, $)
+        this.graph.setVariable(this.state.name, $)
     },
 }

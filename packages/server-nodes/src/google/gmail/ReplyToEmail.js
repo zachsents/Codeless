@@ -1,4 +1,4 @@
-import { VariablePort, gmail } from "@minus/server-sdk"
+import { gmail } from "@minus/server-sdk"
 import { safeMap } from "../../arrayUtilities.js"
 
 
@@ -10,7 +10,7 @@ export default {
     outputs: [],
 
     onBeforeStart() {
-        this.state._triggerEmailPromise = VariablePort.setupPortOnGlobals("_triggerEmail").subscribePromise()
+        this.state._triggerEmailPromise = this.graph.subscribeToVariable("_triggerEmail", true)
     },
 
     async onInputsReady({ body }) {

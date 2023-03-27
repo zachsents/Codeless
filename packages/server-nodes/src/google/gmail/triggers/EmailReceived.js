@@ -1,4 +1,4 @@
-import { gmail, VariablePort } from "@minus/server-sdk"
+import { gmail } from "@minus/server-sdk"
 
 
 export default {
@@ -20,8 +20,8 @@ export default {
             .replaceAll(/<http.+?>/g, "")   // remove links
             .replaceAll(/\n{3,}/g, "\n\n")  // shrink more than 3 line breaks
 
-        // put message on port so we can access it in other places
-        VariablePort.publish("_triggerEmail", setupPayload)
+        // put message on variable so we can access it in other places
+        this.graph.setVariable("_triggerEmail", setupPayload)
 
         this.publish({ fromName, fromEmail, plainText, simpleText, ...otherFields })
     },
