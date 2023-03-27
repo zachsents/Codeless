@@ -37,7 +37,11 @@ export class ValueTracker {
         }
 
         // If value is not a plain object and its constructor has a toString method, then use it
-        if (value.constructor !== Object && Object.prototype.hasOwnProperty.call(value.constructor.prototype, "toString"))
+        if (
+            value.constructor !== Object &&
+            value.constructor != null &&
+            Object.prototype.hasOwnProperty.call(value.constructor.prototype, "toString")
+        )
             return value.toString()
 
         // if value has circular references, return "[Circular]"
