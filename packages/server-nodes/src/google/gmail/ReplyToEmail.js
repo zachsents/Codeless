@@ -22,7 +22,7 @@ export default {
         const gmailApi = await gmail.getGmailAPI(global.info.appId)
 
         // create References string
-        const references = triggerEmail.rawMessage.payload.headers.find(header => header.name == "References")?.value ?? ""
+        const references = (triggerEmail.rawMessage.payload.headers.find(header => header.name == "References")?.value ?? "")
             + ` <${triggerEmail.rawMessage.id}>`
 
         // send email(s)
