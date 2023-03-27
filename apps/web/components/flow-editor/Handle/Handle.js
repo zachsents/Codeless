@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react"
 import { Handle as RFHandle, useReactFlow } from "reactflow"
-import { Box, useMantineTheme, Text, Stack } from "@mantine/core"
+import { Box, useMantineTheme, Text, Stack, Group, Button, Tooltip } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
-import { TbSearch } from "react-icons/tb"
+import { TbPlus, TbSearch } from "react-icons/tb"
 
 import { addNeighborNode, openNodePalette } from "../../../modules/graph-util"
 import { HandleDirection } from "."
@@ -98,17 +98,30 @@ export default function Handle({ id, label, direction, position, suggestions,
                         >
                             <Stack spacing={5} align={position == "left" ? "end" : "start"} p={tooltipPadding} >
 
-                                {label &&
-                                    <Text sx={tooltipStyle(false)}>{label}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
+                                <Group spacing="xs" noWrap
+                                    sx={{ flexDirection: direction == HandleDirection.Input ? "row-reverse" : "row" }}
+                                >
+                                    {label &&
+                                        <Text sx={tooltipStyle(false)}>{label}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
 
-                                <Suggestion
+                                    <Button
+                                        compact
+                                        size="xs"
+                                        variant="light"
+                                        onClick={handleOpenNodePalette}
+                                    >
+                                        <TbPlus />
+                                    </Button>
+                                </Group>
+
+                                {/* <Suggestion
                                     onClick={handleOpenNodePalette}
                                     icon={<TbSearch />}
                                     color={null}
                                     index={0}
                                 >
                                     Search Nodes
-                                </Suggestion>
+                                </Suggestion> */}
 
                                 {suggestions &&
                                     <Text size={8} color="dimmed" mb={-2} sx={{ whiteSpace: "nowrap" }}>
