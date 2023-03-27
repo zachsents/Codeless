@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react"
 import { Handle as RFHandle, useReactFlow } from "reactflow"
-import { Box, useMantineTheme, Text, Stack, Group, Button, Tooltip } from "@mantine/core"
+import { Box, useMantineTheme, Text, Stack, Group, Button } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
-import { TbPlus, TbSearch } from "react-icons/tb"
+import { TbPlus } from "react-icons/tb"
 
 import { addNeighborNode, openNodePalette } from "../../../modules/graph-util"
 import { HandleDirection } from "."
