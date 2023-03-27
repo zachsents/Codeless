@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { Handle as RFHandle, useReactFlow } from "reactflow"
+import { Handle as RFHandle, useReactFlow, useStore } from "reactflow"
 import { Box, useMantineTheme, Text, Stack, Group, Button } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
@@ -15,6 +15,10 @@ export default function Handle({ id, label, direction, position, suggestions,
 
     const rf = useReactFlow()
     const theme = useMantineTheme()
+
+    // keep track of connection node ID so we can hide tooltips while connecting
+    // to get them out of the way
+    const connectionNodeId = useStore(s => s.connectionNodeId)
 
     // unconnected inputs are styled special
     const isUnconnectedInput = !connected && direction == HandleDirection.Input
@@ -94,7 +98,9 @@ export default function Handle({ id, label, direction, position, suggestions,
             </motion.div>
 
             <AnimatePresence>
-                {(nodeHovered || hovered) &&
+                {
+                    connectionNodeId != nodeId &&
+                    (nodeHovered || hovered) &&
                     <Box sx={tooltipWrapperStyle(position)}>
                         <motion.div
                             initial={{ scale: 0 }}
