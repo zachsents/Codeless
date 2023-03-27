@@ -52,9 +52,15 @@ export default function Handle({ id, label, direction, position, suggestions,
                 suggestions?.find(sugg => sugg.node == type.id) ?? {
                     node: type.id,
                     // we'll try to connect if there's only one (non-list) handle
-                    handle: type.inputs.length == 1 && !type.inputs[0].list ?
-                        (type.inputs[0].name ?? type.inputs[0]) :
-                        null
+                    handle: direction == HandleDirection.Input ?
+                        // case for input handles -- we'll look for a single output handle
+                        (type.outputs.length == 1 && !type.outputs[0].list ?
+                            (type.outputs[0].name ?? type.outputs[0]) :
+                            null) :
+                        // case for output handles -- we'll look for a single input handle
+                        (type.inputs.length == 1 && !type.inputs[0].list ?
+                            (type.inputs[0].name ?? type.inputs[0]) :
+                            null)
                 }
             ),
         },
