@@ -8,6 +8,10 @@ export class ValueTracker {
      * cannot contain circular references and nested arrays. This function
      * also prioritizes primitive values over objects, and toString is used
      * when applicable.
+     * 
+     * Note, the order of the if statements is important. For example, functions
+     * and symbols are handled before primitives, because we check for primitives
+     * by checking if the type is not an object.
      * @static
      * @param {*} value
      * @param {boolean} [inArray=false] Whether the value is in an array or not.
@@ -17,6 +21,14 @@ export class ValueTracker {
         // Convert undefined to null
         if (value == null)
             return null
+
+        // If value is a function, return "[Function]"
+        if (typeof value === "function")
+            return "[Function]"
+
+        // If value is a Symbol, return "[Symbol]"
+        if (typeof value === "symbol")
+            return "[Symbol]"
 
         // If value is a primitive or a Date, return it
         if (typeof value !== "object" || value instanceof Date)

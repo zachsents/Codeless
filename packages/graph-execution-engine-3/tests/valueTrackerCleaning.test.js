@@ -86,3 +86,13 @@ test("nested objects", () => {
     const value = { value: { value: 1 } }
     expect(ValueTracker.cleanValue(value)).toEqual({ value: { value: 1 } })
 })
+
+test("functions", () => {
+    const value = () => {}
+    expect(ValueTracker.cleanValue(value)).toBe("[Function]")
+})
+
+test("symbols", () => {
+    const value = Symbol()
+    expect(ValueTracker.cleanValue(value)).toBe("[Symbol]")
+})
