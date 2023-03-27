@@ -60,12 +60,20 @@ export class NodeDefinition {
      * @param {string} packageName 
      */
     static async registerPackage(packageName) {
-        const { default: definitions } = await import(packageName)
+        NodeDefinition.registerImportedPackage(await import(packageName))
+    }
 
-        Object.values(
-            typeof loadNodeDefinitions === "function" ? await definitions() : definitions
-        ).forEach(
-            def => NodeDefinition.definitions[def.id] = new NodeDefinition(def)
+    /**
+     * Registers a node definitions from a package that was dynamically imported. We need
+     * this to solve dependency issues caused by passing a package name to registerPackage.
+     * @async
+     * @static
+     * @param {Promise<{ default: Object.<string, object> | Array<object> }>} importedPackage
+     */
+    static async registerImportedPackage(importedPackage) {
+        const definitions = (await importedPackage).default
+        NodeDefinition.registerDefinitions(
+            typeof definitions === "function" ? await definitions() : definitions
         )
     }
 
