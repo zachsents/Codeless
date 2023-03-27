@@ -98,8 +98,6 @@ export class ValueTracker {
 
         // otherwise, just clean and push the value
         this.items[key].push(ValueTracker.cleanValue(value))
-
-        console.log(this.items)
     }
 
     /**
