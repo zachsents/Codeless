@@ -1,5 +1,6 @@
-import { Center, Text, TextInput, Image, Loader, Select } from "@mantine/core"
+import { Center, Text, TextInput, Image, Loader, Select, Group, Button } from "@mantine/core"
 import { useEffect } from "react"
+import { TbExternalLink } from "react-icons/tb"
 import { SiGooglesheets } from "react-icons/si"
 import { Control, ControlLabel, ControlStack, RequiresConfiguration } from "../../components/index"
 import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
@@ -87,7 +88,9 @@ export default {
                             <Text>This is the URL while editing a Google Sheet.</Text>
                             <Text color="dimmed">
                                 Example:<br />
-                                <Text component="span" color="yellow" weight={500}>https://docs.google.com/spreadsheets/d/141NUUnvN8IYJgI9jLz_6SMn9b46hXhBRyVRvTMgKiHs/edit</Text>
+                                <Text component="span" color="yellow" weight={500} sx={{ wordBreak: "break-all" }}>
+                                    https://docs.google.com/spreadsheets/d/141NUUnvN8IYJgI9jLz_6SMn9b46hXhBRyVRvTMgKiHs/edit
+                                </Text>
                             </Text>
                         </>}
                     >
@@ -100,8 +103,18 @@ export default {
                         onChange={event => setState({ spreadsheetUrl: event.currentTarget.value })}
                         error={state.spreadsheetUrl === null || SheetsURLRegex.test(state.spreadsheetUrl) ? null : "This doesn't look like a valid Google Sheets URL"}
                     />
+
                     {state.spreadsheetName &&
                         <Text color="dimmed" size="xs">Using "{state.spreadsheetName}"</Text>}
+
+                    <Group position="right">
+                        <Button
+                            component="a" href={state.spreadsheetUrl || "https://docs.google.com/spreadsheets/u/0/"} target="_blank"
+                            color="green" size="xs" variant="subtle" rightIcon={<TbExternalLink />} compact
+                        >
+                            View Sheet{state.spreadsheetUrl ? "" : "s"}
+                        </Button>
+                    </Group>
                 </Control>
 
                 <Control>
