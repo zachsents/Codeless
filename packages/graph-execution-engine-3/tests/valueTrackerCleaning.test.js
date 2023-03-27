@@ -1,6 +1,9 @@
 /**
  * Tests that the ValueTracker.cleanValue function works as expected
  * for a wide range of input values.
+ * 
+ * Command for running this test (ran from package root):
+ * node --experimental-vm-modules node_modules/jest/bin/jest.js --silent=false valueTrackerCleaning
  */
 import { ValueTracker } from "../ValueTracker.js"
 
