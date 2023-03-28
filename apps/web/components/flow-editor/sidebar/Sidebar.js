@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from "react"
 import { useReactFlow } from "reactflow"
-import { Box, Navbar, NavLink, Stack, Space, SimpleGrid, Group, Text } from "@mantine/core"
+import { Box, Navbar, NavLink, Stack, Space, SimpleGrid, Group } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { TbMaximize, TbSearch, TbTypography } from "react-icons/tb"
 import { motion } from "framer-motion"
@@ -55,13 +55,6 @@ export default function Sidebar() {
                 <Space h="xl" />
 
                 {expanded && <ColorSelector />}
-
-                {expanded &&
-                    <>
-                        <Text align="center" size="sm">
-                            Coming soon: captions, better suggestions, filtered searching, better testing tools, and a lot more (all the post-its on the wall)
-                        </Text>
-                    </>}
             </Stack>
         </Navbar >
     )
