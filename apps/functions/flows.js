@@ -166,6 +166,9 @@ export const startScheduledRun = functions.tasks.taskQueue().onDispatch(async ({
 
 export const runFromUrl = functions.https.onRequest(async (req, res) => {
 
+    // allow CORS from all origins
+    res.set("Access-Control-Allow-Origin", "*")
+
     const flowId = req.query.flow_id
 
     // insert run document
