@@ -50,6 +50,8 @@ export default function NodeBuilder() {
             multiSelectionKeyCode={"Shift"}
             zoomActivationKeyCode={null}
             deleteKeyCode={deleteKeyCodes}
+
+            id="node-editor"
         >
             <Background
                 variant="lines"

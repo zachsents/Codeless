@@ -66,3 +66,13 @@ export function useDebouncedCustomState(remoteValue, remoteSetter, debounceTime 
 
     return [value, setValue]
 }
+
+
+export function useMonostable() {
+    const [value, setValue] = useState(false)
+    useEffect(() => {
+        value && setValue(false)
+    }, [value])
+
+    return [value, () => setValue(true)]
+}

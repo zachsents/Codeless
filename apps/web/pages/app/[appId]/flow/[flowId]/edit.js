@@ -21,7 +21,7 @@ export default function EditFlow() {
             <FlowProvider redirectOnNotExist="/dashboard">
                 <PageTitle />
                 <ReactFlowProvider>
-                    <Stack h="100vh" spacing={0}>
+                    <Stack h="100vh" spacing={0} sx={{ overflow: "hidden" }}>
                         <Header />
                         <Box pos="relative" sx={{ flexGrow: 1 }}>
                             <NodeBuilder />

@@ -506,25 +506,12 @@ export function getNodeIntegrationsStatus(nodeType, appIntegrations) {
 
 
 export function addNodeAtCenter(rf, type) {
-    // add node at center
-    const proj = rf.project({
-        x: (window.innerWidth - 240) / 2,
-        y: (window.innerHeight - 60) / 2,
-    })
-    proj.x -= 56 / 2
-    proj.y -= 56 / 2
-    rf.addNodes(createNode(type, proj))
+    rf.addNodes(createNode(type, getProjectedCenter(rf)))
 }
 
 
 export function addNodesAtCenter(rf, types) {
-    // calculate center
-    const center = rf.project({
-        x: (window.innerWidth - 240) / 2,
-        y: (window.innerHeight - 60) / 2,
-    })
-    center.x -= 56 / 2
-    center.y -= 56 / 2
+    const center = getProjectedCenter(rf)
 
     // create nodes while staggering
     rf.addNodes(
@@ -533,6 +520,36 @@ export function addNodesAtCenter(rf, types) {
             y: center.y + i * 20,
         }))
     )
+}
+
+
+export function addNodeAtWindowPoint(rf, type, x, y) {
+    rf.addNodes(createNode(type, projectWindowPoint(rf, x, y)))
+}
+
+
+const PROJECTION_ADJUSTMENT = { x: -100, y: -50 }
+
+export function getProjectedCenter(rf) {
+    const rfWindow = document.getElementById("node-editor").getBoundingClientRect()
+    const center = rf.project({
+        x: rfWindow.width / 2,
+        y: rfWindow.height / 2,
+    })
+    center.x += PROJECTION_ADJUSTMENT.x
+    center.y += PROJECTION_ADJUSTMENT.y
+    return center
+}
+
+export function projectWindowPoint(rf, x, y) {
+    const rfWindow = document.getElementById("node-editor").getBoundingClientRect()
+    const projected = rf.project({
+        x: x - rfWindow.left,
+        y: y - rfWindow.top,
+    })
+    projected.x += PROJECTION_ADJUSTMENT.x
+    projected.y += PROJECTION_ADJUSTMENT.y
+    return projected
 }
 
 
