@@ -29,7 +29,7 @@ export default function MyApp({ Component, pageProps }) {
             <link rel="icon" href="/favicon.png" key="favicon" />
         </Head>
         <QueryClientProvider client={queryClient}>
-            <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles>
+            <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles withCSSVariables>
                 <ModalsProvider modals={modals}>
                     <Component {...pageProps} />
                     <RouterTransition />

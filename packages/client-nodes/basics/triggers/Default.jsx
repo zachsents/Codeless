@@ -13,8 +13,9 @@ export default {
     inputs: [],
     outputs: ["$"],
 
+    creatable: false,
+    trigger: true,
     deletable: false,
-    hideInBrowser: true,
 
     controls: [
         {
@@ -42,7 +43,7 @@ export default {
                         console.log("Finished successfully.")
                     }
 
-                    if(flowRun.returns.logs) {
+                    if (flowRun.returns.logs) {
                         console.groupCollapsed("Run Logs")
                         flowRun.returns.logs.forEach(log => console.log(log))
                         console.groupEnd()

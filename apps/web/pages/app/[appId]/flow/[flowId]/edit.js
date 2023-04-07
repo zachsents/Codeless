@@ -1,55 +1,34 @@
-import { useEffect, useState } from "react"
-import { ReactFlowProvider } from "reactflow"
-import Head from "next/head"
-import { AppShell } from "@mantine/core"
-import { useDisclosure, useInterval } from "@mantine/hooks"
+import { Box, Stack } from "@mantine/core"
+import { useInterval } from "@mantine/hooks"
 import { useUpdateFlowLastEdited } from "@minus/client-sdk"
+import Head from "next/head"
+import { useEffect } from "react"
+import { ReactFlowProvider } from "reactflow"
 
-import { useFlowId, useMustBeSignedIn } from "../../../../../modules/hooks"
-import { AppProvider, FlowProvider, useFlowContext } from "../../../../../modules/context"
-import NodeBuilder from "../../../../../components/flow-editor/NodeBuilder"
-import Header from "../../../../../components/flow-editor/header/Header"
-import SettingsDrawer from "../../../../../components/flow-editor/SettingsDrawer"
-import Sidebar from "../../../../../components/flow-editor/sidebar/Sidebar"
+import NodeBuilder from "@web/components/flow-editor/NodeBuilder"
+import Header from "@web/components/flow-editor/header/Header"
+import NodeMenu from "@web/components/flow-editor/node-menu/NodeMenu"
+import { AppProvider, FlowProvider, useFlowContext } from "@web/modules/context"
+import { useFlowId, useMustBeSignedIn } from "@web/modules/hooks"
 
 
 export default function EditFlow() {
 
     useMustBeSignedIn()
 
-    const [settingsOpened, settingsHandlers] = useDisclosure(false)
-    const [suggestedTab, setSuggestedTab] = useState()
-
-    const openSettings = tab => {
-        settingsHandlers.open()
-        setSuggestedTab(tab ?? null)
-    }
-
     return (
         <AppProvider redirectOnNotExist="/dashboard">
             <FlowProvider redirectOnNotExist="/dashboard">
                 <PageTitle />
                 <ReactFlowProvider>
-                    <AppShell
-                        padding={0}
-                        header={
-                            <Header
-                                openSettings={openSettings}
-                            />
-                        }
-                    // navbar={<Sidebar />}
-                    >
-                        <NodeBuilder />
-
-                        <SettingsDrawer
-                            opened={settingsOpened}
-                            onClose={settingsHandlers.close}
-                            suggestedTab={suggestedTab}
-                            onOpenedSuggestedTab={() => setSuggestedTab(null)}
-                        />
-
-                        <LastEdited />
-                    </AppShell>
+                    <Stack h="100vh" spacing={0}>
+                        <Header />
+                        <Box pos="relative" sx={{ flexGrow: 1 }}>
+                            <NodeBuilder />
+                            <NodeMenu />
+                        </Box>
+                    </Stack>
+                    <LastEdited />
                 </ReactFlowProvider>
             </FlowProvider>
         </AppProvider>

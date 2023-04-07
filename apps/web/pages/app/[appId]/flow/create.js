@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { TbArrowNarrowRight } from "react-icons/tb"
 import { useAppDetailsRealtime, useCreateFlow, useFlowCountForApp, usePlan } from "@minus/client-sdk"
-import { Triggers, TriggerCategories } from "@minus/client-nodes"
+import { TriggerNodeDefinitions, TriggerCategories } from "@minus/client-nodes"
 
 import { useAppId, useMustBeSignedIn } from "../../../../modules/hooks"
 import { serializeGraph } from "../../../../modules/graph-util"
@@ -81,7 +81,7 @@ export default function CreateFlow() {
         triggerList.length == 1 && form.setFieldValue("trigger", triggerList[0])
 
         return triggerList.map(triggerId => ({
-            label: Triggers[triggerId].name,
+            label: TriggerNodeDefinitions[triggerId].name,
             value: triggerId,
         }))
 

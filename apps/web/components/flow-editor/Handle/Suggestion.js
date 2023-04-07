@@ -2,9 +2,9 @@ import { motion } from "framer-motion"
 import { Button, Text } from "@mantine/core"
 import { TbPlus } from "react-icons/tb"
 
-import { Nodes } from "../../../modules/nodes"
 import { getHandleLabel } from "../../../modules/graph-util"
 import { useMemo } from "react"
+import { NodeDefinitions } from "@minus/client-nodes"
 
 
 export default function Suggestion({ typeId, handle, index, children, icon, ...props }) {
@@ -27,7 +27,7 @@ export default function Suggestion({ typeId, handle, index, children, icon, ...p
             >
                 {typeId &&
                     <Text size={10} weight={400}>
-                        {Nodes[typeId].name}{handle ? ` - ${handleLabel}` : ""}
+                        {NodeDefinitions[typeId].name}{handle ? ` - ${handleLabel}` : ""}
                     </Text>}
 
                 {children && <Text size={10} weight={400}>{children}</Text>}

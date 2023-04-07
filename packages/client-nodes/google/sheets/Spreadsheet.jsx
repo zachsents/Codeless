@@ -12,11 +12,14 @@ const SheetsURLRegex = /d\/([0-9A-Za-z_-]{40,})\/edit/
 
 export default {
     id: "googlesheets:Spreadsheet",
-    name: "Use Google Sheet",
+    name: "Google Sheet",
     description: "Gets a sheet from your Google Drive.",
     icon: SiGooglesheets,
     color,
     badge: "Google Sheets",
+
+    tags: ["Google Sheets"],
+    showMainTagInMenu: false,
 
     inputs: [],
     outputs: [

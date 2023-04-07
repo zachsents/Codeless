@@ -1,16 +1,15 @@
-import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ActionIcon, Badge, Button, Group, HoverCard, Stack, Text, Title, UnstyledButton } from '@mantine/core'
-import { Square } from 'tabler-icons-react'
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ActionIcon, Badge, Button, Group, HoverCard, Stack, Text, Title, UnstyledButton } from "@mantine/core"
+import { Square } from "tabler-icons-react"
 
-import { Nodes } from '../../modules/nodes'
-import { addNodeAtCenter, addNodesAtCenter } from '../../modules/graph-util'
-import Search from '../Search'
-import { useSetState } from '@mantine/hooks'
-import { TbArrowRight, TbCheck, TbMinus, TbPlus } from 'react-icons/tb'
+import { addNodeAtCenter, addNodesAtCenter } from "@web/modules/graph-util"
+import Search from "../Search"
+import { useSetState } from "@mantine/hooks"
+import { TbArrowRight, TbCheck, TbMinus, TbPlus } from "react-icons/tb"
+import { CreatableNodeDefinitions } from "@minus/client-nodes"
 
 
-const NodeList = Object.values(Nodes)
-    .filter(nodeType => !nodeType.hideInBrowser)
+const NodeList = Object.values(CreatableNodeDefinitions)
 
 
 export default function NodePalette({ context, id, innerProps: { rf, suggestions, onAdd } }) {
@@ -126,8 +125,8 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
                 gridRef={gridRef}
                 inputProps={{ onKeyDown: searchKeyHandler }}
                 inputRef={searchRef}
-                rightSection={cartTotal > 0 && 
-                <Button onClick={handleAddCart} rightIcon={<TbArrowRight />}>Add {cartTotal} Nodes</Button>}
+                rightSection={cartTotal > 0 &&
+                    <Button onClick={handleAddCart} rightIcon={<TbArrowRight />}>Add {cartTotal} Nodes</Button>}
             />
         </Stack>
     )
@@ -200,17 +199,17 @@ function QuantityCheckbox({ value, onChange }) {
     const toggle = () => onChange?.(value ? 0 : stashedValue)
 
     return (
-        <Group 
-        spacing={3} 
-        noWrap 
-        onClick={handleGroupClick} 
-        sx={{ 
-            opacity: value > 0 ? 1 : 0.3,
-            transition: "opacity 0.1s",
-            "&:hover": {
-                opacity: 1,
-            }
-        }}
+        <Group
+            spacing={3}
+            noWrap
+            onClick={handleGroupClick}
+            sx={{
+                opacity: value > 0 ? 1 : 0.3,
+                transition: "opacity 0.1s",
+                "&:hover": {
+                    opacity: 1,
+                }
+            }}
         >
             <ActionIcon radius="xl" size="md" onClick={decrement}><TbMinus size={12} /></ActionIcon>
             <Button

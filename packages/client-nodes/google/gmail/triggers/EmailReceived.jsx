@@ -20,11 +20,9 @@ export default {
 
     requiredIntegrations: ["integration:Gmail"],
 
-    signalIn: false,
-    signalOut: "trigger",
-
+    creatable: false,
+    trigger: true,
     deletable: false,
-    hideInBrowser: true,
 
     renderNode: ({ alignHandles }) => {
 

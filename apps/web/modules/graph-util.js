@@ -5,9 +5,8 @@ import shallow from "zustand/shallow"
 import { produce } from "immer"
 import shortUUID from "short-uuid"
 
-import { Integrations } from "@minus/client-nodes"
+import { Integrations, NodeDefinitions } from "@minus/client-nodes"
 import { useAppId, useFlowId } from "./hooks"
-import { Nodes } from "./nodes"
 import { openContextModal } from "@mantine/modals"
 import { Group, Text, Title } from "@mantine/core"
 import { HandleDirection } from "../components/flow-editor/Handle"
@@ -489,12 +488,12 @@ export function selectNode(rf, nodeId, {
 
 
 export function getNodeType(node) {
-    return node && Nodes[node.type]
+    return node && NodeDefinitions[node.type]
 }
 
 
 export function getNodeTypeById(rf, nodeId) {
-    return Nodes[rf.getNode(nodeId)?.type]
+    return NodeDefinitions[rf.getNode(nodeId)?.type]
 }
 
 
@@ -619,6 +618,6 @@ export function formatHandleName(handleName) {
 
 
 export function getHandleLabel(nodeType, handleName) {
-    return Nodes[nodeType].inputs?.map(input => longhandHandle(input))
+    return NodeDefinitions[nodeType].inputs?.map(input => longhandHandle(input))
         .find(input => input.name == handleName)?.label
 }

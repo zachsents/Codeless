@@ -14,6 +14,12 @@
             "@minus/server-nodes": [
                 "packages/server-nodes/src"
             ],
+            "@minus/client-nodes": [
+                "packages/client-nodes"
+            ],
+            "@minus/client-nodes/*": [
+                "packages/client-nodes/*"
+            ],
             "@web/*": [
                 "apps/web/*"
             ]

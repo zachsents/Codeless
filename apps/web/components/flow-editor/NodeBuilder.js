@@ -1,15 +1,14 @@
-import { useEffect, useMemo } from "react"
-import ReactFlow, { Background, useNodes, useEdges, useKeyPress } from "reactflow"
-import { useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
+import { useEffect, useMemo } from "react"
+import ReactFlow, { Background, useEdges, useKeyPress, useNodes } from "reactflow"
 
-import { serializeGraph, deserializeGraph } from "../../modules/graph-util"
+import { useFlowContext } from "../../modules/context"
+import { deserializeGraph, serializeGraph } from "../../modules/graph-util"
 import { useDebouncedCustomState } from "../../modules/hooks"
-import { useAppContext, useFlowContext } from "../../modules/context"
-import { Nodes } from "../../modules/nodes"
-import Node from "./Node"
+import { NodeDefinitions } from "@minus/client-nodes"
 import DataEdge from "./DataEdge"
+import Node from "./Node"
 import Toolbar from "./Toolbar"
 import ConfigPanel from "./config-panel/ConfigPanel"
 
@@ -18,9 +17,6 @@ import 'reactflow/dist/style.css'
 
 export default function NodeBuilder() {
 
-    const theme = useMantineTheme()
-
-    const { app } = useAppContext()
     const { flowGraph } = useFlowContext()
     const updateFlowGraph = useUpdateFlowGraph(flowGraph?.id)
 
@@ -56,13 +52,14 @@ export default function NodeBuilder() {
             deleteKeyCode={deleteKeyCodes}
         >
             <Background
-                // variant="lines" 
+                variant="lines"
                 gap={40}
                 size={1}
-                color="transparent"
-                style={{
-                    backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
-                }}
+            // color="transparent"
+            // style={{
+            //     // backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
+            //     backgroundColor: "white",
+            // }}
             />
             <Toolbar />
             <ConfigPanel />
@@ -93,7 +90,7 @@ function ChangeWatcher({ onChange }) {
 const deleteKeyCodes = ["Delete", "Backspace"]
 
 const nodeTypes = Object.fromEntries(
-    Object.keys(Nodes).map(type => [type, Node])
+    Object.keys(NodeDefinitions).map(type => [type, Node])
 )
 
 const edgeTypes = {

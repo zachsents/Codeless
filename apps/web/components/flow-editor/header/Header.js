@@ -25,7 +25,7 @@ export default function Header() {
     }
 
     return (
-        <MantineHeader p="sm" sx={{ overflow: "visible", zIndex: 200 }}>
+        <MantineHeader fixed={false} p="sm" zIndex={200} sx={{ overflow: "visible" }}>
             <Group position="apart">
                 <Group>
                     <Link href={`/app/${appId}/flows`}>

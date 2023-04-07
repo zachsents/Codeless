@@ -4,11 +4,13 @@ import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../com
 
 export default {
     id: "openai:Parse",
-    name: "Parse with GPT",
+    name: "Extract",
     description: "Parse fields out of text with GPT3.",
     icon: SiOpenai,
     color: "dark",
     badge: "Open AI",
+
+    tags: ["ChatGPT"],
 
     inputs: ["text"],
     outputs: [

@@ -1,87 +1,90 @@
-import DefaultTrigger from "./basics/triggers/Default"
-import LinkTrigger from "./basics/triggers/Link"
+import DefaultTemplate from "./DefaultTemplate"
 
+import CustomCode from "./basics/CustomCode"
 import DateTime from "./basics/DateTime"
 import Number from "./basics/Number"
+import SetVariable from "./basics/SetVariable"
 import Switch from "./basics/Switch"
 import Text from "./basics/Text"
-import SetVariable from "./basics/SetVariable"
 import UseVariable from "./basics/UseVariable"
-import CustomCode from "./basics/CustomCode"
 
+import LoopFlow from "./basics/actions/LoopFlow"
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
 import ScheduleFlow from "./basics/actions/ScheduleFlow"
-import LoopFlow from "./basics/actions/LoopFlow"
 import SendEmail from "./basics/actions/SendEmail"
 
-import And from "./basics/transforms/And"
-import Or from "./basics/transforms/Or"
-import Equals from "./basics/transforms/Equals"
-import NotEqual from "./basics/transforms/NotEqual"
-import Not from "./basics/transforms/Not"
-import GreaterThan from "./basics/transforms/GreaterThan"
 import Count from "./basics/Count"
+import And from "./basics/transforms/And"
+import Equals from "./basics/transforms/Equals"
+import GreaterThan from "./basics/transforms/GreaterThan"
+import Not from "./basics/transforms/Not"
+import NotEqual from "./basics/transforms/NotEqual"
+import Or from "./basics/transforms/Or"
 
 import If from "./control/If"
 
 import Add from "./math/transforms/Add"
-import Subtract from "./math/transforms/Subtract"
-import Multiply from "./math/transforms/Multiply"
 import Divide from "./math/transforms/Divide"
+import Multiply from "./math/transforms/Multiply"
+import Subtract from "./math/transforms/Subtract"
 
-import Average from "./math/aggregations/Average"
-import Sum from "./math/aggregations/Sum"
-import Product from "./math/aggregations/Product"
 import RandomNumber from "./math/RandomNumber"
+import Average from "./math/aggregations/Average"
+import Product from "./math/aggregations/Product"
+import Sum from "./math/aggregations/Sum"
 
-import EmailReceivedTrigger from "./google/gmail/triggers/EmailReceived"
-import GmailSendEmail from "./google/gmail/SendEmail"
 import GmailReplyToEmail from "./google/gmail/ReplyToEmail"
+import GmailSendEmail from "./google/gmail/SendEmail"
 
-import Spreadsheet from "./google/sheets/Spreadsheet"
 import Range from "./google/sheets/Range"
+import Spreadsheet from "./google/sheets/Spreadsheet"
 import Table from "./google/sheets/Table"
 
+import AddRow from "./tables/AddRow"
+import DeleteRows from "./tables/DeleteRows"
 import FindRows from "./tables/FindRows"
 import FindRowsByField from "./tables/FindRowsByField"
-import AddRow from "./tables/AddRow"
-import UpdateRows from "./tables/UpdateRows"
-import DeleteRows from "./tables/DeleteRows"
 import GetField from "./tables/GetField"
 import TableField from "./tables/TableField"
+import UpdateRows from "./tables/UpdateRows"
 
 import AskGPT3 from "./openai/AskGPT3"
+import Classify from "./openai/Classify"
 import Parse from "./openai/Parse"
 import Rate from "./openai/Rate"
-import Classify from "./openai/Classify"
 
-import { Run as RunIcon, Table as TableIcon, Link as LinkIcon, CircleSquare, Math, ArrowsSplit, AlphabetLatin, BrandGmail, BrandAirtable } from "tabler-icons-react"
-import { SiGooglesheets, SiOpenai } from "react-icons/si"
+import { BrandGmail, Link as LinkIcon, Run as RunIcon } from "tabler-icons-react"
 
-import TrimWhitespace from "./text/TrimWhitespace"
 import Template from "./basics/Template"
-import Join from "./text/Join"
-import IntlJoin from "./text/IntlJoin"
-import Regex from "./text/Regex"
-import TextContains from "./text/TextContains"
-import TextMatchesRegex from "./text/TextMatchesRegex"
-import Replace from "./text/Replace"
-import Remove from "./text/Remove"
-import TextAround from "./text/TextAround"
-import Length from "./text/Length"
 import Ternary from "./basics/Ternary"
 import Extract from "./text/Extract"
+import IntlJoin from "./text/IntlJoin"
+import Join from "./text/Join"
+import Length from "./text/Length"
+import Regex from "./text/Regex"
+import Remove from "./text/Remove"
+import Replace from "./text/Replace"
+import TextAround from "./text/TextAround"
+import TextContains from "./text/TextContains"
+import TextMatchesRegex from "./text/TextMatchesRegex"
+import TrimWhitespace from "./text/TrimWhitespace"
 
 import ATUseTable from "./airtable/UseTable"
 
-import GmailIntegration from "./google/gmail/integration"
-import GoogleSheetsIntegration from "./google/sheets/integration"
 import AirTableIntegration from "./airtable/integration"
 import ListRepeat from "./basics/ListRepeat"
+import GmailIntegration from "./google/gmail/integration"
+import GoogleSheetsIntegration from "./google/sheets/integration"
+import DefaultTrigger from "./basics/triggers/Default"
+import LinkTrigger from "./basics/triggers/Link"
+import EmailReceivedTrigger from "./google/gmail/triggers/EmailReceived"
 
 
-export const Nodes = createObject([
+const nodeDefinitions = [
+
+    // Triggers
+    DefaultTrigger, LinkTrigger, EmailReceivedTrigger,
 
     // ===== Basics =====
 
@@ -120,7 +123,7 @@ export const Nodes = createObject([
 
     // ===== Google Sheets =====
     Spreadsheet, Range, Table,
-    
+
     // ===== Gmail =====
     GmailSendEmail, GmailReplyToEmail,
 
@@ -131,122 +134,16 @@ export const Nodes = createObject([
 
     // ===== AirTable =====
     ATUseTable,
-])
+]
+    // makes sure all nodes have default properties
+    .map(node => ({ ...DefaultTemplate, ...node }))
 
-export const NodeCategories = {
-    Basic: {
-        title: "Basic",
-        icon: CircleSquare,
-        members: [
-            "basic:Number",
-            "basic:Text",
-            "basic:Switch",
-            "basic:DateTime",
-            "basic:SetVariable",
-            "basic:UseVariable",
-            "basic:CustomCode",
 
-            "basic:Print",
-            "basic:RunFlow",
-            "basic:ScheduleFlow",
-            "basic:LoopFlow",
-            "basic:SendEmail",
+// export different sets of nodes
+export const NodeDefinitions = createObject(nodeDefinitions)
+export const CreatableNodeDefinitions = createObject(nodeDefinitions.filter(node => node.creatable))
+export const TriggerNodeDefinitions = createObject(nodeDefinitions.filter(node => node.trigger))
 
-            "basic:And",
-            "basic:Or",
-            "basic:Not",
-            "basic:Equals",
-            "basic:NotEqual",
-            "basic:GreaterThan",
-            "basic:Count",
-            "basic:Ternary",
-        ],
-    },
-    Text: {
-        title: "Text",
-        icon: AlphabetLatin,
-        members: [
-            "basic:Text",
-            "text:TrimWhitespace",
-            "text:Join",
-            "text:IntlJoin",
-            "text:Regex",
-            "basic:Template",
-            "text:TextContains",
-            "text:TextMatchesRegex",
-            "text:Replace",
-            "text:Remove",
-            "text:TextAround",
-            "text:Length",
-            "text:Extract",
-        ],
-    },
-    Control: {
-        title: "Control",
-        icon: ArrowsSplit,
-        members: [
-            "control:If",
-            "basic:Ternary",
-        ],
-    },
-    Math: {
-        title: "Math",
-        icon: Math,
-        members: [
-            "math:RandomNumber",
-
-            "math:Add",
-            "math:Subtract",
-            "math:Multiply",
-            "math:Divide",
-
-            "math:Average",
-            "math:Sum",
-            "math:Product",
-        ],
-    },
-    Tables: {
-        title: "Tables",
-        icon: TableIcon,
-        members: [
-            "tables:FindRows",
-            "tables:FindRowsByField",
-            "tables:GetField",
-            "tables:AddRow",
-            "tables:UpdateRows",
-            "tables:DeleteRows",
-            "tables:TableField",
-        ],
-    },
-    GoogleSheets: {
-        title: "Google Sheets",
-        icon: SiGooglesheets,
-        members: [
-            "googlesheets:Spreadsheet",
-            "googlesheets:Range",
-            "googlesheets:Table",
-        ],
-    },
-    OpenAI: {
-        title: "OpenAI",
-        icon: SiOpenai,
-        members: [
-            "openai:AskGPT3",
-            "openai:Parse",
-        ],
-    },
-    AirTable: {
-        title: "Airtable",
-        icon: BrandAirtable,
-        members: [
-            "airtable:UseTable",
-        ],
-    },
-}
-
-export const Triggers = createObject([
-    DefaultTrigger, LinkTrigger, EmailReceivedTrigger,
-])
 
 export const TriggerCategories = {
     Default: {

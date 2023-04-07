@@ -11,13 +11,14 @@ export default {
     inputs: [],
     outputs: ["$"],
 
+    creatable: false,
+    trigger: true,
     deletable: false,
-    hideInBrowser: true,
 
     deploy: ({ flowId }) => {
 
         const deploymentUrl = `${process.env.NEXT_PUBLIC_FUNCTIONS_BASE_URL}/flow-runFromUrl?flow_id=${flowId}`
-    
+
         return (
             <Stack>
                 <Group position="center">
