@@ -24,11 +24,11 @@ export default function Breadcrumbs() {
     return app && flow && (
         <Stack spacing={0}>
             <Group spacing="xs">
-                <Link href={`/apps/${app?.id}`}>
+                <Link href={`/app/${app?.id}`}>
                     <Text size="xs" color="dimmed">{app?.name}</Text>
                 </Link>
                 <Text size="xs" color="dimmed" pt={3}><TbChevronRight /></Text>
-                <Link href={`/apps/${app?.id}/flows`}>
+                <Link href={`/app/${app?.id}/flows`}>
                     <Text size="xs" color="dimmed">Flows</Text>
                 </Link>
                 <Text size="xs" color="dimmed" pt={3}><TbChevronRight /></Text>
