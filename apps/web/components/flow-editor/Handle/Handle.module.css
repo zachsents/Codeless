@@ -1,0 +1,30 @@
+.wrapper {
+    --handleSize: 16px;
+
+    padding: 7px;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.handle {
+    position: static;
+    transform: none;
+    box-sizing: content-box;
+    width: var(--handleSize);
+    height: var(--handleSize);
+
+    transition: width 0.1s, height 0.1s;
+}
+
+.wrapper.connected .handle {
+    --connectedFactor: 0.5;
+    width: calc(var(--handleSize) * var(--connectedFactor));
+    height: calc(var(--handleSize) * var(--connectedFactor));
+}
+
+.wrapper:hover .handle {
+    --hoverFactor: 1.6;
+    width: calc(var(--handleSize) * var(--hoverFactor));
+    height: calc(var(--handleSize) * var(--hoverFactor));
+}

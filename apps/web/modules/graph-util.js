@@ -223,6 +223,7 @@ export function useSmoothlyUpdateNode(id, deps = [], {
     const updateNodeInterals = useUpdateNodeInternals()
     const nodeUpdateInterval = useInterval(() => {
         updateNodeInterals(id)
+        console.log("update node internals")
     }, interval)
     useEffect(() => {
         nodeUpdateInterval.start()
@@ -248,17 +249,17 @@ export function useHandleAlignment() {
 
     const alignHandles = (handleNames, el = "header") => {
 
-        if (el == null)
-            return
-        const alignEl = el === "header" ? headerRef.current : el
+        // if (el == null)
+        //     return
+        // const alignEl = el === "header" ? headerRef.current : el
 
-        const alignHandle = handleName => {
-            if (handleAlignments[handleName] != alignEl)
-                setHandleAlignments({ [handleName]: alignEl })
-        }
+        // const alignHandle = handleName => {
+        //     if (handleAlignments[handleName] != alignEl)
+        //         setHandleAlignments({ [handleName]: alignEl })
+        // }
 
-        (typeof handleNames === "string" ? [handleNames] : handleNames)
-            .forEach(alignHandle)
+        // (typeof handleNames === "string" ? [handleNames] : handleNames)
+        //     .forEach(alignHandle)
     }
 
     return [handleAlignments, alignHandles, headerRef]

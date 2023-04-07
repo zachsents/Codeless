@@ -19,7 +19,7 @@ export default {
     badge: "airtable",
 
     tags: ["Airtable", "Table", "Database"],
-    showMainTagInMenu: false,
+    showMainTag: false,
 
     inputs: [],
     outputs: ["table"],

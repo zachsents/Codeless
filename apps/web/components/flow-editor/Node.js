@@ -1,43 +1,52 @@
-import { useEffect } from "react"
-import { useKeyPress, useReactFlow } from "reactflow"
-import { Card, Group, Text, Box, ActionIcon, useMantineTheme, ThemeIcon, Badge } from "@mantine/core"
+import { ActionIcon, Box, Card, Group, Popover, Stack, Text, useMantineTheme } from "@mantine/core"
 import { useHover, useSetState } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
+import { useEffect } from "react"
 import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
+import { useReactFlow } from "reactflow"
 
 import { useNodeSuggestions } from "@minus/client-sdk"
+import { useAppContext, useFlowContext } from "../../modules/context"
 import {
     deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType,
-    useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useNodeSnapping
-} from "../../modules/graph-util"
-import { useAppContext, useFlowContext } from "../../modules/context"
+    useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useSmoothlyUpdateNode
+} from "@web/modules/graph-util"
 import Handle, { HandleDirection } from "./Handle"
 
+import styles from "./Node.module.css"
 
-export default function Node({ id, type, selected, dragging, xPos, yPos }) {
+
+export default function Node({ id, type, selected, dragging }) {
 
     const theme = useMantineTheme()
     const rf = useReactFlow()
     const { integrations: appIntegrations } = useAppContext()
     const { latestRun } = useFlowContext()
 
-    const nodeType = getNodeType({ type })
-    const [data, setData] = useNodeData(id)                                     // node's internal data
-    const displayProps = useNodeDisplayProps(id)                                // props to pass to display override components
+    const typeDefinition = getNodeType({ type })
+    const mainColor = theme.colors[typeDefinition.color][theme.primaryShade.light]
+    const dimmedColor = theme.colors[typeDefinition.color][3]
+
+    // integrations
+    const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
+    const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
+    const integrationsLoading = nodeIntegrations.some(int => int.status.isLoading)
+
+    const [data] = useNodeData(id)                                              // node's internal data
     const [stackHeight, addHeightRef] = useNodeMinHeight()                      // making sure card is correct size
-    const [handleAlignments, alignHandles, headerRef] = useHandleAlignment()    // handle alignment
+    const [handleAlignments, alignHandles] = useHandleAlignment()    // handle alignment
+
+    // props to pass to display override components
+    const displayProps = {
+        ...useNodeDisplayProps(id),
+        integrationsSatisfied,
+        alignHandles,
+        typeDefinition,
+    }
 
     // hover for showing handle labels
     const { hovered, ref: hoverRef } = useHover()
     const [handlesHovered, setHandlesHovered] = useSetState({})
-
-    // alt-dragging for duplication -- TO DO: implement this
-    const duplicating = useKeyPress("Alt") && hovered
-
-    // side effect: when deselected, close node
-    useEffect(() => {
-        !selected && setData({ expanded: false, focused: false })
-    }, [selected])
 
     // side effect: when dragging, deselect
     useEffect(() => {
@@ -54,7 +63,7 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
         handleProps: handleId => ({
             nodeHovered: hovered && !Object.values(handlesHovered).some(x => x),
             nodeId: id,
-            nodeName: nodeType.name,
+            nodeName: typeDefinition.name,
             connected: displayProps.connections[handleId],
             align: handleAlignments[handleId],
             suggestions: suggestions?.[handleId],
@@ -63,12 +72,13 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
     }
 
     // handle snapping position 
-    useNodeSnapping(id, xPos, yPos)
+    // useNodeSnapping(id, xPos, yPos)
 
-    // integrations
-    const nodeIntegrations = getNodeIntegrationsStatus(nodeType, appIntegrations)
-    const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
-    const integrationsLoading = nodeIntegrations.some(int => int.status.isLoading)
+    // periodically update node internals
+    const stopUpdating = useSmoothlyUpdateNode(id, [], {
+        interval: 1000,
+    })
+    useEffect(() => stopUpdating, [])
 
     return (
         <motion.div
@@ -81,95 +91,87 @@ export default function Node({ id, type, selected, dragging, xPos, yPos }) {
 
             {/* Handles */}
             <Handle.Group
-                handles={nodeType.inputs}
+                handles={typeDefinition.inputs}
                 direction={HandleDirection.Input}
                 {...commonHandleGroupProps}
                 ref={addHeightRef(0)}
             />
             <Handle.Group
-                handles={nodeType.outputs}
+                handles={typeDefinition.outputs}
                 direction={HandleDirection.Output}
                 {...commonHandleGroupProps}
                 ref={addHeightRef(1)}
             />
 
-            {/* Main Content */}
-            <Card
-                radius="md"
-                p="sm"
-                shadow="sm"
-                mih={stackHeight}
-                sx={cardStyle(id, { copyCursor: duplicating, selected })}
-            >
-                {/* Header */}
-                <Card.Section withBorder p="xs">
-                    <Group position="apart" ref={headerRef}>
-                        <Group spacing="xs">
-                            {nodeType.color ?
-                                <ThemeIcon color={nodeType.color} size="sm" radius="xl">
-                                    <nodeType.icon size={10} />
-                                </ThemeIcon>
-                                :
-                                <nodeType.icon size={16} />
-                            }
-                            <Text
-                                maw={120}
-                                lh={1.2}
-                                size="xs"
-                                ff="DM Sans"
-                            >
-                                {nodeType.renderName?.(displayProps) ?? nodeType.name}
-                            </Text>
-                        </Group>
-
-                        {nodeType.badge &&
-                            <Badge size="xs" color={nodeType.color ?? "gray"}>
-                                {nodeType.badge}
-                            </Badge>}
-                    </Group>
-                </Card.Section>
-
-                {/* Body */}
-                {nodeType.renderNode &&
-                    <Box mt="sm">
-                        <nodeType.renderNode
-                            {...displayProps}
-                            alignHandles={alignHandles}
-                            integrationsSatisfied={integrationsSatisfied}
-                        />
-                    </Box>
+            <Popover position="bottom" opened={selected && !dragging} styles={{
+                dropdown: {
+                    border: "none",
                 }
-            </Card>
+            }}>
+                <Popover.Target>
+
+                    {/* Main Content */}
+                    <Card
+                        px="lg"
+                        py="sm"
+                        mih={stackHeight}
+                        className={styles.card}
+                        bg={`${typeDefinition.color}.0`}
+                        sx={{
+                            border: `1px solid ${mainColor}`,
+                        }}
+                    >
+                        <Stack>
+                            {typeDefinition.renderName &&
+                                <Group position="apart">
+                                    <Group>
+                                        <typeDefinition.icon color={mainColor} size={24} />
+                                        {/* <ThemeIcon color={typeDefinition.color} size="sm" radius="xl">
+                                            <typeDefinition.icon size={10} />
+                                        </ThemeIcon> */}
+                                        <Text size="sm" weight={600} color={typeDefinition.color} transform="uppercase" ff="Rubik">
+                                            <typeDefinition.renderName {...displayProps} />
+                                        </Text>
+                                    </Group>
+
+                                    {typeDefinition.tags[0] && typeDefinition.showMainTag &&
+                                        <Text size="sm" weight={500} color={dimmedColor} transform="uppercase" ff="Rubik">
+                                            {typeDefinition.tags[0]}
+                                        </Text>}
+                                </Group>}
+
+                            {typeDefinition.renderTextContent &&
+                                <Text>
+                                    <typeDefinition.renderTextContent {...displayProps} />
+                                </Text>}
+
+                            {typeDefinition.renderContent &&
+                                <typeDefinition.renderContent {...displayProps} />}
+                        </Stack>
+                    </Card>
+                </Popover.Target>
+
+                <Popover.Dropdown p={0}>
+
+                    {/* Controls */}
+                    <Card shadow="sm" p={5}>
+                        <Group spacing="xs" noWrap>
+                            <ActionIcon disabled size="md" radius="sm">
+                                <TbCopy size={16} />
+                            </ActionIcon>
+                            {typeDefinition.deletable &&
+                                <ActionIcon size="md" radius="sm" color="red" onClick={() => deleteNodeById(rf, id)}>
+                                    <TbTrash size={16} />
+                                </ActionIcon>}
+                        </Group>
+                    </Card>
+                </Popover.Dropdown>
+            </Popover>
 
             {/* Error Icon */}
             <AnimatePresence>
                 {(latestRun?.errors[id]?.length > 0 || (!integrationsSatisfied && !integrationsLoading)) &&
                     <ErrorIcon />}
-            </AnimatePresence>
-
-            {/* Controls */}
-            <AnimatePresence>
-                {selected && !dragging &&
-                    <Box sx={controlsStyle}>
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            transition={{ type: "spring", duration: 0.5, bounce: 0.5, delay: 0.1 }}
-                        >
-                            <Card shadow="sm" p={5} radius="md" sx={{ pointerEvents: "all" }}>
-                                <Group spacing="xs" noWrap>
-                                    <ActionIcon disabled size="md" radius="sm">
-                                        <TbCopy size={16} />
-                                    </ActionIcon>
-                                    {nodeType.deletable !== false &&
-                                        <ActionIcon size="md" radius="sm" color="red" onClick={() => deleteNodeById(rf, id)}>
-                                            <TbTrash size={16} />
-                                        </ActionIcon>}
-                                </Group>
-                            </Card>
-                        </motion.div>
-                    </Box>}
             </AnimatePresence>
         </motion.div>
     )
@@ -202,21 +204,3 @@ function ErrorIcon() {
         </Box>
     )
 }
-
-
-const cardStyle = (id, { copyCursor, /* selected */ }) => ({
-    overflow: "visible",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    cursor: copyCursor ? "copy" : undefined,
-})
-
-const controlsStyle = theme => ({
-    position: "absolute",
-    bottom: "100%",
-    left: "50%",
-    marginBottom: theme.spacing.xs,
-    transform: "translateX(-50%)",
-    pointerEvents: "none",
-})

@@ -9,6 +9,8 @@ export default {
     name: "When the flow is ran from Minus",
     description: "Can be triggered manually, triggered by other flows, or scheduled to run later.",
     icon: Run,
+    tags: ["Trigger"],
+    showMainTag: false,
 
     inputs: [],
     outputs: ["$"],

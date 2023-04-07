@@ -1,13 +1,16 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { Handle as RFHandle, useReactFlow, useStore } from "reactflow"
 import { Box, useMantineTheme, Text, Stack, Group, Button } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbPlus } from "react-icons/tb"
 
-import { addNeighborNode, openNodePalette } from "../../../modules/graph-util"
+import { addNeighborNode, getNodeTypeById, openNodePalette } from "@web/modules/graph-util"
 import { HandleDirection } from "."
 import Suggestion from "./Suggestion"
+
+import styles from "./Handle.module.css"
+import { useSmoothlyUpdateNode } from "@web/modules/graph-util"
 
 
 export default function Handle({ id, label, direction, position, suggestions,
@@ -15,6 +18,10 @@ export default function Handle({ id, label, direction, position, suggestions,
 
     const rf = useReactFlow()
     const theme = useMantineTheme()
+
+    const nodeTypeDefinition = useMemo(() => getNodeTypeById(rf, nodeId), [rf, nodeId])
+    const mainColor = theme.colors[nodeTypeDefinition.color][theme.primaryShade.light]
+    const lightColor = theme.colors[nodeTypeDefinition.color][0]
 
     // keep track of connection node ID so we can hide tooltips while connecting
     // to get them out of the way
@@ -73,29 +80,27 @@ export default function Handle({ id, label, direction, position, suggestions,
     // only show 3 suggestions
     const visibleSuggestions = suggestions?.slice(0, 3)
 
-    return (
-        <Box sx={containerStyle(alignHeight)} ref={hoverRef}>
+    // side-effect: fix node internals when connected state changes
+    const stopUpdate = useSmoothlyUpdateNode(nodeId, [connected, hovered])
+    useEffect(() => {
+        setTimeout(() => stopUpdate(), 100)
+    }, [connected, hovered])
 
-            <motion.div
-                animate={isUnconnectedInput ? "unconnected" : undefined}
-                whileHover="hovered"
-                style={handleWrapperStyle}
-                ref={wrapperRef}
-            >
-                <motion.div variants={handleAnimVariants} transition={{ type: "spring", duration: 0.15 }}>
-                    <RFHandle
-                        id={id}
-                        type={direction}
-                        position={position}
-                        style={{
-                            ...handleStyle,
-                            backgroundColor: isUnconnectedInput ?
-                                theme.colors.red[8] :
-                                theme.colors.gray[5],
-                        }}
-                    />
-                </motion.div>
-            </motion.div>
+    return (
+        <Box pos={alignHeight ? "absolute" : "relative"} top={alignHeight || undefined} ref={hoverRef}>
+
+            <div className={`${styles.wrapper} ${connected ? styles.connected : ""}`} ref={wrapperRef}>
+                <RFHandle
+                    id={id}
+                    type={direction}
+                    position={position}
+                    className={styles.handle}
+                    style={{
+                        backgroundColor: lightColor,
+                        border: `1px solid ${mainColor}`,
+                    }}
+                />
+            </div>
 
             <AnimatePresence>
                 {
@@ -157,48 +162,11 @@ export default function Handle({ id, label, direction, position, suggestions,
                         </motion.div>
                     </Box>}
             </AnimatePresence>
-
         </Box>
     )
 }
 
 
-
-
-/* Container */
-
-const containerStyle = align => ({
-    position: align ? "absolute" : "relative",
-    ...(align && {
-        top: align,
-    }),
-})
-
-
-/* Handle */
-
-const handleSize = 8
-
-const handleWrapperStyle = {
-    padding: 7,
-    borderRadius: "50%",
-    position: "relative",
-    zIndex: 1,
-}
-
-const handleAnimVariants = {
-    hovered: { scale: 2.5 },
-    unconnected: { scale: 1.3 },
-}
-
-const handleStyle = ({
-    position: "static",
-    transform: "none",
-    boxSizing: "content-box",
-    width: handleSize,
-    height: handleSize,
-    border: "none",
-})
 
 
 /* Tooltip */

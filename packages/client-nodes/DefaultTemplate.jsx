@@ -12,7 +12,7 @@ export default {
 
     // Tags
     tags: [],
-    showMainTagInMenu: true,
+    showMainTag: true,
 
     // Other
     trigger: false,
@@ -28,4 +28,9 @@ export default {
     // I/O
     inputs: [],
     outputs: [],
+
+    // Rendering
+    renderName: ({ typeDefinition }) => typeDefinition.name,
+    renderTextContent: false,
+    renderContent: false,
 }

@@ -52,7 +52,7 @@ export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin
                                 {node.name}
                             </Text>
                         </Group>
-                        {node.tags[0] && node.showMainTagInMenu &&
+                        {node.tags[0] && node.showMainTag &&
                             <Text size="sm" weight={500} color={dimmedColor} transform="uppercase" ff="Rubik">
                                 {node.tags[0]}
                             </Text>}
