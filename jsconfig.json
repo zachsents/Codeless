@@ -1,11 +1,22 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@minus/server-sdk/*": ["packages/server-sdk/src/*"],
-      "@minus/server-sdk": ["packages/server-sdk/src"],
-      "@minus/server-nodes/*": ["packages/server-nodes/src/*"],
-      "@minus/server-nodes": ["packages/server-nodes/src"]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@minus/server-sdk/*": [
+                "packages/server-sdk/src/*"
+            ],
+            "@minus/server-sdk": [
+                "packages/server-sdk/src"
+            ],
+            "@minus/server-nodes/*": [
+                "packages/server-nodes/src/*"
+            ],
+            "@minus/server-nodes": [
+                "packages/server-nodes/src"
+            ],
+            "@web/*": [
+                "apps/web/*"
+            ]
+        }
     }
-  }
 }

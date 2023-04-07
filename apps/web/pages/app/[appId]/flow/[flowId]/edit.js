@@ -8,7 +8,7 @@ import { useUpdateFlowLastEdited } from "@minus/client-sdk"
 import { useFlowId, useMustBeSignedIn } from "../../../../../modules/hooks"
 import { AppProvider, FlowProvider, useFlowContext } from "../../../../../modules/context"
 import NodeBuilder from "../../../../../components/flow-editor/NodeBuilder"
-import Header from "../../../../../components/flow-editor/Header"
+import Header from "../../../../../components/flow-editor/header/Header"
 import SettingsDrawer from "../../../../../components/flow-editor/SettingsDrawer"
 import Sidebar from "../../../../../components/flow-editor/sidebar/Sidebar"
 
@@ -37,7 +37,7 @@ export default function EditFlow() {
                                 openSettings={openSettings}
                             />
                         }
-                        navbar={<Sidebar />}
+                    // navbar={<Sidebar />}
                     >
                         <NodeBuilder />
 

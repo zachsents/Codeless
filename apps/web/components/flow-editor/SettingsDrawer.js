@@ -8,7 +8,7 @@ import { useFlowContext } from "../../modules/context"
 import { useAppId } from "../../modules/hooks"
 import { Nodes } from "../../modules/nodes"
 import LinkIcon from "../LinkIcon"
-import { HeaderHeight } from "./Header"
+import { HeaderHeight } from "./header/Header"
 
 
 export default function SettingsDrawer({ opened, onClose, suggestedTab, onOpenedSuggestedTab }) {
