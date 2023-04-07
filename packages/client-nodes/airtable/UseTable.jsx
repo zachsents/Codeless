@@ -12,11 +12,14 @@ const AirtableURLRegex = /(app[0-9A-Za-z]{12,16})\/(tbl[0-9A-Za-z]{12,16})/
 
 export default {
     id: "airtable:UseTable",
-    name: "Use Table",
+    name: "Airtable",
     description: "Configures a base and table from AirTable.",
     icon: BrandAirtable,
     color,
     badge: "airtable",
+
+    tags: ["Airtable", "Table", "Database"],
+    showMainTagInMenu: false,
 
     inputs: [],
     outputs: ["table"],

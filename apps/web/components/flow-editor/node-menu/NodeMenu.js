@@ -5,23 +5,40 @@ import { useReactFlow } from "reactflow"
 
 import { createNode, openNodePalette } from "@web/modules/graph-util"
 
-import { useHotkeys, useSetState } from "@mantine/hooks"
+import { useHotkeys } from "@mantine/hooks"
+import { arrayUnion, updateUser, useCurrentUserRealtime } from "@minus/client-sdk"
 import { TbDots, TbSearch } from "react-icons/tb"
 import DraggableNodeButton from "./DraggableNodeButton"
+import { arrayRemove } from "@minus/client-sdk"
+
+
+const suggested = [
+    "basic:Text",
+    "googlesheets:Spreadsheet",
+    "airtable:UseTable",
+    "openai:Parse",
+]
 
 
 export default function NodeMenu() {
 
     const rf = useReactFlow()
 
-    const [showing, setShowing] = useSetState({
-        suggested: true,
-        pinned: true,
-    })
-
     useHotkeys([
         ["ctrl+P", () => openNodePalette(rf)]
     ])
+
+    // user preferences
+    const currentUser = useCurrentUserRealtime()
+    const preferences = currentUser?.preferences
+    const setPreference = (key, val) => {
+        updateUser(currentUser.id, {
+            [`preferences.${key}`]: val,
+        })
+    }
+
+    const showSuggested = preferences?.showSuggested ?? true
+    const showPinned = preferences?.showPinned ?? true
 
     return (
         <Stack spacing="md" p="xl" pos="absolute" top={0} left={0} miw={220}>
@@ -37,17 +54,17 @@ export default function NodeMenu() {
                         <Menu.Dropdown>
                             <Menu.Item
                                 closeMenuOnClick={false}
-                                icon={<Checkbox checked={showing.suggested} radius="sm" />}
+                                icon={<Checkbox checked={showSuggested} radius="sm" readOnly />}
                                 p="xs"
-                                onClick={() => setShowing({ suggested: !showing.suggested })}
+                                onClick={() => setPreference("showSuggested", !showSuggested)}
                             >
                                 <Text>Suggested</Text>
                             </Menu.Item>
                             <Menu.Item
                                 closeMenuOnClick={false}
-                                icon={<Checkbox checked={showing.pinned} radius="sm" />}
+                                icon={<Checkbox checked={showPinned} radius="sm" readOnly />}
                                 p="xs"
-                                onClick={() => setShowing({ pinned: !showing.pinned })}
+                                onClick={() => setPreference("showPinned", !showPinned)}
                             >
                                 <Text>Pinned</Text>
                             </Menu.Item>
@@ -67,17 +84,33 @@ export default function NodeMenu() {
                 </Button>
             </Tooltip>
 
-            {showing.suggested && <Stack spacing="sm">
-                <Text size="xs" lh={0.5} color="dimmed">Suggested</Text>
-                <DraggableNodeButton id="googlesheets:Spreadsheet" />
-                <DraggableNodeButton id="openai:Parse" />
-            </Stack>}
+            {showSuggested &&
+                <Stack spacing="sm">
+                    <Text size="xs" lh={0.5} color="dimmed">Suggested</Text>
 
-            {showing.pinned && <Stack spacing="sm">
-                <Text size="xs" lh={0.5} color="dimmed">Pinned</Text>
-                <DraggableNodeButton id="googlesheets:Spreadsheet" pinned />
-                <DraggableNodeButton id="openai:Parse" pinned />
-            </Stack>}
+                    {suggested.filter(sugg => !preferences?.pinned?.includes(sugg))
+                        .map(sugg =>
+                            <DraggableNodeButton
+                                id={sugg}
+                                onPin={() => setPreference("pinned", arrayUnion(sugg))}
+                                key={sugg}
+                            />
+                        )}
+                </Stack>}
+
+            {showPinned &&
+                <Stack spacing="sm">
+                    <Text size="xs" lh={0.5} color="dimmed">Pinned</Text>
+
+                    {preferences?.pinned?.map(sugg =>
+                        <DraggableNodeButton
+                            id={sugg}
+                            onUnpin={() => setPreference("pinned", arrayRemove(sugg))}
+                            pinned
+                            key={sugg}
+                        />
+                    )}
+                </Stack>}
         </Stack>
     )
 

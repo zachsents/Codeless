@@ -18,7 +18,7 @@ export default {
     color,
     badge: "Google Sheets",
 
-    tags: ["Google Sheets"],
+    tags: ["Google Sheets", "Table", "Database"],
     showMainTagInMenu: false,
 
     inputs: [],

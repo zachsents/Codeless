@@ -13,6 +13,11 @@ export * from "./flow-actions.js"
 export * from "./flow-hooks.js"
 export * from "./run-actions.js"
 export * from "./run-hooks.js"
+export * from "./user-actions.js"
+export * from "./user-hooks.js"
 
 export * from "./integrations.js"
 export * from "./functions.js"
+
+
+export { arrayUnion, arrayRemove } from "firebase/firestore"
