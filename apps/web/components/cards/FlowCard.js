@@ -5,7 +5,7 @@ import { useClickOutside } from "@mantine/hooks"
 import { openContextModal } from "@mantine/modals"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbTrash, TbPencil, TbClock, TbListDetails, TbChartDots3, TbX, TbRun } from "react-icons/tb"
-import { Triggers } from "@minus/client-nodes"
+import { TriggerNodeDefinitions } from "@minus/client-nodes"
 
 import { useAppId } from "../../modules/hooks"
 import OurCard from "./OurCard"
@@ -49,7 +49,7 @@ export default function FlowCard({ flow }) {
     }
 
     // trigger icon
-    const TriggerIcon = Triggers[flow.trigger]?.icon
+    const TriggerIcon = TriggerNodeDefinitions[flow.trigger]?.icon
 
     const expandedStyle = {
         position: "fixed",
@@ -113,7 +113,7 @@ export default function FlowCard({ flow }) {
                                                         </Tooltip>}
                                                     <Text size="lg" weight={600} mb={5}>{flow.name}</Text>
                                                 </Group>
-                                                <Text color="dimmed">Trigger: {Triggers[flow.trigger]?.name}</Text>
+                                                <Text color="dimmed">Trigger: {TriggerNodeDefinitions[flow.trigger]?.name}</Text>
                                             </Box>
                                         </Group>
                                         <Group spacing="xl">
@@ -124,7 +124,7 @@ export default function FlowCard({ flow }) {
                                             </Box> */}
 
                                             {flow?.published && <Group spacing="xs">
-                                                {Triggers[flow.trigger]?.controls?.map((control, i) =>
+                                                {TriggerNodeDefinitions[flow.trigger]?.controls?.map((control, i) =>
                                                     <FlowControlButton
                                                         {...control}
                                                         appId={appId}
