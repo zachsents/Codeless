@@ -8,7 +8,7 @@ import { deserializeGraph, serializeGraph } from "../../modules/graph-util"
 import { useDebouncedCustomState } from "../../modules/hooks"
 import { NodeDefinitions } from "@minus/client-nodes"
 import DataEdge from "./DataEdge"
-import Node from "./Node"
+import Node from "./node/Node"
 import Toolbar from "./Toolbar"
 import ConfigPanel from "./config-panel/ConfigPanel"
 

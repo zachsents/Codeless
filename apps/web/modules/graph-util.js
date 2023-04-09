@@ -529,7 +529,7 @@ export function addNodeAtWindowPoint(rf, type, x, y) {
 }
 
 
-const PROJECTION_ADJUSTMENT = { x: -100, y: -50 }
+const PROJECTION_ADJUSTMENT = { x: -80, y: -30 }
 
 export function getProjectedCenter(rf) {
     const rfWindow = document.getElementById("node-editor").getBoundingClientRect()

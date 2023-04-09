@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Card, Group, Popover, Stack, Text, useMantineTheme } from "@mantine/core"
+import { ActionIcon, Box, Card, Group, Popover, useMantineTheme } from "@mantine/core"
 import { useHover, useSetState } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect } from "react"
@@ -6,14 +6,15 @@ import { TbCopy, TbExclamationMark, TbTrash } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
 
 import { useNodeSuggestions } from "@minus/client-sdk"
-import { useAppContext, useFlowContext } from "../../modules/context"
+import { useAppContext, useFlowContext } from "@web/modules/context"
 import {
     deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType,
     useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
-import Handle, { HandleDirection } from "./Handle"
+import Handle, { HandleDirection } from "../Handle"
 
 import styles from "./Node.module.css"
+import NodeInternal from "./NodeInternal"
 
 
 export default function Node({ id, type, selected, dragging }) {
@@ -25,7 +26,7 @@ export default function Node({ id, type, selected, dragging }) {
 
     const typeDefinition = getNodeType({ type })
     const mainColor = theme.colors[typeDefinition.color][theme.primaryShade.light]
-    const dimmedColor = theme.colors[typeDefinition.color][3]
+    // const dimmedColor = theme.colors[typeDefinition.color][3]
 
     // integrations
     const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
@@ -111,44 +112,24 @@ export default function Node({ id, type, selected, dragging }) {
                 <Popover.Target>
 
                     {/* Main Content */}
-                    <Card
-                        px="lg"
-                        py="sm"
-                        mih={stackHeight}
-                        className={styles.card}
-                        bg={`${typeDefinition.color}.0`}
-                        sx={{
-                            border: `1px solid ${mainColor}`,
-                        }}
-                    >
-                        <Stack>
-                            {typeDefinition.renderName &&
-                                <Group position="apart">
-                                    <Group>
-                                        <typeDefinition.icon color={mainColor} size={24} />
-                                        {/* <ThemeIcon color={typeDefinition.color} size="sm" radius="xl">
-                                            <typeDefinition.icon size={10} />
-                                        </ThemeIcon> */}
-                                        <Text size="sm" weight={600} color={typeDefinition.color} transform="uppercase" ff="Rubik">
-                                            <typeDefinition.renderName {...displayProps} />
-                                        </Text>
-                                    </Group>
-
-                                    {typeDefinition.tags[0] && typeDefinition.showMainTag &&
-                                        <Text size="sm" weight={500} color={dimmedColor} transform="uppercase" ff="Rubik">
-                                            {typeDefinition.tags[0]}
-                                        </Text>}
-                                </Group>}
-
-                            {typeDefinition.renderTextContent &&
-                                <Text>
-                                    <typeDefinition.renderTextContent {...displayProps} />
-                                </Text>}
-
-                            {typeDefinition.renderContent &&
-                                <typeDefinition.renderContent {...displayProps} />}
-                        </Stack>
-                    </Card>
+                    {typeDefinition.renderCard ?
+                        <Card
+                            px="lg"
+                            py="sm"
+                            mih={stackHeight}
+                            className={styles.card}
+                            bg={`${typeDefinition.color}.0`}
+                            sx={{
+                                border: `1px solid ${mainColor}`,
+                            }}
+                        >
+                            <NodeInternal id={id} type={type} displayProps={displayProps} />
+                        </Card>
+                        :
+                        <Box>
+                            <NodeInternal id={id} type={type} displayProps={displayProps} />
+                        </Box>
+                    }
                 </Popover.Target>
 
                 <Popover.Dropdown p={0}>

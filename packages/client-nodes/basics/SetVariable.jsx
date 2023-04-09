@@ -11,8 +11,8 @@ export default {
 
     inputs: ["$"],
     outputs: [],
-    
-    renderName: ({ state }) => state.name,
+
+    renderName: ({ state }) => state.name || "[no name]",
 
     configuration: ({ state, setState }) => {
         return (
@@ -21,7 +21,7 @@ export default {
                     <ControlLabel info="The name of the variable. This must match the name in the corresponding Use Variable node.">
                         Variable Name
                     </ControlLabel>
-                    <TextInput 
+                    <TextInput
                         radius="md"
                         placeholder="Give me a name"
                         value={state.name}
