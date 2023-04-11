@@ -1,7 +1,4 @@
 
-export { default as Control } from "./Control"
-export { default as ControlStack } from "./ControlStack"
-export { default as ControlLabel } from "./ControlLabel"
 export { default as ListHandlesControl } from "./ListHandlesControl"
 export { default as ListHandlesNodeContent } from "./ListHandlesNodeContent"
 export { default as OAuthIntegration } from "./OAuthIntegration"

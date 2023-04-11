@@ -1,10 +1,10 @@
 import { Loader, Select } from "@mantine/core"
+import { useNodeInputValue, useOtherFlows } from "../hooks"
 
-import { useOtherFlows } from "../hooks"
 
+export default function OtherFlowsControl({ nodeId, inputId, flowId, appId }) {
 
-export default function OtherFlowsControl({ value, setValue, flowId, appId }) {
-
+    const [value, setValue] = useNodeInputValue(nodeId, inputId)
     const [otherFlows] = useOtherFlows(flowId, appId, setValue)
 
     return (

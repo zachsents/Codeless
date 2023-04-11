@@ -1,6 +1,5 @@
 import { Box, Button, Center, Divider, Group, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
-import { formatHandleName, getNodeTypeById, useNodeData } from "@web/modules/graph-util"
-import { useEffect } from "react"
+import { formatHandleName, getNodeTypeById, useNodeInputMode } from "@web/modules/graph-util"
 import { TbInfoCircle } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
 
@@ -15,18 +14,12 @@ export default function InputConfig({ input, nodeId, displayProps }) {
 
     const rf = useReactFlow()
     const typeDefinition = getNodeTypeById(rf, nodeId)
-    const [data, setData] = useNodeData(nodeId)
 
-    const inputModeKey = `InputMode.${input.id}`
-    const inputMode = data[inputModeKey]
+    const [inputMode, setInputMode] = useNodeInputMode(nodeId, input.id)
+
     const canChangeMode = input.allowedModes.length >= 2
     const isHandle = inputMode == InputMode.Handle
     const isConfig = inputMode == InputMode.Config
-
-    // set default mode
-    useEffect(() => {
-        inputMode === undefined && setData({ [inputModeKey]: input.defaultMode })
-    }, [inputMode])
 
     return (
         <>
@@ -65,12 +58,12 @@ export default function InputConfig({ input, nodeId, displayProps }) {
 
                     <Group spacing="xs">
                         {canChangeMode && isHandle &&
-                            <Button size="xs" compact variant="light" onClick={() => setData({ [inputModeKey]: InputMode.Config })}>
+                            <Button size="xs" compact variant="light" onClick={() => setInputMode(InputMode.Config)}>
                                 Configure Here
                             </Button>}
 
                         {canChangeMode && isConfig &&
-                            <Button size="xs" compact variant="light" onClick={() => setData({ [inputModeKey]: InputMode.Handle })}>
+                            <Button size="xs" compact variant="light" onClick={() => setInputMode(InputMode.Handle)}>
                                 Add to Node
                             </Button>}
                     </Group>
@@ -78,11 +71,7 @@ export default function InputConfig({ input, nodeId, displayProps }) {
 
                 {isConfig && input.renderConfiguration &&
                     <Box ml="xl">
-                        <input.renderConfiguration
-                            value={data[`InputValue.${input.id}`]}
-                            setValue={value => setData({ [`InputValue.${input.id}`]: value })}
-                            {...displayProps}
-                        />
+                        <input.renderConfiguration inputId={input.id} {...displayProps} />
                     </Box>}
             </Stack>
         </>

@@ -64,7 +64,7 @@ export default function NodeBuilder() {
             // }}
             />
             <Toolbar />
-            <ConfigPanel />
+            {/* <ConfigPanel /> */}
             <ChangeWatcher onChange={setGraph} />
         </ReactFlow>
         :

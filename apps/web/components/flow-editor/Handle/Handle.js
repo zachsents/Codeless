@@ -105,7 +105,7 @@ export default function Handle({ id, label, handleDef, direction, position, sugg
                     }}
                 >
                     {handleDef.showHandleIcon && !connected && handleDef.icon &&
-                        <handleDef.icon size="0.5rem" color={mainColor} />}
+                        <handleDef.icon size="0.7rem" color={mainColor} />}
                 </RFHandle>
             </div>
 

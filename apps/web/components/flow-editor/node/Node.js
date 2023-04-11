@@ -10,6 +10,7 @@ import { useAppContext, useFlowContext } from "@web/modules/context"
 import {
     deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType,
     useHandleAlignment, useNodeData, useNodeDisplayProps,
+    useNodeInputMode,
     useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
 import Handle, { HandleDirection } from "../Handle"
@@ -35,11 +36,12 @@ export default function Node({ id, type, selected, dragging }) {
     const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
     const integrationsLoading = nodeIntegrations.some(int => int.status.isLoading)
 
-    const [data] = useNodeData(id)                                              // node's internal data
+    const [data] = useNodeData(id)                                   // node's internal data
     const [handleAlignments, alignHandles] = useHandleAlignment()    // handle alignment
 
     // props to pass to display override components
     const displayProps = {
+        nodeId: id,
         ...useNodeDisplayProps(id),
         integrationsSatisfied,
         alignHandles,
@@ -73,9 +75,6 @@ export default function Node({ id, type, selected, dragging }) {
         }),
     }
 
-    // handle snapping position 
-    // useNodeSnapping(id, xPos, yPos)
-
     // periodically update node internals
     const stopUpdating = useSmoothlyUpdateNode(id, [], {
         interval: 1000,
@@ -84,6 +83,13 @@ export default function Node({ id, type, selected, dragging }) {
 
     // call node presence hook
     typeDefinition.useNodePresent?.(displayProps)
+
+    // use input mode hook -- need this to default input modes get set
+    const inputModeMap = Object.fromEntries(
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        typeDefinition.inputs.map(input => [input.id, useNodeInputMode(id, input.id)[0]])
+    )
+
 
     return (
         <motion.div
@@ -99,7 +105,7 @@ export default function Node({ id, type, selected, dragging }) {
                 <Handle.Group
                     handles={typeDefinition.inputs.filter(input =>
                         input.allowedModes.includes(InputMode.Handle) &&
-                        data[`InputMode.${input.id}`] == InputMode.Handle
+                        inputModeMap[input.id] == InputMode.Handle
                     )}
                     direction={HandleDirection.Input}
                     {...commonHandleGroupProps}

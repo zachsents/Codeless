@@ -1,10 +1,8 @@
-import { Fragment } from "react"
-import produce from "immer"
 import { ActionIcon, Button, Grid, TextInput } from "@mantine/core"
+import produce from "immer"
+import { Fragment } from "react"
 import { Plus, X } from "tabler-icons-react"
 
-import Control from "./Control"
-import ControlLabel from "./ControlLabel"
 
 
 export default function ListHandlesControl({
@@ -29,11 +27,7 @@ export default function ListHandlesControl({
     }
 
     return (
-        <Control>
-            <ControlLabel info={controlInfo}>
-                {controlTitle}
-            </ControlLabel>
-
+        <>
             <Grid align="center">
                 {Array(listHandles.handles?.[handleName] ?? 0).fill(0).map((_, i) =>
                     <Fragment key={handleName + i}>
@@ -75,6 +69,6 @@ export default function ListHandlesControl({
             >
                 {addLabel}
             </Button>
-        </Control>
+        </>
     )
 }

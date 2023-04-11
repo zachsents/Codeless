@@ -127,6 +127,7 @@ importers:
       react-icons: ^4.6.0
       react-query: ^3.39.3
       react-simple-code-editor: ^0.13.1
+      reactflow: ~11.4.0
       tabler-icons-react: ^1.56.0
     dependencies:
       '@mantine/core': 5.10.5_dzxl2gn2ahynh2fpn75cjz2efm
@@ -144,6 +145,7 @@ importers:
       react-icons: 4.7.1_react@18.2.0
       react-query: 3.39.3_biqbaboplfbrettd7655fr4n2y
       react-simple-code-editor: 0.13.1_biqbaboplfbrettd7655fr4n2y
+      reactflow: 11.4.2_ytuas6axp6gvse4ghxb2libdjm
       tabler-icons-react: 1.56.0_react@18.2.0
 
   packages/client-sdk:

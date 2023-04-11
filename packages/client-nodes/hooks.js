@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useOtherRunnableFlowsRealtime } from "@minus/client-sdk"
+import { useStore, useReactFlow } from "reactflow"
+import produce from "immer"
 
 
 export function useOtherFlows(flowId, appId, setFlow) {
@@ -60,4 +62,35 @@ export function useSyncWithNodeState(items, setState) {
             setState({ [key]: val })
         }, [val])
     })
+}
+
+
+export function useNodeInputValue(nodeId, inputId, defaultValue) {
+
+    const inputValueKey = `InputValue.${inputId}`
+
+    const rf = useReactFlow()
+    const value = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.[inputValueKey])
+
+    const setValue = useCallback(newValue => rf.setNodes(nodes =>
+        produce(nodes, draft => {
+            const node = draft.find(node => node.id == nodeId)
+
+            if (!node) {
+                console.log("Couldn't find node:", nodeId)
+                return
+            }
+
+            node.data ??= {}
+            node.data[inputValueKey] = newValue
+        })
+    ), [rf])
+
+    // set default value
+    useEffect(() => {
+        if (value == undefined)
+            setValue(defaultValue)
+    }, [])
+
+    return [value, setValue]
 }

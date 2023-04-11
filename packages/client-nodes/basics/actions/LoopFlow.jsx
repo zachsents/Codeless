@@ -27,9 +27,7 @@ export default {
             tooltip: "The flow to run. If used as a handle, the flow ID must be provided.",
             defaultMode: "config",
             icon: ChartDots3,
-            renderConfiguration: ({ value, setValue, flowId, appId }) => (
-                <OtherFlowsControl {...{ value, setValue, flowId, appId }} />
-            ),
+            renderConfiguration: OtherFlowsControl,
         }
     ],
     outputs: [],

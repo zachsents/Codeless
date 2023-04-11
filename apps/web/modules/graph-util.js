@@ -79,6 +79,38 @@ export function useNodeData(nodeId) {
 }
 
 
+export function useNodeInputMode(nodeId, inputId) {
+
+    const inputModeKey = `InputMode.${inputId}`
+
+    const rf = useReactFlow()
+    const inputMode = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.[inputModeKey])
+
+    const setInputMode = useCallback(newMode => rf.setNodes(nodes =>
+        produce(nodes, draft => {
+            const node = draft.find(node => node.id == nodeId)
+
+            if (!node) {
+                console.log("Couldn't find node:", nodeId)
+                return
+            }
+
+            node.data ??= {}
+            node.data[inputModeKey] = newMode
+        })
+    ), [rf])
+
+    // set default mode
+    useEffect(() => {
+        const input = getNodeTypeById(rf, nodeId)?.inputs.find(input => input.id == inputId)
+        if (inputMode === undefined)
+            setInputMode(input.defaultMode)
+    }, [])
+
+    return [inputMode, setInputMode]
+}
+
+
 export function useNodeDisplayProps(id) {
 
     const rf = useReactFlow()
