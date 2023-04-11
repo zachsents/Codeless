@@ -1,8 +1,7 @@
+import { Accordion, Stack, Text, ThemeIcon } from "@mantine/core"
 import { useMemo } from "react"
-import { Accordion, ThemeIcon,Text, Stack } from "@mantine/core"
 
 import { useFlowContext } from "../../../modules/context"
-import { useNodeConnections } from "../../../modules/graph-util"
 import AccordionTitle from './AccordionTitle'
 import ProblemRow from "./ProblemRow"
 
@@ -11,18 +10,16 @@ export default function ProblemsSection({ nodeId, active }) {
 
     const { latestRun } = useFlowContext()
 
-    const [inputConnections] = useNodeConnections(nodeId)
-
     const [problems, numErrors, numWarnings] = useMemo(() => {
         const problems = []
 
         // unconnected inputs
-        const numUnconnectedInputs = Object.values(inputConnections).filter(conn => !conn).length
-        if (numUnconnectedInputs > 0)
-            problems.push({
-                type: ProblemType.Warning,
-                message: `This node has ${numUnconnectedInputs} input${numUnconnectedInputs == 1 ? " that isn't" : "s that aren't"} connected.`
-            })
+        // const numUnconnectedInputs = Object.values(inputConnections).filter(conn => !conn).length
+        // if (numUnconnectedInputs > 0)
+        //     problems.push({
+        //         type: ProblemType.Warning,
+        //         message: `This node has ${numUnconnectedInputs} input${numUnconnectedInputs == 1 ? " that isn't" : "s that aren't"} connected.`
+        //     })
 
         // run errors
         latestRun?.errors[nodeId]?.forEach(err => problems.push({
@@ -34,9 +31,9 @@ export default function ProblemsSection({ nodeId, active }) {
         const numWarnings = problems.filter(prob => prob.type == ProblemType.Warning).length
 
         return [problems, numErrors, numWarnings]
-    }, [latestRun, inputConnections])
+    }, [latestRun])
 
-    
+
     return (
         <Accordion.Item value="errors">
             <Accordion.Control>

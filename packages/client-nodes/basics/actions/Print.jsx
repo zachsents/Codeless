@@ -1,3 +1,4 @@
+import { Message } from "tabler-icons-react"
 import { Terminal } from "tabler-icons-react"
 
 export default {
@@ -6,6 +7,15 @@ export default {
     description: "Prints to console.",
     icon: Terminal,
 
-    inputs: ["_in"],
+    inputs: [
+        {
+            id: "_in",
+            name: "Input",
+            description: "The input to print.",
+            tooltip: "The input to print.",
+            icon: Message,
+            allowedModes: ["config", "handle"],
+        }
+    ],
     outputs: [],
 }

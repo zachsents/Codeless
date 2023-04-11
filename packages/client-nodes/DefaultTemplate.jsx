@@ -1,5 +1,5 @@
-import { TextInput } from "@mantine/core"
 import { Square } from "tabler-icons-react"
+import TextControl from "./components/TextControl"
 
 /**
  * @typedef NodeTypeDefinition
@@ -81,7 +81,7 @@ export const DefaultInput = {
     allowedModes: ["handle"],
     defaultMode: "handle",
     tooltip: null,
-    renderConfiguration: () => <TextInput />,
+    renderConfiguration: TextControl,
 }
 
 
