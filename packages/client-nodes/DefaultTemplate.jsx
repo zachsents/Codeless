@@ -1,3 +1,4 @@
+import { TextInput } from "@mantine/core"
 import { Square } from "tabler-icons-react"
 
 /**
@@ -28,13 +29,71 @@ import { Square } from "tabler-icons-react"
  * will be rendered. Otherwise, the function should return a React node, which is rendered inside the body of the Card component.
  * @property {boolean} renderCard If true, the node will be rendered inside a Card component. If false, the node will be
  * rendered inside a div.
+ * @property {(props: object) => void} [useNodePresent] Custom hook that is called when the node is present.
+ */
+
+
+/**
+ * @typedef NodeHandle
+ * @property {string} id Unique input ID. Cannot match any other input or output IDs.
+ * @property {string} name Name of the input. If none is provided, the ID will be formatted with title case and used as the name.
+ * @property {string} description
+ * @property {false | "unnamed" | "named"} listMode If false, the input will have a single handle. If "unnamed", the input will have
+ * multiple handles with no names. If "named", the input will have multiple handles with names.
+ * @property {boolean} showHandleIcon If true, the handle icon will be displayed.
+ */
+
+
+/**
+ * @typedef {"handle" | "config"} NodeInputMode
  */
 
 
 /**
  * @typedef NodeInput
- * @property {string} id Unique input ID. Convention is to prefix with the package name, e.g. "package:InputName"
+ * @augments NodeHandle
+ * @property {boolean} required If true, the input must be provided.
+ * @property {NodeInputMode[]} allowedModes List of modes that the input can be used in. If "handle" is included, the input
+ * can be used as a handle. If "config" is included, the input can be used as a config field. If both are included, the input
+ * can be used as either a handle and a config. Default is ["handle", "config"].
+ * @property {NodeInputMode} defaultMode Default mode for the input. Default is "handle".
+ * @property {React.ReactNode} [tooltip] Tooltip that is displayed when the user hovers over the input's info icon.
+ * @property {(props: object) => React.ReactNode} renderConfiguration Function that returns a React node that is rendered as the input's configuration.
+ * @property {React.ComponentType} icon Try to use a Tabler icon if applicable.
  */
+
+
+/**
+ * @typedef NodeOutput
+ * @augments NodeHandle
+ */
+
+
+/**
+ * @type {NodeInput}
+ */
+export const DefaultInput = {
+    id: "default",
+    description: "No description.",
+    listMode: false,
+    showHandleIcon: true,
+    required: false,
+    allowedModes: ["handle"],
+    defaultMode: "handle",
+    tooltip: null,
+    renderConfiguration: () => <TextInput />,
+}
+
+
+/**
+ * @type {NodeOutput}
+ */
+export const DefaultOutput = {
+    id: "default",
+    description: "No description.",
+    listMode: false,
+    showHandleIcon: false,
+}
 
 
 /**
@@ -74,4 +133,6 @@ export default {
     renderTextContent: false,
     renderContent: false,
     renderCard: true,
+    useNodePresent: undefined,
+
 }

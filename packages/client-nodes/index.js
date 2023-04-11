@@ -1,4 +1,4 @@
-import DefaultTemplate from "./DefaultTemplate"
+import DefaultTemplate, { DefaultInput, DefaultOutput } from "./DefaultTemplate"
 
 import CustomCode from "./basics/CustomCode"
 import DateTime from "./basics/DateTime"
@@ -136,7 +136,26 @@ const nodeDefinitions = [
     ATUseTable,
 ]
     // makes sure all nodes have default properties
-    .map(node => ({ ...DefaultTemplate, ...node }))
+    .map(node => {
+        // add node definition properties
+        const augmentedObj = { ...DefaultTemplate, ...node }
+
+        // add input properties
+        augmentedObj.inputs = augmentedObj.inputs.map(input => ({
+            ...DefaultInput,
+            // if input is a string, it's a shorthand for { id }
+            ...(typeof input === "string" ? { id: input } : input)
+        }))
+
+        // add output properties
+        augmentedObj.outputs = augmentedObj.outputs.map(output => ({
+            ...DefaultOutput,
+            // if output is a string, it's a shorthand for { id }
+            ...(typeof output === "string" ? { id: output } : output)
+        }))
+
+        return augmentedObj
+    })
 
 
 // export different sets of nodes

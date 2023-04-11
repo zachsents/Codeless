@@ -1,7 +1,7 @@
 import { Group, Stack, Text, useMantineTheme } from "@mantine/core"
 import { getNodeType } from "@web/modules/graph-util"
 
-export default function NodeInternal({ id, type, displayProps }) {
+export default function NodeInternal({ type, displayProps }) {
 
     const theme = useMantineTheme()
 
@@ -30,7 +30,7 @@ export default function NodeInternal({ id, type, displayProps }) {
                 </Group>}
 
             {typeDefinition.renderTextContent &&
-                <Text>
+                <Text align="center" size="lg">
                     <typeDefinition.renderTextContent {...displayProps} />
                 </Text>}
 

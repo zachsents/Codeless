@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Card, Group, Popover, useMantineTheme } from "@mantine/core"
+import { ActionIcon, Box, Card, Divider, Group, Popover, Stack, Text, useMantineTheme } from "@mantine/core"
 import { useHover, useSetState } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { useEffect } from "react"
@@ -9,10 +9,12 @@ import { useNodeSuggestions } from "@minus/client-sdk"
 import { useAppContext, useFlowContext } from "@web/modules/context"
 import {
     deleteNodeById, deselectNode, getNodeIntegrationsStatus, getNodeType,
-    useHandleAlignment, useNodeData, useNodeDisplayProps, useNodeMinHeight, useSmoothlyUpdateNode
+    useHandleAlignment, useNodeData, useNodeDisplayProps,
+    useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
 import Handle, { HandleDirection } from "../Handle"
 
+import InputConfig, { InputMode } from "./InputConfig"
 import styles from "./Node.module.css"
 import NodeInternal from "./NodeInternal"
 
@@ -34,7 +36,6 @@ export default function Node({ id, type, selected, dragging }) {
     const integrationsLoading = nodeIntegrations.some(int => int.status.isLoading)
 
     const [data] = useNodeData(id)                                              // node's internal data
-    const [stackHeight, addHeightRef] = useNodeMinHeight()                      // making sure card is correct size
     const [handleAlignments, alignHandles] = useHandleAlignment()    // handle alignment
 
     // props to pass to display override components
@@ -60,7 +61,7 @@ export default function Node({ id, type, selected, dragging }) {
     // props for all handle groups
     const commonHandleGroupProps = {
         includeContainer: true,
-        queryListHandle: name => data?.listHandles?.[name] ?? 0,
+        queryListHandle: handleId => data?.listHandles?.[handleId] ?? 0,
         handleProps: handleId => ({
             nodeHovered: hovered && !Object.values(handlesHovered).some(x => x),
             nodeId: id,
@@ -81,6 +82,9 @@ export default function Node({ id, type, selected, dragging }) {
     })
     useEffect(() => stopUpdating, [])
 
+    // call node presence hook
+    typeDefinition.useNodePresent?.(displayProps)
+
     return (
         <motion.div
             initial={{ outline: "none" }}
@@ -89,65 +93,83 @@ export default function Node({ id, type, selected, dragging }) {
             style={{ borderRadius: theme.radius.md }}
             ref={hoverRef}
         >
+            <Group spacing={0} align="stretch">
 
-            {/* Handles */}
-            <Handle.Group
-                handles={typeDefinition.inputs}
-                direction={HandleDirection.Input}
-                {...commonHandleGroupProps}
-                ref={addHeightRef(0)}
-            />
-            <Handle.Group
-                handles={typeDefinition.outputs}
-                direction={HandleDirection.Output}
-                {...commonHandleGroupProps}
-                ref={addHeightRef(1)}
-            />
+                {/* Input Handles */}
+                <Handle.Group
+                    handles={typeDefinition.inputs.filter(input =>
+                        input.allowedModes.includes(InputMode.Handle) &&
+                        data[`InputMode.${input.id}`] == InputMode.Handle
+                    )}
+                    direction={HandleDirection.Input}
+                    {...commonHandleGroupProps}
+                />
 
-            <Popover position="bottom" opened={selected && !dragging} styles={{
-                dropdown: {
-                    border: "none",
-                }
-            }}>
-                <Popover.Target>
+                <Popover
+                    withinPortal
+                    position="right" opened={selected && !dragging} styles={{
+                        dropdown: {
+                            border: "none",
+                        }
+                    }}
+                >
+                    <Popover.Target>
 
-                    {/* Main Content */}
-                    {typeDefinition.renderCard ?
-                        <Card
-                            px="lg"
-                            py="sm"
-                            mih={stackHeight}
-                            className={styles.card}
-                            bg={`${typeDefinition.color}.0`}
-                            sx={{
-                                border: `1px solid ${mainColor}`,
-                            }}
-                        >
-                            <NodeInternal id={id} type={type} displayProps={displayProps} />
+                        {/* Main Content */}
+                        {typeDefinition.renderCard ?
+                            <Card
+                                px="lg"
+                                py="sm"
+                                className={styles.card}
+                                bg={`${typeDefinition.color}.0`}
+                                sx={{
+                                    border: `1px solid ${mainColor}`,
+                                }}
+                            >
+                                <NodeInternal id={id} type={type} displayProps={displayProps} />
+                            </Card>
+                            :
+                            <Box>
+                                <NodeInternal id={id} type={type} displayProps={displayProps} />
+                            </Box>
+                        }
+                    </Popover.Target>
+
+                    <Popover.Dropdown p={0}>
+
+                        {/* Controls */}
+                        <Card shadow="sm" p="md">
+                            <Stack spacing="xs">
+                                <Group spacing="xs" noWrap position="center">
+                                    <ActionIcon disabled size="lg">
+                                        <TbCopy size={theme.fontSizes.lg} />
+                                    </ActionIcon>
+                                    {typeDefinition.deletable &&
+                                        <ActionIcon size="lg" color="red" onClick={() => deleteNodeById(rf, id)}>
+                                            <TbTrash size={theme.fontSizes.lg} />
+                                        </ActionIcon>}
+                                </Group>
+                                <Divider />
+                                <Text size="sm" weight={600} color="gray" transform="uppercase" ff="Rubik">
+                                    Inputs
+                                </Text>
+                                <Stack spacing="xs" miw={280}>
+                                    {typeDefinition.inputs.map(input =>
+                                        <InputConfig input={input} nodeId={id} displayProps={displayProps} key={input.id} />
+                                    )}
+                                </Stack>
+                            </Stack>
                         </Card>
-                        :
-                        <Box>
-                            <NodeInternal id={id} type={type} displayProps={displayProps} />
-                        </Box>
-                    }
-                </Popover.Target>
+                    </Popover.Dropdown>
+                </Popover>
 
-                <Popover.Dropdown p={0}>
-
-                    {/* Controls */}
-                    <Card shadow="sm" p={5}>
-                        <Group spacing="xs" noWrap>
-                            <ActionIcon disabled size="md" radius="sm">
-                                <TbCopy size={16} />
-                            </ActionIcon>
-                            {typeDefinition.deletable &&
-                                <ActionIcon size="md" radius="sm" color="red" onClick={() => deleteNodeById(rf, id)}>
-                                    <TbTrash size={16} />
-                                </ActionIcon>}
-                        </Group>
-                    </Card>
-                </Popover.Dropdown>
-            </Popover>
+                {/* Output Handles */}
+                <Handle.Group
+                    handles={typeDefinition.outputs}
+                    direction={HandleDirection.Output}
+                    {...commonHandleGroupProps}
+                />
+            </Group>
 
             {/* Error Icon */}
             <AnimatePresence>

@@ -5,7 +5,7 @@ import { useHover } from "@mantine/hooks"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbPlus } from "react-icons/tb"
 
-import { addNeighborNode, getNodeTypeById, openNodePalette } from "@web/modules/graph-util"
+import { addNeighborNode, formatHandleName, getNodeTypeById, openNodePalette } from "@web/modules/graph-util"
 import { HandleDirection } from "."
 import Suggestion from "./Suggestion"
 
@@ -13,7 +13,7 @@ import styles from "./Handle.module.css"
 import { useSmoothlyUpdateNode } from "@web/modules/graph-util"
 
 
-export default function Handle({ id, label, direction, position, suggestions,
+export default function Handle({ id, label, handleDef, direction, position, suggestions,
     connected, align, nodeHovered = false, onHover, nodeId, nodeName }) {
 
     const rf = useReactFlow()
@@ -28,7 +28,7 @@ export default function Handle({ id, label, direction, position, suggestions,
     const connectionNodeId = useStore(s => s.connectionNodeId)
 
     // unconnected inputs are styled special
-    const isUnconnectedInput = !connected && direction == HandleDirection.Input
+    // const isUnconnectedInput = !connected && direction == HandleDirection.Input
 
     // calculate alignment
     const wrapperRef = useRef()
@@ -86,6 +86,10 @@ export default function Handle({ id, label, direction, position, suggestions,
         setTimeout(() => stopUpdate(), 100)
     }, [connected, hovered])
 
+    // make tooltip label
+    const tooltipLabel = label || formatHandleName(id)
+
+
     return (
         <Box pos={alignHeight ? "absolute" : "relative"} top={alignHeight || undefined} ref={hoverRef}>
 
@@ -99,7 +103,10 @@ export default function Handle({ id, label, direction, position, suggestions,
                         backgroundColor: lightColor,
                         border: `1px solid ${mainColor}`,
                     }}
-                />
+                >
+                    {handleDef.showHandleIcon && !connected && handleDef.icon &&
+                        <handleDef.icon size="0.5rem" color={mainColor} />}
+                </RFHandle>
             </div>
 
             <AnimatePresence>
@@ -118,8 +125,8 @@ export default function Handle({ id, label, direction, position, suggestions,
                                 <Group spacing="xs" noWrap
                                     sx={{ flexDirection: direction == HandleDirection.Input ? "row-reverse" : "row" }}
                                 >
-                                    {label &&
-                                        <Text sx={tooltipStyle(false)}>{label}{isUnconnectedInput ? " (not connected)" : ""}</Text>}
+                                    {tooltipLabel &&
+                                        <Text sx={tooltipStyle(false)}>{tooltipLabel}</Text>}
 
                                     <Button
                                         compact

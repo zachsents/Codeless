@@ -223,7 +223,6 @@ export function useSmoothlyUpdateNode(id, deps = [], {
     const updateNodeInterals = useUpdateNodeInternals()
     const nodeUpdateInterval = useInterval(() => {
         updateNodeInterals(id)
-        console.log("update node internals")
     }, interval)
     useEffect(() => {
         nodeUpdateInterval.start()

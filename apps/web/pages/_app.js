@@ -57,7 +57,7 @@ const theme = {
         fontFamily: "DM Sans",
     },
     fontSizes: {
-        xs: 12,
+        // xs: 12,
     },
     defaultRadius: "md",
     shadows: {

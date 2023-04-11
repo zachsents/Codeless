@@ -23,7 +23,7 @@ export function useOtherFlows(flowId, appId, setFlow) {
             setFlow(otherFlowsData[0].value)
     }, [otherFlowsData])
 
-    return [otherFlowsData] 
+    return [otherFlowsData]
 }
 
 
@@ -44,4 +44,20 @@ export function useDebouncedSynchronizedState(state, setState, debounce) {
     }, [state])
 
     return [instantState, setInstantState]
+}
+
+
+/**
+ * Syncs the state of each entry in an object with the state of a node.
+ *
+ * @export
+ * @param {object} items
+ * @param {Function} setState
+ */
+export function useSyncWithNodeState(items, setState) {
+    Object.entries(items).forEach(([key, val]) => {
+        useEffect(() => {
+            setState({ [key]: val })
+        }, [val])
+    })
 }
