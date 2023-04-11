@@ -90,7 +90,6 @@ export default function Node({ id, type, selected, dragging }) {
         typeDefinition.inputs.map(input => [input.id, useNodeInputMode(id, input.id)[0]])
     )
 
-
     return (
         <motion.div
             initial={{ outline: "none" }}
@@ -144,7 +143,7 @@ export default function Node({ id, type, selected, dragging }) {
                     <Popover.Dropdown p={0}>
 
                         {/* Controls */}
-                        <Card shadow="sm" p="md">
+                        <Card shadow="sm" p="md" className={styles.card}>
                             <Stack spacing="xs">
                                 <Group spacing="xs" noWrap position="center">
                                     <ActionIcon disabled size="lg">

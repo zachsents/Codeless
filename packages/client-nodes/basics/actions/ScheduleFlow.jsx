@@ -16,7 +16,17 @@ export default {
 
     inputs: [
         {
+            id: "flow",
+            description: "The flow to run. If used as a handle, the flow ID must be provided.",
+            tooltip: "The flow to run. If used as a handle, the flow ID must be provided.",
+            allowedModes: ["config", "handle"],
+            defaultMode: "config",
+            icon: ChartDots3,
+            renderConfiguration: OtherFlowsControl,
+        },
+        {
             id: "$time",
+            name: "Date & Time",
             description: "The time to run the flow at.",
             tooltip: "The time to run the flow at.",
             icon: Clock,
@@ -30,15 +40,7 @@ export default {
             tooltip: "The payload to run the flow with.",
             icon: BoxSeam,
         },
-        {
-            id: "flow",
-            description: "The flow to run. If used as a handle, the flow ID must be provided.",
-            tooltip: "The flow to run. If used as a handle, the flow ID must be provided.",
-            allowedModes: ["config", "handle"],
-            defaultMode: "config",
-            icon: ChartDots3,
-            renderConfiguration: OtherFlowsControl,
-        }
+
     ],
     outputs: [],
 }

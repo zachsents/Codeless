@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { BrandAirtable } from "tabler-icons-react"
 
 import { RequiresConfiguration } from "../components/index"
-import { useSyncWithNodeState } from "../hooks"
+import { useNodeInputValue, useSyncWithNodeState } from "../hooks"
 import { Link } from "tabler-icons-react"
 
 
@@ -26,14 +26,16 @@ export default {
     tags: ["Airtable", "Table", "Database"],
     showMainTag: false,
 
+    requiredIntegrations: ["integration:AirTable"],
+
     inputs: [
         {
             id: "$airtableUrl",
             name: "Airtable URL",
             description: "The URL when you're editing a table in Airtable.",
-            required: true,
-            icon: Link,
+            allowedModes: ["config"],
             defaultMode: "config",
+            icon: Link,
             tooltip: <>
                 <Text>The URL when you're editing a table in Airtable.</Text>
                 <Text color="dimmed">
@@ -41,32 +43,40 @@ export default {
                     <Text span color="yellow" weight={500}>https://airtable.com/app7QmV6qHgNBOPwc/tblSNoMchfTglHOd0/viwxBMD91zjrZrWK4</Text>
                 </Text>
             </>,
-            renderConfiguration: ({ state, setState }) => <>
-                <TextInput
-                    name="airtableUrl"
-                    value={state.airtableUrl ?? ""}
-                    placeholder="https://airtable.com/..."
-                    onChange={event => setState({ airtableUrl: event.currentTarget.value })}
-                    error={state.airtableUrl === null || AirtableURLRegex.test(state.airtableUrl) ? null : "This doesn't look like a valid Airtable URL"}
-                />
-                {state.tableName &&
-                    <Text color="dimmed" size="xs">Using "{state.tableName}"</Text>}
-            </>,
+            renderConfiguration: ({ nodeId, inputId, state }) => {
+
+                const [value, setValue] = useNodeInputValue(nodeId, inputId)
+
+                return <>
+                    <TextInput
+                        value={value ?? ""}
+                        onChange={event => setValue(event.currentTarget.value)}
+                        name="airtableUrl"
+                        placeholder="https://airtable.com/..."
+                        error={value === null || AirtableURLRegex.test(value) ? null : "This doesn't look like a valid Airtable URL"}
+                    />
+                    {state.tableName &&
+                        <Text color="dimmed" size="xs">Using "{state.tableName}"</Text>}
+                </>
+            },
         }
     ],
     outputs: ["table"],
 
-    requiredIntegrations: ["integration:AirTable"],
-
     defaultState: {
-        airtableUrl: null,
         baseId: null,
         tableId: null,
     },
 
-    useNodePresent: ({ state, setState, appId, integrationsSatisfied }) => {
+    useNodePresent: ({ nodeId, setState, appId, integrationsSatisfied }) => {
+
+        const [airtableUrl] = useNodeInputValue(nodeId, "$airtableUrl")
+
         // extract base ID and table ID from Airtable URL
-        const [, baseId, tableId] = useMemo(() => state.airtableUrl?.match(AirtableURLRegex) ?? [], [state.airtableUrl])
+        const [, baseId, tableId] = useMemo(
+            () => airtableUrl?.match(AirtableURLRegex) ?? [],
+            [airtableUrl]
+        )
 
         // fetch table name
         const { tableName, isLoading, isError } = useTableNameFromId(integrationsSatisfied && appId, baseId, tableId)
@@ -76,6 +86,7 @@ export default {
     },
 
     renderTextContent: ({ state, integrationsSatisfied }) => (
+        // TO DO: make this look at the input mode and only require the base ID and table ID if it's in config mode
         <RequiresConfiguration includeCenter={false} span dependencies={[
             state.baseId,
             state.tableId,

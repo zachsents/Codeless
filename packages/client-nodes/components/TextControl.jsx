@@ -8,6 +8,6 @@ export default function TextControl({ nodeId, inputId, inputProps = {} }) {
     return <TextInput
         value={value ?? ""}
         onChange={event => setValue(event.currentTarget.value)}
-        {...inputProps}
+        {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
     />
 }
