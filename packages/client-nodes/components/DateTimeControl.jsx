@@ -7,8 +7,8 @@ export default function DateTimeControl({ nodeId, inputId, inputProps = {} }) {
 
     return (
         <DateTimePicker
-            value={new Date(value)}
-            onChange={newValue => setValue(newValue.toISOString())}
+            value={value ? new Date(value) : null}
+            onChange={newValue => setValue(newValue?.toISOString() ?? null)}
             clearable
             valueFormat="MMM D, YYYY h:mm A"
             {...inputProps}

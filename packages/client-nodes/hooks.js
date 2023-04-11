@@ -88,7 +88,7 @@ export function useNodeInputValue(nodeId, inputId, defaultValue) {
 
     // set default value
     useEffect(() => {
-        if (value == undefined)
+        if (value === undefined)
             setValue(defaultValue)
     }, [])
 
