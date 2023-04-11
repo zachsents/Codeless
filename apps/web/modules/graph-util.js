@@ -434,7 +434,9 @@ export function openNodePalette(rf, {
         </Group>,
         size: "lg",
         centered: true,
-        transitionDuration: 200,
+        transitionProps: {
+            duration: 200,
+        },
         ...props,
     })
 }
