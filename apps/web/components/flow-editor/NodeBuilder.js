@@ -1,16 +1,15 @@
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
 import { useEffect, useMemo } from "react"
-import ReactFlow, { Background, useEdges, useKeyPress, useNodes } from "reactflow"
+import ReactFlow, { Background, useEdges, useKeyPress, useNodes, useStore } from "reactflow"
 
-import { useFlowContext } from "../../modules/context"
-import { deserializeGraph, serializeGraph } from "../../modules/graph-util"
-import { useDebouncedCustomState } from "../../modules/hooks"
 import { NodeDefinitions } from "@minus/client-nodes"
+import { useFlowContext } from "@web/modules/context"
+import { deserializeGraph, serializeGraph } from "@web/modules/graph-util"
+import { useCleanGhostEdgesEffect, useDebouncedCustomState } from "@web/modules/hooks"
 import DataEdge from "./DataEdge"
-import Node from "./node/Node"
 import Toolbar from "./Toolbar"
-import ConfigPanel from "./config-panel/ConfigPanel"
+import Node from "./node/Node"
 
 import 'reactflow/dist/style.css'
 
@@ -30,7 +29,7 @@ export default function NodeBuilder() {
     const [, setGraph] = useDebouncedCustomState(flowGraph?.graph, updateFlowGraph, 1000)
 
     // watch shift key tp enable snapping
-    const shiftPressed = useKeyPress("Shift")
+    // const shiftPressed = useKeyPress("Shift")
 
     return flowGraph ?
         <ReactFlow
@@ -42,12 +41,13 @@ export default function NodeBuilder() {
             defaultEdgeOptions={valueEdgeProps}
             fitView
             snapGrid={[20, 20]}
-            snapToGrid={shiftPressed}
+            // snapToGrid={shiftPressed}
+            connectOnClick={false}
 
             // connectionLineType="smoothstep"
 
-            selectionKeyCode={"Shift"}
-            multiSelectionKeyCode={"Shift"}
+            selectionKeyCode={"Alt"}
+            multiSelectionKeyCode={"Alt"}
             zoomActivationKeyCode={null}
             deleteKeyCode={deleteKeyCodes}
 
@@ -65,7 +65,9 @@ export default function NodeBuilder() {
             />
             <Toolbar />
             {/* <ConfigPanel /> */}
+
             <ChangeWatcher onChange={setGraph} />
+            <Cleaner />
         </ReactFlow>
         :
         <></>
@@ -86,6 +88,12 @@ function ChangeWatcher({ onChange }) {
         onChange?.(serialized)
     }, [serialized])
 
+    return <></>
+}
+
+
+function Cleaner() {
+    useCleanGhostEdgesEffect()
     return <></>
 }
 

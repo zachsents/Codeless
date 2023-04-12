@@ -3,6 +3,7 @@ import { useDebouncedValue } from "@mantine/hooks"
 import { useRouter } from "next/router"
 import fuzzy from "fuzzy"
 import { useAuthState } from "@minus/client-sdk"
+import { useNodes, useReactFlow } from "reactflow"
 
 
 export function useMustBeSignedIn() {
@@ -75,4 +76,37 @@ export function useMonostable() {
     }, [value])
 
     return [value, () => setValue(true)]
+}
+
+
+export function useCleanGhostEdgesEffect() {
+
+    const rf = useReactFlow()
+    const nodes = useNodes()
+
+    // create map of all source and target handle IDs
+    const handleMap = useMemo(() => Object.fromEntries(
+        nodes.map(node =>
+            [node.id, {
+                sources: node[Symbol.for("internals")].handleBounds?.source?.map(handle => handle.id) ?? [],
+                targets: node[Symbol.for("internals")].handleBounds?.target?.map(handle => handle.id) ?? [],
+            }]
+        )
+    ), [nodes])
+
+    // remove edges that have a source or target that doesn't exist
+    useEffect(() => {
+        const edges = rf.getEdges()
+        const newEdges = edges.filter(edge => {
+            const source = handleMap[edge.source]
+            const target = handleMap[edge.target]
+            return source && target && source.sources.includes(edge.sourceHandle) && target.targets.includes(edge.targetHandle)
+        })
+
+        if (edges.length !== newEdges.length) {
+            rf.setEdges(newEdges)
+            console.debug("[Cleaner] Removed", edges.length - newEdges.length, "ghost edges")
+        }
+    }, [JSON.stringify(handleMap)])
+
 }
