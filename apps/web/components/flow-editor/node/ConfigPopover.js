@@ -1,4 +1,4 @@
-import { ActionIcon, Card, Divider, Group, Popover, Stack, Text, useMantineTheme } from "@mantine/core"
+import { ActionIcon, Card, Divider, Group, Popover, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
 import { useDeleteNode, useNodeProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { TbCopy, TbTrash } from "react-icons/tb"
 import InputConfig from "./InputConfig"
@@ -18,6 +18,7 @@ export default function ConfigPopover({ children }) {
             zIndex={195}
             withinPortal
             position="right"
+            offset={20}
             opened={selected && !dragging}
             styles={{
                 dropdown: {
@@ -36,15 +37,19 @@ export default function ConfigPopover({ children }) {
                     <Stack spacing="xs">
                         <Group spacing="xs" noWrap position="center">
                             {/* Duplicate */}
-                            <ActionIcon disabled size="lg">
-                                <TbCopy size={theme.fontSizes.lg} />
-                            </ActionIcon>
+                            <Tooltip label="Duplicate">
+                                <ActionIcon disabled size="lg">
+                                    <TbCopy size={theme.fontSizes.lg} />
+                                </ActionIcon>
+                            </Tooltip>
 
                             {/* Delete */}
                             {typeDefinition.deletable &&
-                                <ActionIcon size="lg" color="red" onClick={deleteNode}>
-                                    <TbTrash size={theme.fontSizes.lg} />
-                                </ActionIcon>}
+                                <Tooltip label="Delete">
+                                    <ActionIcon size="lg" color="red" onClick={deleteNode}>
+                                        <TbTrash size={theme.fontSizes.lg} />
+                                    </ActionIcon>
+                                </Tooltip>}
                         </Group>
                         <Divider />
                         <Text size="sm" weight={600} color="gray" transform="uppercase" ff="Rubik">
