@@ -42,6 +42,7 @@ import { useTypeDefinition } from "./hooks/nodes"
  * @property {false | "unnamed" | "named"} listMode If false, the input will have a single handle. If "unnamed", the input will have
  * multiple handles with no names. If "named", the input will have multiple handles with names.
  * @property {boolean} showHandleIcon If true, the handle icon will be displayed.
+ * @property {React.ComponentType} icon Try to use a Tabler icon if applicable.
  */
 
 
@@ -60,7 +61,6 @@ import { useTypeDefinition } from "./hooks/nodes"
  * @property {NodeInputMode} defaultMode Default mode for the input. Default is "handle".
  * @property {React.ReactNode} [tooltip] Tooltip that is displayed when the user hovers over the input's info icon.
  * @property {(props: object) => React.ReactNode} renderConfiguration Function that returns a React node that is rendered as the input's configuration.
- * @property {React.ComponentType} icon Try to use a Tabler icon if applicable.
  */
 
 
@@ -93,7 +93,7 @@ export const DefaultOutput = {
     id: "default",
     description: "No description.",
     listMode: false,
-    showHandleIcon: false,
+    showHandleIcon: true,
 }
 
 
@@ -135,5 +135,4 @@ export default {
     renderContent: false,
     renderCard: true,
     useNodePresent: undefined,
-
 }

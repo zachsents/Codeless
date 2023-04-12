@@ -47,7 +47,7 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
     const handleProps = handleId => ({
         id: handleId,
         nodeHovered: showHandles,
-        onHover: handleHovered => setHandlesHovered({ [handleId]: handleHovered })
+        onHover: (uniqueId, handleHovered) => setHandlesHovered({ [uniqueId]: handleHovered })
     })
     // #endregion
 

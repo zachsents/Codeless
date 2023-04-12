@@ -9,7 +9,7 @@ import styles from "./Handle.module.css"
 import HandleTooltip from "./HandleTooltip"
 
 
-export default function Handle({ id, nodeHovered, onHover }) {
+export default function Handle({ id, label, nodeHovered, onHover }) {
 
     const { type, definition } = useHandleDefinition(null, id)
     const connected = useHandleConnected(null, id)
@@ -19,14 +19,11 @@ export default function Handle({ id, nodeHovered, onHover }) {
     // hover state -- need to pass up so other handles know when to show tooltip
     const { hovered, ref: hoverRef } = useHover()
     useEffect(() => {
-        onHover?.(hovered)
+        onHover?.(id, hovered)
     }, [hovered])
 
     // side-effect: fix node internals when connected state changes
-    const stopUpdate = useSmoothlyUpdateNode(null, [connected, hovered])
-    useEffect(() => {
-        setTimeout(() => stopUpdate(), 100)
-    }, [connected, hovered])
+    useSmoothlyUpdateNode(null, [connected, hovered], { timeout: 100 })
 
     return (
         <Box pos="relative" ref={hoverRef}>
@@ -49,6 +46,7 @@ export default function Handle({ id, nodeHovered, onHover }) {
 
             <HandleTooltip
                 id={id}
+                label={label}
                 show={hovered || nodeHovered}
                 showSuggestions={hovered}
             />

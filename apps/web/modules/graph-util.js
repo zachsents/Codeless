@@ -218,19 +218,37 @@ export function useConnectedEdges(id) {
 }
 
 
+export function useUpdateNode(id) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    id ??= useNodeId()
+    const updateNodeInterals = useUpdateNodeInternals()
+    return useCallback(() => updateNodeInterals(id), [id])
+}
+
+
 export function useSmoothlyUpdateNode(id, deps = [], {
-    interval = 20
+    interval = 20,
+    timeout = null,
 } = {}) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     id ??= useNodeId()
 
     const updateNodeInterals = useUpdateNodeInternals()
+
     const nodeUpdateInterval = useInterval(() => {
         updateNodeInterals(id)
     }, interval)
+
+    // start interval when dependencies change
     useEffect(() => {
         nodeUpdateInterval.start()
     }, deps)
+
+    // when interval is started, stop it after timeout
+    useEffect(() => {
+        if (nodeUpdateInterval.active && timeout != null)
+            setTimeout(nodeUpdateInterval.stop, timeout)
+    }, [nodeUpdateInterval.active])
 
     return nodeUpdateInterval.stop
 }

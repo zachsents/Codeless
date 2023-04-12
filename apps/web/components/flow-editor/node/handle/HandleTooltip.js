@@ -9,14 +9,14 @@ import styles from "./Handle.module.css"
 import Suggestion from "./Suggestion"
 
 
-export default function HandleTooltip({ id, show, showSuggestions }) {
+export default function HandleTooltip({ id, label, show, showSuggestions }) {
 
     const nodeTypeDefinition = useTypeDefinition()
 
     const { type, definition } = useHandleDefinition(null, id)
     const currentlyConnecting = useIsNodeConnecting()
 
-    const label = definition.name || formatHandleName(id)
+    label ??= definition.name || formatHandleName(id)
 
     const rf = useReactFlow()
     const nodeId = useNodeId()

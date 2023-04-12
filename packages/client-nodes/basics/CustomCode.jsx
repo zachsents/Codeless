@@ -1,12 +1,16 @@
-import { CodeDots } from "tabler-icons-react"
-import CodeEditor from "react-simple-code-editor"
-import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 import { Box, Divider, Group, SimpleGrid } from "@mantine/core"
+import CodeEditor from "react-simple-code-editor"
+import { CodeDots } from "tabler-icons-react"
+import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
 import hljs from "highlight.js/lib/common"
 import "highlight.js/styles/github.css"
+import { ArrowBigRightLine } from "tabler-icons-react"
 
 
+/** 
+ * @type {import("../DefaultTemplate.jsx").NodeTypeDefinition} 
+ */
 export default {
     id: "basic:CustomCode",
     name: "Custom Code",
@@ -15,21 +19,26 @@ export default {
 
     inputs: [
         {
-            name: "input",
-            list: true,
+            id: "input",
+            name: "Inputs",
+            description: "The inputs to the code.",
+            tooltip: "The inputs to the code. They are available under the \"inputs\" global variable.",
+            icon: ArrowBigRightLine,
+            listMode: "named",
         }
     ],
     outputs: [
         {
-            name: "output",
-            list: true,
+            id: "output",
+            description: "The outputs to the code.",
+            tooltip: "The outputs to the code. They are set by setting a property on the \"outputs\" global variable.",
+            icon: ArrowBigRightLine,
+            listMode: "named",
         }
     ],
 
     defaultState: {
         code: "",
-        inputLabels: [],
-        outputLabels: [],
     },
 
     renderNode: ({ state, listHandles, alignHandles }) => {

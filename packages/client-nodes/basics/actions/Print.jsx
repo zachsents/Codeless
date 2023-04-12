@@ -1,6 +1,9 @@
 import { Message } from "tabler-icons-react"
 import { Terminal } from "tabler-icons-react"
 
+/** 
+ * @type {import("../DefaultTemplate.jsx").NodeTypeDefinition} 
+ */
 export default {
     id: "basic:Print",
     name: "Print",

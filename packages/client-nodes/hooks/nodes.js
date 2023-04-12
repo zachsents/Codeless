@@ -169,6 +169,12 @@ export const InputMode = {
     Config: "config",
 }
 
+export const ListMode = {
+    Named: "named",
+    Unnamed: "unnamed",
+    None: false,
+}
+
 
 /**
  * Get the handle definition id from the handle id.
@@ -281,6 +287,30 @@ export function useInputValue(nodeId, inputId, defaultValue) {
     }, [])
 
     return [value, setValue]
+}
+
+
+/**
+ * Hook to get and set the list of a list input.
+ *
+ * @export
+ * @param {string} [nodeId]
+ * @param {string} handleId
+ * @return {[Object[], Function]} 
+ */
+export function useListHandle(nodeId, handleId) {
+    const [list, setList] = useNodeProperty(nodeId, ["data", `List.${getHandleDefinitionId(handleId)}`], true)
+    const { definition: handleDef } = useHandleDefinition(nodeId, handleId)
+
+    if (!handleDef.listMode)
+        return []
+
+    // set empty list as default
+    useEffect(() => {
+        list === undefined && setList([])
+    }, [])
+
+    return [list, setList]
 }
 
 
