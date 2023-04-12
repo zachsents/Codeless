@@ -20,6 +20,7 @@ import NodeInternal from "./NodeInternal"
 import Handle from "./handle/Handle"
 import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
+import ListHandle from "./handle/ListHandle"
 
 
 export default function Node({ id, type: typeDefId, selected, dragging }) {
@@ -30,24 +31,27 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
     const typeDefinition = NodeDefinitions[typeDefId]
     const [mainColor, bgColor] = useColors(id, ["primary", 0])
 
-    // integrations
+    // #region - Integrations (satisfaction, loading, etc.)
     const { integrations: appIntegrations } = useAppContext()
     const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
     const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
+    // #endregion
 
-    // hover for showing handle labels
+    // #region - Hover states for showing handle labels 
     const { hovered, ref: hoverRef } = useHover()
     const [handlesHovered, setHandlesHovered] = useSetState({})
     const showHandles = hovered && !Object.values(handlesHovered).some(x => x)
+    // #endregion
 
-    // props for Handles
+    // #region - Handle props
     const handleProps = handleId => ({
         id: handleId,
         nodeHovered: showHandles,
         onHover: handleHovered => setHandlesHovered({ [handleId]: handleHovered })
     })
+    // #endregion
 
-    // props to pass to display override components
+    // #region - Render override components props
     const [inputConnections, outputConnections] = useNodeConnections(id)
     const displayProps = {
         appId: useAppId(),
@@ -57,17 +61,20 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
         connections: { ...inputConnections, ...outputConnections },
         integrationsSatisfied,
     }
+    // #endregion
 
-    // side effect: when dragging, deselect
+    // #region - Side Effect: when dragging, deselect
     useEffect(() => {
         dragging && deselectNode(rf, id)
     }, [dragging])
+    // #endregion
 
-    // periodically update node internals
+    // #region - Periodically update node internals
     const stopUpdating = useSmoothlyUpdateNode(id, [], {
         interval: 1000,
     })
     useEffect(() => stopUpdating, [])
+    // #endregion
 
     return (
         <NodeProvider value={{ id, displayProps }}>
@@ -82,9 +89,10 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
 
                     {/* Input Handles */}
                     <HandleStack>
-                        {typeDefinition.inputs.map(input =>
-                            <InputHandle {...handleProps(input.id)} key={input.id} />
-                        )}
+                        {typeDefinition.inputs.map(input => {
+                            const HandleComponent = input.listMode ? ListHandle : InputHandle
+                            return <HandleComponent {...handleProps(input.id)} key={input.id} />
+                        })}
                     </HandleStack>
 
                     <ConfigPopover>
