@@ -315,6 +315,27 @@ export function useListHandle(nodeId, handleId) {
 
 
 /**
+ * Hook to get and set whether an output is showing.
+ *
+ * @export
+ * @param {string} [nodeId]
+ * @param {string} outputId
+ * @return {[boolean, Function]} 
+ */
+export function useOutputShowing(nodeId, outputId) {
+    const [showing, setShowing] = useNodeProperty(nodeId, ["data", `OutputShowing.${getHandleDefinitionId(outputId)}`], true)
+    const { definition: handleDef } = useHandleDefinition(nodeId, outputId)
+
+    // set default value
+    useEffect(() => {
+        showing === undefined && setShowing(handleDef.defaultShowing)
+    }, [])
+
+    return [showing, setShowing]
+}
+
+
+/**
  * Hook to get suggestions for a handle.
  *
  * @export

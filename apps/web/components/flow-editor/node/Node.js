@@ -21,6 +21,7 @@ import Handle from "./handle/Handle"
 import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
+import OutputHandle from "./handle/OutputHandle"
 
 
 export default function Node({ id, type: typeDefId, selected, dragging }) {
@@ -89,10 +90,18 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
 
                     {/* Input Handles */}
                     <HandleStack>
-                        {typeDefinition.inputs.map(input => {
-                            const HandleComponent = input.listMode ? ListHandle : InputHandle
-                            return <HandleComponent {...handleProps(input.id)} key={input.id} />
-                        })}
+                        {typeDefinition.inputs.map(input =>
+                            input.listMode ?
+                                <ListHandle
+                                    {...handleProps(input.id)}
+                                    component={InputHandle}
+                                    key={input.id}
+                                /> :
+                                <InputHandle
+                                    {...handleProps(input.id)}
+                                    key={input.id}
+                                />
+                        )}
                     </HandleStack>
 
                     <ConfigPopover>
@@ -117,7 +126,16 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
                     {/* Output Handles */}
                     <HandleStack>
                         {typeDefinition.outputs.map(output =>
-                            <Handle {...handleProps(output.id)} key={output.id} />
+                            output.listMode ?
+                                <ListHandle
+                                    {...handleProps(output.id)}
+                                    component={OutputHandle}
+                                    key={output.id}
+                                /> :
+                                <OutputHandle
+                                    {...handleProps(output.id)}
+                                    key={output.id}
+                                />
                         )}
                     </HandleStack>
                 </Group>

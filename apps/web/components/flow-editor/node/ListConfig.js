@@ -21,7 +21,7 @@ export default function ListConfig({ handleId }) {
     const updateNode = useUpdateNode()
     useEffect(() => {
         updateNode()
-    }, [list.map(item => item.id).join()])
+    }, [list?.map(item => item.id).join()])
 
     return list &&
         <Stack spacing="xs">
@@ -85,7 +85,7 @@ function Item({ handleId, item, i }) {
                 {isNamed ?
                     <Grid.Col span="auto">
                         <TextInput
-                            value={item.name}
+                            value={item.name ?? ""}
                             onChange={event => setName(event.currentTarget.value)}
                             placeholder="Type something..."
                         />

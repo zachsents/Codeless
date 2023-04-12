@@ -14,7 +14,14 @@ export default {
     badge: "Text",
 
     inputs: [],
-    outputs: ["$"],
+    outputs: [
+        {
+            id: "$",
+            name: "Text",
+            description: "The text.",
+            tooltip: "The text.",
+        }
+    ],
 
     defaultState: {
         $: "",

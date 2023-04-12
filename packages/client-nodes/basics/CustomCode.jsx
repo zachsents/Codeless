@@ -30,6 +30,7 @@ export default {
     outputs: [
         {
             id: "output",
+            name: "Outputs",
             description: "The outputs to the code.",
             tooltip: "The outputs to the code. They are set by setting a property on the \"outputs\" global variable.",
             icon: ArrowBigRightLine,

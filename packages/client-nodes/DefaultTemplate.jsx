@@ -67,6 +67,7 @@ import { useTypeDefinition } from "./hooks/nodes"
 /**
  * @typedef NodeOutput
  * @augments NodeHandle
+ * @property {boolean} defaultShowing If true, the output will be shown by default.
  */
 
 
@@ -94,6 +95,7 @@ export const DefaultOutput = {
     description: "No description.",
     listMode: false,
     showHandleIcon: true,
+    defaultShowing: true,
 }
 
 

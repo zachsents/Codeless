@@ -13,7 +13,14 @@ export default {
     showMainTag: false,
 
     inputs: [],
-    outputs: ["$"],
+    outputs: [
+        {
+            id: "$",
+            name: "Payload",
+            description: "The payload of the flow run.",
+            tooltip: "The payload of the flow run.",
+        }
+    ],
 
     creatable: false,
     trigger: true,

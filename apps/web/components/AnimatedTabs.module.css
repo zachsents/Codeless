@@ -1,0 +1,25 @@
+.tabContainer {
+    border-radius: var(--mantine-radius-md);
+    cursor: pointer;
+}
+
+.tabContainer:hover {
+    background: var(--mantine-color-gray-0);
+}
+
+.tabIndicator {
+    position: absolute;
+    bottom: 0;
+    height: 4px;
+    background: var(--mantine-color-primary-6);
+}
+
+.contentWindow {
+    overflow: hidden;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}

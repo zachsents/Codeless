@@ -1,7 +1,10 @@
 import { ActionIcon, Card, Divider, Group, Popover, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
 import { useDeleteNode, useNodeProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import AnimatedTabs from "@web/components/AnimatedTabs"
 import { TbCopy, TbTrash } from "react-icons/tb"
 import InputConfig from "./InputConfig"
+import OutputConfig from "./OutputConfig"
+
 
 export default function ConfigPopover({ children }) {
 
@@ -52,14 +55,29 @@ export default function ConfigPopover({ children }) {
                                 </Tooltip>}
                         </Group>
                         <Divider />
-                        <Text size="sm" weight={600} color="gray" transform="uppercase" ff="Rubik">
-                            Inputs
-                        </Text>
-                        <Stack spacing="xs" miw={280}>
-                            {typeDefinition.inputs.map(input =>
-                                <InputConfig id={input.id} key={input.id} />
-                            )}
-                        </Stack>
+
+                        <AnimatedTabs tabs={["Inputs", "Outputs"]} w={280}>
+                            <Stack spacing="xs">
+                                {typeDefinition.inputs.length ?
+                                    typeDefinition.inputs.map((input, i) =>
+                                        <InputConfig id={input.id} divider={i != 0} key={input.id} />
+                                    ) :
+                                    <Text align="center" size="sm" color="dimmed">
+                                        No Inputs
+                                    </Text>}
+                            </Stack>
+
+                            <Stack spacing="xs">
+                                {typeDefinition.outputs.length ?
+                                    typeDefinition.outputs.map((output, i) =>
+                                        <OutputConfig id={output.id} divider={i != 0} key={output.id} />
+                                    ) :
+                                    <Text align="center" size="sm" color="dimmed">
+                                        No Outputs
+                                    </Text>}
+                            </Stack>
+                        </AnimatedTabs>
+
                     </Stack>
                 </Card>
             </Popover.Dropdown>

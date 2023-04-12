@@ -1,5 +1,5 @@
 import Head from "next/head"
-import { MantineProvider } from "@mantine/core"
+import { MantineProvider, DEFAULT_THEME } from "@mantine/core"
 import { ModalsProvider } from "@mantine/modals"
 import { QueryClientProvider, QueryClient } from "react-query"
 
@@ -27,6 +27,9 @@ export default function MyApp({ Component, pageProps }) {
             <meta property="og:title" content="Minus" key="ogtitle" />
             <meta name="description" content="Build automations with ease" key="description" />
             <link rel="icon" href="/favicon.png" key="favicon" />
+            <style>
+                {`html { ${additionalCSSVariables} }`}
+            </style>
         </Head>
         <QueryClientProvider client={queryClient}>
             <MantineProvider theme={theme} withNormalizeCSS withGlobalStyles withCSSVariables>
@@ -69,3 +72,7 @@ const theme = {
     },
     // transitionTimingFunction: "steps(5, end)"
 }
+
+const additionalCSSVariables = DEFAULT_THEME.colors.dark.map((_, i) => {
+    return `--mantine-color-primary-${i}: ${DEFAULT_THEME.colors[theme.primaryColor][i]};`
+}).join(" ")

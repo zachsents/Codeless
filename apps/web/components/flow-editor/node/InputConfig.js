@@ -1,11 +1,11 @@
 import { Box, Button, Center, Divider, Group, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
-import { InputMode, ListMode, useHandleDefinition, useInputMode, useNodeContext, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { InputMode, useHandleDefinition, useInputMode, useNodeContext, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { formatHandleName } from "@web/modules/graph-util"
 import { TbInfoCircle } from "react-icons/tb"
 import ListConfig from "./ListConfig"
 
 
-export default function InputConfig({ id }) {
+export default function InputConfig({ id, divider = true }) {
 
     const theme = useMantineTheme()
 
@@ -20,14 +20,13 @@ export default function InputConfig({ id }) {
 
     // List Mode
     const isList = !!definition.listMode
-    // const isUnnamedList = definition.listMode == ListMode.Unnamed
-    // const isNamedList = definition.listMode == ListMode.Named
 
     const { displayProps } = useNodeContext()
 
     return (
         <>
-            <Divider color="gray.2" />
+            {divider &&
+                <Divider color="gray.2" />}
             <Stack spacing="xs">
                 <Group position="apart">
                     <Group spacing="xs">
