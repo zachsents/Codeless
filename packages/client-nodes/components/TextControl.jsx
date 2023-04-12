@@ -1,9 +1,9 @@
 import { TextInput } from "@mantine/core"
-import { useNodeInputValue } from "../hooks"
+import { useInputValue } from "../hooks/nodes"
 
-export default function TextControl({ nodeId, inputId, inputProps = {} }) {
+export default function TextControl({ inputId, inputProps = {} }) {
 
-    const [value, setValue] = useNodeInputValue(nodeId, inputId)
+    const [value, setValue] = useInputValue(null, inputId)
 
     return <TextInput
         value={value ?? ""}

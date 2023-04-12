@@ -21,6 +21,14 @@ a {
     font-family: 'Rubik', sans-serif !important;
 }
 
+.ofv {
+    overflow: visible !important;
+}
+
+.nosel {
+    user-select: none !important;
+}
+
 /* @media (prefers-color-scheme: dark) {
     html {
         color-scheme: dark;

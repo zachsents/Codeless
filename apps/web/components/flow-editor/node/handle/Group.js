@@ -2,7 +2,7 @@ import { forwardRef, memo } from "react"
 import { Position } from "reactflow"
 
 import { HandleDirection } from "."
-import Handle from "./Handle"
+import Handle from "./Handle_old"
 import VerticalContainer from "./VerticalContainer"
 
 

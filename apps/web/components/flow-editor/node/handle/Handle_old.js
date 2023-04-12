@@ -91,7 +91,7 @@ export default function Handle({ id, label, handleDef, direction, position, sugg
 
 
     return (
-        <Box pos={alignHeight ? "absolute" : "relative"} top={alignHeight || undefined} ref={hoverRef}>
+        <Box pos="relative" ref={hoverRef}>
 
             <div className={`${styles.wrapper} ${connected ? styles.connected : ""}`} ref={wrapperRef}>
                 <RFHandle

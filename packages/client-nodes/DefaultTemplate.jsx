@@ -1,5 +1,6 @@
 import { Square } from "tabler-icons-react"
 import TextControl from "./components/TextControl"
+import { useTypeDefinition } from "./hooks/nodes"
 
 /**
  * @typedef NodeTypeDefinition
@@ -129,7 +130,7 @@ export default {
     outputs: [],
 
     // Rendering
-    renderName: ({ typeDefinition }) => typeDefinition.name,
+    renderName: () => useTypeDefinition().name,
     renderTextContent: false,
     renderContent: false,
     renderCard: true,

@@ -3,9 +3,10 @@ import { useTableNameFromId } from "@minus/client-sdk/integrations/airtable"
 import { useMemo } from "react"
 import { BrandAirtable } from "tabler-icons-react"
 
-import { RequiresConfiguration } from "../components/index"
-import { useNodeInputValue, useSyncWithNodeState } from "../hooks"
 import { Link } from "tabler-icons-react"
+import { RequiresConfiguration } from "../components/index"
+import { useSyncWithNodeState } from "../hooks"
+import { useInputValue, useInternalState } from "../hooks/nodes"
 
 
 const color = "blue"
@@ -43,9 +44,10 @@ export default {
                     <Text span color="yellow" weight={500}>https://airtable.com/app7QmV6qHgNBOPwc/tblSNoMchfTglHOd0/viwxBMD91zjrZrWK4</Text>
                 </Text>
             </>,
-            renderConfiguration: ({ nodeId, inputId, state }) => {
+            renderConfiguration: ({ inputId }) => {
 
-                const [value, setValue] = useNodeInputValue(nodeId, inputId)
+                const [state] = useInternalState()
+                const [value, setValue] = useInputValue(null, inputId)
 
                 return <>
                     <TextInput
@@ -68,9 +70,10 @@ export default {
         tableId: null,
     },
 
-    useNodePresent: ({ nodeId, setState, appId, integrationsSatisfied }) => {
+    useNodePresent: ({ appId, integrationsSatisfied }) => {
 
-        const [airtableUrl] = useNodeInputValue(nodeId, "$airtableUrl")
+        const [, setState] = useInternalState()
+        const [airtableUrl] = useInputValue(null, "$airtableUrl")
 
         // extract base ID and table ID from Airtable URL
         const [, baseId, tableId] = useMemo(
@@ -85,21 +88,26 @@ export default {
         useSyncWithNodeState({ tableName, isLoading, isError, baseId, tableId }, setState)
     },
 
-    renderTextContent: ({ state, integrationsSatisfied }) => (
-        // TO DO: make this look at the input mode and only require the base ID and table ID if it's in config mode
-        <RequiresConfiguration includeCenter={false} span dependencies={[
-            state.baseId,
-            state.tableId,
-            integrationsSatisfied,
-            !state.isError,
-        ]}>
-            {state.isLoading ?
-                <Loader size="xs" color={color} />
-                :
-                <>
-                    <Text span color="dimmed">Using table{" "}</Text>
-                    <Text span weight={500}>"{state.tableName ?? "..."}"</Text>
-                </>}
-        </RequiresConfiguration>
-    ),
+    renderTextContent: ({ integrationsSatisfied }) => {
+
+        const [state] = useInternalState()
+
+        return (
+            // TO DO: make this look at the input mode and only require the base ID and table ID if it's in config mode
+            <RequiresConfiguration includeCenter={false} span dependencies={[
+                state.baseId,
+                state.tableId,
+                integrationsSatisfied,
+                !state.isError,
+            ]}>
+                {state.isLoading ?
+                    <Loader size="xs" color={color} />
+                    :
+                    <>
+                        <Text span color="dimmed">Using table{" "}</Text>
+                        <Text span weight={500}>"{state.tableName ?? "..."}"</Text>
+                    </>}
+            </RequiresConfiguration>
+        )
+    },
 }

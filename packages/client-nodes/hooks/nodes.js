@@ -1,0 +1,298 @@
+import { useMantineTheme } from "@mantine/core"
+import _ from "lodash"
+import { createContext, useCallback, useContext, useEffect } from "react"
+import { useReactFlow, useStore } from "reactflow"
+import { NodeDefinitions } from ".."
+import produce from "immer"
+import { useNodeSuggestions } from "@minus/client-sdk"
+
+
+const NodeContext = createContext()
+
+export const NodeProvider = NodeContext.Provider
+
+export function useNodeContext() {
+    return useContext(NodeContext)
+}
+
+export function useNodeId() {
+    return useNodeContext().id
+}
+
+
+function createNodeSelector(id, selector = x => x) {
+    return s => selector(Object.fromEntries(s.nodeInternals)[id])
+}
+
+
+/**
+ * Hook to select a node property from the store.
+ *
+ * @param {string} [id]
+ * @param {Function | string | string[]} selector
+ * @param {boolean} [returnSetter=false] If true, returns a setter function that can be used to update the node property.
+ * The setter function takes two arguments: the value to set, and a boolean indicating whether to merge the value with the existing value.
+ * Also, in order for the setter function to be returned, the selector must be a string or Array.
+ */
+export function useNodeProperty(id, selector, returnSetter = false) {
+    id ??= useNodeId()
+    const rf = useReactFlow()
+
+    const usingLodash = typeof selector === "string" || Array.isArray(selector)
+
+    const propertyValue = useStore(
+        usingLodash ?
+            createNodeSelector(id, node => _.get(node, selector)) :
+            createNodeSelector(id, selector)
+    )
+
+    const setter = useCallback(
+        returnSetter && usingLodash ?
+            (value, merge = false) => {
+                rf.setNodes(produce(draft => {
+                    const node = draft.find(node => node.id == id)
+
+                    if (merge) {
+                        const original = _.get(node, selector)
+                        // array case
+                        if (Array.isArray(original))
+                            return _.set(node, selector, [...original, ...value]), undefined
+                        // object case
+                        if (typeof original === "object")
+                            return _.set(node, selector, { ...original, ...value }), undefined
+                    }
+
+                    // default case
+                    _.set(node, selector, value)
+                }))
+            } :
+            () => { }
+        , [id, selector, rf])
+
+    return returnSetter ? [propertyValue, setter] : propertyValue
+}
+
+
+/**
+ * Hook to get the type definition of a node.
+ *
+ * @export
+ * @param {string} [id]
+ */
+export function useTypeDefinition(id) {
+    const typeDefId = useNodeProperty(id, "type")
+    return NodeDefinitions[typeDefId]
+}
+
+
+/**
+ * Hook to get colors for a node.
+ *
+ * @export
+ * @param {string} [id]
+ * @param {Array<number | "primary">} [shades=[]]
+ * @return {string[]} 
+ */
+export function useColors(id, shades = []) {
+    const theme = useMantineTheme()
+    const typeDefinition = useTypeDefinition(id)
+
+    return shades.map(shade => {
+        if (typeof shade === "number")
+            return theme.colors[typeDefinition.color][shade]
+
+        if (shade === "primary")
+            return theme.colors[typeDefinition.color][theme.primaryShade.light]
+    })
+}
+
+
+/**
+ * Hook to get the delete node function.
+ *
+ * @export
+ * @param {string} [id]
+ * @return {Function} 
+ */
+export function useDeleteNode(id) {
+    id ??= useNodeId()
+    const rf = useReactFlow()
+    return useCallback(() => {
+        rf.deleteElements({
+            nodes: [rf.getNode(id)],
+        })
+    }, [rf, id])
+}
+
+
+/**
+ * Hook to tell if a node is currently being connected.
+ *
+ * @export
+ * @param {string} [id]
+ * @return {boolean} 
+ */
+export function useIsNodeConnecting(id) {
+    id ??= useNodeId()
+    return useStore(s => s.connectionNodeId == id)
+}
+
+
+/**
+ * Hook to get and set the node's internal state.
+ *
+ * @export
+ * @param {string} [id]
+ * @return {[*, Function]}
+ */
+export function useInternalState(id) {
+    const [state, setState] = useNodeProperty(id, "data.state", true)
+    const typeDefinition = useTypeDefinition(id)
+
+    // set default state
+    useEffect(() => {
+        state === undefined && typeDefinition.defaultState && setState(typeDefinition.defaultState)
+    }, [])
+
+    // return curried setter that merges
+    return [state ?? {}, newState => setState(newState, true)]
+}
+
+
+export const HandleType = {
+    Input: "target",
+    Output: "source",
+}
+
+export const InputMode = {
+    Handle: "handle",
+    Config: "config",
+}
+
+
+/**
+ * Get the handle definition id from the handle id.
+ * Example: "input.1" -> "input"
+ *
+ * @export
+ * @param {string} handleId
+ * @return {string} 
+ */
+export function getHandleDefinitionId(handleId) {
+    return handleId.split(".")[0]
+}
+
+
+/**
+ * Gets the handle definition given a node type definition ID and a handle definition ID.
+ * If you only have the handle ID, make sure to use getHandleDefinitionId first.
+ *
+ * @export
+ * @param {string} nodeTypeDefId
+ * @param {string} handleDefId
+ * @return {{ type: string, definition: Object } }} 
+ */
+export function getHandleDefinition(nodeTypeDefId, handleDefId) {
+    const nodeTypeDef = NodeDefinitions[nodeTypeDefId]
+
+    const input = nodeTypeDef.inputs.find(input => input.id == handleDefId)
+    if (input)
+        return { type: HandleType.Input, definition: input }
+
+    const output = nodeTypeDef.outputs.find(output => output.id == handleDefId)
+    if (output)
+        return { type: HandleType.Output, definition: output }
+
+    return {}
+}
+
+
+/**
+ * Hook to get the handle definition given a node ID and a handle ID.
+ *
+ * @export
+ * @param {string} [nodeId]
+ * @param {string} handleId
+ * @return {{ type: string, definition: Object }}
+ */
+export function useHandleDefinition(nodeId, handleId) {
+    const nodeTypeDefId = useNodeProperty(nodeId, "type")
+    const handleDefId = getHandleDefinitionId(handleId)
+    return getHandleDefinition(nodeTypeDefId, handleDefId)
+}
+
+
+/**
+ * Hook to tell if a handle is connected or not.
+ *
+ * @export
+ * @param {string} [nodeId]
+ * @param {string} handleId
+ * @return {boolean} 
+ */
+export function useHandleConnected(nodeId, handleId) {
+    nodeId ??= useNodeId()
+
+    return useStore(
+        s => s.edges.some(edge =>
+            (edge.target == nodeId && edge.targetHandle == handleId) ||
+            (edge.source == nodeId && edge.sourceHandle == handleId)
+        )
+    )
+}
+
+
+/**
+ * Hook to get and set the mode of an input.
+ *
+ * @export
+ * @param {string} [nodeId]
+ * @param {string} inputId
+ * @return {["handle" | "config", Function]} 
+ */
+export function useInputMode(nodeId, inputId) {
+    const [mode, setMode] = useNodeProperty(nodeId, ["data", `InputMode.${getHandleDefinitionId(inputId)}`], true)
+    const { definition: inputDef } = useHandleDefinition(nodeId, inputId)
+
+    // set default mode
+    useEffect(() => {
+        mode === undefined && setMode(inputDef.defaultMode)
+    }, [])
+
+    return [mode, setMode]
+}
+
+
+/**
+ * Hook to get and set the value of an input.
+ *
+ * @export
+ * @param {string} [nodeId]
+ * @param {string} inputId
+ * @param {*} defaultValue
+ * @return {[*, Function]} 
+ */
+export function useInputValue(nodeId, inputId, defaultValue) {
+    const [value, setValue] = useNodeProperty(nodeId, ["data", `InputValue.${getHandleDefinitionId(inputId)}`], true)
+
+    // set default value
+    useEffect(() => {
+        value === undefined && setValue(defaultValue)
+    }, [])
+
+    return [value, setValue]
+}
+
+
+/**
+ * Hook to get suggestions for a handle.
+ *
+ * @export
+ * @param {string} [nodeTypeDefId]
+ * @param {string} handleId
+ */
+export function useHandleSuggestions(nodeTypeDefId, handleId) {
+    nodeTypeDefId ??= useNodeProperty(null, "type")
+    const suggestions = useNodeSuggestions(nodeTypeDefId)
+    return suggestions?.[getHandleDefinitionId(handleId)] ?? []
+}

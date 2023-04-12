@@ -1,18 +1,18 @@
-import { motion } from "framer-motion"
 import { Button, Text } from "@mantine/core"
+import { motion } from "framer-motion"
 import { TbPlus } from "react-icons/tb"
 
-import { getHandleLabel } from "../../../modules/graph-util"
-import { useMemo } from "react"
 import { NodeDefinitions } from "@minus/client-nodes"
+import { getHandleDefinition, getHandleDefinitionId } from "@minus/client-nodes/hooks/nodes"
+import { formatHandleName } from "@web/modules/graph-util"
 
 
-export default function Suggestion({ typeId, handle, index, children, icon, ...props }) {
+export default function Suggestion({ nodeTypeDefId, handleId, showHandle = false, index, children, icon = <TbPlus />, ...props }) {
 
-    const handleLabel = useMemo(
-        () => handle && getHandleLabel(typeId, handle),
-        [handle]
-    )
+    const nodeTypeDef = NodeDefinitions[nodeTypeDefId]
+    const definition = getHandleDefinition(nodeTypeDefId, getHandleDefinitionId(handleId))
+
+    const label = definition.name || formatHandleName(handleId)
 
     return (
         <motion.div initial="hide" animate="show" variants={suggestionAnimVariants(index)} >
@@ -21,13 +21,13 @@ export default function Suggestion({ typeId, handle, index, children, icon, ...p
                 compact
                 variant="light"
                 color="gray"
-                leftIcon={icon || <TbPlus />}
+                leftIcon={icon}
                 styles={suggestionStyles}
                 {...props}
             >
-                {typeId &&
+                {nodeTypeDef &&
                     <Text size={10} weight={400}>
-                        {NodeDefinitions[typeId].name}{handle ? ` - ${handleLabel}` : ""}
+                        {nodeTypeDef.name}{showHandle ? ` - ${label}` : ""}
                     </Text>}
 
                 {children && <Text size={10} weight={400}>{children}</Text>}

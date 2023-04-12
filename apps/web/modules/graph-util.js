@@ -1,15 +1,16 @@
+import { useInterval } from "@mantine/hooks"
+import { produce } from "immer"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
-import { useInterval, useSetState } from "@mantine/hooks"
-import shallow from "zustand/shallow"
-import { produce } from "immer"
 import shortUUID from "short-uuid"
+import shallow from "zustand/shallow"
 
-import { Integrations, NodeDefinitions } from "@minus/client-nodes"
-import { useAppId, useFlowId } from "./hooks"
-import { openContextModal } from "@mantine/modals"
 import { Group, Text, Title } from "@mantine/core"
-import { HandleDirection } from "../components/flow-editor/Handle"
+import { openContextModal } from "@mantine/modals"
+import { Integrations, NodeDefinitions } from "@minus/client-nodes"
+import { useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { HandleDirection } from "@web/components/flow-editor/node/handle"
+import { useAppId, useFlowId } from "./hooks"
 
 
 export function useNodeState(nodeId, defaultState) {
@@ -79,38 +80,6 @@ export function useNodeData(nodeId) {
 }
 
 
-export function useNodeInputMode(nodeId, inputId) {
-
-    const inputModeKey = `InputMode.${inputId}`
-
-    const rf = useReactFlow()
-    const inputMode = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.[inputModeKey])
-
-    const setInputMode = useCallback(newMode => rf.setNodes(nodes =>
-        produce(nodes, draft => {
-            const node = draft.find(node => node.id == nodeId)
-
-            if (!node) {
-                console.log("Couldn't find node:", nodeId)
-                return
-            }
-
-            node.data ??= {}
-            node.data[inputModeKey] = newMode
-        })
-    ), [rf])
-
-    // set default mode
-    useEffect(() => {
-        const input = getNodeTypeById(rf, nodeId)?.inputs.find(input => input.id == inputId)
-        if (inputMode === undefined)
-            setInputMode(input.defaultMode)
-    }, [])
-
-    return [inputMode, setInputMode]
-}
-
-
 export function useNodeDisplayProps(id) {
 
     const rf = useReactFlow()
@@ -139,12 +108,12 @@ export function useNodeDisplayProps(id) {
 }
 
 
-export function useNodeConnections(id, { nodeType: providedNodeType } = {}) {
+export function useNodeConnections(id) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    id ??= useNodeId()
 
-    const rf = useReactFlow()
+    const typeDefinition = useTypeDefinition(id)
     const connectedEdges = useConnectedEdges(id)
-
-    const nodeType = providedNodeType ?? getNodeTypeById(rf, id)
 
     return useMemo(() => {
         // find connected edges
@@ -155,10 +124,10 @@ export function useNodeConnections(id, { nodeType: providedNodeType } = {}) {
 
         // create a map of value target handles to connection state
         const inputConns = Object.fromEntries(
-            (nodeType?.inputs ?? []).map(handle => [handle.name ?? handle, false])
+            (typeDefinition?.inputs ?? []).map(handle => [handle.name ?? handle, false])
         )
         const outputConns = Object.fromEntries(
-            (nodeType?.outputs ?? []).map(handle => [handle.name ?? handle, false])
+            (typeDefinition?.outputs ?? []).map(handle => [handle.name ?? handle, false])
         )
         connectedInputHandles.forEach(handle => inputConns[handle] = true)
         connectedOutputHandles.forEach(handle => outputConns[handle] = true)
@@ -252,6 +221,9 @@ export function useConnectedEdges(id) {
 export function useSmoothlyUpdateNode(id, deps = [], {
     interval = 20
 } = {}) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    id ??= useNodeId()
+
     const updateNodeInterals = useUpdateNodeInternals()
     const nodeUpdateInterval = useInterval(() => {
         updateNodeInterals(id)
@@ -275,25 +247,26 @@ export function useNodeMinHeight() {
 
 
 export function useHandleAlignment() {
-    const [handleAlignments, setHandleAlignments] = useSetState({})
-    const headerRef = useRef()
+    // const [handleAlignments, setHandleAlignments] = useSetState({})
+    // const headerRef = useRef()
 
-    const alignHandles = (handleNames, el = "header") => {
+    // const alignHandles = (handleNames, el = "header") => {
 
-        // if (el == null)
-        //     return
-        // const alignEl = el === "header" ? headerRef.current : el
+    //     // if (el == null)
+    //     //     return
+    //     // const alignEl = el === "header" ? headerRef.current : el
 
-        // const alignHandle = handleName => {
-        //     if (handleAlignments[handleName] != alignEl)
-        //         setHandleAlignments({ [handleName]: alignEl })
-        // }
+    //     // const alignHandle = handleName => {
+    //     //     if (handleAlignments[handleName] != alignEl)
+    //     //         setHandleAlignments({ [handleName]: alignEl })
+    //     // }
 
-        // (typeof handleNames === "string" ? [handleNames] : handleNames)
-        //     .forEach(alignHandle)
-    }
+    //     // (typeof handleNames === "string" ? [handleNames] : handleNames)
+    //     //     .forEach(alignHandle)
+    // }
 
-    return [handleAlignments, alignHandles, headerRef]
+    // return [handleAlignments, alignHandles, headerRef]
+    return []
 }
 
 
@@ -593,7 +566,7 @@ export function addNeighborNode(rf, {
     type,
     handle,
     direction,
-    topOffset,
+    topOffset = 0,
 } = {}) {
 
     const { position: { x, y }, width, height } = rf.getNode(originNodeId)
@@ -654,12 +627,14 @@ export function longhandHandle(handle) {
 }
 
 
-export function formatHandleName(handleName) {
+export function formatHandleName(handleId) {
 
-    if (handleName.startsWith("_"))
+    const handleDefId = handleId.split(".")[0]
+
+    if (handleDefId.startsWith("_"))
         return ""
 
-    return handleName
+    return handleDefId
         .replace("$", "")
         .trim()
         .match(/[A-Z]?[^A-Z]+/g)
@@ -668,7 +643,7 @@ export function formatHandleName(handleName) {
 }
 
 
-export function getHandleLabel(nodeType, handleName) {
-    return NodeDefinitions[nodeType].inputs?.map(input => longhandHandle(input))
+export function getHandleLabel(nodeTypeId, handleName) {
+    return NodeDefinitions[nodeTypeId].inputs?.map(input => longhandHandle(input))
         .find(input => input.name == handleName)?.label
 }

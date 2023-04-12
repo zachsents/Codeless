@@ -242,13 +242,11 @@ export function useOtherRunnableFlowsRealtime(flowId, appId) {
  * Hook that gives suggestions for node handles.
  *
  * @export
- * @param {string} nodeType
+ * @param {string} typeDefId
  */
-export function useNodeSuggestions(nodeType) {
-    const { data: suggestions, ...result } = useQuery(
-        ["node-suggestions", nodeType],
-        () => getNodeSuggestions(nodeType)
+export function useNodeSuggestions(typeDefId) {
+    return useQuery(
+        ["node-suggestions", typeDefId],
+        () => getNodeSuggestions(typeDefId)
     )
-
-    return { suggestions, ...result }
 }

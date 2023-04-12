@@ -1,25 +1,23 @@
 import { Box, Button, Center, Divider, Group, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
-import { formatHandleName, getNodeTypeById, useNodeInputMode } from "@web/modules/graph-util"
+import { InputMode, useHandleDefinition, useInputMode, useNodeContext, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { formatHandleName } from "@web/modules/graph-util"
 import { TbInfoCircle } from "react-icons/tb"
-import { useReactFlow } from "reactflow"
 
-export const InputMode = {
-    Handle: "handle",
-    Config: "config",
-}
 
-export default function InputConfig({ input, nodeId, displayProps }) {
+export default function InputConfig({ id }) {
 
     const theme = useMantineTheme()
 
-    const rf = useReactFlow()
-    const typeDefinition = getNodeTypeById(rf, nodeId)
+    const { definition } = useHandleDefinition(null, id)
+    const typeDefinition = useTypeDefinition()
 
-    const [inputMode, setInputMode] = useNodeInputMode(nodeId, input.id)
+    const [inputMode, setInputMode] = useInputMode(null, id)
 
-    const canChangeMode = input.allowedModes.length >= 2
+    const canChangeMode = definition.allowedModes.length >= 2
     const isHandle = inputMode == InputMode.Handle
     const isConfig = inputMode == InputMode.Config
+
+    const { displayProps } = useNodeContext()
 
     return (
         <>
@@ -30,22 +28,22 @@ export default function InputConfig({ input, nodeId, displayProps }) {
 
                         {isHandle ?
                             <ThemeIcon variant="outline" size="md" radius="xl" color={typeDefinition.color}>
-                                {input.icon &&
-                                    <input.icon size={theme.fontSizes.md} />}
+                                {definition.icon &&
+                                    <definition.icon size={theme.fontSizes.md} />}
                             </ThemeIcon> :
                             <ThemeIcon variant="light" size="md" radius="xl" color="gray" bg="transparent">
-                                {input.icon &&
-                                    <input.icon size={theme.fontSizes.md} />}
+                                {definition.icon &&
+                                    <definition.icon size={theme.fontSizes.md} />}
                             </ThemeIcon>}
 
                         <Text>
-                            {input.name || formatHandleName(input.id)}
+                            {definition.name || formatHandleName(definition.id)}
                         </Text>
 
-                        {input.tooltip &&
+                        {definition.tooltip &&
                             <Tooltip
                                 withinPortal
-                                label={<Text sx={{ overflowWrap: "anywhere" }}>{input.tooltip}</Text>}
+                                label={<Text sx={{ overflowWrap: "anywhere" }}>{definition.tooltip}</Text>}
                                 // position="left"
                                 multiline
                                 maw={300}
@@ -69,9 +67,9 @@ export default function InputConfig({ input, nodeId, displayProps }) {
                     </Group>
                 </Group>
 
-                {isConfig && input.renderConfiguration &&
+                {isConfig && definition.renderConfiguration &&
                     <Box ml="xl">
-                        <input.renderConfiguration inputId={input.id} {...displayProps} />
+                        <definition.renderConfiguration inputId={definition.id} {...displayProps} />
                     </Box>}
             </Stack>
         </>

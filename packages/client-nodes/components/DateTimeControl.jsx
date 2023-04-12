@@ -1,9 +1,9 @@
 import { DateTimePicker } from "@mantine/dates"
-import { useNodeInputValue } from "../hooks"
+import { useInputValue } from "../hooks/nodes"
 
-export default function DateTimeControl({ nodeId, inputId, inputProps = {} }) {
+export default function DateTimeControl({ inputId, inputProps = {} }) {
 
-    const [value, setValue] = useNodeInputValue(nodeId, inputId, new Date().toISOString())
+    const [value, setValue] = useInputValue(null, inputId, new Date().toISOString())
 
     return (
         <DateTimePicker
