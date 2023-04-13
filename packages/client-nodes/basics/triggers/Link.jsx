@@ -1,4 +1,5 @@
 import { ActionIcon, Code, CopyButton, Group, Stack, Text } from "@mantine/core"
+import { TbCopy, TbExternalLink } from "react-icons/tb"
 import { Copy, Check, ExternalLink, Link } from "tabler-icons-react"
 
 
@@ -9,35 +10,46 @@ export default {
     icon: Link,
 
     inputs: [],
-    outputs: ["$"],
+    outputs: [
+        {
+            id: "$",
+            name: "Payload",
+            description: "The payload of the flow run.",
+            tooltip: "The payload of the flow run.",
+        }
+    ],
 
     creatable: false,
     trigger: true,
     deletable: false,
 
-    deploy: ({ flowId }) => {
+    flowControls: [
+        {
+            id: "copy-url",
+            label: "Copy URL",
+            icon: TbCopy,
+            small: true,
+            showStatus: true,
 
-        const deploymentUrl = `${process.env.NEXT_PUBLIC_FUNCTIONS_BASE_URL}/flow-runFromUrl?flow_id=${flowId}`
+            onActivate: ({ flow }) => {
+                navigator.clipboard.writeText(generateUrl(flow))
+            },
+        },
+        {
+            id: "open-url",
+            label: "Open URL",
+            icon: TbExternalLink,
+            small: true,
+            showStatus: false,
 
-        return (
-            <Stack>
-                <Group position="center">
-                    <Text>Trigger URL</Text>
-                    <CopyButton value={deploymentUrl}>
-                        {({ copied, copy }) => (
-                            <ActionIcon radius="md" color={copied ? "green" : "gray"} onClick={copy}>
-                                {copied ? <Check /> : <Copy size={18} />}
-                            </ActionIcon>
-                        )}
-                    </CopyButton>
-                </Group>
-                <Code p="xl" sx={{ wordWrap: "break-word" }}>{deploymentUrl}</Code>
-                <Group position="right">
-                    <ActionIcon radius="md" component="a" href={deploymentUrl} target="_blank" >
-                        <ExternalLink size={18} />
-                    </ActionIcon>
-                </Group>
-            </Stack>
-        )
-    },
+            onActivate: ({ flow }) => {
+                window.open(generateUrl(flow), "_blank")
+            },
+        },
+    ],
+}
+
+
+function generateUrl(flow) {
+    return `${process.env.NEXT_PUBLIC_FUNCTIONS_BASE_URL}/flow-runFromUrl?flow_id=${flow.id}`
 }
