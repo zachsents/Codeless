@@ -33,6 +33,7 @@ export default function DeleteFlowModal({ context, id, innerProps: { flowId, red
         <form onSubmit={handleSubmit}>
             <Stack spacing="xl" mt="xl">
                 <TextInput
+                    data-autofocus
                     value={confirmation}
                     onChange={event => setConfirmation(event.currentTarget.value)}
                     placeholder={`Type "${CONFIRM_MESSAGE}" to delete`}

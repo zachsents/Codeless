@@ -272,7 +272,7 @@ export function openNodePalette(rf, {
             {subtitle &&
                 <Text color="dimmed">{subtitle}</Text>}
         </Group>,
-        size: "lg",
+        size: "xl",
         centered: true,
         transitionProps: {
             duration: 200,

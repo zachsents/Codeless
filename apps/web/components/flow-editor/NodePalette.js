@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ActionIcon, Badge, Button, Group, HoverCard, Stack, Text, Title, UnstyledButton } from "@mantine/core"
+import { ActionIcon, Badge, Button, Group, HoverCard, Stack, Text, Title, UnstyledButton, useMantineTheme } from "@mantine/core"
 import { Square } from "tabler-icons-react"
 
 import { addNodeAtCenter, addNodesAtCenter } from "@web/modules/graph-util"
@@ -7,6 +7,7 @@ import Search from "../Search"
 import { useSetState } from "@mantine/hooks"
 import { TbArrowRight, TbCheck, TbMinus, TbPlus } from "react-icons/tb"
 import { CreatableNodeDefinitions } from "@minus/client-nodes"
+import styles from "./NodePalette.module.css"
 
 
 const NodeList = Object.values(CreatableNodeDefinitions)
@@ -26,7 +27,7 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
     // checkbox adding
     const [nodeCart, setNodeCart] = useSetState({})
     const cartTotal = useMemo(() => Object.values(nodeCart).reduce((sum, cur) => sum + cur, 0), [nodeCart])
-    const handleAddCart = () => {
+    const finishCart = () => {
         addNodesAtCenter(rf,
             Object.entries(nodeCart).flatMap(([typeId, quantity]) => Array(quantity).fill(typeId))
         )
@@ -76,13 +77,6 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
         }
     }, [gridRef.current, searchRef.current, numColumnsRef.current])
 
-    // focus search bar on mount
-    useEffect(() => {
-        setTimeout(() => {
-            searchRef.current?.focus()
-        }, 0)
-    }, [searchRef.current])
-
     // show suggestions in separate section
     const suggestedSearchLists = useMemo(() => {
         if (!suggestions)
@@ -98,7 +92,6 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
             { name: "Other Nodes", list: otherNodes },
         ]
     }, [suggestions])
-
 
     return (
         <Stack>
@@ -126,7 +119,7 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
                 inputProps={{ onKeyDown: searchKeyHandler }}
                 inputRef={searchRef}
                 rightSection={cartTotal > 0 &&
-                    <Button onClick={handleAddCart} rightIcon={<TbArrowRight />}>Add {cartTotal} Nodes</Button>}
+                    <Button onClick={finishCart} rightIcon={<TbArrowRight />}>Add {cartTotal} Nodes</Button>}
             />
         </Stack>
     )
@@ -137,42 +130,47 @@ const NodeTile = forwardRef(({ type, expanded, quantity, onQuantityChange, ...pr
 
     const Icon = type.icon ?? Square
 
+    const theme = useMantineTheme()
+    const mainColor = theme.colors[type.color][theme.fn.primaryShade()]
+    const bgColor = type.color === "dark" ? theme.colors.gray[1] : theme.colors[type.color][0]
+
     return (
         <UnstyledButton
-            p="md"
-            px={expanded ? "xl" : "md"}
-            h={expanded ? 100 : 120}
-            sx={tileStyle}
+            className={`${styles.tile} ${expanded ? styles.expanded : ""}`}
+            style={{ "--bgColor": bgColor, "--mainColor": mainColor }}
             {...props}
             ref={ref}
         >
             <Stack spacing="xs">
                 <Group position="apart" noWrap align="start">
-                    <Group>
-                        <Icon />
-                        <Title order={4}>{type.name}</Title>
-                        {type.badge &&
-                            <Group>
-                                {(type.badge.map ? type.badge : [type.badge]).map(
-                                    (badge, i) => <Badge color={badge.color ?? type.color} key={i}>{badge}</Badge>
-                                )}
-                            </Group>}
+                    <Group noWrap>
+                        <Icon color={mainColor} />
+                        <Text
+                            size={calculateFontSize(type.name.length)}
+                            color={`${type.color}.7`}
+                            ff="Rubik"
+                            weight={600}
+                            transform="uppercase"
+                        >
+                            {type.name}
+                        </Text>
                     </Group>
 
                     <QuantityCheckbox value={quantity} onChange={onQuantityChange} />
                 </Group>
-                <HoverCard openDelay={500}>
-                    <HoverCard.Target>
-                        <Text lineClamp={1} color="dimmed" size="sm">
-                            {type.description}
-                        </Text>
-                    </HoverCard.Target>
-                    <HoverCard.Dropdown>
-                        <Text maw={350} color="dimmed">
-                            {type.description}
-                        </Text>
-                    </HoverCard.Dropdown>
-                </HoverCard>
+
+                {type.tags.length > 0 &&
+                    <Group spacing="xs">
+                        {type.tags.map((tag, i) =>
+                            <Badge color={i == 0 ? type.color : "gray"} radius="sm" key={i}>
+                                {tag}
+                            </Badge>
+                        )}
+                    </Group>}
+
+                <Text color="dimmed" size="sm">
+                    {type.description}
+                </Text>
             </Stack>
         </UnstyledButton>
     )
@@ -203,15 +201,11 @@ function QuantityCheckbox({ value, onChange }) {
             spacing={3}
             noWrap
             onClick={handleGroupClick}
-            sx={{
-                opacity: value > 0 ? 1 : 0.3,
-                transition: "opacity 0.1s",
-                "&:hover": {
-                    opacity: 1,
-                }
-            }}
+            className={`${styles.cartQuantity} ${value > 0 ? styles.notEmpty : ""}`}
         >
-            <ActionIcon radius="xl" size="md" onClick={decrement}><TbMinus size={12} /></ActionIcon>
+            <ActionIcon component="div" radius="xl" size="md" onClick={decrement}>
+                <TbMinus size={12} />
+            </ActionIcon>
             <Button
                 component="div"
 
@@ -230,27 +224,32 @@ function QuantityCheckbox({ value, onChange }) {
             >
                 {value == 0 ? "" : value == 1 ? <TbCheck /> : value}
             </Button>
-            <ActionIcon radius="xl" size="md" onClick={increment}><TbPlus size={12} /></ActionIcon>
+            <ActionIcon component="div" radius="xl" size="md" onClick={increment}>
+                <TbPlus size={12} />
+            </ActionIcon>
         </Group>
     )
 }
-
-
-const tileStyle = theme => ({
-    backgroundColor: theme.colors.gray[0],
-    borderRadius: theme.radius.md,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "stretch",
-    transition: "backgroundColor 0.1s",
-    "&:hover, &:focus": {
-        backgroundColor: theme.colors.gray[1],
-    },
-})
 
 
 function goToEndOfInput(el) {
     el && setTimeout(() => {
         el.selectionStart = el.selectionEnd = 10000
     }, 0)
+}
+
+
+function calculateFontSize(length, {
+    minLength = 15,
+    maxLength = 20,
+    minSize = 14,
+    maxSize = 18,
+} = {}) {
+    return Math.max(
+        minSize,
+        Math.min(
+            maxSize,
+            (length - minLength) / (maxLength - minLength) * (minSize - maxSize) + maxSize
+        )
+    )
 }

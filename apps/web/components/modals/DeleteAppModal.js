@@ -30,6 +30,7 @@ export default function DeleteAppModal({ context, id, innerProps: { appId } }) {
                     This will delete all of its flows, too.
                 </Text>
                 <TextInput
+                    data-autofocus
                     value={confirmation}
                     onChange={event => setConfirmation(event.currentTarget.value)}
                     placeholder={`Type "${CONFIRM_MESSAGE}" to delete`}

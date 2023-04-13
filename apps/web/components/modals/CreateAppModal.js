@@ -28,6 +28,7 @@ export default function CreateAppModal({ context, id, /*  innerProps */ }) {
         <form onSubmit={handleSubmit}>
             <Stack spacing="xl" mt="xl">
                 <TextInput
+                    data-autofocus
                     size="lg"
                     value={appName}
                     onChange={event => setAppName(event.currentTarget.value)}

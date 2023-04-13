@@ -42,6 +42,7 @@ export default function Search({ list: listArg, selector, noun,
         <>
             <Group spacing="xs">
                 <TextInput
+                    data-autofocus
                     value={query}
                     onChange={event => setQuery(event.currentTarget.value)}
                     radius="lg"

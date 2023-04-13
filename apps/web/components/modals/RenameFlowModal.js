@@ -25,11 +25,11 @@ export default function RenameFlowModal({ context, id, innerProps: { flowId, old
         <form onSubmit={handleSubmit}>
             <Stack spacing="xl" mt="xl">
                 <TextInput
+                    data-autofocus
                     value={newName}
                     onChange={event => setNewName(event.currentTarget.value)}
                     placeholder="Enter a new name"
                     disabled={loading}
-                    ref={el => setTimeout(() => el?.focus(), 100)}
                 />
                 <Group position="apart">
                     <Button
