@@ -277,6 +277,7 @@ export function openNodePalette(rf, {
         transitionProps: {
             duration: 200,
         },
+        zIndex: 300,
         ...props,
     })
 }

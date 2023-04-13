@@ -44,7 +44,7 @@ export default function NodeMenu() {
         <Stack spacing="md" p="xl" pos="absolute" top={0} left={0} miw={220}>
             <Box pos="relative">
                 <Text align="center" weight={600} size="lg">Add Nodes</Text>
-                <Box pos="absolute" right={0} top="50%" sx={{ transform: "translateY(-50%)", zIndex: 200 }}>
+                <Box pos="absolute" right={0} top="50%" sx={{ transform: "translateY(-50%)", zIndex: 199 }}>
                     <Menu>
                         <Menu.Target>
                             <ActionIcon>
@@ -155,101 +155,3 @@ export default function NodeMenu() {
     //     </Navbar >
     // )
 }
-
-
-
-
-/**
- * Keeping this around b/c it has all the dragging stuff in it
- */
-const NodeTile = forwardRef(({ node }, ref) => {
-
-    // adding nodes to graph
-    const rf = useReactFlow()
-    const handleAddNode = location => {
-
-        // add node at location
-        if (location) {
-            const canvasLocation = {
-                x: location.x - 240,
-                y: location.y - 60,
-            }
-
-            // make sure it's inbounds
-            if (canvasLocation.x < 0 || canvasLocation.y < 0)
-                return
-
-            const proj = rf.project(canvasLocation)
-            proj.x -= 15
-            proj.y -= 15
-            rf.addNodes(createNode(node.id, proj))
-            return
-        }
-
-        // add node at center
-        const proj = rf.project({
-            x: (window.innerWidth - 240) / 2,
-            y: (window.innerHeight - 60) / 2,
-        })
-        proj.x -= 56 / 2
-        proj.y -= 56 / 2
-        rf.addNodes(createNode(node.id, proj))
-    }
-
-    // attach ref to object so we can get height
-    const [boxHeight, setBoxHeight] = useState()
-    const buttonRef = useRef()
-    useEffect(() => {
-        buttonRef.current?.offsetHeight && setBoxHeight(buttonRef.current?.offsetHeight)
-    }, [buttonRef.current?.offsetHeight])
-
-    // state for when drag is finished
-    const [finishingDrag, setFinishingDrag] = useState(false)
-    useEffect(() => {
-        finishingDrag && setFinishingDrag(false)
-    }, [finishingDrag])
-
-    return (
-        <Box sx={{ height: boxHeight }} ref={ref}>
-            {!finishingDrag && <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.1 }}
-                drag
-                whileDrag={{ position: "fixed", zIndex: 200 }}
-                dragSnapToOrigin
-                onDragEnd={(event, info) => {
-                    setFinishingDrag(true)
-                    handleAddNode(info.point)
-                }}
-                onTap={() => handleAddNode()}
-            >
-                <NavLink
-                    label={node.name}
-                    variant="filled"
-                    // onClick={handleAddNode}
-                    icon={node.icon && <node.icon size={16} />}
-                    ref={buttonRef}
-
-                    styles={theme => ({
-                        root: {
-                            // flexDirection: "column",
-                            // justifyContent: "center",
-                            // alignItems: "center",
-                            backgroundColor: theme.colors.gray[0],
-                            "&:hover": {
-                                backgroundColor: theme.colors.gray[1],
-                            },
-                            borderRadius: theme.radius.md
-                        },
-                        label: {
-                            fontWeight: 500,
-                        },
-                    })}
-                />
-            </motion.div>}
-        </Box>
-    )
-})
-
-NodeTile.displayName = "NodeTile"

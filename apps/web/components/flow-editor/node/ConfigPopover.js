@@ -18,7 +18,7 @@ export default function ConfigPopover({ children }) {
 
     return (
         <Popover
-            zIndex={195}
+            zIndex={210}
             withinPortal
             position="right"
             offset={20}
