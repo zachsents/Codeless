@@ -96,6 +96,17 @@ export function useCleanGhostEdgesEffect() {
 
     // remove edges that have a source or target that doesn't exist
     useEffect(() => {
+        // on load, handleMap is empty -- this will never be the case after the first render
+        if (Object.keys(handleMap).length === 0)
+            return console.debug("[Cleaner] Skipping cleanup because there are no nodes (load effect)")
+
+        // count up the number of handles in the map
+        const handleCount = Object.values(handleMap).reduce((acc, { sources, targets }) => acc + sources.length + targets.length, 0)
+
+        // skip if there are no handles -- this will never be the case after the first render
+        if (handleCount === 0)
+            return console.debug("[Cleaner] Skipping cleanup because there are no handles (load effect)")
+
         const edges = rf.getEdges()
         const newEdges = edges.filter(edge => {
             const source = handleMap[edge.source]
