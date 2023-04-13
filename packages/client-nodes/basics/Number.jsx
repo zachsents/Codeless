@@ -1,30 +1,41 @@
-import { Numbers } from "tabler-icons-react"
 import { Box, NumberInput } from "@mantine/core"
+import { Numbers } from "tabler-icons-react"
+import { useInternalState } from "../hooks/nodes"
 
 export default {
     id: "basic:Number",
     name: "Number",
     description: "Just a plain ol' number.",
     icon: Numbers,
-    badge: "Math",
+
+    tags: ["Math", "Basics"],
+    showMainTag: false,
 
     inputs: [],
-    outputs: ["$"],
+    outputs: [
+        {
+            id: "$",
+            name: "Number",
+            description: "The number.",
+            tooltip: "The number.",
+            icon: Numbers,
+        }
+    ],
 
-    defaultState: {
-        $: null
-    },
+    renderCard: false,
+    renderName: false,
 
-    renderNode: ({ state, setState, alignHandles }) => (
-
-        <Box ref={el => alignHandles("$", el)}>
+    renderContent: () => {
+        const [state, setState] = useInternalState()
+        return <Box mr={2}>
             <NumberInput
                 value={state.$}
                 onChange={val => setState({ $: val })}
-                placeholder="25"
-                radius="md"
-                maw={140}
+                placeholder="Pick a number..."
+                size="lg"
+                w={220}
+                controls
             />
         </Box>
-    ),
+    },
 }

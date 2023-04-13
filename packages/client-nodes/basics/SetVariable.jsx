@@ -1,6 +1,6 @@
-import { TextInput } from "@mantine/core"
-import { Variable } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack } from "../components/index"
+import { Text } from "@mantine/core"
+import { SquareX, Variable } from "tabler-icons-react"
+import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
 
 
 export default {
@@ -9,26 +9,45 @@ export default {
     description: "Sets the value of a variable.",
     icon: Variable,
 
-    inputs: ["$"],
+    tags: ["Advanced", "Variables"],
+    showMainTag: false,
+
+    inputs: [
+        {
+            id: "name",
+            name: "Variable Name",
+            description: "The name of the variable to set.",
+            tooltip: "The name of the variable to set.",
+            icon: Variable,
+            allowedModes: ["config", "handle"],
+            defaultMode: "config",
+        },
+        {
+            id: "$",
+            name: "Value",
+            description: "The value of the variable.",
+            tooltip: "The value of the variable.",
+            icon: SquareX,
+            allowedModes: ["config", "handle"],
+        },
+    ],
     outputs: [],
 
-    renderName: ({ state }) => state.name || "[no name]",
+    renderName: () => {
+        const [nameMode] = useInputMode(null, "name")
+        const [name] = useInputValue(null, "name")
+        const [valueMode] = useInputMode(null, "$")
+        const [value] = useInputValue(null, "$")
 
-    configuration: ({ state, setState }) => {
-        return (
-            <ControlStack>
-                <Control>
-                    <ControlLabel info="The name of the variable. This must match the name in the corresponding Use Variable node.">
-                        Variable Name
-                    </ControlLabel>
-                    <TextInput
-                        radius="md"
-                        placeholder="Give me a name"
-                        value={state.name}
-                        onChange={event => setState({ name: event.currentTarget.value })}
-                    />
-                </Control>
-            </ControlStack>
-        )
+        if (nameMode == InputMode.Handle)
+            return "Set Variable"
+
+        if (!name)
+            return "[no name]"
+
+        return <Text transform="none">
+            {name}
+            {valueMode == InputMode.Config ? ` = "${value}"` : ""}
+        </Text>
     },
 }

@@ -1,6 +1,4 @@
-import { Stack, Text } from "@mantine/core"
-import { Equal } from "tabler-icons-react"
-import { SkeletonWithHandle } from "../../components/index"
+import { ArrowBigRight, ArrowNarrowRight, Equal } from "tabler-icons-react"
 
 export default {
     id: "basic:Equals",
@@ -8,20 +6,22 @@ export default {
     description: "Tests if things are equal.",
     icon: Equal,
 
-    inputs: ["_a", "_b"],
-    outputs: [
+    inputs: [
         {
-            name: "$",
-            label: "True / False"
+            id: "input",
+            description: "The inputs for which to check equality. Lists are compared element-wise.",
+            tooltip: "The inputs for which to check equality. Lists are compared element-wise.",
+            icon: ArrowNarrowRight,
+            listMode: "unnamed",
+            defaultList: 2,
         }
     ],
-
-    renderNode({ alignHandles }) {
-
-        return <Stack align="center" spacing={4} ref={el => alignHandles("$", el)}>
-            <SkeletonWithHandle align="left" ref={el => alignHandles("_a", el)} />
-            <Text size="xs">equals</Text>
-            <SkeletonWithHandle align="left" ref={el => alignHandles("_b", el)} />
-        </Stack>
-    },
+    outputs: [
+        {
+            id: "result",
+            description: "The result of the comparison. True or false.",
+            tooltip: "The result of the comparison. True or false.",
+            icon: ArrowBigRight,
+        }
+    ],
 }

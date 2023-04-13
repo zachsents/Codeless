@@ -1,5 +1,4 @@
-import { Center, Group, Stack } from "@mantine/core"
-import { ArrowsJoin, SquareArrowRight, SquareCheck, SquareX } from "tabler-icons-react"
+import { ArrowBigRight, ArrowsJoin, Check, Variable, X } from "tabler-icons-react"
 
 
 export default {
@@ -8,43 +7,40 @@ export default {
     description: "Chooses between two values.",
     icon: ArrowsJoin,
 
-    inputs: ["condition", "ifTrue", "ifFalse"],
-    outputs: ["output"],
+    tags: ["Conditional"],
+
+    inputs: [
+        {
+            id: "condition",
+            description: "The condition to evaluate.",
+            tooltip: "The condition to evaluate.",
+            icon: Variable,
+        },
+        {
+            id: "ifTrue",
+            name: "If True",
+            description: "The value passed to output if the condition is true.",
+            tooltip: "The value passed to output if the condition is true.",
+            icon: Check,
+            allowedModes: ["handle", "config"],
+        },
+        {
+            id: "ifFalse",
+            name: "If False",
+            description: "The value passed to output if the condition is false.",
+            tooltip: "The value passed to output if the condition is false.",
+            icon: X,
+            allowedModes: ["handle", "config"],
+        },
+    ],
+    outputs: [
+        {
+            id: "output",
+            description: "The value chosen by the condition.",
+            tooltip: "The value chosen by the condition.",
+            icon: ArrowBigRight,
+        },
+    ],
 
     renderName: () => "Choose",
-
-    renderNode: ({ alignHandles }) => {
-
-        alignHandles("condition")
-
-        return (
-            <Group>
-                <Stack spacing="xs">
-                    <Center ref={el => alignHandles("ifTrue", el)} >
-                        <SquareCheck />
-                    </Center>
-                    <Center ref={el => alignHandles("ifFalse", el)}>
-                        <SquareX />
-                    </Center>
-                </Stack>
-                <Center ref={el => alignHandles("output", el)}>
-                    <SquareArrowRight />
-                </Center>
-            </Group>
-            // <Stack align="center" spacing={0}>
-            //     <Text size="xs">If</Text>
-            //     <SkeletonWithHandle align="left" ref={el => alignHandles("condition", el)} />
-            //     <Space h="xs" />
-            //     <Text size="xs">Then</Text>
-            //     <Box ref={el => alignHandles("output", el)}>
-            //         <SkeletonWithHandle align="left" ref={el => alignHandles("ifTrue", el)} />
-            //         <Space h="xs" />
-            //         <Text size="xs">Otherwise</Text>
-            //         <SkeletonWithHandle align="left" ref={el => alignHandles("ifFalse", el)} />
-            //     </Box>
-            // </Stack>
-        )
-    },
-
-
 }

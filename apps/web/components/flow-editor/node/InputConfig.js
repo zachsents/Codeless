@@ -28,8 +28,8 @@ export default function InputConfig({ id, divider = true }) {
             {divider &&
                 <Divider color="gray.2" />}
             <Stack spacing="xs">
-                <Group position="apart">
-                    <Group spacing="xs">
+                <Group position="apart" noWrap>
+                    <Group spacing="xs" noWrap>
 
                         {isHandle ?
                             <ThemeIcon variant="outline" size="md" radius="xl" color={typeDefinition.color}>

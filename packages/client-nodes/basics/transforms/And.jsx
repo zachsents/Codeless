@@ -9,8 +9,8 @@ export default {
     inputs: [
         {
             id: "input",
-            description: "The inputs to AND together. Lists are flattened together.",
-            tooltip: "The inputs to AND together. Lists are flattened together.",
+            description: "The inputs to AND together. Lists are computed element-wise.",
+            tooltip: "The inputs to AND together. Lists are computed element-wise.",
             icon: ArrowNarrowRight,
             listMode: "unnamed",
             defaultList: 2,
@@ -19,8 +19,8 @@ export default {
     outputs: [
         {
             id: "result",
-            description: "The result of the AND operation.",
-            tooltip: "The result of the AND operation.",
+            description: "The result of the operation. True or false.",
+            tooltip: "The result of the operation. True or false.",
             icon: ArrowBigRight,
         }
     ],

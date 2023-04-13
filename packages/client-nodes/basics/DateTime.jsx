@@ -1,53 +1,43 @@
-import { useEffect, useState } from "react"
-import { CalendarTime, Clock } from "tabler-icons-react"
-import { Stack } from "@mantine/core"
-import { Calendar, TimeInput } from "@mantine/dates"
+import { CalendarTime } from "tabler-icons-react"
+import DateTimeControl from "../components/DateTimeControl"
+import { useInputValue } from "../hooks/nodes"
 
 export default {
     id: "basic:DateTime",
     name: "Date & Time",
     description: "Giving you the time of day.",
     icon: CalendarTime,
-    
-    inputs: [],
-    outputs: ["$"],
 
-    defaultState: { $: new Date().getTime() },
+    tags: ["Time", "Basics"],
+    showMainTag: false,
 
-    renderName: ({ state }) => new Date(state.$).toLocaleString(undefined, {
-        timeStyle: "short",
-        dateStyle: "short",
-    }),
+    inputs: [
+        {
+            id: "internalDate",
+            name: "Date/Time",
+            description: "The date & time.",
+            tooltip: "The date & time.",
+            icon: CalendarTime,
+            allowedModes: ["config"],
+            defaultMode: "config",
+            renderConfiguration: DateTimeControl,
+        },
+    ],
+    outputs: [
+        {
+            id: "$",
+            name: "Date/Time",
+            description: "The date & time.",
+            tooltip: "The date & time.",
+        }
+    ],
 
-    configuration: ({ state, setState }) => {
-        const [date, setDate] = useState(state.$ ? new Date(state.$) : null)
-        const [time, setTime] = useState(state.$ ? new Date(state.$) : null)
+    renderName: () => {
+        const [value] = useInputValue(null, "internalDate")
 
-        useEffect(() => {
-            date && time && setState({ $: date.setHours(time.getHours(), time.getMinutes()) })
-        }, [date, time])
-
-        return (
-            <Stack>
-                <Calendar
-                    size="xs"
-                    weekendDays={[]}
-                    value={date}
-                    onChange={setDate}
-                />
-                <TimeInput
-                    clearable
-                    format="12"
-                    value={time}
-                    onChange={setTime}
-                    icon={<Clock />}
-                    sx={{
-                        "& .mantine-AmPmInput-amPmInput": {
-                            width: "3ch"
-                        }
-                    }}
-                />
-            </Stack>
-        )
+        return new Date(value).toLocaleString(undefined, {
+            timeStyle: "short",
+            dateStyle: "short",
+        })
     },
 }

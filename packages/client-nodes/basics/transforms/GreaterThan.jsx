@@ -1,6 +1,4 @@
-import { Stack, Text } from "@mantine/core"
-import { ChevronRight } from "tabler-icons-react"
-import { SkeletonWithHandle } from "../../components/index"
+import { ArrowBigRight, ArrowNarrowRight, ChevronRight } from "tabler-icons-react"
 
 
 export default {
@@ -8,21 +6,23 @@ export default {
     name: "Greater Than",
     description: "Compares two numbers.",
     icon: ChevronRight,
-    
-    inputs: ["_a", "_b"],
-    outputs: [
+
+    inputs: [
         {
-            name: "$",
-            label: "True / False"
+            id: "input",
+            description: "The inputs to compare. Lists are compared element-wise.",
+            tooltip: "The inputs to compare. Lists are compared element-wise.",
+            icon: ArrowNarrowRight,
+            listMode: "unnamed",
+            defaultList: 2,
         }
     ],
-
-    renderNode({ alignHandles }) {
-
-        return <Stack align="center" w={100} spacing={4} ref={el => alignHandles("$", el)}>
-            <SkeletonWithHandle align="left" ref={el => alignHandles("_a", el)} />
-            <Text size="xs">is greater than</Text>
-            <SkeletonWithHandle align="left" ref={el => alignHandles("_b", el)} />
-        </Stack>
-    },
+    outputs: [
+        {
+            id: "result",
+            description: "The result of the comparison. True or false.",
+            tooltip: "The result of the comparison. True or false.",
+            icon: ArrowBigRight,
+        }
+    ],
 }

@@ -1,11 +1,11 @@
-import { Box, Divider, Group, SimpleGrid } from "@mantine/core"
+import { Box } from "@mantine/core"
 import CodeEditor from "react-simple-code-editor"
 import { CodeDots } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
 
 import hljs from "highlight.js/lib/common"
 import "highlight.js/styles/github.css"
-import { ArrowBigRightLine } from "tabler-icons-react"
+import { ArrowBigRightLine, Code } from "tabler-icons-react"
+import { useInputValue } from "../hooks/nodes"
 
 
 /** 
@@ -20,92 +20,30 @@ export default {
     inputs: [
         {
             id: "input",
-            name: "Inputs",
+            name: "Input",
             description: "The inputs to the code.",
             tooltip: "The inputs to the code. They are available under the \"inputs\" global variable.",
             icon: ArrowBigRightLine,
             listMode: "named",
-        }
-    ],
-    outputs: [
+            defaultList: 1,
+        },
         {
-            id: "output",
-            name: "Outputs",
-            description: "The outputs to the code.",
-            tooltip: "The outputs to the code. They are set by setting a property on the \"outputs\" global variable.",
-            icon: ArrowBigRightLine,
-            listMode: "named",
-        }
-    ],
+            id: "code",
+            description: "The JavaScript code that will be executed. Inputs are available under the \"inputs\" global variable. Outputs are set by setting a property on the \"outputs\" global variable.",
+            tooltip: "The JavaScript code that will be executed. Inputs are available under the \"inputs\" global variable. Outputs are set by setting a property on the \"outputs\" global variable.",
+            icon: Code,
+            allowedModes: ["config", "handle"],
+            defaultMode: "config",
+            renderConfiguration: ({ inputId }) => {
 
-    defaultState: {
-        code: "",
-    },
+                const [value, setValue] = useInputValue(null, inputId)
 
-    renderNode: ({ state, listHandles, alignHandles }) => {
-        return (
-            <Group noWrap position="apart">
-                <ListHandlesNodeContent
-                    handleName="input"
-                    listHandles={listHandles}
-                    alignHandles={alignHandles}
-                    state={state}
-                    arrowSide="in"
-                    emptyMessage="No inputs"
-                    stateKey="inputLabels"
-                />
-                <Divider orientation="vertical" />
-                <ListHandlesNodeContent
-                    handleName="output"
-                    listHandles={listHandles}
-                    alignHandles={alignHandles}
-                    state={state}
-                    arrowSide="out"
-                    emptyMessage="No outputs"
-                    stateKey="outputLabels"
-                />
-            </Group>
-        )
-    },
-
-    configuration: ({ state, setState, listHandles, maximized }) => {
-
-        return (
-            <ControlStack>
-                <SimpleGrid cols={maximized ? 2 : 1} spacing="lg">
-                    <ListHandlesControl
-                        handleName="input"
-                        listHandles={listHandles}
-                        state={state}
-                        setState={setState}
-                        controlTitle="Inputs"
-                        controlInfo="The inputs to the code."
-                        addLabel="Add Input"
-                        inputPlaceholder="Input Name"
-                        stateKey="inputLabels"
-                    />
-                    <ListHandlesControl
-                        handleName="output"
-                        listHandles={listHandles}
-                        state={state}
-                        setState={setState}
-                        controlTitle="Outputs"
-                        controlInfo="The outputs to the code."
-                        addLabel="Add Output"
-                        inputPlaceholder="Output Name"
-                        stateKey="outputLabels"
-                    />
-                </SimpleGrid>
-
-                <Control>
-                    <ControlLabel info="The code that will be executed.">
-                        Code
-                    </ControlLabel>
+                return (
                     <Box sx={codeEditorStyle}>
                         <CodeEditor
-                            placeholder="const firstInput = inputs[0];"
-                            value={state.code}
-                            onValueChange={code => setState({ code })}
+                            placeholder="outputs.sum = inputs.a + inputs.b"
+                            value={value ?? ""}
+                            onValueChange={setValue}
                             highlight={code => hljs.highlight(code, { language: "js" }).value}
                             padding={10}
                             style={{
@@ -114,11 +52,21 @@ export default {
                             }}
                         />
                     </Box>
-                </Control>
-            </ControlStack>
-        )
-    },
-
+                )
+            },
+        }
+    ],
+    outputs: [
+        {
+            id: "output",
+            name: "Output",
+            description: "The outputs to the code.",
+            tooltip: "The outputs to the code. They are set by setting a property on the \"outputs\" global variable.",
+            icon: ArrowBigRightLine,
+            listMode: "named",
+            defaultList: 1,
+        },
+    ],
 }
 
 

@@ -16,7 +16,7 @@ export default function HandleTooltip({ id, label, show, showSuggestions }) {
     const { type, definition } = useHandleDefinition(null, id)
     const currentlyConnecting = useIsNodeConnecting()
 
-    label ??= definition.name || formatHandleName(id)
+    label ||= definition.name || formatHandleName(id)
 
     const rf = useReactFlow()
     const nodeId = useNodeId()

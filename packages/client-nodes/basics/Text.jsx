@@ -11,7 +11,9 @@ export default {
     name: "Text",
     description: "Just a plain ol' text.",
     icon: AlphabetLatin,
-    badge: "Text",
+
+    tags: ["Text", "Basics"],
+    showMainTag: false,
 
     inputs: [],
     outputs: [
@@ -20,12 +22,9 @@ export default {
             name: "Text",
             description: "The text.",
             tooltip: "The text.",
+            icon: AlphabetLatin,
         }
     ],
-
-    defaultState: {
-        $: "",
-    },
 
     renderCard: false,
     renderName: false,

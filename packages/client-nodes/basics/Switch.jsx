@@ -1,5 +1,6 @@
+import { Box, Switch } from "@mantine/core"
 import { CircuitSwitchOpen } from "tabler-icons-react"
-import { Center, Switch } from "@mantine/core"
+import { useInternalState } from "../hooks/nodes"
 
 export default {
     id: "basic:Switch",
@@ -7,21 +8,36 @@ export default {
     description: "Just on or off. True or false.",
     icon: CircuitSwitchOpen,
 
+    tags: ["Basics"],
+    showMainTag: false,
+
     inputs: [],
-    outputs: ["$"],
+    outputs: [
+        {
+            id: "$",
+            name: "True / False",
+            description: "The switch's value.",
+            tooltip: "The switch's value.",
+            icon: CircuitSwitchOpen,
+        }
+    ],
 
     defaultState: { $: false },
 
-    renderNode: ({ state, setState, alignHandles }) => {
-        return (
-            <Center ref={el => alignHandles("$", el)}>
-                <Switch
-                    color="green"
-                    mt={4}
-                    checked={state.$ ?? false}
-                    onChange={event => setState({ $: event.currentTarget.checked })}
-                />
-            </Center>
-        )
+    renderName: false,
+    renderCard: false,
+
+    renderContent: () => {
+        const [state, setState] = useInternalState()
+        return <Box p="md">
+            <Switch
+                checked={state.$ ?? false}
+                onChange={event => setState({ $: event.currentTarget.checked })}
+                color="green"
+                size="lg"
+                onLabel="ON"
+                offLabel="OFF"
+            />
+        </Box>
     },
 }

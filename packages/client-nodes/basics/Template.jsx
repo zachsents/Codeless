@@ -1,5 +1,5 @@
-import { Template } from "tabler-icons-react"
-import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
+import { AlphabetLatin, SquareX, Template } from "tabler-icons-react"
+import TextAreaControl from "../components/TextAreaControl"
 
 
 export default {
@@ -7,49 +7,36 @@ export default {
     name: "Fill Template",
     description: "Inserts values into a template.",
     icon: Template,
-    badge: "Text",
+
+    tags: ["Text"],
 
     inputs: [
-        "template",
         {
-            name: "data",
-            list: true,
+            id: "template",
+            description: "The template to fill. Values to be substituted are placed inside of curly braces.\ne.g. Hello {FirstName}, your email is {Email}.",
+            tooltip: "The template to fill. Values to be substituted are placed inside of curly braces.\ne.g. Hello {FirstName}, your email is {Email}.",
+            icon: Template,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            renderConfiguration: TextAreaControl,
+        },
+        {
+            id: "data",
+            name: "Substitution",
+            description: "The values to substitute into the template.",
+            tooltip: "The values to substitute into the template.",
+            icon: SquareX,
+            listMode: "named",
+            defaultList: 1,
+        },
+    ],
+    outputs: [
+        {
+            id: "result",
+            name: "Filled Template",
+            description: "The template with the values substituted.",
+            tooltip: "The template with the values substituted.",
+            icon: AlphabetLatin,
         }
     ],
-    outputs: ["text"],
-
-    defaultState: {
-        dataLabels: [],
-    },
-
-    renderNode: ({ state, alignHandles, listHandles }) => {
-
-        alignHandles("template")
-
-        return <ListHandlesNodeContent
-            handleName="data"
-            listHandles={listHandles}
-            alignHandles={alignHandles}
-            state={state}
-            arrowSide="in"
-            emptyMessage="No variables"
-        />
-    },
-
-    configuration: ({ state, setState, listHandles }) => {
-        return (
-            <ControlStack>
-                <ListHandlesControl
-                    handleName="data"
-                    listHandles={listHandles}
-                    state={state}
-                    setState={setState}
-                    controlTitle="Variable Names"
-                    controlInfo="The names of the variables in the template. They will be filled in spots surrounded with curly braces. e.g. {FirstName}, {Email}"
-                    addLabel="Add Variable"
-                    inputPlaceholder="Variable Name"
-                />
-            </ControlStack>
-        )
-    }
 }
