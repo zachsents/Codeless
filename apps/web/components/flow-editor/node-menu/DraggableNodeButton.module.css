@@ -1,0 +1,8 @@
+.button {
+    padding: 0.25em 0.5em;
+    background: white;
+    border-radius: var(--mantine-radius-sm);
+    cursor: grab;
+    border-width: 2px;
+    border-style: solid;
+}

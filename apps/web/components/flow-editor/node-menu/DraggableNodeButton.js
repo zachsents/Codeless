@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { TbPin, TbPinnedOff } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
+import styles from "./DraggableNodeButton.module.css"
 
 
 export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin }) {
@@ -39,12 +40,12 @@ export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin
             style={resetting && { x: 0, y: 0 }}
         >
             {/* This needs to be a child of the motion.div above for the tap event to be cancelled by the drag event */}
-            <motion.div onTap={() => addNodeAtCenter(rf, id)}>
-                <Box px="0.5em" py="0.25em" bg="white" pos="relative" sx={{
-                    border: `2px solid ${mainColor}`,
-                    borderRadius: theme.radius.sm,
-                    cursor: "grab",
-                }}>
+            <Box pos="relative">
+                <motion.div
+                    onTap={() => addNodeAtCenter(rf, id)}
+                    className={styles.button}
+                    style={{ borderColor: mainColor }}
+                >
                     <Group position="apart">
                         <Group spacing="0.5em" >
                             <node.icon size="1.2em" color={mainColor} />
@@ -57,23 +58,23 @@ export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin
                                 {node.tags[0]}
                             </Text>}
                     </Group>
+                </motion.div>
 
-                    {!dragging &&
-                        <Center p={8} pos="absolute" right={0} top="50%" sx={{ transform: "translate(100%, -50%)" }}>
-                            {pinned ?
-                                <Tooltip label="Unpin" position="right">
-                                    <ActionIcon radius="sm" size="sm" onClick={() => onUnpin?.(id)}>
-                                        <TbPinnedOff color={theme.colors.gray[theme.primaryShade.light]} />
-                                    </ActionIcon>
-                                </Tooltip> :
-                                <Tooltip label="Pin" position="right">
-                                    <ActionIcon radius="sm" size="sm" onClick={() => onPin?.(id)}>
-                                        <TbPin color={theme.colors.gray[theme.primaryShade.light]} />
-                                    </ActionIcon>
-                                </Tooltip>}
-                        </Center>}
-                </Box>
-            </motion.div>
+                {!dragging &&
+                    <Center p={8} pos="absolute" right={0} top="50%" sx={{ transform: "translate(100%, -50%)" }}>
+                        {pinned ?
+                            <Tooltip label="Unpin" position="right">
+                                <ActionIcon radius="sm" size="sm" onClick={() => onUnpin?.(id)}>
+                                    <TbPinnedOff color={theme.colors.gray[theme.primaryShade.light]} />
+                                </ActionIcon>
+                            </Tooltip> :
+                            <Tooltip label="Pin" position="right">
+                                <ActionIcon radius="sm" size="sm" onClick={() => onPin?.(id)}>
+                                    <TbPin color={theme.colors.gray[theme.primaryShade.light]} />
+                                </ActionIcon>
+                            </Tooltip>}
+                    </Center>}
+            </Box>
         </motion.div>
     )
 }
