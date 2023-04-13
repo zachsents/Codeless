@@ -124,12 +124,12 @@ export default function FlowCard({ flow }) {
                                             </Box> */}
 
                                             {flow?.published && <Group spacing="xs">
-                                                {TriggerNodeDefinitions[flow.trigger]?.controls?.map((control, i) =>
+                                                {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
                                                     <FlowControlButton
                                                         {...control}
                                                         appId={appId}
                                                         flow={flow}
-                                                        key={i}
+                                                        key={control.id}
                                                     />
                                                 )}
                                             </Group>}

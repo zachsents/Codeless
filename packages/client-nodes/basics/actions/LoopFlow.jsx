@@ -23,8 +23,8 @@ export default {
         {
             id: "flow",
             description: "The flow to run. If used as a handle, the flow ID must be provided.",
-            allowedModes: ["config", "handle"],
             tooltip: "The flow to run. If used as a handle, the flow ID must be provided.",
+            allowedModes: ["config", "handle"],
             defaultMode: "config",
             icon: ChartDots3,
             renderConfiguration: OtherFlowsControl,

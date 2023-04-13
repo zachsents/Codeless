@@ -1,29 +1,48 @@
-import { useState } from "react"
-import { Check, MoodSad } from "tabler-icons-react"
-import LinkIcon from "./LinkIcon"
+import { ActionIcon, Button, Tooltip } from "@mantine/core"
+import { useEffect, useState } from "react"
+import { TbCheck, TbMoodSad } from "react-icons/tb"
+import { useQuery } from "react-query"
 
 
-export default function FlowControlButton({ icon, label, onClick, flow }) {
+export default function FlowControlButton({ flow, appId, id, label, icon, small, showStatus, onActivate, bigProps = {}, smallProps = {}, iconSize = "1.2em" }) {
 
-    const [loading, setLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
-    const [error, setError] = useState(false)
+    const { isLoading, isError, isSuccess, refetch } = useQuery({
+        queryKey: ["flowControl", id, flow.id],
+        queryFn: () => onActivate({ flow, appId }),
+        enabled: false,
+        retry: false,
+    })
 
-    const Icon = success ? Check : error ? MoodSad : icon
+    // timeout to show status -- starts out as undefined so that it doesn't show on first render
+    const [currentlyShowingStatus, setCurrentlyShowingStatus] = useState()
+    useEffect(() => {
+        if ((isSuccess || isError) && currentlyShowingStatus === false) {
+            setCurrentlyShowingStatus(true)
+            setTimeout(() => setCurrentlyShowingStatus(false), 2000)
+        }
+        else
+            setCurrentlyShowingStatus(false)
+    }, [isSuccess, isError])
 
-    return (
-        <LinkIcon
-            label={label}
-            onClick={success || error ? undefined : () => onClick({
-                flow,
-                loading, setLoading,
-                success, setSuccess,
-                error, setError,
-            })}
-            loading={loading}
-            color={success ? "green" : error ? "red" : "gray"}
+
+    const Icon = showStatus && currentlyShowingStatus ? (isSuccess ? TbCheck : isError ? TbMoodSad : icon) : icon
+    const color = showStatus && currentlyShowingStatus ? (isSuccess ? "green" : isError ? "red" : "gray") : "gray"
+
+    return small ?
+        <Tooltip label={label}>
+            <ActionIcon
+                onClick={() => refetch()}
+                color={color} size="lg" variant="light" loading={isLoading}
+                {...smallProps}
+            >
+                <Icon size={iconSize} />
+            </ActionIcon>
+        </Tooltip> :
+        <Button
+            onClick={() => refetch()}
+            color={color} size="sm" variant="light" leftIcon={<Icon size={iconSize} />} loading={isLoading}
+            {...bigProps}
         >
-            <Icon fontSize={18} size={18} />
-        </LinkIcon>
-    )
+            {label}
+        </Button>
 }

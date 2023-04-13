@@ -2,6 +2,18 @@ import { Square } from "tabler-icons-react"
 import TextControl from "./components/TextControl"
 import { useTypeDefinition } from "./hooks/nodes"
 
+
+/**
+ * @typedef FlowControl
+ * @property {string} id
+ * @property {string} label If small is true, this will be a tooltip. Otherwise, it will be the button text.
+ * @property {React.ComponentType} icon
+ * @property {boolean} small If true, the control will be rendered as an ActionIcon. Otherwise, it will be rendered as a Button.
+ * @property {boolean} showStatus If true, the control will show a status indicator.
+ * @property {({ flow: Object, appId: string }) => Promise | void} onActivate
+ */
+
+
 /**
  * @typedef NodeTypeDefinition
  * @property {string} id Unique node type ID. Convention is to prefix with the package name, e.g. "package:NodeName"
@@ -31,6 +43,7 @@ import { useTypeDefinition } from "./hooks/nodes"
  * @property {boolean} renderCard If true, the node will be rendered inside a Card component. If false, the node will be
  * rendered inside a div.
  * @property {(props: object) => void} [useNodePresent] Custom hook that is called when the node is present.
+ * @property {FlowControl[]} [flowControls] List of controls that are displayed in the header of the flow editor and on the flow card.
  */
 
 
@@ -116,11 +129,6 @@ export default {
     tags: [],
     showMainTag: true,
 
-    // Other
-    trigger: false,
-    creatable: true,
-    deletable: true,
-
     // Integrations
     requiredIntegrations: [],
 
@@ -137,4 +145,10 @@ export default {
     renderContent: false,
     renderCard: true,
     useNodePresent: undefined,
+
+    // Other
+    trigger: false,
+    creatable: true,
+    deletable: true,
+    flowControls: [],
 }

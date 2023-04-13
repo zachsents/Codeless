@@ -75,7 +75,7 @@ export default function NodeConfig({ node }) {
                             <Title order={3}>{nodeType.name}</Title>
                         </Group>
 
-                        {node.id == "trigger" &&
+                        {nodeType.trigger &&
                             <Group>
                                 <Badge>Trigger</Badge>
                             </Group>}

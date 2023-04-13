@@ -5,8 +5,10 @@ import { TbArrowLeft, TbCalendar, TbClockPlay, TbLayoutList, TbRun } from "react
 
 import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
 import { useState } from "react"
-import { useFlowContext } from "../../../modules/context"
+import { useFlowContext } from "@web/modules/context"
 import Breadcrumbs from "./Breadcrumbs"
+import { TriggerNodeDefinitions } from "@minus/client-nodes"
+import FlowControlButton from "@web/components/FlowControlButton"
 
 
 export default function Header() {
@@ -40,15 +42,23 @@ export default function Header() {
                     <Breadcrumbs />
                 </Group>
                 <Group spacing="xl">
+                    {/* Flow Controls */}
                     <Group>
-                        <ActionIcon variant="light" size="xl">
-                            <TbRun size={24} />
-                        </ActionIcon>
-                        <ActionIcon variant="light" size="xl">
-                            <TbCalendar size={24} />
-                        </ActionIcon>
+                        {flow?.published && TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
+                            <FlowControlButton
+                                {...control}
+                                appId={appId}
+                                flow={flow}
+                                smallProps={{ size: "xl" }}
+                                iconSize="1.5em"
+                                key={control.id}
+                            />
+                        )}
                     </Group>
+
                     <Divider orientation="vertical" />
+
+                    {/* Publishing */}
                     {isPublishing ?
                         <Group>
                             <Loader size="sm" />
@@ -68,7 +78,10 @@ export default function Header() {
                                 onChange={event => handlePublishChange(event.currentTarget.checked)}
                             />
                         </Group>}
+
                     <Divider orientation="vertical" />
+
+                    {/* Run Replay */}
                     <Button variant="light" size="md" leftIcon={<TbClockPlay size={24} />}>
                         Replay
                     </Button>

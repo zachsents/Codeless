@@ -1,7 +1,8 @@
 import { Title } from '@mantine/core'
 import { openContextModal } from "@mantine/modals"
-import { Run, Clock } from "tabler-icons-react"
 import { runFlow } from "@minus/client-sdk"
+import { TbCalendar, TbRun } from 'react-icons/tb'
+import { Run } from "tabler-icons-react"
 
 
 export default {
@@ -26,62 +27,48 @@ export default {
     trigger: true,
     deletable: false,
 
-    controls: [
+    flowControls: [
         {
+            id: "run-now",
             label: "Run Now",
-            icon: Run,
+            icon: TbRun,
+            small: true,
+            showStatus: true,
 
-            onClick: async ({ flow, setLoading, setSuccess, setError }) => {
+            onActivate: async ({ flow }) => {
 
-                setLoading(true)
-                console.log(`Running "${flow.name}"...`)
+                console.debug(`Running "${flow.name}"...`)
 
-                try {
-                    var { runId, finished } = await runFlow(flow.id, null)
+                const { runId, finished } = await runFlow(flow.id, null)
+                console.debug(`Created run ${runId}`)
 
-                    console.log(`Created run ${runId}`)
+                const flowRun = await finished
+                console.debug("Entire Run:", flowRun)
 
-                    const flowRun = await finished
-
-                    if (Object.keys(flowRun.errors).length > 0) {
-                        setError(true)
-                        console.log("Finished with errors.")
-                    }
-                    else {
-                        setSuccess(true)
-                        console.log("Finished successfully.")
-                    }
-
-                    if (flowRun.returns.logs) {
-                        console.groupCollapsed("Run Logs")
-                        flowRun.returns.logs.forEach(log => console.log(log))
-                        console.groupEnd()
-                    }
-
-                    console.debug(flowRun)
+                if (flowRun.returns.logs) {
+                    console.groupCollapsed("Run Logs")
+                    flowRun.returns.logs.forEach(log => console.log(log))
+                    console.groupEnd()
                 }
-                catch (err) {
-                    console.error("Run failed")
-                    console.error(err)
-                    setError(true)
-                }
-                finally {
-                    setLoading(false)
-                    setTimeout(() => {
-                        setError(false)
-                        setSuccess(false)
-                    }, 2000)
+
+                switch (flowRun.status) {
+                    case "finished-with-errors":
+                    case "failed":
+                        throw new Error(flowRun.status)
                 }
             }
         },
         {
+            id: "schedule-flow",
             label: "Run Later",
-            icon: Clock,
+            icon: TbCalendar,
+            small: true,
+            showStatus: false,
 
-            onClick: ({ flow }) => openContextModal({
+            onActivate: ({ flow }) => openContextModal({
                 modal: "ScheduleFlow",
                 innerProps: { flowId: flow.id },
-                title: <Title order={3}>Schedule "{flow.name}"</Title>,
+                title: <Title order={4}>Schedule "{flow.name}"</Title>,
                 size: "lg",
             })
         },
