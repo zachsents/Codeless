@@ -75,13 +75,10 @@ export default function NodeConfig({ node }) {
                             <Title order={3}>{nodeType.name}</Title>
                         </Group>
 
-                        <Group>
-                            {nodeType.badge &&
-                                <Badge color={nodeType.color ?? "gray"}>
-                                    {nodeType.badge}
-                                </Badge>}
-                            {node.id == "trigger" && <Badge>Trigger</Badge>}
-                        </Group>
+                        {node.id == "trigger" &&
+                            <Group>
+                                <Badge>Trigger</Badge>
+                            </Group>}
                     </Stack>
 
                     <ActionIcon radius="md" onClick={() => deselectNode(rf, node.id)}>
