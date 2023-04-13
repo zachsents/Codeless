@@ -5,6 +5,11 @@ import { useReactFlow, useStore } from "reactflow"
 import { NodeDefinitions } from ".."
 import produce from "immer"
 import { useNodeSuggestions } from "@minus/client-sdk"
+import { customAlphabet } from "nanoid"
+import { alphanumeric } from "nanoid-dictionary"
+
+
+const generateId = customAlphabet(alphanumeric, 10)
 
 
 const NodeContext = createContext()
@@ -307,7 +312,15 @@ export function useListHandle(nodeId, handleId) {
 
     // set empty list as default
     useEffect(() => {
-        list === undefined && setList([])
+        if (list === undefined) {
+            if (handleDef.defaultList != null) {
+                const defaultList = typeof handleDef.defaultList === "number" ?
+                    Array(handleDef.defaultList).fill().map(() => ({ id: generateId() })) :
+                    handleDef.defaultList.map(item => ({ id: generateId(), ...item }))
+                setList(defaultList)
+            }
+            else setList([])
+        }
     }, [])
 
     return [list, setList]

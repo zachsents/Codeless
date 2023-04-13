@@ -54,6 +54,8 @@ import { useTypeDefinition } from "./hooks/nodes"
  * @property {string} description
  * @property {false | "unnamed" | "named"} listMode If false, the input will have a single handle. If "unnamed", the input will have
  * multiple handles with no names. If "named", the input will have multiple handles with names.
+ * @property {number | Object[]} [defaultList] Default list of items for the input. If a number is provided, the input will have that many unnamed handles. An ID will be added to each item.
+ * @property {React.ReactNode} [tooltip] Tooltip that is displayed when the user hovers over the input's info icon.
  * @property {boolean} showHandleIcon If true, the handle icon will be displayed.
  * @property {React.ComponentType} icon Try to use a Tabler icon if applicable.
  */
@@ -72,7 +74,6 @@ import { useTypeDefinition } from "./hooks/nodes"
  * can be used as a handle. If "config" is included, the input can be used as a config field. If both are included, the input
  * can be used as either a handle and a config. Default is ["handle", "config"].
  * @property {NodeInputMode} defaultMode Default mode for the input. Default is "handle".
- * @property {React.ReactNode} [tooltip] Tooltip that is displayed when the user hovers over the input's info icon.
  * @property {(props: object) => React.ReactNode} renderConfiguration Function that returns a React node that is rendered as the input's configuration.
  */
 
@@ -90,12 +91,13 @@ import { useTypeDefinition } from "./hooks/nodes"
 export const DefaultInput = {
     id: "default",
     description: "No description.",
+    tooltip: null,
     listMode: false,
+    defaultList: [],
     showHandleIcon: true,
     required: false,
     allowedModes: ["handle"],
     defaultMode: "handle",
-    tooltip: null,
     renderConfiguration: TextControl,
 }
 
@@ -106,7 +108,9 @@ export const DefaultInput = {
 export const DefaultOutput = {
     id: "default",
     description: "No description.",
+    tooltip: null,
     listMode: false,
+    defaultList: [],
     showHandleIcon: true,
     defaultShowing: true,
 }

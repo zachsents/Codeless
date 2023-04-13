@@ -7,7 +7,7 @@ export default {
     name: "Equals",
     description: "Tests if things are equal.",
     icon: Equal,
-    
+
     inputs: ["_a", "_b"],
     outputs: [
         {
