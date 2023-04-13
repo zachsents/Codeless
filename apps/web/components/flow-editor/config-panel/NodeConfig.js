@@ -1,18 +1,26 @@
-import { useReactFlow } from "reactflow"
-import { motion } from "framer-motion"
 import {
-    Card, Stack, Group, Tooltip, ActionIcon, ThemeIcon, Title, Badge, Accordion, Button, Flex
+    Accordion,
+    ActionIcon,
+    Badge,
+    Button,
+    Card,
+    Flex,
+    Group,
+    Stack,
+    ThemeIcon, Title,
+    Tooltip
 } from "@mantine/core"
+import { motion } from "framer-motion"
 import { TbChevronLeft, TbChevronRight, TbExternalLink, TbX } from "react-icons/tb"
+import { useReactFlow } from "reactflow"
 
-import { useConfigStore } from "./config-store"
 import { useAppContext } from "../../../modules/context"
-import { useAppId } from "../../../modules/hooks"
 import { deselectNode, getNodeIntegrationsStatus, getNodeType } from "../../../modules/graph-util"
-import ProblemsSection from "./ProblemsSection"
-import OutputsSection from "./OutputsSection"
-import OptionsSection from "./OptionsSection"
+import { useAppId } from "../../../modules/hooks"
 import IntegrationAlert from "./IntegrationAlert"
+import OutputsSection from "./OutputsSection"
+import ProblemsSection from "./ProblemsSection"
+import { useConfigStore } from "./config-store"
 
 
 export default function NodeConfig({ node }) {
@@ -111,10 +119,6 @@ export default function NodeConfig({ node }) {
                     onChange={val => setAccordionValue(node.id, val)}
                     styles={accordionStyles}
                 >
-                    {/* Options */}
-                    {hasConfiguration &&
-                        <OptionsSection nodeId={node.id} active={accordionValue == "options"} />}
-
                     {/* Outputs */}
                     {nodeType.outputs?.length > 0 &&
                         <OutputsSection nodeId={node.id} active={accordionValue == "testing"} />}

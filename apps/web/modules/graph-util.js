@@ -1,6 +1,6 @@
 import { useInterval } from "@mantine/hooks"
 import { produce } from "immer"
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react"
 import { applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
 import shortUUID from "short-uuid"
 import shallow from "zustand/shallow"
@@ -8,104 +8,7 @@ import shallow from "zustand/shallow"
 import { Group, Text, Title } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
 import { Integrations, NodeDefinitions } from "@minus/client-nodes"
-import { useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
-import { HandleDirection } from "@web/components/flow-editor/node/handle"
-import { useAppId, useFlowId } from "./hooks"
-
-
-export function useNodeState(nodeId, defaultState) {
-
-    const rf = useReactFlow()
-    const state = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.state)
-
-    const setState = useCallback((changes, overwrite = false) => rf.setNodes(nodes =>
-        produce(nodes, draft => {
-            const node = draft.find(node => node.id == nodeId)
-
-            if (!node) {
-                console.log("Couldn't find node:", nodeId)
-                return
-            }
-
-            node.data ??= { state: {} }
-            node.data.state ??= {}
-
-            node.data.state = {
-                ...(!overwrite && node.data.state),
-                ...changes,
-            }
-        })
-    ), [rf])
-
-    // set default state
-    useEffect(() => {
-        if (defaultState) {
-            setState(produce(defaultState, draft => {
-                Object.keys(draft).forEach(key => {
-                    if (state?.[key] !== undefined)
-                        delete draft[key]
-                })
-            }))
-        }
-    }, [defaultState])
-
-    return [state, setState]
-}
-
-
-export function useNodeData(nodeId) {
-
-    const rf = useReactFlow()
-    const data = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data)
-
-    const setData = useCallback(changes => rf.setNodes(nodes =>
-        produce(nodes, draft => {
-            const node = draft.find(node => node.id == nodeId)
-
-            if (!node) {
-                console.log("Couldn't find node:", nodeId)
-                return
-            }
-
-            node.data ??= { state: {} }
-
-            node.data = {
-                ...node.data,
-                ...changes,
-            }
-        })
-    ), [rf])
-
-    return [data, setData]
-}
-
-
-export function useNodeDisplayProps(id) {
-
-    const rf = useReactFlow()
-
-    const appId = useAppId()
-    const flowId = useFlowId()
-
-    const node = rf.getNode(id)
-    const nodeType = getNodeType(node)
-
-    const [state, setState] = useNodeState(id, nodeType?.defaultState)
-    const [inputConnections, outputConnections] = useNodeConnections(id, { nodeType: nodeType ?? null })
-    const listHandles = useListHandles(id)
-
-    return {
-        appId,
-        flowId,
-        state,
-        setState,
-        defaultState: nodeType?.defaultState,
-        connections: { ...inputConnections, ...outputConnections },
-        inputConnections,
-        outputConnections,
-        listHandles,
-    }
-}
+import { HandleType, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 
 
 export function useNodeConnections(id) {
@@ -137,76 +40,6 @@ export function useNodeConnections(id) {
 }
 
 
-export function useListHandles(nodeId) {
-
-    const rf = useReactFlow()
-    const listHandles = useStore(s => Object.fromEntries(s.nodeInternals)[nodeId]?.data?.listHandles)
-
-    const modifyListHandles = mutator => rf.setNodes(nodes =>
-        produce(nodes, draft => {
-            const node = draft.find(node => node.id == nodeId)
-
-            if (!node) {
-                console.log("Couldn't find node:", nodeId)
-                return
-            }
-
-            node.data ??= { listHandles: {} }
-            node.data.listHandles ??= {}
-
-            mutator?.(node.data?.listHandles)
-        })
-    )
-
-    return {
-        handles: listHandles,
-        modifyListHandles,
-        add: handle => {
-            modifyListHandles(draft => {
-                draft[handle] ??= 0
-                draft[handle]++
-            })
-        },
-        remove: (handle, index) => {
-            modifyListHandles(draft => {
-                draft[handle] ??= 1
-                draft[handle]--
-            })
-
-            // fix edges
-            rf.setEdges(produce(draft => {
-                // find related edges
-                const listEdges = draft.filter(edge =>
-                    (edge.target == nodeId && parseListHandle(edge.targetHandle).name == handle) ||
-                    (edge.source == nodeId && parseListHandle(edge.sourceHandle).name == handle)
-                )
-                const connectedEdge = listEdges.find(edge =>
-                    parseListHandle(edge.target == nodeId ? edge.targetHandle : edge.sourceHandle).index == index
-                )
-
-                // remove connected edge
-                connectedEdge &&
-                    draft.splice(draft.indexOf(connectedEdge), 1)
-
-                // shift up edges beneath the removed one
-                listEdges.forEach(edge => {
-                    const handleKey = edge.target == nodeId ? "targetHandle" : "sourceHandle"
-                    const { name, index: currentIndex } = parseListHandle(edge[handleKey])
-
-                    if (currentIndex > index) {
-                        edge[handleKey] = `${name}.${currentIndex - 1}`
-                        edge.id = edge.id.replace(
-                            `${name}.${currentIndex}`,
-                            `${name}.${currentIndex - 1}`
-                        )
-                    }
-                })
-            }))
-        }
-    }
-}
-
-
 export function useConnectedEdges(id) {
     return useStore(
         s => s.edges.filter(edge => edge.target == id || edge.source == id),
@@ -218,6 +51,14 @@ export function useConnectedEdges(id) {
 }
 
 
+/**
+ * Hook that provides a function to update the rendering of
+ * a node.
+ *
+ * @export
+ * @param {string} [id]
+ * @return {() => void} 
+ */
 export function useUpdateNode(id) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     id ??= useNodeId()
@@ -226,9 +67,22 @@ export function useUpdateNode(id) {
 }
 
 
+/**
+ * Hook that smoothly updates a node's rendering at a given interval.
+ * Optionally, the interval can be stopped after a given timeout. This
+ * is useful when a node or handle transitions its size or position.
+ *
+ * @export
+ * @param {string} [id]
+ * @param {*[]} [deps=[]]
+ * @param {Object} options
+ * @param {number} [options.interval=20]
+ * @param {number} [options.timeout]
+ * @return {() => void} 
+ */
 export function useSmoothlyUpdateNode(id, deps = [], {
     interval = 20,
-    timeout = null,
+    timeout,
 } = {}) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     id ??= useNodeId()
@@ -254,41 +108,16 @@ export function useSmoothlyUpdateNode(id, deps = [], {
 }
 
 
-export function useNodeMinHeight() {
-    const stackRefs = useRef([])
-    const addRef = index => el => stackRefs.current[index] = (el?.offsetHeight ?? 0)
-    return [
-        Math.max(...stackRefs.current),
-        addRef
-    ]
-}
-
-
-export function useHandleAlignment() {
-    // const [handleAlignments, setHandleAlignments] = useSetState({})
-    // const headerRef = useRef()
-
-    // const alignHandles = (handleNames, el = "header") => {
-
-    //     // if (el == null)
-    //     //     return
-    //     // const alignEl = el === "header" ? headerRef.current : el
-
-    //     // const alignHandle = handleName => {
-    //     //     if (handleAlignments[handleName] != alignEl)
-    //     //         setHandleAlignments({ [handleName]: alignEl })
-    //     // }
-
-    //     // (typeof handleNames === "string" ? [handleNames] : handleNames)
-    //     //     .forEach(alignHandle)
-    // }
-
-    // return [handleAlignments, alignHandles, headerRef]
-    return []
-}
-
-
+/**
+ * Hook that provides the position of a node in the viewport.
+ *
+ * @export
+ * @param {string} [id]
+ * @return {{ screen: DOMRect, viewport: Object }} 
+ */
 export function useNodeScreenPosition(id) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    id ??= useNodeId()
 
     useViewport()
 
@@ -319,18 +148,29 @@ export function useNodeScreenPosition(id) {
 }
 
 
-export function useNodeDragging(id) {
-    const dragging = useStore(s => Object.fromEntries(s.nodeInternals)[id]?.dragging)
-    return dragging
-}
-
-
+/**
+ * Hook that provides logic for snapping nodes to other nodes
+ * horizontally.
+ *
+ * @export
+ * @param {string} [id]
+ * @param {number} x
+ * @param {number} y
+ * @param {Object} [options]
+ * @param {import("reactflow").ReactFlowInstance} [options.reactFlow]
+ * @param {number} [options.distance=10]
+ * @param {number} [options.horizontalLookaround=500]
+ * @param {string} [options.preventSnappingKey="Shift"]
+ */
 export function useNodeSnapping(id, x, y, {
     reactFlow,
     distance = 10,
     horizontalLookaround = 500,
     preventSnappingKey = "Shift"
 } = {}) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    id ??= useNodeId()
+
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const rf = reactFlow ?? useReactFlow()
 
@@ -407,6 +247,15 @@ export function useNodeSnapping(id, x, y, {
 }
 
 
+/**
+ * Opens the node palette.
+ *
+ * @export
+ * @param {import("reactflow").ReactFlowInstance} rf
+ * @param {Object} [options]
+ * @param {Object} [options.innerProps]
+ * @param {string} [options.subtitle]
+ */
 export function openNodePalette(rf, {
     innerProps = {},
     subtitle,
@@ -591,12 +440,12 @@ export function addNeighborNode(rf, {
     const xOffset = 150
 
     const newNode = createNode(type, {
-        x: direction == HandleDirection.Input ? x - xOffset - 200 : x + width + xOffset,
+        x: direction == HandleType.Input ? x - xOffset - 200 : x + width + xOffset,
         y: y + 2 * (topOffset + 12 - height / 2),
     })
 
     const newEdge = originHandle && handle && (
-        direction == HandleDirection.Input ?
+        direction == HandleType.Input ?
             createEdge(newNode.id, handle, originNodeId, originHandle) :
             createEdge(originNodeId, originHandle, newNode.id, handle)
     )
@@ -614,8 +463,8 @@ export function addNeighborNode(rf, {
 
 export function serializeGraph(nodes = [], edges = []) {
     return JSON.stringify({
-        nodes: nodes.map(node => ({ ...node, state: node.data.state, })),
-        edges
+        nodes,
+        edges,
     })
 }
 
@@ -623,25 +472,6 @@ export function serializeGraph(nodes = [], edges = []) {
 export function deserializeGraph(str = "{}") {
     const { nodes, edges } = JSON.parse(str)
     return { nodes, edges }
-}
-
-
-export function parseListHandle(id) {
-    const [, name, index] = id.match(/(.+?)(?:\.(\d+))?$/) ?? []
-    return {
-        name,
-        index: parseInt(index),
-    }
-}
-
-
-export function longhandHandle(handle) {
-    const handleObj = typeof handle === "string" ? { name: handle } : handle
-
-    handleObj.label ??= formatHandleName(handleObj.name)
-    handleObj.list ??= false
-
-    return handleObj
 }
 
 
@@ -658,10 +488,4 @@ export function formatHandleName(handleId) {
         .match(/[A-Z]?[^A-Z]+/g)
         ?.map(word => word.slice(0, 1).toUpperCase() + word.slice(1))
         .join(" ") ?? ""
-}
-
-
-export function getHandleLabel(nodeTypeId, handleName) {
-    return NodeDefinitions[nodeTypeId].inputs?.map(input => longhandHandle(input))
-        .find(input => input.name == handleName)?.label
 }
