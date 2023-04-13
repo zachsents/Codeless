@@ -357,6 +357,6 @@ export function useOutputShowing(nodeId, outputId) {
  */
 export function useHandleSuggestions(nodeTypeDefId, handleId) {
     nodeTypeDefId ??= useNodeProperty(null, "type")
-    const suggestions = useNodeSuggestions(nodeTypeDefId)
+    const { data: suggestions } = useNodeSuggestions(nodeTypeDefId)
     return suggestions?.[getHandleDefinitionId(handleId)] ?? []
 }
