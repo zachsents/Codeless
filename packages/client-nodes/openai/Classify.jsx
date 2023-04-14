@@ -10,7 +10,7 @@ export default {
     description: "Classifies text as one of the specified categories.",
     icon: SiOpenai,
     color: "dark",
-    badge: "Open AI",
+    tags: ["Open AI"],
 
     inputs: ["text"],
     outputs: ["classification"],

@@ -6,6 +6,8 @@ export default {
     description: "Combine conditions. This AND that AND something else.",
     icon: Ampersand,
 
+    tags: ["Logic", "Operations"],
+
     inputs: [
         {
             id: "input",

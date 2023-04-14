@@ -7,7 +7,7 @@ export default {
     description: "Deletes rows from a table.",
     icon: Table,
     color: "yellow",
-    badge: "tables",
+    tags: ["tables"],
 
     inputs: ["rows"],
     outputs: [],

@@ -6,7 +6,7 @@ export default {
     name: "Text Contains",
     description: "Checks if text contains a value.",
     icon: BracketsContain,
-    badge: "Text",
+    tags: ["Text"],
 
     inputs: ["text", "containedText"],
     outputs: [

@@ -8,7 +8,7 @@ export default {
     description: "Adds a row to a table.",
     icon: TableImport,
     color: "yellow",
-    badge: "Tables",
+    tags: ["Tables"],
 
     inputs: [
         "$table",

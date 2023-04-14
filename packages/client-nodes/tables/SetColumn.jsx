@@ -9,7 +9,7 @@ export default {
     description: "Sets a column's value in a table or row.",
     icon: Table,
     color: "yellow",
-    badge: "Tables",
+    tags: ["Tables"],
 
     inputs: [
         {
@@ -31,7 +31,7 @@ export default {
 
 
     renderNode: ({ state, alignHandles }) => {
-        
+
         alignHandles(["table", "tableOut"])
 
         return (

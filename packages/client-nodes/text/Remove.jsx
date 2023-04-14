@@ -6,7 +6,7 @@ export default {
     name: "Text Remove",
     description: "Replace in text.",
     icon: TextDecrease,
-    badge: "Text",
+    tags: ["Text"],
 
     inputs: [
         "inputText",

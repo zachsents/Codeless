@@ -9,7 +9,7 @@ export default {
     description: "Searches a table for rows matching the configured filters.",
     icon: Table,
     color: "yellow",
-    badge: "Tables",
+    tags: ["Tables"],
 
     inputs: ["$table", "filters",],
     outputs: [

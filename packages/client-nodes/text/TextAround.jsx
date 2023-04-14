@@ -8,7 +8,7 @@ export default {
     name: "Text Around",
     description: "Gets the text surrounding a phrase.",
     icon: Container,
-    badge: "text",
+    tags: ["text"],
 
     inputs: [
         "text",

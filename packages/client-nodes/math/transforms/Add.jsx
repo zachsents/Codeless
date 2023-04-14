@@ -1,12 +1,29 @@
-import { Plus } from 'tabler-icons-react'
+import { ArrowNarrowRight, Equal, Plus } from 'tabler-icons-react'
 
 export default {
     id: "math:Add",
     name: "Add",
     description: "Adds things. (Come up with a better description later)",
     icon: Plus,
-    badge: "Math",
-    
-    inputs: ["_a", "_b"],
-    outputs: ["$"],
+
+    tags: ["Math", "Operations"],
+
+    inputs: [
+        {
+            id: "input",
+            description: "The inputs to add together. Lists are computed element-wise.",
+            tooltip: "The inputs to add together. Lists are computed element-wise.",
+            icon: ArrowNarrowRight,
+            listMode: "unnamed",
+            defaultList: 2,
+        }
+    ],
+    outputs: [
+        {
+            id: "result",
+            description: "The result of the addition.",
+            tooltip: "The result of the addition.",
+            icon: Equal,
+        }
+    ],
 }

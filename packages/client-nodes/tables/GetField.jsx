@@ -9,7 +9,7 @@ export default {
     description: "Gets a specific field from a row or set of rows.",
     icon: Table,
     color: "yellow",
-    badge: "Tables",
+    tags: ["Tables"],
 
     inputs: [
         {

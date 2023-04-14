@@ -10,7 +10,7 @@ export default {
     description: "Rates an aspect of a text input on the specified number scale.",
     icon: SiOpenai,
     color: "dark",
-    badge: "Open AI",
+    tags: ["Open AI"],
 
     inputs: ["text"],
     outputs: ["rating"],

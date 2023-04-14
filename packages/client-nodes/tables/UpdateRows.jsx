@@ -8,7 +8,7 @@ export default {
     description: "Updates rows in a table.",
     icon: TableShortcut,
     color: "yellow",
-    badge: "Tables",
+    tags: ["Tables"],
 
     inputs: [
         "rows",

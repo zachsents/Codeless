@@ -8,7 +8,7 @@ export default {
     name: "Regex",
     description: "Creates a Regex.",
     icon: Regex,
-    badge: "Text",
+    tags: ["Text"],
 
     inputs: [],
     outputs: ["$"],

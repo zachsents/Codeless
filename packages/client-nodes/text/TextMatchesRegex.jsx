@@ -6,7 +6,7 @@ export default {
     name: "Text Matches Regex",
     description: "Checks if text matches Regex.",
     icon: Regex,
-    badge: "Text",
+    tags: ["Text"],
 
     inputs: ["text", "regex"],
     outputs: [

@@ -11,7 +11,7 @@ export default {
     description: "Asks ChatGPT a prompt.",
     icon: SiOpenai,
     color: "dark",
-    badge: "Open AI",
+    tags: ["Open AI"],
 
     inputs: ["prompt"],
     outputs: ["response"],

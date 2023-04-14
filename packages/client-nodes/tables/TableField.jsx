@@ -9,7 +9,7 @@ export default {
     description: "Represents a field from a table. Useful for conditions and filtering involving table values.",
     icon: Table,
     color: "yellow",
-    badge: "tables",
+    tags: ["tables"],
 
     inputs: [],
     outputs: ["$"],
@@ -20,9 +20,9 @@ export default {
 
     renderName: ({ state }) => <Text color="dimmed">
         Table Field:&nbsp;
-        {state.field ? 
-        <Text color="dark">"{state.field}"</Text> : 
-        <Text component="span" color="red">none</Text>}
+        {state.field ?
+            <Text color="dark">"{state.field}"</Text> :
+            <Text component="span" color="red">none</Text>}
     </Text>,
 
     configuration: ({ state, setState }) => {

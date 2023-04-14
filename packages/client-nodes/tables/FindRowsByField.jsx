@@ -9,7 +9,7 @@ export default {
     description: "Searches for rows with a a certain value for the specified field. For more advanced searching, try the Query Rows node.",
     icon: Table,
     color: "yellow",
-    badge: "tables",
+    tags: ["tables"],
 
     inputs: ["$table", "value"],
     outputs: [

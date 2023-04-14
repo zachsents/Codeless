@@ -8,7 +8,7 @@ export default {
     name: "Join List to Text",
     description: "Converts a list into text.",
     icon: AlphabetLatin,
-    badge: "Text",
+    tags: ["Text"],
 
     inputs: ["list"],
     outputs: ["text"],

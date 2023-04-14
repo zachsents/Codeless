@@ -8,7 +8,7 @@ export default {
     name: "Word / Character Count",
     description: "Gives the length of text in either characters or words.",
     icon: AlphabetLatin,
-    badge: "text",
+    tags: ["text"],
 
     inputs: ["text"],
     outputs: ["count"],

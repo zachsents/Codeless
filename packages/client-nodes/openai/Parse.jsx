@@ -8,7 +8,7 @@ export default {
     description: "Parse fields out of text with GPT3.",
     icon: SiOpenai,
     color: "dark",
-    badge: "Open AI",
+    tags: ["Open AI"],
 
     tags: ["ChatGPT"],
 
