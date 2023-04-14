@@ -72,7 +72,7 @@ export default function InputConfig({ id, divider = true }) {
                     </Group>
                 </Group>
 
-                {isConfig && definition.renderConfiguration &&
+                {isConfig && definition.renderConfiguration && !isList &&
                     <Box ml="xl">
                         <definition.renderConfiguration inputId={definition.id} {...displayProps} />
                     </Box>}
