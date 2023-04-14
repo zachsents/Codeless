@@ -8,6 +8,8 @@ export default {
     description: "Tests if things are not equal.",
     icon: EqualNot,
 
+    tags: ["Logic", "Operations"],
+
     inputs: [
         {
             id: "input",

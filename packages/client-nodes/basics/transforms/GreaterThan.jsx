@@ -7,6 +7,8 @@ export default {
     description: "Compares two numbers.",
     icon: ChevronRight,
 
+    tags: ["Logic", "Operations"],
+
     inputs: [
         {
             id: "input",

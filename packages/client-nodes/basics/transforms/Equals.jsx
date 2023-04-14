@@ -6,6 +6,8 @@ export default {
     description: "Tests if things are equal.",
     icon: Equal,
 
+    tags: ["Logic", "Operations"],
+
     inputs: [
         {
             id: "input",

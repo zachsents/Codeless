@@ -8,6 +8,8 @@ export default {
     description: "Negate condition. NOT this.",
     icon: ExclamationMarkOff,
 
+    tags: ["Logic", "Operations"],
+
     inputs: [
         {
             id: "input",

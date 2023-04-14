@@ -8,6 +8,8 @@ export default {
     description: "Combine conditions. This OR that OR something else.",
     icon: LogicOr,
 
+    tags: ["Logic", "Operations"],
+
     inputs: [
         {
             id: "input",
