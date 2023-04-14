@@ -29,3 +29,12 @@
 .cartQuantity.notEmpty {
     opacity: 1 !important;
 }
+
+.pin {
+    opacity: 0.3;
+    transition: opacity 0.1s;
+}
+
+.pin:hover {
+    opacity: 1;
+}

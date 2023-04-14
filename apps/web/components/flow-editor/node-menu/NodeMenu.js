@@ -4,7 +4,7 @@ import { useReactFlow } from "reactflow"
 import { openNodePalette } from "@web/modules/graph-util"
 
 import { useHotkeys } from "@mantine/hooks"
-import { arrayRemove, arrayUnion, updateUser, useCurrentUserRealtime } from "@minus/client-sdk"
+import { arrayRemove, arrayUnion, updateUser, useCurrentUserRealtime, useUserPreferences } from "@minus/client-sdk"
 import { TbDots, TbSearch } from "react-icons/tb"
 import DraggableNodeButton from "./DraggableNodeButton"
 
@@ -26,13 +26,7 @@ export default function NodeMenu() {
     ])
 
     // user preferences
-    const currentUser = useCurrentUserRealtime()
-    const preferences = currentUser?.preferences
-    const setPreference = (key, val) => {
-        updateUser(currentUser.id, {
-            [`preferences.${key}`]: val,
-        })
-    }
+    const [preferences, setPreference] = useUserPreferences()
 
     const showSuggested = preferences?.showSuggested ?? true
     const showPinned = preferences?.showPinned ?? true
@@ -55,7 +49,7 @@ export default function NodeMenu() {
                                 p="xs"
                                 onClick={() => setPreference("showSuggested", !showSuggested)}
                             >
-                                <Text>Suggested</Text>
+                                <Text>Get Started</Text>
                             </Menu.Item>
                             <Menu.Item
                                 closeMenuOnClick={false}
@@ -83,7 +77,7 @@ export default function NodeMenu() {
 
             {showSuggested &&
                 <Stack spacing="sm">
-                    <Text size="xs" lh={0.5} color="dimmed">Suggested</Text>
+                    <Text size="xs" lh={0.5} color="dimmed">Get Started</Text>
 
                     {suggested.filter(sugg => !preferences?.pinned?.includes(sugg))
                         .map(sugg =>

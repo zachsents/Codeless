@@ -16,8 +16,8 @@ export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin
 
     const node = NodeDefinitions[id]
 
-    const mainColor = theme.colors[node.color][theme.primaryShade.light]
-    const dimmedColor = theme.colors[node.color][3]
+    const mainColor = theme.colors[node.color][theme.fn.primaryShade()]
+    // const dimmedColor = theme.colors[node.color][3]
 
     // used to hide the pin icon when dragging
     const [dragging, setDragging] = useState(false)

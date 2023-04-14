@@ -1,13 +1,14 @@
 import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { ActionIcon, Badge, Button, Group, HoverCard, Stack, Text, Title, UnstyledButton, useMantineTheme } from "@mantine/core"
+import { ActionIcon, Badge, Box, Button, Group, HoverCard, Menu, Stack, Text, Title, Tooltip, UnstyledButton, useMantineTheme } from "@mantine/core"
 import { Square } from "tabler-icons-react"
 
 import { addNodeAtCenter, addNodesAtCenter } from "@web/modules/graph-util"
 import Search from "../Search"
 import { useSetState } from "@mantine/hooks"
-import { TbArrowRight, TbCheck, TbMinus, TbPlus } from "react-icons/tb"
+import { TbArrowRight, TbCheck, TbMinus, TbPin, TbPinnedOff, TbPlus } from "react-icons/tb"
 import { CreatableNodeDefinitions } from "@minus/client-nodes"
 import styles from "./NodePalette.module.css"
+import { arrayRemove, arrayUnion, useUserPreferences } from "@minus/client-sdk"
 
 
 const NodeList = Object.values(CreatableNodeDefinitions)
@@ -134,6 +135,15 @@ const NodeTile = forwardRef(({ type, expanded, quantity, onQuantityChange, ...pr
     const mainColor = theme.colors[type.color][theme.fn.primaryShade()]
     const bgColor = type.color === "dark" ? theme.colors.gray[1] : theme.colors[type.color][0]
 
+    // pinning
+    const [preferences, setPreference] = useUserPreferences()
+    const pinned = preferences.pinned?.includes(type.id)
+    const togglePinned = (e) => {
+        e.stopPropagation()
+        setPreference("pinned", pinned ? arrayRemove(type.id) : arrayUnion(type.id))
+    }
+    const PinIcon = pinned ? TbPinnedOff : TbPin
+
     return (
         <UnstyledButton
             className={`${styles.tile} ${expanded ? styles.expanded : ""}`}
@@ -154,6 +164,15 @@ const NodeTile = forwardRef(({ type, expanded, quantity, onQuantityChange, ...pr
                         >
                             {type.name}
                         </Text>
+
+                        <Tooltip label={pinned ? "Unpin" : "Pin"}>
+                            <ActionIcon
+                                onClick={togglePinned}
+                                component="div" radius="sm" size="sm" className={styles.pin}
+                            >
+                                <PinIcon color={theme.colors.gray[theme.fn.primaryShade()]} />
+                            </ActionIcon>
+                        </Tooltip>
                     </Group>
 
                     <QuantityCheckbox value={quantity} onChange={onQuantityChange} />

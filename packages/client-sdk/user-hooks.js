@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useRealtime } from "./firestore-util.js"
-import { getUserRef } from "./user-actions.js"
+import { getUserRef, updateUser } from "./user-actions.js"
 import { auth } from "./firebase-init.js"
 import { onAuthStateChanged } from "firebase/auth"
 import { setDoc } from "firebase/firestore"
@@ -51,4 +51,22 @@ export function useCurrentUser() {
         return onAuthStateChanged(auth, u => setUser(u))
     }, [auth])
     return user
+}
+
+
+/**
+ * Hook that provides the user preferences and a function to set a preference.
+ *
+ * @export
+ * @return {[object, (key: string, val: any) => void]} 
+ */
+export function useUserPreferences() {
+    const currentUser = useCurrentUserRealtime()
+    const preferences = currentUser?.preferences
+    const setPreference = (key, val) => {
+        updateUser(currentUser.id, {
+            [`preferences.${key}`]: val,
+        })
+    }
+    return [preferences ?? {}, setPreference]
 }
