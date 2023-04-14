@@ -8,7 +8,7 @@ import shallow from "zustand/shallow"
 import { Group, Text, Title } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
 import { Integrations, NodeDefinitions } from "@minus/client-nodes"
-import { HandleType, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { HandleType, defaultObject, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 
 
 export function useNodeConnections(id) {
@@ -311,7 +311,7 @@ export function createNode(nodeType, position) {
         id: `${nodeType}_${shortUUID.generate()}`,
         type: nodeType,
         data: {
-            state: {}
+            state: defaultObject(),
         },
         position,
         focusable: false,

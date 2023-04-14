@@ -75,6 +75,7 @@ import { useTypeDefinition } from "./hooks/nodes"
  * can be used as either a handle and a config. Default is ["handle", "config"].
  * @property {NodeInputMode} defaultMode Default mode for the input. Default is "handle".
  * @property {(props: object) => React.ReactNode} renderConfiguration Function that returns a React node that is rendered as the input's configuration.
+ * @property {*} [defaultValue] Default value for the input. If the input is a handle, the default value will be ignored.
  */
 
 

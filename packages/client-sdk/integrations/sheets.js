@@ -15,7 +15,7 @@ import { functions } from "../firebase-init.js"
 export async function getSpreadsheetDetails(appId, spreadsheetId) {
 
     if (!appId || !spreadsheetId)
-        return console.warn("Invalid arguments or not authenticated")
+        throw new Error("Must provide app ID and spreadsheet ID")
 
     const { data } = await httpsCallable(functions, "sheets-getSpreadsheetDetails")({ appId, spreadsheetId })
     return data
@@ -23,10 +23,9 @@ export async function getSpreadsheetDetails(appId, spreadsheetId) {
 
 
 export function useSpreadsheetDetails(appId, spreadsheetId) {
-    const { data: details, ...result } = useQuery(
-        ["googlesheets-spreadsheet-details", appId, spreadsheetId],
-        () => getSpreadsheetDetails(appId, spreadsheetId)
-    )
-
-    return { details, ...result }
+    return useQuery({
+        queryKey: ["googlesheets-spreadsheet-details", appId, spreadsheetId],
+        queryFn: () => getSpreadsheetDetails(appId, spreadsheetId),
+        retry: false,
+    })
 }

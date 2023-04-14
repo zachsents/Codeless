@@ -1,12 +1,12 @@
 import { useMantineTheme } from "@mantine/core"
+import { useNodeSuggestions } from "@minus/client-sdk"
+import produce from "immer"
 import _ from "lodash"
+import { customAlphabet } from "nanoid"
+import { alphanumeric } from "nanoid-dictionary"
 import { createContext, useCallback, useContext, useEffect } from "react"
 import { useReactFlow, useStore } from "reactflow"
 import { NodeDefinitions } from ".."
-import produce from "immer"
-import { useNodeSuggestions } from "@minus/client-sdk"
-import { customAlphabet } from "nanoid"
-import { alphanumeric } from "nanoid-dictionary"
 
 
 const generateId = customAlphabet(alphanumeric, 10)
@@ -143,6 +143,21 @@ export function useIsNodeConnecting(id) {
 }
 
 
+export function defaultObject() {
+    const obj = {}
+    Object.defineProperty(obj, Symbol.for("default"), {
+        value: true,
+        enumerable: false,
+    })
+    return obj
+}
+
+
+export function isDefaultObject(obj) {
+    return obj[Symbol.for("default")] === true
+}
+
+
 /**
  * Hook to get and set the node's internal state.
  *
@@ -156,7 +171,8 @@ export function useInternalState(id) {
 
     // set default state
     useEffect(() => {
-        state === undefined && typeDefinition.defaultState && setState(typeDefinition.defaultState)
+        if (state === undefined || isDefaultObject(state))
+            setState(typeDefinition.defaultState ?? {})
     }, [])
 
     // return curried setter that merges
@@ -280,15 +296,18 @@ export function useInputMode(nodeId, inputId) {
  * @export
  * @param {string} [nodeId]
  * @param {string} inputId
- * @param {*} defaultValue
+ * @param {*} defaultValue The default value for the input. If the input definition has a default value, that will be used instead.
  * @return {[*, Function]} 
  */
 export function useInputValue(nodeId, inputId, defaultValue) {
     const [value, setValue] = useNodeProperty(nodeId, ["data", `InputValue.${getHandleDefinitionId(inputId)}`], true)
+    const { definition: inputDef } = useHandleDefinition(nodeId, inputId)
 
     // set default value
     useEffect(() => {
-        value === undefined && setValue(defaultValue)
+        value === undefined && setValue(
+            inputDef.defaultValue === undefined ? defaultValue : inputDef.defaultValue
+        )
     }, [])
 
     return [value, setValue]

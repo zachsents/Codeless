@@ -1,86 +1,87 @@
-import { TextInput, Text, Grid, NumberInput, Center } from "@mantine/core"
+import { useEffect } from "react"
 import { SiGooglesheets } from "react-icons/si"
+import { BoxAlignTopLeft, FileSpreadsheet, Link, Numbers } from "tabler-icons-react"
+import B from "../../components/B"
+import TextControl from "../../components/TextControl"
+import { useInputValue, useInternalState } from "../../hooks/nodes"
+import { SheetNameControl, SheetNameTooltip, SpreadsheetURLControl, SpreadsheetURLTooltip, useGoogleSheetNode } from "./shared"
 
 
+/** 
+ * @type {import("../../DefaultTemplate.jsx").NodeTypeDefinition} 
+ */
 export default {
     id: "googlesheets:Range",
     name: "Get Range",
     description: "Gets a range of values from a Google Sheet.",
     icon: SiGooglesheets,
     color: "green",
-    badge: "Google Sheets",
 
-    inputs: ["$sheet"],
-    outputs: ["data"],
+    tags: ["Google Sheets"],
+
+    inputs: [
+        {
+            id: "$spreadsheetUrl",
+            name: "Spreadsheet URL",
+            description: "The URL of the spreadsheet you want to get data from.",
+            tooltip: SpreadsheetURLTooltip,
+            icon: Link,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            renderConfiguration: SpreadsheetURLControl,
+        },
+        {
+            id: "sheetName",
+            name: "Sheet Name",
+            description: "The name of the sheet you want to get data from.",
+            tooltip: SheetNameTooltip,
+            icon: FileSpreadsheet,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            renderConfiguration: SheetNameControl,
+        },
+        {
+            id: "range",
+            description: "The range of cells you want to get data from.",
+            tooltip: "The range of cells you want to get data from.",
+            icon: BoxAlignTopLeft,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            renderConfiguration: props => <TextControl {...props} inputProps={{
+                placeholder: "A1:B2",
+            }} />,
+        },
+    ],
+    outputs: [
+        {
+            id: "values",
+            description: "The values in the range.",
+            tooltip: "The values in the range.",
+            icon: Numbers,
+        },
+    ],
 
     requiredIntegrations: ["integration:GoogleSheets"],
 
-    defaultState: { range: ["", "", "", ""] },
+    useNodePresent: props => {
+        useGoogleSheetNode(props)
 
-    renderNode: ({ state }) => {
-
-        const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
-
-        const rangeString = "" + startColumn + startRow + (endColumn ? ":" : "") + endColumn + endRow
-
-        return (
-            <Center>
-                {rangeString ?
-                    <Text>{rangeString}</Text>
-                    :
-                    <Text size="xs" color="dimmed">Empty Range</Text>}
-            </Center>
-        )
+        // capitalize range
+        const [range, setRange] = useInputValue(null, "range")
+        useEffect(() => {
+            range && setRange(range.toUpperCase())
+        }, [range])
     },
 
-    configuration: ({ state, setState }) => {
+    renderTextContent: () => {
+        const [state] = useInternalState()
+        const [sheetName] = useInputValue(null, "sheetName")
+        const [range] = useInputValue(null, "range")
 
-        const [startRow, startColumn, endRow, endColumn] = state.range ?? ["", "", "", ""]
+        if (!state.spreadsheetName) return "No Spreadsheet Provided"
+        if (!sheetName) return "No Sheet Selected"
+        if (!range) return "No Range Provided"
 
-        const setRange = ({ sr = startRow, sc = startColumn, er = endRow, ec = endColumn }) => {
-            setState({ range: [sr, sc, er, ec] })
-        }
-
-        return (
-            <Grid w={280} gutter="xs" columns={13}>
-                <Grid.Col span={3}>
-                    <TextInput
-                        radius="md"
-                        value={startColumn ?? ""}
-                        onChange={event => setRange({ sc: event.currentTarget.value })}
-                        placeholder="A"
-                    />
-                </Grid.Col>
-                <Grid.Col span={3}>
-                    <NumberInput
-                        radius="md"
-                        hideControls
-                        value={startRow ?? null}
-                        onChange={val => setRange({ sr: val })}
-                        placeholder="1"
-                    />
-                </Grid.Col>
-                <Grid.Col span={1}>
-                    <Text>:</Text>
-                </Grid.Col>
-                <Grid.Col span={3}>
-                    <TextInput
-                        radius="md"
-                        value={endColumn ?? ""}
-                        onChange={event => setRange({ ec: event.currentTarget.value })}
-                        placeholder="C"
-                    />
-                </Grid.Col>
-                <Grid.Col span={3}>
-                    <NumberInput
-                        radius="md"
-                        hideControls
-                        value={endRow ?? null}
-                        onChange={val => setRange({ er: val })}
-                        placeholder="3"
-                    />
-                </Grid.Col>
-            </Grid>
-        )
+        return <>Get <B>{range}</B> from <B>{sheetName}</B> in <B>{state.spreadsheetName}</B></>
     },
 }

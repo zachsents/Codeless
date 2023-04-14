@@ -29,7 +29,7 @@ export default function NodeInternal({ displayProps }) {
 
             {/* Text Content */}
             {typeDefinition.renderTextContent &&
-                <Text align="center" size="lg">
+                <Text align="center" size="lg" color="dimmed">
                     <typeDefinition.renderTextContent {...displayProps} />
                 </Text>}
 

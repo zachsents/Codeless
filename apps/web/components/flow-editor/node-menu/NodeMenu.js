@@ -1,20 +1,17 @@
-import { ActionIcon, Box, Button, Checkbox, Kbd, Menu, NavLink, Stack, Text, Tooltip } from "@mantine/core"
-import { motion } from "framer-motion"
-import { forwardRef, useEffect, useRef, useState } from "react"
+import { ActionIcon, Box, Button, Checkbox, Kbd, Menu, Stack, Text, Tooltip } from "@mantine/core"
 import { useReactFlow } from "reactflow"
 
-import { createNode, openNodePalette } from "@web/modules/graph-util"
+import { openNodePalette } from "@web/modules/graph-util"
 
 import { useHotkeys } from "@mantine/hooks"
-import { arrayUnion, updateUser, useCurrentUserRealtime } from "@minus/client-sdk"
+import { arrayRemove, arrayUnion, updateUser, useCurrentUserRealtime } from "@minus/client-sdk"
 import { TbDots, TbSearch } from "react-icons/tb"
 import DraggableNodeButton from "./DraggableNodeButton"
-import { arrayRemove } from "@minus/client-sdk"
 
 
 const suggested = [
     "basic:Text",
-    "googlesheets:Spreadsheet",
+    "googlesheets:Table",
     "airtable:UseTable",
     "openai:Parse",
 ]

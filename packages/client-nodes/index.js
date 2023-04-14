@@ -38,7 +38,6 @@ import GmailReplyToEmail from "./google/gmail/ReplyToEmail"
 import GmailSendEmail from "./google/gmail/SendEmail"
 
 import Range from "./google/sheets/Range"
-import Spreadsheet from "./google/sheets/Spreadsheet"
 import Table from "./google/sheets/Table"
 
 import AddRow from "./tables/AddRow"
@@ -122,7 +121,7 @@ const nodeDefinitions = [
 
 
     // ===== Google Sheets =====
-    Spreadsheet, Range, Table,
+    Range, Table,
 
     // ===== Gmail =====
     GmailSendEmail, GmailReplyToEmail,

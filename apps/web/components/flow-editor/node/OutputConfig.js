@@ -22,8 +22,8 @@ export default function OutputConfig({ id, divider = true }) {
             {divider &&
                 <Divider color="gray.2" />}
             <Stack spacing="xs">
-                <Group position="apart">
-                    <Group spacing="xs">
+                <Group position="apart" noWrap>
+                    <Group spacing="xs" noWrap>
 
                         <Tooltip label="Toggle Visibility">
                             <ActionIcon

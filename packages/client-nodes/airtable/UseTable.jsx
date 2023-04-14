@@ -55,7 +55,9 @@ export default {
                         onChange={event => setValue(event.currentTarget.value)}
                         name="airtableUrl"
                         placeholder="https://airtable.com/..."
-                        error={value === null || AirtableURLRegex.test(value) ? null : "This doesn't look like a valid Airtable URL"}
+                        error={value === null || AirtableURLRegex.test(value) ?
+                            null :
+                            "This doesn't look like a valid Airtable URL"}
                     />
                     {state.tableName &&
                         <Text color="dimmed" size="xs">Using "{state.tableName}"</Text>}
