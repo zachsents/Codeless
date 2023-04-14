@@ -1,9 +1,8 @@
-import { Slider } from "@mantine/core"
 import { SiOpenai } from "react-icons/si"
-import { Control, ControlLabel, ControlStack } from "../components/index"
-import { useDebouncedSynchronizedState } from "../hooks"
+import { MessageCircle, MessageCircle2, Temperature } from "tabler-icons-react"
+import SliderControl from "../components/SliderControl"
+import TextAreaControl from "../components/TextAreaControl"
 
-const DefaultTemperature = 1
 
 export default {
     id: "openai:AskGPT3",
@@ -11,39 +10,40 @@ export default {
     description: "Asks ChatGPT a prompt.",
     icon: SiOpenai,
     color: "dark",
-    tags: ["Open AI"],
 
-    inputs: ["prompt"],
-    outputs: ["response"],
+    tags: ["Open AI", "AI"],
 
-    defaultState: {
-        temperature: DefaultTemperature,
-    },
-
-    configuration: ({ state, setState }) => {
-
-        const [temperature, setTemperature] = useDebouncedSynchronizedState(
-            state.temperature,
-            temperature => setState({ temperature }),
-            100
-        )
-
-        return (
-            <ControlStack>
-                <Control>
-                    <ControlLabel info="How random the response should be.">
-                        Randomness
-                    </ControlLabel>
-                    <Slider
-                        value={temperature}
-                        onChange={setTemperature}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        label={val => val.toFixed(2)}
-                    />
-                </Control>
-            </ControlStack>
-        )
-    }
+    inputs: [
+        {
+            id: "prompt",
+            description: "The prompt to ask ChatGPT.",
+            tooltip: "The prompt to ask ChatGPT.",
+            icon: MessageCircle2,
+            allowedModes: ["handle", "config"],
+            renderConfiguration: TextAreaControl,
+        },
+        {
+            id: "temperature",
+            description: "How random the response should be.",
+            tooltip: "How random the response should be.",
+            icon: Temperature,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            defaultValue: 1,
+            renderConfiguration: props => <SliderControl {...props} inputProps={{
+                min: 0,
+                max: 1,
+                step: 0.01,
+                label: val => val.toFixed(2),
+            }} />,
+        },
+    ],
+    outputs: [
+        {
+            id: "response",
+            description: "The response from ChatGPT.",
+            tooltip: "The response from ChatGPT.",
+            icon: MessageCircle,
+        },
+    ],
 }

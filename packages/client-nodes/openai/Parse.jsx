@@ -1,5 +1,6 @@
 import { SiOpenai } from "react-icons/si"
-import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
+import { ArrowNarrowRight, FileText } from "tabler-icons-react"
+import TextAreaControl from "../components/TextAreaControl"
 
 
 export default {
@@ -8,50 +9,27 @@ export default {
     description: "Parse fields out of text with GPT3.",
     icon: SiOpenai,
     color: "dark",
-    tags: ["Open AI"],
 
-    tags: ["ChatGPT"],
+    tags: ["Open AI", "AI"],
 
-    inputs: ["text"],
+    inputs: [
+        {
+            id: "text",
+            description: "The text to classify.",
+            tooltip: "The text to classify.",
+            icon: FileText,
+            allowedModes: ["handle", "config"],
+            renderConfiguration: TextAreaControl,
+        },
+    ],
     outputs: [
         {
-            name: "data",
-            list: true,
-        }
+            id: "data",
+            description: "The data extracted from the text.",
+            tooltip: "The data extracted from the text.",
+            icon: ArrowNarrowRight,
+            listMode: "named",
+            defaultList: 1,
+        },
     ],
-
-    defaultState: {
-        dataLabels: [],
-    },
-
-    renderNode: ({ state, alignHandles, listHandles }) => {
-
-        alignHandles("text")
-
-        return <ListHandlesNodeContent
-            handleName="data"
-            listHandles={listHandles}
-            alignHandles={alignHandles}
-            state={state}
-            arrowSide="out"
-            emptyMessage="No outputs specified"
-        />
-    },
-
-    configuration: ({ state, setState, listHandles }) => {
-        return (
-            <ControlStack>
-                <ListHandlesControl
-                    handleName="data"
-                    listHandles={listHandles}
-                    state={state}
-                    setState={setState}
-                    controlTitle="Outputs"
-                    controlInfo="The outputs you'd like to pull from the text."
-                    addLabel="Add Output"
-                    inputPlaceholder="Output Name"
-                />
-            </ControlStack>
-        )
-    }
 }
