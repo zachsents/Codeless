@@ -300,7 +300,7 @@ export function useInputMode(nodeId, inputId) {
  * @return {[*, Function]} 
  */
 export function useInputValue(nodeId, inputId, defaultValue) {
-    const [value, setValue] = useNodeProperty(nodeId, ["data", `InputValue.${getHandleDefinitionId(inputId)}`], true)
+    const [value, setValue] = useNodeProperty(nodeId, ["data", `InputValue.${inputId}`], true)
     const { definition: inputDef } = useHandleDefinition(nodeId, inputId)
 
     // set default value
