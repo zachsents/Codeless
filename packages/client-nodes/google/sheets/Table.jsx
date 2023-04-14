@@ -18,7 +18,7 @@ export default {
     icon: SiGooglesheets,
     color: "green",
 
-    tags: ["Google Sheets", "Table", "Database"],
+    tags: ["Google Sheets", "Tables", "Database"],
 
     inputs: [
         {

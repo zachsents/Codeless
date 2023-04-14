@@ -45,6 +45,7 @@ import DeleteRows from "./tables/DeleteRows"
 import FindRows from "./tables/FindRows"
 import FindRowsByField from "./tables/FindRowsByField"
 import GetField from "./tables/GetField"
+import SetField from "./tables/SetColumn"
 import TableField from "./tables/TableField"
 import UpdateRows from "./tables/UpdateRows"
 
@@ -117,7 +118,7 @@ const nodeDefinitions = [
 
 
     // ===== Tables =====
-    FindRows, FindRowsByField, AddRow, UpdateRows, DeleteRows, GetField, TableField,
+    FindRows, FindRowsByField, AddRow, UpdateRows, DeleteRows, GetField, SetField, TableField,
 
 
     // ===== Google Sheets =====

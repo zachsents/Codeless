@@ -1,69 +1,65 @@
-import { Button, Group, NumberInput, Stack, Text } from "@mantine/core"
-import { Table } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack, SkeletonWithHandle } from "../components/index"
+import { Button, Group, Stack } from "@mantine/core"
+import { List, ListSearch, Search, Table } from "tabler-icons-react"
+import NumberControl from "../components/NumberControl"
+import { useInputValue } from "../hooks/nodes"
 
 
 export default {
     id: "tables:FindRows",
-    name: "Query Rows",
+    name: "Query",
     description: "Searches a table for rows matching the configured filters.",
     icon: Table,
     color: "yellow",
-    tags: ["Tables"],
 
-    inputs: ["$table", "filters",],
-    outputs: [
+    tags: ["Tables", "Advanced"],
+
+    inputs: [
         {
-            name: "row",
-            label: "Row(s)",
-        }
-    ],
+            id: "$table",
+            description: "The table to query.",
+            tooltip: "The table to query.",
+            icon: Table,
+        },
+        {
+            id: "filters",
+            description: "The filters to apply to the query.",
+            tooltip: "The filters to apply to the query.",
+            icon: Search,
+        },
+        {
+            id: "limit",
+            description: "The number of rows to return. Leave blank to not set a limit.",
+            tooltip: "The number of rows to return. Leave blank to not set a limit.",
+            icon: List,
+            allowedModes: ["config", "handle"],
+            defaultMode: "config",
+            renderConfiguration: props => {
+                const [, setLimit] = useInputValue(null, "limit")
 
-    defaultState: {
-        limit: null,
-    },
-
-    renderName: ({ state }) => `Query Row${state.limit == 1 ? "" : "s"}`,
-
-    renderNode: ({ state, alignHandles }) => {
-
-        alignHandles("$table")
-
-        return (
-            <Stack spacing="xs" align="center">
-                <Text color="dimmed">Find {state.limit == 1 ? "a row" : state.limit == null ? "all rows" : `${state.limit} rows`} where</Text>
-                <SkeletonWithHandle align="left" ref={el => alignHandles("filters", el)} />
-            </Stack>
-        )
-    },
-
-    configuration: ({ state, setState }) => {
-
-        return (
-            <ControlStack>
-                <Control>
-                    <ControlLabel info="The number of rows you want to find. Leave blank to not set a limit.">
-                        Limit
-                    </ControlLabel>
-
-                    <Group noWrap>
-                        <NumberInput
-                            placeholder="No limit"
-                            value={state.limit}
-                            onChange={limit => setState({ limit })}
-                            min={1}
-                        />
-                        <Stack spacing={4}>
-                            <Button size="xs" compact variant="subtle" onClick={() => setState({ limit: 1 })}>
+                return (
+                    <Stack spacing={"xs"}>
+                        <NumberControl {...props} inputProps={{
+                            min: 1,
+                        }} />
+                        <Group position="center">
+                            <Button size="xs" compact variant="subtle" onClick={() => setLimit(1)}>
                                 Single Row
                             </Button>
-                            <Button size="xs" compact variant="subtle" onClick={() => setState({ limit: undefined })}>
+                            <Button size="xs" compact variant="subtle" onClick={() => setLimit(undefined)}>
                                 No Limit
                             </Button>
-                        </Stack>
-                    </Group>
-                </Control>
-            </ControlStack>
-        )
-    }
+                        </Group>
+                    </Stack>
+                )
+            },
+        }
+    ],
+    outputs: [
+        {
+            id: "rows",
+            description: "The rows that match the query.",
+            tooltip: "The rows that match the query.",
+            icon: ListSearch,
+        },
+    ],
 }

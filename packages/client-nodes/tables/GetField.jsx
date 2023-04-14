@@ -1,6 +1,6 @@
-import { Stack, Text, TextInput } from "@mantine/core"
-import { Table } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack } from "../components/index"
+import { ClipboardData, LayoutList, RowInsertBottom, Table } from "tabler-icons-react"
+import B from "../components/B"
+import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
 
 
 export default {
@@ -9,50 +9,37 @@ export default {
     description: "Gets a specific field from a row or set of rows.",
     icon: Table,
     color: "yellow",
+
     tags: ["Tables"],
 
     inputs: [
         {
-            name: "rows",
-            label: "Row(s)",
-        }
+            id: "rows",
+            description: "The row(s) to get the field from.",
+            tooltip: "The row(s) to get the field from.",
+            icon: LayoutList,
+        },
+        {
+            id: "field",
+            description: "The field to get the data from.",
+            tooltip: "The field to get the data from.",
+            icon: RowInsertBottom,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+        },
     ],
-    outputs: ["field"],
+    outputs: [
+        {
+            id: "data",
+            description: "The data from the field.",
+            tooltip: "The data from the field.",
+            icon: ClipboardData,
+        },
+    ],
 
-    defaultState: {
-        field: "",
+    renderTextContent: () => {
+        const [field] = useInputValue(null, "field")
+        const [mode] = useInputMode(null, "field")
+        return field && mode == InputMode.Config && <B>{field}</B>
     },
-
-
-    renderNode: ({ state }) => {
-        return (
-            <Stack spacing={0} align="center">
-                {state.field ?
-                    <>
-                        <Text color="dimmed">Get field</Text>
-                        <Text weight={500}>"{state.field}"</Text>
-                    </>
-                    :
-                    <Text color="dimmed" size="xs">No field specified</Text>
-                }
-            </Stack>
-        )
-    },
-
-    configuration: ({ state, setState }) => {
-        return (
-            <ControlStack>
-                <Control>
-                    <ControlLabel info="The field you want the data from.">
-                        Field
-                    </ControlLabel>
-                    <TextInput
-                        value={state.field ?? ""}
-                        onChange={event => setState({ field: event.currentTarget.value })}
-                        placeholder="Field Name"
-                    />
-                </Control>
-            </ControlStack>
-        )
-    }
 }

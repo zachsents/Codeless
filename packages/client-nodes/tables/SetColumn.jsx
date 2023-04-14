@@ -1,71 +1,45 @@
-import { Stack, Text, TextInput } from "@mantine/core"
-import { Table } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack } from "../components/index"
+import { LayoutList, RowInsertBottom, SquareX, Table } from "tabler-icons-react"
+import B from "../components/B"
+import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
 
 
 export default {
     id: "tables:SetColumn",
-    name: "Set Column",
-    description: "Sets a column's value in a table or row.",
+    name: "Set Field",
+    description: "Sets a field's value in a table or row.",
     icon: Table,
     color: "yellow",
+
     tags: ["Tables"],
 
     inputs: [
         {
-            name: "table",
-            label: "Table or Row",
+            id: "rows",
+            description: "The row(s) to set the field in.",
+            tooltip: "The row(s) to set the field in.",
+            icon: LayoutList,
         },
-        "value",
-    ],
-    outputs: [
         {
-            name: "tableOut",
-            label: "Table or Row"
-        }
+            id: "field",
+            description: "The field to set the data in.",
+            tooltip: "The field to set the data in.",
+            icon: RowInsertBottom,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+        },
+        {
+            id: "value",
+            description: "The value to set.",
+            tooltip: "The value to set.",
+            icon: SquareX,
+            allowedModes: ["handle", "config"],
+        },
     ],
+    outputs: [],
 
-    defaultState: {
-        column: "",
+    renderTextContent: () => {
+        const [field] = useInputValue(null, "field")
+        const [mode] = useInputMode(null, "field")
+        return field && mode == InputMode.Config && <>Setting <B>{field}</B></>
     },
-
-
-    renderNode: ({ state, alignHandles }) => {
-
-        alignHandles(["table", "tableOut"])
-
-        return (
-            <Stack
-                spacing={0}
-                align="center"
-                ref={el => alignHandles("value", el)}
-            >
-                {state.column ?
-                    <>
-                        <Text color="dimmed">Set column</Text>
-                        <Text weight={500}>"{state.column}"</Text>
-                    </>
-                    :
-                    <Text color="dimmed" size="xs">No column specified</Text>
-                }
-            </Stack>
-        )
-    },
-
-    configuration: ({ state, setState }) => {
-        return (
-            <ControlStack>
-                <Control>
-                    <ControlLabel info="The column you want to set the data for.">
-                        Column
-                    </ControlLabel>
-                    <TextInput
-                        value={state.column ?? ""}
-                        onChange={event => setState({ column: event.currentTarget.value })}
-                        placeholder="Column Name"
-                    />
-                </Control>
-            </ControlStack>
-        )
-    }
 }

@@ -24,7 +24,7 @@ export default {
     icon: BrandAirtable,
     color,
 
-    tags: ["Airtable", "Table", "Database"],
+    tags: ["Airtable", "Tables", "Database"],
     showMainTag: false,
 
     requiredIntegrations: ["integration:AirTable"],

@@ -1,5 +1,4 @@
-import { TableImport } from "tabler-icons-react"
-import { ControlStack, ListHandlesControl, ListHandlesNodeContent } from "../components/index"
+import { ClipboardData, RowInsertTop, Table, TableImport } from "tabler-icons-react"
 
 
 export default {
@@ -8,54 +7,33 @@ export default {
     description: "Adds a row to a table.",
     icon: TableImport,
     color: "yellow",
+
     tags: ["Tables"],
 
     inputs: [
-        "$table",
         {
-            name: "data",
-            list: true,
-        }
+            id: "$table",
+            description: "The table to add a row to.",
+            tooltip: "The table to add a row to.",
+            icon: Table,
+        },
+        {
+            id: "data",
+            description: "The data to add to the row.",
+            tooltip: "The data to add to the row.",
+            icon: ClipboardData,
+            listMode: "named",
+            defaultList: 1,
+            allowedModes: ["handle", "config"],
+        },
     ],
-    outputs: ["newRow"],
-
-    defaultState: {
-        dataLabels: [],
-    },
-
-
-    renderNode: ({ state, alignHandles, listHandles }) => {
-
-        alignHandles(["$table", "newRow"])
-
-        return (
-            <ListHandlesNodeContent
-                handleName="data"
-                listHandles={listHandles}
-                alignHandles={alignHandles}
-                state={state}
-                arrowSide="in"
-                emptyMessage="No fields specified"
-                unnamedMessage={i => `Field ${i + 1}`}
-            />
-        )
-    },
-
-    configuration: ({ state, setState, listHandles }) => {
-
-        return (
-            <ControlStack>
-                <ListHandlesControl
-                    handleName="data"
-                    listHandles={listHandles}
-                    state={state}
-                    setState={setState}
-                    controlTitle="Field Names"
-                    controlInfo="The names of the fields to attach to the data."
-                    addLabel="Add Field"
-                    inputPlaceholder="Field Name"
-                />
-            </ControlStack>
-        )
-    }
+    outputs: [
+        {
+            id: "newRow",
+            description: "The new row.",
+            tooltip: "The new row.",
+            icon: RowInsertTop,
+            defaultShowing: false,
+        },
+    ],
 }

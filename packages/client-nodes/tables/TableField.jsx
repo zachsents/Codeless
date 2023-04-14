@@ -1,44 +1,41 @@
-import { Text, TextInput } from "@mantine/core"
-import { Table } from "tabler-icons-react"
-import { Control, ControlLabel, ControlStack } from "../components/index"
+import { RowInsertBottom, Table, Variable } from "tabler-icons-react"
+import B from "../components/B"
+import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
 
 
 export default {
     id: "tables:TableField",
     name: "Table Field",
-    description: "Represents a field from a table. Useful for conditions and filtering involving table values.",
+    description: "Represents a field from a table. Useful as an input to conditions for querying tables.",
     icon: Table,
     color: "yellow",
-    tags: ["tables"],
 
-    inputs: [],
-    outputs: ["$"],
+    tags: ["Tables", "Advanced"],
 
-    defaultState: {
-        field: null,
+    inputs: [
+        {
+            id: "field",
+            name: "Field Name",
+            description: "The name of the field or column you wish to target.",
+            tooltip: "The name of the field or column you wish to target.",
+            icon: RowInsertBottom,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+        },
+    ],
+    outputs: [
+        {
+            id: "$",
+            name: "Field",
+            description: "Represents the field.",
+            tooltip: "Represents the field.",
+            icon: Variable,
+        },
+    ],
+
+    renderTextContent: () => {
+        const [field] = useInputValue(null, "field")
+        const [mode] = useInputMode(null, "field")
+        return field && mode == InputMode.Config && <B>{field}</B>
     },
-
-    renderName: ({ state }) => <Text color="dimmed">
-        Table Field:&nbsp;
-        {state.field ?
-            <Text color="dark">"{state.field}"</Text> :
-            <Text component="span" color="red">none</Text>}
-    </Text>,
-
-    configuration: ({ state, setState }) => {
-        return (
-            <ControlStack>
-                <Control>
-                    <ControlLabel info="The name of the field or column you wish to target.">
-                        Field Name
-                    </ControlLabel>
-                    <TextInput
-                        placeholder="Field name"
-                        value={state.field ?? ""}
-                        onChange={event => setState({ field: event.currentTarget.value })}
-                    />
-                </Control>
-            </ControlStack>
-        )
-    }
 }

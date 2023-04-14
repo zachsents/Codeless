@@ -1,4 +1,4 @@
-import { Table } from "tabler-icons-react"
+import { LayoutList, Table } from "tabler-icons-react"
 
 
 export default {
@@ -7,8 +7,16 @@ export default {
     description: "Deletes rows from a table.",
     icon: Table,
     color: "yellow",
-    tags: ["tables"],
 
-    inputs: ["rows"],
+    tags: ["Tables"],
+
+    inputs: [
+        {
+            id: "rows",
+            description: "The row(s) to delete.",
+            tooltip: "The row(s) to delete.",
+            icon: LayoutList,
+        },
+    ],
     outputs: [],
 }
