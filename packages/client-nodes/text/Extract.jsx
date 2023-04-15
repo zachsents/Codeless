@@ -12,7 +12,7 @@ export default {
     description: "Extracts text matching a pattern from text.",
     icon: TargetArrow,
 
-    tags: ["Text"],
+    tags: ["Text", "Regex"],
 
     inputs: [
         {

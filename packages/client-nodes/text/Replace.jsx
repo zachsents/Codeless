@@ -1,20 +1,50 @@
-import { Replace } from "tabler-icons-react"
+import { AlphabetLatin, ArrowNarrowRight, Plus, Replace, X } from "tabler-icons-react"
+import TextAreaControl from "../components/TextAreaControl"
+import TextOrRegexControl from "../components/TextOrRegexControl"
 
 
 export default {
     id: "text:Replace",
-    name: "Text Replace",
+    name: "Replace",
     description: "Replace in text.",
     icon: Replace,
-    tags: ["Text"],
+
+    tags: ["Text", "Regex"],
 
     inputs: [
-        "inputText",
         {
-            name: "replace",
-            label: "Replace This (Text or Regex)"
+            id: "text",
+            description: "The text to replace in.",
+            tooltip: "The text to replace in.",
+            icon: AlphabetLatin,
+            allowedModes: ["handle", "config"],
+            renderConfiguration: TextAreaControl,
         },
-        "replaceWith"
+        {
+            id: "replaceThis",
+            description: "The text or Regex to replace. To use Regex, attach a Regex node to this input.",
+            tooltip: "The text or Regex to replace. To use Regex, attach a Regex node to this input.",
+            icon: X,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            renderConfiguration: TextOrRegexControl,
+        },
+        {
+            id: "replaceWith",
+            name: "With This",
+            description: "The text or Regex to substitute in.",
+            tooltip: "The text or Regex to substitute in.",
+            icon: Plus,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+        },
     ],
-    outputs: ["outputText"],
+    outputs: [
+        {
+            id: "result",
+            description: "The text with the desired text replaced.",
+            tooltip: "The text with the desired text replaced.",
+            icon: ArrowNarrowRight,
+        },
+    ],
 }

@@ -2,4 +2,5 @@
     border: 1px solid var(--mantine-color-gray-3);
     border-radius: var(--mantine-radius-md);
     flex-grow: 1;
+    background: white;
 }

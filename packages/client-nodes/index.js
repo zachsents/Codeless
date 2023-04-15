@@ -59,7 +59,6 @@ import { BrandGmail, Link as LinkIcon, Run as RunIcon } from "tabler-icons-react
 import Template from "./basics/Template"
 import Ternary from "./basics/Ternary"
 import Extract from "./text/Extract"
-import IntlJoin from "./text/IntlJoin"
 import Join from "./text/Join"
 import Length from "./text/Length"
 import Regex from "./text/Regex"
@@ -67,7 +66,6 @@ import Remove from "./text/Remove"
 import Replace from "./text/Replace"
 import TextAround from "./text/TextAround"
 import TextContains from "./text/TextContains"
-import TextMatchesRegex from "./text/TextMatchesRegex"
 import TrimWhitespace from "./text/TrimWhitespace"
 
 import ATUseTable from "./airtable/UseTable"
@@ -99,7 +97,7 @@ const nodeDefinitions = [
 
 
     // ===== Text =====
-    TrimWhitespace, Join, Regex, IntlJoin, TextContains, TextMatchesRegex, Replace, Remove,
+    TrimWhitespace, Join, Regex, TextContains, Replace, Remove,
     TextAround, Length, Extract,
 
 

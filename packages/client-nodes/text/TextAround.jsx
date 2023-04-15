@@ -1,58 +1,63 @@
-import { NumberInput, Switch, Text } from "@mantine/core"
-import { Container } from "tabler-icons-react"
-import { ControlStack, Control, ControlLabel } from "../components/index"
+import { AlphabetLatin, ArrowNarrowRight, CircleDashed, Container, Target, Trophy } from "tabler-icons-react"
+import CheckboxControl from "../components/CheckboxControl"
+import NumberControl from "../components/NumberControl"
+import TextAreaControl from "../components/TextAreaControl"
+import TextOrRegexControl from "../components/TextOrRegexControl"
 
 
 export default {
     id: "text:TextAround",
-    name: "Text Around",
-    description: "Gets the text surrounding a phrase.",
+    name: "Around",
+    description: "Gets the text surrounding a pattern.",
     icon: Container,
-    tags: ["text"],
+
+    tags: ["Text", "Regex"],
 
     inputs: [
-        "text",
         {
-            name: "target",
-            label: "Target (Text or Regex)",
-        }
+            id: "text",
+            description: "The text to search.",
+            tooltip: "The text to search.",
+            icon: AlphabetLatin,
+            allowedModes: ["handle", "config"],
+            renderConfiguration: TextAreaControl,
+        },
+        {
+            id: "target",
+            description: "The text or Regex to target.",
+            tooltip: "The text or Regex to target.",
+            icon: Target,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            renderConfiguration: TextOrRegexControl,
+        },
+        {
+            id: "reach",
+            description: "How many characters to reach surrounding the target text.",
+            tooltip: "How many characters to reach surrounding the target text.",
+            icon: CircleDashed,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            defaultValue: 50,
+            renderConfiguration: NumberControl,
+        },
+        {
+            id: "onlyFirst",
+            description: "Whether or not it should only find the first occurrence.",
+            tooltip: "Whether or not it should only find the first occurrence.",
+            icon: Trophy,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+            defaultValue: true,
+            renderConfiguration: CheckboxControl,
+        },
     ],
-    outputs: ["surroundingText"],
-
-    defaultState: {
-        reach: 100,
-        onlyFirst: true,
-    },
-
-    configuration: ({ state, setState }) => {
-        return (
-            <ControlStack>
-                <Control>
-                    <ControlLabel info="How many characters to reach surrounding the target text.">
-                        Reach
-                    </ControlLabel>
-                    <NumberInput
-                        value={state.reach}
-                        onChange={reach => setState({ reach })}
-                        placeholder="100"
-                        radius="md"
-                        hideControls
-                        rightSection={<Text size="xs" color="dimmed">characters</Text>}
-                        rightSectionWidth={80}
-                    />
-                </Control>
-
-                <Control>
-                    <ControlLabel info="Whether or not it should only find the first occurrence.">
-                        Only First Occurrence
-                    </ControlLabel>
-                    <Switch
-                        checked={state.onlyFirst}
-                        onChange={event => setState({ onlyFirst: event.currentTarget.checked })}
-                    />
-                </Control>
-            </ControlStack>
-        )
-    }
-
+    outputs: [
+        {
+            id: "result",
+            description: "The text surrounding the target.",
+            tooltip: "The text surrounding the target.",
+            icon: ArrowNarrowRight,
+        },
+    ],
 }

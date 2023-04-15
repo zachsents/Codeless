@@ -53,6 +53,7 @@ export default function RegexControl({ inputId, inputProps = {} }) {
                 style={{
                     fontFamily: '"Fira code", "Fira Mono", monospace',
                     fontSize: 16,
+                    maxWidth: 220,
                 }}
             />
         </Box>
