@@ -1,0 +1,23 @@
+.hljs-regex-class {
+    color: var(--mantine-color-blue-6);
+}
+
+.hljs-regex-set {
+    color: var(--mantine-color-yellow-8);
+}
+
+.hljs-regex-grouping {
+    color: var(--mantine-color-green-6);
+}
+
+.hljs-regex-anchor {
+    color: var(--mantine-color-orange-6);
+}
+
+.hljs-regex-quantifier {
+    color: var(--mantine-color-grape-6);
+}
+
+.hljs-regex-escape {
+    color: var(--mantine-color-red-6);
+}
