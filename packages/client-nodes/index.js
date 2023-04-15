@@ -14,13 +14,13 @@ import RunFlow from "./basics/actions/RunFlow"
 import ScheduleFlow from "./basics/actions/ScheduleFlow"
 import SendEmail from "./basics/actions/SendEmail"
 
-import Count from "./basics/Count"
 import And from "./basics/transforms/And"
 import Equals from "./basics/transforms/Equals"
 import GreaterThan from "./basics/transforms/GreaterThan"
 import Not from "./basics/transforms/Not"
 import NotEqual from "./basics/transforms/NotEqual"
 import Or from "./basics/transforms/Or"
+import Count from "./lists/Count"
 
 import If from "./control/If"
 
@@ -71,12 +71,14 @@ import TrimWhitespace from "./text/TrimWhitespace"
 import ATUseTable from "./airtable/UseTable"
 
 import AirTableIntegration from "./airtable/integration"
-import ListRepeat from "./basics/ListRepeat"
-import GmailIntegration from "./google/gmail/integration"
-import GoogleSheetsIntegration from "./google/sheets/integration"
 import DefaultTrigger from "./basics/triggers/Default"
 import LinkTrigger from "./basics/triggers/Link"
+import GmailIntegration from "./google/gmail/integration"
 import EmailReceivedTrigger from "./google/gmail/triggers/EmailReceived"
+import GoogleSheetsIntegration from "./google/sheets/integration"
+import ListRepeat from "./lists/ListRepeat"
+import GetElement from "./lists/GetElement"
+import GetProperty from "./objects/GetProperty"
 
 
 const nodeDefinitions = [
@@ -93,7 +95,9 @@ const nodeDefinitions = [
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan,
     // Lists
-    Count, ListRepeat,
+    Count, ListRepeat, GetElement,
+    // Objects
+    GetProperty,
 
 
     // ===== Text =====

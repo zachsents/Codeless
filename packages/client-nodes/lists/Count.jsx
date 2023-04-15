@@ -6,7 +6,7 @@ import { ListNumbers } from "tabler-icons-react"
  * @type {import("../DefaultTemplate.jsx").NodeTypeDefinition} 
  */
 export default {
-    id: "basic:Count",
+    id: "lists:Count",
     name: "Count Items",
     description: "Counts how many items are in a list.",
     icon: ListNumbers,

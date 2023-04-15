@@ -6,7 +6,7 @@ import NumberControl from "../components/NumberControl"
 
 
 export default {
-    id: "basic:ListRepeat",
+    id: "lists:ListRepeat",
     name: "Repeat",
     description: "Makes a list of the specified value repeated the number of times specified.",
     icon: ListNumbers,
