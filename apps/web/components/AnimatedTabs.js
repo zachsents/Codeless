@@ -5,11 +5,12 @@ import styles from "./AnimatedTabs.module.css"
 import { useForceUpdate, useResizeObserver } from "@mantine/hooks"
 
 
-export default function AnimatedTabs({ tabs = [], w, grow = true, size = "sm", children, ...props }) {
+export default function AnimatedTabs({ tabs = [], defaultTab, grow = true, size = "sm", children, miw, ...props }) {
 
-    const [active, setActive] = useState(tabs[0])
+    const [active, setActive] = useState(defaultTab ?? tabs[0])
     const activeIndex = tabs.indexOf(active)
 
+    const widthRef = useRef(miw)
     const tabRefs = useRef({})
     const contentRefs = useRef([])
 
@@ -23,8 +24,8 @@ export default function AnimatedTabs({ tabs = [], w, grow = true, size = "sm", c
     // #endregion
 
     return (
-        <Stack spacing="xs" {...props}>
-            <Box pos="relative">
+        <Stack spacing="xs" {...props} >
+            <Box pos="relative" ref={el => widthRef.current = el?.offsetWidth}>
                 <Group grow={grow} spacing={0}>
                     {tabs.map(tab => (
                         <Center
@@ -51,22 +52,26 @@ export default function AnimatedTabs({ tabs = [], w, grow = true, size = "sm", c
             </Box>
 
             <motion.div
+                initial={{ height: 0 }}
                 animate={{
                     height: contentRefs.current[activeIndex]?.offsetHeight,
                 }}
-                style={{ width: w }}
+                style={{ width: widthRef.current }}
                 className={styles.contentWindow}
             >
                 <motion.div
-                    animate={{
-                        x: -activeIndex * w,
+                    initial={{
+                        x: -activeIndex * widthRef.current,
                     }}
-                    style={{ width: arrayChildren.length * w }}
+                    animate={{
+                        x: -activeIndex * widthRef.current,
+                    }}
+                    style={{ width: arrayChildren.length * widthRef.current }}
                     className={styles.contentContainer}
                 >
                     {arrayChildren.map((child, i) =>
                         <ChildContainer
-                            w={w}
+                            w={widthRef.current}
                             onResize={() => forceUpdate()}
                             ref={el => contentRefs.current[i] = el}
                             key={i}

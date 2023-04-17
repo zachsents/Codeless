@@ -15,7 +15,8 @@ export default function IntegrationAlert({ integration: int }) {
                     <AlertTitle name={int.name} icon={<int.icon />} />
                 </Group>}
                 color="gray"
-                pb={5}
+                p="xs"
+                pb={0}
                 key={int.id}
             />
         )
@@ -23,7 +24,8 @@ export default function IntegrationAlert({ integration: int }) {
     if (int.status.data)
         return (
             <Alert
-                pb={5}
+                p="xs"
+                pb={0}
                 title={<AlertTitle name={int.name} icon={<int.icon />} prefix="Connected to " />}
                 color="green"
                 key={int.id}

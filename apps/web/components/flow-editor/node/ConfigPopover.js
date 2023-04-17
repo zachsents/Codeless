@@ -1,9 +1,12 @@
-import { ActionIcon, Card, Divider, Group, Popover, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
+import { ActionIcon, Button, Card, Divider, Flex, Group, Popover, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
 import { useDeleteNode, useNodeProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import AnimatedTabs from "@web/components/AnimatedTabs"
-import { TbCopy, TbTrash } from "react-icons/tb"
+import { useAppContext } from "@web/modules/context"
+import { TbCopy, TbExternalLink, TbTrash } from "react-icons/tb"
 import InputConfig from "./InputConfig"
 import OutputConfig from "./OutputConfig"
+import { getNodeIntegrationsStatus } from "@web/modules/graph-util"
+import IntegrationAlert from "../config-panel/IntegrationAlert"
 
 
 export default function ConfigPopover({ children }) {
@@ -15,6 +18,10 @@ export default function ConfigPopover({ children }) {
     const dragging = useNodeProperty(null, "dragging")
 
     const deleteNode = useDeleteNode()
+
+    const { integrations: appIntegrations, app } = useAppContext()
+    const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
+    const hasMissingIntegrations = nodeIntegrations.some(int => !int.status.data)
 
     return (
         <Popover
@@ -56,7 +63,12 @@ export default function ConfigPopover({ children }) {
                         </Group>
                         <Divider />
 
-                        <AnimatedTabs tabs={["Inputs", "Outputs"]} w={280}>
+                        <AnimatedTabs
+                            tabs={["Inputs", "Outputs", "Integrations"]}
+                            defaultTab={hasMissingIntegrations ? "Integrations" :
+                                typeDefinition.inputs.length ? "Inputs" : "Outputs"}
+                            miw={280}
+                        >
                             <Stack spacing="xs">
                                 {typeDefinition.inputs.length ?
                                     typeDefinition.inputs.map((input, i) =>
@@ -75,6 +87,28 @@ export default function ConfigPopover({ children }) {
                                     <Text align="center" size="sm" color="dimmed">
                                         No Outputs
                                     </Text>}
+                            </Stack>
+
+                            <Stack spacing="xs">
+                                {nodeIntegrations.map(
+                                    int => <IntegrationAlert integration={int} key={int.id} />
+                                )}
+
+                                {nodeIntegrations.length > 0 &&
+                                    <Flex justify="flex-end">
+                                        <Button
+                                            component="a"
+                                            href={`/app/${app?.id}/integrations`}
+                                            target="_blank"
+                                            rightIcon={<TbExternalLink />}
+                                            size="xs"
+                                            compact
+                                            variant="light"
+                                            color="gray"
+                                        >
+                                            Open Integrations
+                                        </Button>
+                                    </Flex>}
                             </Stack>
                         </AnimatedTabs>
 
