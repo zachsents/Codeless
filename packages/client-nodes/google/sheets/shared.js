@@ -3,7 +3,8 @@ import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
 import { useEffect } from "react"
 import { TbExternalLink } from "react-icons/tb"
 import { useSyncWithNodeState } from "../../hooks"
-import { useInputValue, useInternalState } from "../../hooks/nodes"
+import { useInputValue, useInternalState, useInputMode, InputMode } from "../../hooks/nodes"
+import TextControl from "../../components/TextControl"
 
 
 export const SheetsURLRegex = /d\/([0-9A-Za-z_-]{40,})\/edit/
@@ -63,8 +64,9 @@ export function SpreadsheetURLControl({ inputId }) {
 export function SheetNameControl({ inputId }) {
     const [state] = useInternalState()
     const [value, setValue] = useInputValue(null, inputId)
+    const [urlMode] = useInputMode(null, "$spreadsheetUrl")
 
-    return <Select
+    return urlMode == InputMode.Config ? <Select
         name="sheetName"
         placeholder={state.isLoading ? "Loading sheets..." : "Pick a sheet"}
         value={value ?? null}
@@ -72,7 +74,8 @@ export function SheetNameControl({ inputId }) {
         data={state.sheets ?? []}
         disabled={state.isLoading || !state.spreadsheetId}
         rightSection={state.isLoading && <Loader size="xs" />}
-    />
+    /> :
+        <TextControl inputId={inputId} />
 }
 
 
