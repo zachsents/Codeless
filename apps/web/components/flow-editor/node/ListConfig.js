@@ -93,7 +93,7 @@ function Item({ handleId, item, i }) {
                             <TextInput
                                 value={item.name ?? ""}
                                 onChange={event => setName(event.currentTarget.value)}
-                                placeholder="Type something..."
+                                placeholder={definition.listNamePlaceholder}
                             />
                         </Grid.Col> :
                         <Grid.Col span="auto">

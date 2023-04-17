@@ -17,6 +17,8 @@ export default {
     description: "Allows you to write a custom JavaScript function.",
     icon: CodeDots,
 
+    tags: ["Advanced"],
+
     inputs: [
         {
             id: "input",

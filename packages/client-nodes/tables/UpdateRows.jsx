@@ -1,4 +1,5 @@
 import { ClipboardData, LayoutList, TableShortcut } from "tabler-icons-react"
+import TextControl from "../components/TextControl"
 
 
 export default {
@@ -24,7 +25,11 @@ export default {
             icon: ClipboardData,
             listMode: "named",
             defaultList: 1,
+            listNamePlaceholder: "Column Name",
             allowedModes: ["handle", "config"],
+            renderConfiguration: props => <TextControl {...props} inputProps={{
+                placeholder: "Data",
+            }} />,
         },
     ],
     outputs: [
