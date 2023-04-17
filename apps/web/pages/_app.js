@@ -11,7 +11,7 @@ import CreateAppModal from "../components/modals/CreateAppModal"
 import DeleteAppModal from "../components/modals/DeleteAppModal"
 import RouterTransition from "../components/RouterTransition"
 import ScheduleFlowModal from "../components/modals/ScheduleFlowModal"
-import NodePalette from "../components/flow-editor/NodePalette"
+import NodePalette from "../components/flow-editor/node-palette/NodePalette"
 
 import { initializeFirebase } from "@minus/client-sdk"
 initializeFirebase()

@@ -8,6 +8,7 @@
     border: 2px solid var(--mantine-color-gray-1);
     border-radius: var(--mantine-radius-md);
     transition: background-color 0.1s, border-color 0.1s;
+    cursor: pointer;
 }
 
 .tile:hover,

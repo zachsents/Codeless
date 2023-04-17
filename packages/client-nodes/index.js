@@ -79,6 +79,13 @@ import GoogleSheetsIntegration from "./google/sheets/integration"
 import ListRepeat from "./lists/ListRepeat"
 import GetElement from "./lists/GetElement"
 import GetProperty from "./objects/GetProperty"
+import { SiGooglesheets } from "react-icons/si"
+import { BrandAirtable } from "tabler-icons-react"
+import { AlphabetLatin } from "tabler-icons-react"
+import { Math } from "tabler-icons-react"
+import { Variable as VariableIcon } from "tabler-icons-react"
+import { BracketsContain, Table as TableIcon } from "tabler-icons-react"
+import { Database } from "tabler-icons-react"
 
 
 const nodeDefinitions = [
@@ -202,3 +209,51 @@ function createObject(arr) {
     return Object.fromEntries(arr.map(item => [item.id, item]))
 }
 
+
+const TagInfo = {
+    "Gmail": {
+        icon: BrandGmail,
+        color: "red",
+    },
+    "Google Sheets": {
+        icon: SiGooglesheets,
+        color: "green",
+    },
+    "AirTable": {
+        icon: BrandAirtable,
+        color: "blue",
+    },
+    "Text": {
+        icon: AlphabetLatin,
+    },
+    "Math": {
+        icon: Math,
+    },
+    "Advanced": {
+        icon: VariableIcon,
+        color: "dark",
+    },
+    "Lists": {
+        icon: BracketsContain,
+    },
+    "Tables": {
+        icon: TableIcon,
+        color: "yellow",
+    },
+    "Database": {
+        icon: Database,
+    },
+}
+
+export const Tags = findTags(NodeDefinitions)
+export const CreatableTags = findTags(CreatableNodeDefinitions)
+
+function findTags(definitions) {
+    return [...new Set(
+        Object.values(definitions).flatMap(def => def.tags ?? [])
+    )]
+        .map(tag => ({
+            id: tag,
+            ...(TagInfo[tag] ?? {}),
+        }))
+}

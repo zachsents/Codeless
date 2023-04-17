@@ -127,7 +127,7 @@ export default {
     description: "Node Description",
 
     // Colors, icons, etc.
-    color: "blue",
+    color: "gray",
     icon: Square,
 
     // Tags
