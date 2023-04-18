@@ -5,7 +5,7 @@ import { applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useVi
 import shortUUID from "short-uuid"
 import shallow from "zustand/shallow"
 
-import { Group, Text, Title } from "@mantine/core"
+import { Group, ScrollArea, Text, Title } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
 import { Integrations, NodeDefinitions } from "@minus/client-nodes"
 import { HandleType, defaultObject, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
@@ -275,9 +275,10 @@ export function openNodePalette(rf, {
         size: "xl",
         centered: true,
         transitionProps: {
-            duration: 200,
+            duration: 100,
         },
         zIndex: 300,
+        scrollAreaComponent: ScrollArea.Autosize,
         ...props,
     })
 }

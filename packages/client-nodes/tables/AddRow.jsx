@@ -24,6 +24,7 @@ export default {
             icon: ClipboardData,
             listMode: "named",
             defaultList: 1,
+            listNamePlaceholder: "Column Name",
             allowedModes: ["handle", "config"],
         },
     ],
