@@ -33,7 +33,7 @@ export const SheetNameTooltip = <>
 export function SpreadsheetURLControl({ inputId }) {
     const [state] = useInternalState()
     const [value, setValue] = useInputValue(null, inputId)
-    const isValid = value === null || SheetsURLRegex.test(value)
+    const isValid = value == null || SheetsURLRegex.test(value)
 
     return <>
         <TextInput
