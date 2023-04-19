@@ -1,7 +1,7 @@
 import { useInterval } from "@mantine/hooks"
 import { produce } from "immer"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react"
-import { applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport, useOnSelectionChange } from "reactflow"
+import { applyNodeChanges, applyEdgeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport, useOnSelectionChange } from "reactflow"
 import shortUUID from "short-uuid"
 import shallow from "zustand/shallow"
 
@@ -364,6 +364,23 @@ export function deselectNode(rf, nodeId) {
         type: "select",
         selected: false,
     }], rf.getNodes()))
+}
+
+
+export function deselectAll(rf) {
+    const nodes = rf.getNodes()
+    rf.setNodes(applyNodeChanges(nodes.map(node => ({
+        id: node.id,
+        type: "select",
+        selected: false,
+    })), nodes))
+
+    const edges = rf.getEdges()
+    rf.setEdges(applyEdgeChanges(edges.map(edge => ({
+        id: edge.id,
+        type: "select",
+        selected: false,
+    })), edges))
 }
 
 

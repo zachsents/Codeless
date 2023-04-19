@@ -7,13 +7,16 @@ import { TriggerNodeDefinitions } from "@minus/client-nodes"
 import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
 import FlowControlButton from "@web/components/FlowControlButton"
 import { useFlowContext } from "@web/modules/context"
+import { deselectAll } from "@web/modules/graph-util"
 import { useState } from "react"
+import { useReactFlow } from "reactflow"
 import RunReplayPopover from "../run-replay/RunReplayPopover"
 import Breadcrumbs from "./Breadcrumbs"
 
 
 export default function Header() {
 
+    const rf = useReactFlow()
     const { query: { appId } } = useRouter()
     const { flow } = useFlowContext()
 
@@ -28,7 +31,10 @@ export default function Header() {
     }
 
     return (
-        <MantineHeader fixed={false} p="sm" zIndex={200} sx={{ overflow: "visible" }}>
+        <MantineHeader
+            onClick={() => deselectAll(rf)}
+            fixed={false} p="sm" zIndex={200} sx={{ overflow: "visible" }}
+        >
             <Group position="apart">
                 <Group>
                     <Link href={`/app/${appId}/flows`}>
