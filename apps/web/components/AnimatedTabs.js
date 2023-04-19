@@ -20,7 +20,7 @@ export default function AnimatedTabs({
     const tabRefs = useRef({})
     const contentRefs = useRef([])
 
-    const arrayChildren = Array.isArray(children) ? children : [children]
+    const arrayChildren = (Array.isArray(children) ? children : [children]).filter(x => x)
 
     // #region Force update on mount
     const forceUpdate = useForceUpdate()

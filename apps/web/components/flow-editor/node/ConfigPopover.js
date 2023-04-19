@@ -13,8 +13,8 @@ export default function ConfigPopover({ children }) {
 
     const theme = useMantineTheme()
 
-    const typeDefinition = useTypeDefinition()
     const nodeId = useNodeId()
+    const typeDefinition = useTypeDefinition()
     const selectedNode = useCurrentlySelectedNode()
     const isSelected = selectedNode?.id == nodeId
     const isDragging = useNodeProperty(null, "dragging")
@@ -23,9 +23,18 @@ export default function ConfigPopover({ children }) {
 
     const { integrations: appIntegrations, app } = useAppContext()
     const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
+    const hasIntegrations = nodeIntegrations.length > 0
     const hasMissingIntegrations = nodeIntegrations.some(int => !int.status.data)
 
     const { run } = useReplayContext()
+
+    // #region - Tab stuff
+    const tabData = ["Inputs", "Outputs"]
+    hasIntegrations && tabData.push("Integrations")
+
+    const defaultTab = hasMissingIntegrations ? "Integrations" :
+        typeDefinition.inputs.length > 0 ? "Inputs" : "Outputs"
+    // #endregion
 
     return (
         <Popover
@@ -64,12 +73,8 @@ export default function ConfigPopover({ children }) {
                     </Group>
                     <Divider />
 
-                    <AnimatedTabs
-                        tabs={["Inputs", "Outputs", "Integrations"]}
-                        defaultTab={hasMissingIntegrations ? "Integrations" :
-                            typeDefinition.inputs.length ? "Inputs" : "Outputs"}
-                        miw={280}
-                    >
+                    <AnimatedTabs tabs={tabData} defaultTab={defaultTab} miw={280}>
+
                         <ScrollArea.Autosize mah="70vh" offsetScrollbars>
                             <Stack spacing="xs">
                                 {typeDefinition.inputs.length ?
@@ -94,27 +99,28 @@ export default function ConfigPopover({ children }) {
                             </Stack>
                         </ScrollArea.Autosize>
 
-                        <Stack spacing="xs">
-                            {nodeIntegrations.map(
-                                int => <IntegrationAlert integration={int} key={int.id} />
-                            )}
+                        {hasIntegrations &&
+                            <Stack spacing="xs">
+                                {nodeIntegrations.map(
+                                    int => <IntegrationAlert integration={int} key={int.id} />
+                                )}
 
-                            {nodeIntegrations.length > 0 &&
-                                <Flex justify="flex-end">
-                                    <Button
-                                        component="a"
-                                        href={`/app/${app?.id}/integrations`}
-                                        target="_blank"
-                                        rightIcon={<TbExternalLink />}
-                                        size="xs"
-                                        compact
-                                        variant="light"
-                                        color="gray"
-                                    >
-                                        Open Integrations
-                                    </Button>
-                                </Flex>}
-                        </Stack>
+                                {nodeIntegrations.length > 0 &&
+                                    <Flex justify="flex-end">
+                                        <Button
+                                            component="a"
+                                            href={`/app/${app?.id}/integrations`}
+                                            target="_blank"
+                                            rightIcon={<TbExternalLink />}
+                                            size="xs"
+                                            compact
+                                            variant="light"
+                                            color="gray"
+                                        >
+                                            Open Integrations
+                                        </Button>
+                                    </Flex>}
+                            </Stack>}
                     </AnimatedTabs>
                 </Stack>
             </Popover.Dropdown>
