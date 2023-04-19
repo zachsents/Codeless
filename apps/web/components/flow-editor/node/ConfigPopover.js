@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Divider, Flex, Group, Popover, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
+import { ActionIcon, Button, Divider, Flex, Group, Popover, ScrollArea, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
 import { useDeleteNode, useNodeId, useNodeProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import AnimatedTabs from "@web/components/AnimatedTabs"
 import { useAppContext, useReplayContext } from "@web/modules/context"
@@ -70,25 +70,29 @@ export default function ConfigPopover({ children }) {
                             typeDefinition.inputs.length ? "Inputs" : "Outputs"}
                         miw={280}
                     >
-                        <Stack spacing="xs">
-                            {typeDefinition.inputs.length ?
-                                typeDefinition.inputs.map((input, i) =>
-                                    <InputConfig id={input.id} divider={i != 0} key={input.id} />
-                                ) :
-                                <Text align="center" size="sm" color="dimmed">
-                                    No Inputs
-                                </Text>}
-                        </Stack>
+                        <ScrollArea.Autosize mah="70vh" offsetScrollbars>
+                            <Stack spacing="xs">
+                                {typeDefinition.inputs.length ?
+                                    typeDefinition.inputs.map((input, i) =>
+                                        <InputConfig id={input.id} divider={i != 0} key={input.id} />
+                                    ) :
+                                    <Text align="center" size="sm" color="dimmed">
+                                        No Inputs
+                                    </Text>}
+                            </Stack>
+                        </ScrollArea.Autosize>
 
-                        <Stack spacing="xs">
-                            {typeDefinition.outputs.length ?
-                                typeDefinition.outputs.map((output, i) =>
-                                    <OutputConfig id={output.id} divider={i != 0} key={output.id} />
-                                ) :
-                                <Text align="center" size="sm" color="dimmed">
-                                    No Outputs
-                                </Text>}
-                        </Stack>
+                        <ScrollArea.Autosize mah="70vh" offsetScrollbars>
+                            <Stack spacing="xs">
+                                {typeDefinition.outputs.length ?
+                                    typeDefinition.outputs.map((output, i) =>
+                                        <OutputConfig id={output.id} divider={i != 0} key={output.id} />
+                                    ) :
+                                    <Text align="center" size="sm" color="dimmed">
+                                        No Outputs
+                                    </Text>}
+                            </Stack>
+                        </ScrollArea.Autosize>
 
                         <Stack spacing="xs">
                             {nodeIntegrations.map(
