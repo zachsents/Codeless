@@ -1,8 +1,8 @@
 import { ActionIcon, Button, Divider, Flex, Group, Popover, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
-import { useDeleteNode, useNodeProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { useDeleteNode, useNodeId, useNodeProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import AnimatedTabs from "@web/components/AnimatedTabs"
 import { useAppContext, useReplayContext } from "@web/modules/context"
-import { getNodeIntegrationsStatus } from "@web/modules/graph-util"
+import { getNodeIntegrationsStatus, useCurrentlySelectedNode } from "@web/modules/graph-util"
 import { TbCopy, TbExternalLink, TbTrash } from "react-icons/tb"
 import IntegrationAlert from "../config-panel/IntegrationAlert"
 import InputConfig from "./InputConfig"
@@ -14,8 +14,10 @@ export default function ConfigPopover({ children }) {
     const theme = useMantineTheme()
 
     const typeDefinition = useTypeDefinition()
-    const selected = useNodeProperty(null, "selected")
-    const dragging = useNodeProperty(null, "dragging")
+    const nodeId = useNodeId()
+    const selectedNode = useCurrentlySelectedNode()
+    const isSelected = selectedNode?.id == nodeId
+    const isDragging = useNodeProperty(null, "dragging")
 
     const deleteNode = useDeleteNode()
 
@@ -27,7 +29,7 @@ export default function ConfigPopover({ children }) {
 
     return (
         <Popover
-            opened={selected && !dragging}
+            opened={isSelected && !isDragging}
             withinPortal
             position={!!run ? "left" : "right"}
             shadow="sm"
