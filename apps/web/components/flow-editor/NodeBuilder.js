@@ -12,6 +12,7 @@ import Toolbar from "./Toolbar"
 import Node from "./node/Node"
 
 import 'reactflow/dist/style.css'
+import ReplayPanel from "./run-replay/ReplayPanel"
 
 
 export default function NodeBuilder() {
@@ -65,6 +66,7 @@ export default function NodeBuilder() {
             />
             <Toolbar />
             {/* <ConfigPanel /> */}
+            <ReplayPanel />
 
             <ChangeWatcher onChange={setGraph} />
             <Cleaner />

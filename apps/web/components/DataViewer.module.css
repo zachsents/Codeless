@@ -1,0 +1,28 @@
+.hideChevron .chevron {
+    visibility: hidden;
+}
+
+.label {
+    padding: 6px var(--mantine-spacing-xs);
+    /* padding: 4px; */
+}
+
+.content {
+    padding-bottom: 0;
+}
+
+.item {
+    border-bottom: none;
+}
+
+.item:not(.topLevel) {
+    border-left: 1px solid var(--mantine-color-gray-4);
+}
+
+.control {
+    padding-left: 5px;
+}
+
+.onlyCode {
+    font-size: var(--mantine-font-size-lg);
+}

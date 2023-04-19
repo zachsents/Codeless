@@ -23,7 +23,7 @@ export async function getDocsWithIds(ref) {
 
 export function useRealtime(ref, {
     selector,
-    dependencies,
+    dependencies = [],
 } = {}) {
     const [state, setState] = useState()
 
@@ -38,7 +38,7 @@ export function useRealtime(ref, {
                     selector?.(snap) ?? snap.docs?.map(docDataWithId) ?? docDataWithId(snap)
                 )
             })
-    }, dependencies ?? [!!ref])
+    }, [!!ref, ...dependencies])
 
     return [state]
 }

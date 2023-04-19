@@ -1,13 +1,14 @@
 import { Badge, Button, Divider, Group, Loader, Header as MantineHeader, Switch, Text, Tooltip } from "@mantine/core"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { TbArrowLeft, TbClockPlay, TbLayoutList } from "react-icons/tb"
+import { TbArrowLeft, TbLayoutList } from "react-icons/tb"
 
 import { TriggerNodeDefinitions } from "@minus/client-nodes"
 import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
 import FlowControlButton from "@web/components/FlowControlButton"
 import { useFlowContext } from "@web/modules/context"
 import { useState } from "react"
+import RunReplayPopover from "../run-replay/RunReplayPopover"
 import Breadcrumbs from "./Breadcrumbs"
 
 
@@ -82,9 +83,7 @@ export default function Header() {
                     <Divider orientation="vertical" />
 
                     {/* Run Replay */}
-                    <Button variant="light" size="md" leftIcon={<TbClockPlay size={24} />}>
-                        Replay
-                    </Button>
+                    <RunReplayPopover />
                 </Group>
             </Group>
         </MantineHeader>

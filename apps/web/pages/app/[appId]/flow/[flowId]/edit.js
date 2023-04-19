@@ -8,7 +8,7 @@ import { ReactFlowProvider } from "reactflow"
 import NodeBuilder from "@web/components/flow-editor/NodeBuilder"
 import Header from "@web/components/flow-editor/header/Header"
 import NodeMenu from "@web/components/flow-editor/node-menu/NodeMenu"
-import { AppProvider, FlowProvider, useFlowContext } from "@web/modules/context"
+import { AppProvider, FlowProvider, ReplayProvider, useFlowContext } from "@web/modules/context"
 import { useFlowId, useMustBeSignedIn } from "@web/modules/hooks"
 
 
@@ -19,17 +19,19 @@ export default function EditFlow() {
     return (
         <AppProvider redirectOnNotExist="/dashboard">
             <FlowProvider redirectOnNotExist="/dashboard">
-                <PageTitle />
-                <ReactFlowProvider>
-                    <Stack h="100vh" spacing={0} sx={{ overflow: "hidden" }}>
-                        <Header />
-                        <Box pos="relative" sx={{ flexGrow: 1 }}>
-                            <NodeBuilder />
-                            <NodeMenu />
-                        </Box>
-                    </Stack>
-                    <LastEdited />
-                </ReactFlowProvider>
+                <ReplayProvider>
+                    <PageTitle />
+                    <ReactFlowProvider>
+                        <Stack h="100vh" spacing={0} sx={{ overflow: "hidden" }}>
+                            <Header />
+                            <Box pos="relative" sx={{ flexGrow: 1 }}>
+                                <NodeBuilder />
+                                <NodeMenu />
+                            </Box>
+                        </Stack>
+                        <LastEdited />
+                    </ReactFlowProvider>
+                </ReplayProvider>
             </FlowProvider>
         </AppProvider>
     )

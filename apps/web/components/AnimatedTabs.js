@@ -5,9 +5,15 @@ import styles from "./AnimatedTabs.module.css"
 import { useForceUpdate, useResizeObserver } from "@mantine/hooks"
 
 
-export default function AnimatedTabs({ tabs = [], defaultTab, grow = true, size = "sm", children, miw, ...props }) {
+export default function AnimatedTabs({
+    tabs = [], defaultTab, active, onChange,
+    grow = true, size = "sm", children, miw = 0, ...props
+}) {
 
-    const [active, setActive] = useState(defaultTab ?? tabs[0])
+    if (active === undefined && onChange === undefined)
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        [active, onChange] = useState(defaultTab ?? tabs[0])
+
     const activeIndex = tabs.indexOf(active)
 
     const widthRef = useRef(miw)
@@ -29,7 +35,7 @@ export default function AnimatedTabs({ tabs = [], defaultTab, grow = true, size 
                 <Group grow={grow} spacing={0}>
                     {tabs.map(tab => (
                         <Center
-                            onClick={() => setActive(tab)}
+                            onClick={() => onChange(tab)}
                             px="lg" py="xs" className={styles.tabContainer} key={tab}
                             ref={el => tabRefs.current[tab] = el}
                         >

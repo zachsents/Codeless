@@ -1,7 +1,7 @@
 import { useInterval } from "@mantine/hooks"
 import { produce } from "immer"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react"
-import { applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
+import { applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport, useOnSelectionChange } from "reactflow"
 import shortUUID from "short-uuid"
 import shallow from "zustand/shallow"
 
@@ -48,6 +48,32 @@ export function useConnectedEdges(id) {
             b.map(edge => edge.id)
         )
     )
+}
+
+
+/**
+ * Hook that provides the currently selected node. The
+ * result will be undefined if not exactly 1 node is
+ * selected.
+ *
+ * @export
+ */
+export function useCurrentlySelectedNode() {
+
+    const rf = useReactFlow()
+
+    const [selectedNode, setSelectedNode] = useState(() => {
+        const selected = rf.getNodes().filter(node => node.selected)
+        return selected.length == 1 ? selected[0] : undefined
+    })
+
+    useOnSelectionChange({
+        onChange: ({ nodes }) => setSelectedNode(
+            nodes.length == 1 ?
+                nodes[0] : undefined
+        ),
+    })
+    return selectedNode
 }
 
 

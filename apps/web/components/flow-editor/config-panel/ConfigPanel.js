@@ -33,7 +33,7 @@ export default function ConfigPanel() {
                 style={configContainerStyle}
                 key={selectedNode?.id ?? "none"}
             >
-                <ScrollArea.Autosize maxHeight="100%" sx={{ pointerEvents: "auto" }}>
+                <ScrollArea.Autosize mah="100%" sx={{ pointerEvents: "auto" }}>
                     <Flex py="lg" pr="lg" direction="column" align="flex-end" justify="flex-start">
                         {selectedNode &&
                             <NodeConfig node={selectedNode} />}

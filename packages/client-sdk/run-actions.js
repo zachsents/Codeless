@@ -137,20 +137,49 @@ export function createLatestRunQuery(flowId) {
 }
 
 
-function isEnded(status) {
+/**
+ * Creates a query that looks for the latest runs
+ * for a flow. Limit is specified by the limit param.
+ *
+ * @export
+ * @param {string} flowId
+ * @param {Object} [options]
+ * @param {number} [options.limit=10]
+ */
+export function createRunQuery(flowId, {
+    limit: limitNum = 10,
+} = {}) {
+    return flowId && query(
+        RunsCollection(),
+        where("flow", "==", flowId),
+        orderBy("ranAt", "desc"),
+        limit(limitNum)
+    )
+}
+
+
+export function isEnded(status) {
     return isFinished(status) || isFailed(status)
 }
 
-function isFinished(status) {
+export function isFinished(status) {
     return [
         RunStatus.Finished,
         RunStatus.FinishedWithErrors,
     ].includes(status)
 }
 
-function isFailed(status) {
+export function isFailed(status) {
     return [
         RunStatus.Failed,
         RunStatus.FailedValidation,
     ].includes(status)
+}
+
+export function isPending(status) {
+    return status === RunStatus.Pending
+}
+
+export function isScheduled(status) {
+    return status === RunStatus.Scheduled
 }

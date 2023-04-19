@@ -14,6 +14,7 @@ import ScheduleFlowModal from "../components/modals/ScheduleFlowModal"
 import NodePalette from "../components/flow-editor/node-palette/NodePalette"
 
 import { initializeFirebase } from "@minus/client-sdk"
+import { DataViewerModal, DataViewerModalName } from "@web/components/modals/DataViewerModal"
 initializeFirebase()
 
 
@@ -50,6 +51,7 @@ const modals = {
     DeleteFlow: DeleteFlowModal,
     ScheduleFlow: ScheduleFlowModal,
     NodePalette: NodePalette,
+    [DataViewerModalName]: DataViewerModal,
 }
 
 

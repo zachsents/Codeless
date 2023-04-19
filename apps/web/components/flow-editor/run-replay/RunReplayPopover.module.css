@@ -1,0 +1,15 @@
+.runRow {
+    cursor: pointer;
+}
+
+.runRow:hover {
+    background-color: var(--mantine-color-gray-1);
+}
+
+.runRow.selectedRunRow {
+    background-color: var(--mantine-color-yellow-2);
+}
+
+.scrollViewport {
+    padding: 0 var(--mantine-spacing-sm);
+}
