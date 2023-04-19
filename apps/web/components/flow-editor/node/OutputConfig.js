@@ -25,7 +25,7 @@ export default function OutputConfig({ id, divider = true }) {
                 <Group position="apart" noWrap>
                     <Group spacing="xs" noWrap>
 
-                        <Tooltip label="Toggle Visibility">
+                        <Tooltip label="Toggle Visibility" withinPortal>
                             <ActionIcon
                                 onClick={() => setShowing(!showing)}
                                 size="md" radius="xl"
