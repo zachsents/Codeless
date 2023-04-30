@@ -123,7 +123,7 @@ export class NodeDefinition {
      * @type {OutputDefinition[]}
      * @memberof NodeDefinition
      */
-    outputs
+    outputs = []
 
     /**
      * Ran before onStart. This is useful for setting up listeners that need
@@ -155,18 +155,19 @@ export class NodeDefinition {
      */
     constructor(definition) {
 
-        const { inputs, outputs, ...otherProperties } = definition
+        const { inputs, ...otherProperties } = definition
 
         // create full InputDefinition objects from raw (potentially shorthand) inputs
         this.inputs = inputs?.map(
             rawInput => {
-                const fullInput = Object.assign({},
-                    DEFAULT_INPUT_DEFINITION,
-                    typeof rawInput === "string" ? { name: rawInput } : rawInput
-                )
+                const fullInput = {
+                    ...DEFAULT_INPUT_DEFINITION,
+                    ...(typeof rawInput === "string" ?
+                        { name: rawInput } : rawInput),
+                }
 
                 // $ is shorthand for flat single
-                if(fullInput.name.startsWith("$"))
+                if (fullInput.name.startsWith("$"))
                     fullInput.arrayMode = ArrayMode.FlatSingle
 
                 return fullInput
@@ -174,12 +175,12 @@ export class NodeDefinition {
         ) ?? []
 
         // create full OutputDefinition objects from raw (potentially shorthand) outputs
-        this.outputs = outputs?.map(
-            rawOutput => Object.assign({},
-                DEFAULT_OUTPUT_DEFINITION,
-                typeof rawOutput === "string" ? { name: rawOutput } : rawOutput
-            )
-        ) ?? []
+        // this.outputs = outputs?.map(
+        //     rawOutput => Object.assign({},
+        //         DEFAULT_OUTPUT_DEFINITION,
+        //         typeof rawOutput === "string" ? { name: rawOutput } : rawOutput
+        //     )
+        // ) ?? []
 
         // copy all other properties
         Object.entries(otherProperties).forEach(([key, val]) => {

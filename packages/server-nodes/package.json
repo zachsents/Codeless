@@ -13,6 +13,7 @@
     "type": "module",
     "dependencies": {
         "@minus/server-sdk": "workspace:*",
+        "@minus/gee3": "workspace:*",
         "firebase-admin": "^11.5.0",
         "glob": "^9.2.1",
         "isolated-vm": "^4.4.2",

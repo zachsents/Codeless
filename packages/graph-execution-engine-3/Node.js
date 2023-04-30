@@ -1,4 +1,4 @@
-import { InputHandle, OutputHandle } from "./Handle.js"
+import { Handle, InputHandle, OutputHandle } from "./Handle.js"
 import { NodeDefinition } from "./NodeDefinition.js"
 import { processArray } from "./ArrayMode.js"
 import { ValueTracker } from "./ValueTracker.js"
@@ -72,6 +72,61 @@ export class Node {
     }
 
     /**
+     * Gets the input mode of the specified input from the node's
+     * data.
+     *
+     * @param {string} inputName
+     * @return {"handle" | "config"} 
+     * @memberof Node
+     */
+    getInputMode(inputName) {
+        return Object.entries(this.rfNode.data)
+            .find(([key]) => key == `InputMode.${inputName}`)[1]
+    }
+
+    /**
+     * Gets the input value of the specified input from the node's
+     * data.
+     *
+     * @param {string} inputId
+     * @return {"handle" | "config"} 
+     * @memberof Node
+     */
+    getInputValue(inputId) {
+        return Object.entries(this.rfNode.data)
+            .find(([key]) => key == `InputValue.${inputId}`)?.[1]
+    }
+
+    /**
+     * Gets list data for an input name.
+     *
+     * @param {string} inputName
+     * @return {Array<{ id: string, name: string? }>} 
+     * @memberof Node
+     */
+    getListData(inputName) {
+        return Object.entries(this.rfNode.data)
+            .find(([key]) => key == `List.${inputName}`)?.[1]
+    }
+
+    /**
+     * Processes an input value for running given the target input definition.
+     *
+     * @param {string} inputId
+     * @return {*} 
+     * @memberof Node
+     */
+    getProcessedInputValue(inputId) {
+        // determine if input value should be from handle or config
+        const isHandle = this.getInputMode(Handle.parseId(inputId).name) == "handle"
+
+        // get array mode
+        const arrayMode = this.definition.getHandleDefinition(inputId).arrayMode
+
+        return processArray(arrayMode, isHandle ? this.inputs[inputId].consume() : [this.getInputValue(inputId)])
+    }
+
+    /**
      * Whether or not the node has enough values on all its inputs
      * to run.
      * @type {boolean}
@@ -94,14 +149,24 @@ export class Node {
     }
 
     /**
-     * Fires the onStart event for a node
+     * Fires the onStart event for a node. Also checks to see if any inputs
+     * are configured as handles. If not, then it fires onInputsReady, too.
      * @async
      * @param {*} setupPayload
      * @return {Promise<void>} 
      * @memberof Node
      */
     async start(setupPayload) {
-        return this.definition.onStart?.bind(this)(setupPayload)
+        // fire onStart event
+        await this.definition.onStart?.bind(this)(setupPayload)
+
+        // check if any input modes are "handle"
+        const hasHandles = Object.entries(this.rfNode.data).some(
+            ([key, val]) => key.includes("InputMode") && val == "handle"
+        )
+
+        // if not, then notify ourselves, which should trigger the node to run
+        !hasHandles && this.notify()
     }
 
     /**
@@ -122,27 +187,30 @@ export class Node {
      */
     notify() {
         if (this.satisfied) {
-            // create input values
-            const inputValues = {}
-            Object.values(this.inputs).forEach(input => {
 
-                // make sure input definition exists
-                if(input.definition == null)
-                    throw new Error(`Invalid input: "${input.id}". The graph could be corrupted. Let Zach know.`)
+            // create input values - loop through input definitions
+            const inputValues = Object.fromEntries(
+                this.definition.inputs.map(inputDef => {
 
-                // do array mode transform
-                const transformedValues = processArray(input.definition.arrayMode, input.consume())
+                    // get list data if it exists
+                    const listData = this.getListData(inputDef.name)
 
-                // for list handles -- put them in an array by index
-                if (input.index != null) {
-                    inputValues[input.name] ??= []
-                    inputValues[input.name][input.index] = transformedValues
-                    return
-                }
+                    // determine if the list should be an array or object
+                    const isNamedList = listData?.every(item => item.name != null)
 
-                // for regular handles, just put them in by id
-                inputValues[input.id] = transformedValues
-            })
+                    // process values
+                    const values = listData?.map(item => {
+                        const val = this.getProcessedInputValue(`${inputDef.name}.${item.id}`)
+                        return isNamedList ? [item.name, val] : val
+                    })
+                        ?? this.getProcessedInputValue(inputDef.name)
+
+                    // if it's a named list, convert to object
+                    return [inputDef.name, isNamedList ? Object.fromEntries(values) : values]
+                })
+            )
+
+            // console.log(inputValues)
 
             // track inputs
             this.graph.inputTracker.report(this.id, inputValues)
@@ -169,7 +237,7 @@ export class Node {
     publish(outputs) {
         // track outputs
         this.graph.outputTracker.report(
-            this.id, 
+            this.id,
             Object.fromEntries(
                 Object.entries(outputs).map(([key, val]) =>
                     [key, val && ValueTracker.cleanValue(val)]

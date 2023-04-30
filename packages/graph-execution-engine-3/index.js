@@ -6,3 +6,5 @@ export const registerDefinitions = NodeDefinition.registerDefinitions
 export const registerDefinition = NodeDefinition.registerDefinition
 
 export * from "./Graph.js"
+
+export { ArrayMode } from "./ArrayMode.js"

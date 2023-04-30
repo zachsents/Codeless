@@ -2,10 +2,8 @@
 
 export default {
     id: "basic:Print",
-    name: "Print",
 
     inputs: ["_in"],
-    outputs: [],
 
     onInputsReady({ _in }) {
         const printContent = _in.length == 1 ? _in[0] : _in

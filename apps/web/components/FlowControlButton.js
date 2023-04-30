@@ -15,7 +15,7 @@ export default function FlowControlButton({ flow, appId, id, label, icon, small,
         }
     }
 
-    const { isLoading, isError, isSuccess, refetch } = useQuery({
+    const { isFetching: isLoading, isError, isSuccess, refetch } = useQuery({
         queryKey: ["flowControl", id, flow.id],
         queryFn: () => onActivate?.({ flow, appId }),
         enabled: false,

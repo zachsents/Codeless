@@ -1,0 +1,559 @@
+{
+    "nodes": [
+        {
+            "width": 334,
+            "height": 50,
+            "id": "trigger",
+            "type": "basic:DefaultTrigger",
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "draggable": false,
+            "deletable": false,
+            "focusable": false,
+            "data": {
+                "state": {},
+                "expanded": false,
+                "focused": false,
+                "OutputShowing.$": true
+            },
+            "state": {},
+            "positionAbsolute": {
+                "x": 0,
+                "y": 0
+            },
+            "selected": false
+        },
+        {
+            "width": 498,
+            "height": 94,
+            "id": "googlesheets:Table_agVJCdNiicm45vDY46dXYh",
+            "type": "googlesheets:Table",
+            "data": {
+                "state": {
+                    "useEntireSheet": true,
+                    "spreadsheetId": "141NUUnvN8IYJgI9jLz_6SMn9b46hXhBRyVRvTMgKiHs",
+                    "spreadsheetName": "No-Code Testing",
+                    "sheets": [
+                        "Sheet1",
+                        "Maintenance Tickets",
+                        "Customers",
+                        "Orders",
+                        "Tweets",
+                        "Test Data (DO NOT CHANGE)"
+                    ],
+                    "sheetName": null,
+                    "isLoading": false
+                },
+                "InputMode.$spreadsheetUrl": "config",
+                "InputMode.$sheetName": "config",
+                "InputMode.$range": "config",
+                "InputMode.$headerRow": "config",
+                "InputMode.$dataStartRow": "config",
+                "InputValue.$sheetName": "Customers",
+                "OutputShowing.table": true,
+                "InputValue.$spreadsheetUrl": "https://docs.google.com/spreadsheets/d/141NUUnvN8IYJgI9jLz_6SMn9b46hXhBRyVRvTMgKiHs/edit#gid=23008711",
+                "InputValue.$headerRow": 1,
+                "InputValue.$dataStartRow": 2
+            },
+            "position": {
+                "x": -238.46096561485749,
+                "y": -350.1277795720221
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": -238.46096561485749,
+                "y": -350.1277795720221
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 221,
+            "height": 94,
+            "id": "tables:GetField_ksumojwUyqMF2kZ6apLvm4",
+            "type": "tables:GetField",
+            "data": {
+                "state": {},
+                "InputMode.rows": "handle",
+                "InputMode.field": "config",
+                "InputValue.field": "Last Name",
+                "OutputShowing.data": true
+            },
+            "position": {
+                "x": 646.090301745238,
+                "y": -270.99739196681884
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 646.090301745238,
+                "y": -270.99739196681884
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 221,
+            "height": 94,
+            "id": "tables:GetField_2nrTVeMh9sanoiKWATuT9t",
+            "type": "tables:GetField",
+            "data": {
+                "state": {},
+                "InputMode.rows": "handle",
+                "InputMode.field": "config",
+                "InputValue.field": "First Name",
+                "OutputShowing.data": true
+            },
+            "position": {
+                "x": 645.0266779999922,
+                "y": -391.1868751795757
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 645.0266779999922,
+                "y": -391.1868751795757
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 238,
+            "height": 84,
+            "id": "basic:Template_idUn2nLjr5W5Mq4HWTTrFt",
+            "type": "basic:Template",
+            "data": {
+                "state": {},
+                "InputMode.template": "config",
+                "List.data": [
+                    {
+                        "id": "dGZGpCcFym",
+                        "name": "first"
+                    },
+                    {
+                        "id": "85PteNgxP1",
+                        "name": "last"
+                    },
+                    {
+                        "id": "RZhLOyNtGM",
+                        "name": "ticket"
+                    }
+                ],
+                "OutputShowing.result": true,
+                "InputMode.data": "handle",
+                "InputValue.template": "{first} {last} submitted a maintenance ticket saying {ticket}. Write an email response from \"Management Team\"."
+            },
+            "position": {
+                "x": 1076.004104178669,
+                "y": -276.5885835652773
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 1076.004104178669,
+                "y": -276.5885835652773
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 221,
+            "height": 94,
+            "id": "tables:GetField_oVwMKhLEnLBfNRhsJdGxPv",
+            "type": "tables:GetField",
+            "data": {
+                "state": {},
+                "InputMode.rows": "handle",
+                "InputMode.field": "config",
+                "InputValue.field": "Ticket",
+                "OutputShowing.data": true
+            },
+            "position": {
+                "x": 649.2811729809748,
+                "y": -141.2352950468512
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 649.2811729809748,
+                "y": -141.2352950468512
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 217,
+            "height": 50,
+            "id": "openai:AskGPT3_3DTdRsjHEF1PLGkEZaubyr",
+            "type": "openai:AskGPT3",
+            "data": {
+                "state": {},
+                "InputMode.prompt": "handle",
+                "InputMode.temperature": "config",
+                "OutputShowing.response": true,
+                "InputValue.temperature": 0.7000000000000001
+            },
+            "position": {
+                "x": 1450.9720703420596,
+                "y": -249.90074678468778
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 1450.9720703420596,
+                "y": -249.90074678468778
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 165,
+            "height": 56,
+            "id": "basic:SendEmail_d9mWEH43j6KDYvHjrtWYAk",
+            "type": "basic:SendEmail",
+            "data": {
+                "state": {},
+                "InputMode.to": "handle",
+                "InputMode.subject": "config",
+                "InputMode.body": "handle",
+                "InputValue.to": "zachsents.al",
+                "InputValue.subject": "Testing maintenance tickets"
+            },
+            "position": {
+                "x": 1816.9713316181037,
+                "y": -307.6943075573722
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 1816.9713316181037,
+                "y": -307.6943075573722
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 221,
+            "height": 94,
+            "id": "tables:GetField_9ZyXQfBT9RPoUPoMbEPU4G",
+            "type": "tables:GetField",
+            "data": {
+                "state": {},
+                "InputMode.rows": "handle",
+                "InputMode.field": "config",
+                "InputValue.field": "Email",
+                "OutputShowing.data": true
+            },
+            "position": {
+                "x": 645.8952076849456,
+                "y": -526.9320565634212
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 645.8952076849456,
+                "y": -526.9320565634212
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 221,
+            "height": 94,
+            "id": "tables:GetField_5M8VtuJWhFYSj53dTWvHhU",
+            "type": "tables:GetField",
+            "data": {
+                "state": {},
+                "InputMode.rows": "handle",
+                "InputMode.field": "config",
+                "InputValue.field": "Times Contacted",
+                "OutputShowing.data": true
+            },
+            "position": {
+                "x": 645.0312703422844,
+                "y": -684.9341033606358
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 645.0312703422844,
+                "y": -684.9341033606358
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 166,
+            "height": 56,
+            "id": "math:Add_m62ebjD1ixfMiG77jaVGPh",
+            "type": "math:Add",
+            "data": {
+                "state": {},
+                "List.input": [
+                    {
+                        "id": "BV1u6W8wuO"
+                    },
+                    {
+                        "id": "0rKxPiy9Mh"
+                    }
+                ],
+                "OutputShowing.result": true,
+                "InputMode.input": "handle"
+            },
+            "position": {
+                "x": 962.6393199346877,
+                "y": -771.4435874951894
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 962.6393199346877,
+                "y": -771.4435874951894
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 222,
+            "height": 50,
+            "id": "basic:Number_tWz8KadRky39pLR2n9PmDo",
+            "type": "basic:Number",
+            "data": {
+                "state": {
+                    "$": 1
+                },
+                "OutputShowing.$": true
+            },
+            "position": {
+                "x": 657.3910340250335,
+                "y": -870.4708664040353
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 657.3910340250335,
+                "y": -870.4708664040353
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 256,
+            "height": 94,
+            "id": "tables:SetColumn_jBhxWvbshTStGmszCWDMfh",
+            "type": "tables:SetColumn",
+            "data": {
+                "state": {},
+                "InputMode.rows": "handle",
+                "InputMode.field": "config",
+                "InputMode.value": "handle",
+                "InputValue.field": "Times Contacted"
+            },
+            "position": {
+                "x": 1358.7465548716377,
+                "y": -801.4834060369742
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 1358.7465548716377,
+                "y": -801.4834060369742
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 117,
+            "height": 50,
+            "id": "basic:SetVariable_7Q1cetE4yHWjAsayvJjAp6",
+            "type": "basic:SetVariable",
+            "data": {
+                "state": {},
+                "InputMode.name": "config",
+                "InputMode.$": "handle",
+                "InputValue.name": "table"
+            },
+            "position": {
+                "x": 347.7467956955139,
+                "y": -649.0503374608688
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 347.7467956955139,
+                "y": -649.0503374608688
+            },
+            "selected": false,
+            "dragging": false
+        },
+        {
+            "width": 117,
+            "height": 50,
+            "id": "basic:UseVariable_rUUf7ZjNcymTubHMdp4jzS",
+            "type": "basic:UseVariable",
+            "data": {
+                "state": {},
+                "InputMode.name": "config",
+                "InputValue.name": "table",
+                "OutputShowing.$": true
+            },
+            "position": {
+                "x": 1168.3988544354995,
+                "y": -890.7314790832656
+            },
+            "focusable": false,
+            "positionAbsolute": {
+                "x": 1168.3988544354995,
+                "y": -890.7314790832656
+            },
+            "selected": false,
+            "dragging": false
+        }
+    ],
+    "edges": [
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "googlesheets:Table_agVJCdNiicm45vDY46dXYh",
+            "sourceHandle": "table",
+            "target": "tables:GetField_ksumojwUyqMF2kZ6apLvm4",
+            "targetHandle": "rows",
+            "id": "reactflow__edge-googlesheets:Table_agVJCdNiicm45vDY46dXYhtable-tables:GetField_ksumojwUyqMF2kZ6apLvm4rows",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "googlesheets:Table_agVJCdNiicm45vDY46dXYh",
+            "sourceHandle": "table",
+            "target": "tables:GetField_2nrTVeMh9sanoiKWATuT9t",
+            "targetHandle": "rows",
+            "id": "reactflow__edge-googlesheets:Table_agVJCdNiicm45vDY46dXYhtable-tables:GetField_2nrTVeMh9sanoiKWATuT9trows",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "tables:GetField_2nrTVeMh9sanoiKWATuT9t",
+            "sourceHandle": "data",
+            "target": "basic:Template_idUn2nLjr5W5Mq4HWTTrFt",
+            "targetHandle": "data.dGZGpCcFym",
+            "id": "reactflow__edge-tables:GetField_2nrTVeMh9sanoiKWATuT9tdata-basic:Template_idUn2nLjr5W5Mq4HWTTrFtdata.dGZGpCcFym",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "tables:GetField_ksumojwUyqMF2kZ6apLvm4",
+            "sourceHandle": "data",
+            "target": "basic:Template_idUn2nLjr5W5Mq4HWTTrFt",
+            "targetHandle": "data.85PteNgxP1",
+            "id": "reactflow__edge-tables:GetField_ksumojwUyqMF2kZ6apLvm4data-basic:Template_idUn2nLjr5W5Mq4HWTTrFtdata.85PteNgxP1",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "googlesheets:Table_agVJCdNiicm45vDY46dXYh",
+            "sourceHandle": "table",
+            "target": "tables:GetField_oVwMKhLEnLBfNRhsJdGxPv",
+            "targetHandle": "rows",
+            "id": "reactflow__edge-googlesheets:Table_agVJCdNiicm45vDY46dXYhtable-tables:GetField_oVwMKhLEnLBfNRhsJdGxPvrows",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "tables:GetField_oVwMKhLEnLBfNRhsJdGxPv",
+            "sourceHandle": "data",
+            "target": "basic:Template_idUn2nLjr5W5Mq4HWTTrFt",
+            "targetHandle": "data.RZhLOyNtGM",
+            "id": "reactflow__edge-tables:GetField_oVwMKhLEnLBfNRhsJdGxPvdata-basic:Template_idUn2nLjr5W5Mq4HWTTrFtdata.RZhLOyNtGM",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "basic:Template_idUn2nLjr5W5Mq4HWTTrFt",
+            "sourceHandle": "result",
+            "target": "openai:AskGPT3_3DTdRsjHEF1PLGkEZaubyr",
+            "targetHandle": "prompt",
+            "id": "reactflow__edge-basic:Template_idUn2nLjr5W5Mq4HWTTrFtresult-openai:AskGPT3_3DTdRsjHEF1PLGkEZaubyrprompt",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "openai:AskGPT3_3DTdRsjHEF1PLGkEZaubyr",
+            "sourceHandle": "response",
+            "target": "basic:SendEmail_d9mWEH43j6KDYvHjrtWYAk",
+            "targetHandle": "body",
+            "id": "reactflow__edge-openai:AskGPT3_3DTdRsjHEF1PLGkEZaubyrresponse-basic:SendEmail_d9mWEH43j6KDYvHjrtWYAkbody",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "googlesheets:Table_agVJCdNiicm45vDY46dXYh",
+            "sourceHandle": "table",
+            "target": "tables:GetField_9ZyXQfBT9RPoUPoMbEPU4G",
+            "targetHandle": "rows",
+            "id": "reactflow__edge-googlesheets:Table_agVJCdNiicm45vDY46dXYhtable-tables:GetField_9ZyXQfBT9RPoUPoMbEPU4Grows",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "tables:GetField_9ZyXQfBT9RPoUPoMbEPU4G",
+            "sourceHandle": "data",
+            "target": "basic:SendEmail_d9mWEH43j6KDYvHjrtWYAk",
+            "targetHandle": "to",
+            "id": "reactflow__edge-tables:GetField_9ZyXQfBT9RPoUPoMbEPU4Gdata-basic:SendEmail_d9mWEH43j6KDYvHjrtWYAkto",
+            "selected": false
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "googlesheets:Table_agVJCdNiicm45vDY46dXYh",
+            "sourceHandle": "table",
+            "target": "tables:GetField_5M8VtuJWhFYSj53dTWvHhU",
+            "targetHandle": "rows",
+            "id": "reactflow__edge-googlesheets:Table_agVJCdNiicm45vDY46dXYhtable-tables:GetField_5M8VtuJWhFYSj53dTWvHhUrows"
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "basic:Number_tWz8KadRky39pLR2n9PmDo",
+            "sourceHandle": "$",
+            "target": "math:Add_m62ebjD1ixfMiG77jaVGPh",
+            "targetHandle": "input.BV1u6W8wuO",
+            "id": "reactflow__edge-basic:Number_tWz8KadRky39pLR2n9PmDo$-math:Add_m62ebjD1ixfMiG77jaVGPhinput.BV1u6W8wuO"
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "tables:GetField_5M8VtuJWhFYSj53dTWvHhU",
+            "sourceHandle": "data",
+            "target": "math:Add_m62ebjD1ixfMiG77jaVGPh",
+            "targetHandle": "input.0rKxPiy9Mh",
+            "id": "reactflow__edge-tables:GetField_5M8VtuJWhFYSj53dTWvHhUdata-math:Add_m62ebjD1ixfMiG77jaVGPhinput.0rKxPiy9Mh"
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "googlesheets:Table_agVJCdNiicm45vDY46dXYh",
+            "sourceHandle": "table",
+            "target": "basic:SetVariable_7Q1cetE4yHWjAsayvJjAp6",
+            "targetHandle": "$",
+            "id": "reactflow__edge-googlesheets:Table_agVJCdNiicm45vDY46dXYhtable-basic:SetVariable_7Q1cetE4yHWjAsayvJjAp6$"
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "basic:UseVariable_rUUf7ZjNcymTubHMdp4jzS",
+            "sourceHandle": "$",
+            "target": "tables:SetColumn_jBhxWvbshTStGmszCWDMfh",
+            "targetHandle": "rows",
+            "id": "reactflow__edge-basic:UseVariable_rUUf7ZjNcymTubHMdp4jzS$-tables:SetColumn_jBhxWvbshTStGmszCWDMfhrows"
+        },
+        {
+            "focusable": false,
+            "type": "dataEdge",
+            "source": "math:Add_m62ebjD1ixfMiG77jaVGPh",
+            "sourceHandle": "result",
+            "target": "tables:SetColumn_jBhxWvbshTStGmszCWDMfh",
+            "targetHandle": "value",
+            "id": "reactflow__edge-math:Add_m62ebjD1ixfMiG77jaVGPhresult-tables:SetColumn_jBhxWvbshTStGmszCWDMfhvalue"
+        }
+    ]
+}

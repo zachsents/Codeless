@@ -19,10 +19,20 @@ export class Sheet {
     }
 
     range(...args) {
+        // accept a Range without a sheet as an arg
         if (args[0] instanceof Range) {
             args[0].sheet = this
             return args[0]
         }
+
+        // accept a full range string as an arg
+        if (typeof args[0] === "string" && args[1] === undefined) {
+            const range = Range.fromString(args[0])
+            range.sheet = this
+            return range
+        }
+
+        // fallback to Range constructor
         return new Range(this, ...args)
     }
 

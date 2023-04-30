@@ -166,11 +166,31 @@ export class Graph {
         return this.returnTracker.report.bind(this.returnTracker)
     }
 
+    /**
+     * Creates a variable on the graph. If the variable already exists,
+     * returns the existing variable.
+     * 
+     * Unless you're doing something specific, it's recommended
+     * to use `subscribeToVariable` or `setVariable` instead, which
+     * will create the variable if it doesn't exist.
+     *
+     * @param {string} name
+     * @return {Variable} 
+     * @memberof Graph
+     */
     createVariable(name) {
         this.variables ??= {}
         return this.variables[name] ??= new Variable(this)
     }
 
+    /**
+     * Subscribes to a variable on the graph. Creates a variable if it doesn't exist.
+     *
+     * @param {string} name
+     * @param {Function | true} callback If true, returns a promise instead of a callback subscription.
+     * @return {void | Promise} 
+     * @memberof Graph
+     */
     subscribeToVariable(name, callback) {
         const variable = this.createVariable(name)
 
@@ -178,6 +198,14 @@ export class Graph {
         return callback === true ? variable.subscribePromise() : variable.subscribe(callback)
     }
 
+    /**
+     * Sets a variable on the graph. Creates a variable if it doesn't exist.
+     *
+     * @param {string} name
+     * @param {*} value
+     * @return {void} 
+     * @memberof Graph
+     */
     setVariable(name, value) {
         return this.createVariable(name).publish(value)
     }

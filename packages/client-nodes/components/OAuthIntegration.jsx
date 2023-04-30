@@ -8,10 +8,11 @@ export default function OAuthIntegration({ id, app, manager, disconnectLabel }) 
 
     const [loading, setLoading] = useState(true)
 
-    const { data: isAuthorized, refetch, isLoading } = useQuery(
-        ["app-integration", app?.id, id],
-        () => manager.isAppAuthorized(app),
-    )
+    const { data: isAuthorized, refetch, isLoading } = useQuery({
+        queryKey: ["app-integration", app?.id, id],
+        queryFn: () => manager.isAppAuthorized(app),
+        retry: false,
+    })
 
     const handleConnect = () => {
         setLoading(true)

@@ -1,26 +1,35 @@
+import { sheets } from "@minus/server-sdk"
 
 
 export default {
     id: "googlesheets:Table",
-    name: "Table",
 
-    inputs: ["$sheet"],
-    outputs: ["table"],
+    inputs: [
+        "$spreadsheetUrl",
+        "$sheetName",
+        "$range",
+        "$headerRow",
+        "$dataStartRow",
+    ],
 
     /**
      * @param {object} inputs
      * @param {import("@minus/server-sdk").sheets.Sheet} inputs.$sheet
      */
-    async onInputsReady({ $sheet }) {
+    async onInputsReady({ $sheetName, $range, $headerRow, $dataStartRow }) {
+
+        const sheetsApi = await sheets.getGoogleSheetsAPI()
+
+        const sheet = sheetsApi.spreadsheet(this.state.spreadsheetId).sheet($sheetName)
 
         const tableOptions = {
-            headerRow: this.state.headerRow,
-            dataStartRow: this.state.startRow,
+            headerRow: $headerRow,
+            dataStartRow: $dataStartRow,
         }
 
         const table = this.state.useEntireSheet ?
-            await $sheet.asTable(tableOptions) :
-            await $sheet.range(...this.state.range).asTable(tableOptions)
+            await sheet.asTable(tableOptions) :
+            await sheet.range($range).asTable(tableOptions)
 
         this.publish({ table })
     },
