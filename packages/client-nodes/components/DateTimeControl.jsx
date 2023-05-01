@@ -17,6 +17,7 @@ export default function DateTimeControl({ inputId, inputProps = {} }) {
             clearable
             valueFormat={theme.other.dateTimeFormat}
             {...inputProps}
+            popoverProps={{ withinPortal: true, shadow: "sm" }}
         />
     )
 }
