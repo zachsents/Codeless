@@ -68,13 +68,14 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
                 app: flow.app,
                 appId: flow.app.id,
             }
-            const { errors, outputs, returns } = await flow.run(run.payload)
+            const { errors, inputs, outputs, returns } = await flow.run(run.payload)
 
             // update doc with run info
             const status = Object.keys(errors).length ? RunStatus.FinishedWithErrors : RunStatus.Finished
             await change.after.ref.update({
                 status,
                 errors,
+                inputs,
                 outputs,
                 returns,
                 ranAt: FieldValue.serverTimestamp(),
@@ -203,7 +204,7 @@ async function _validate(flowId) {
     try {
         const flow = await Flow.fromId(flowId)
 
-        if(!flow.published)
+        if (!flow.published)
             throw new Error("Flow is not enabled")
 
         const NodeDefinitions = await loadNodeDefinitions()

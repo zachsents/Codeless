@@ -1,23 +1,27 @@
+import { ArrayMode } from "@minus/gee3"
 
 
 export default {
     id: "basic:Print",
 
-    inputs: ["_in"],
+    inputs: [
+        {
+            name: "_in",
+            arrayMode: ArrayMode.FlatPreferSingle,
+        },
+    ],
 
     onInputsReady({ _in }) {
-        const printContent = _in.length == 1 ? _in[0] : _in
-
         // print to console
         console.log("\n")
         line()
         console.log("Print Node")
         line()
-        console.log(printContent)
+        console.log(_in)
         line()
 
         // return to flow
-        this.graph.return("logs", printContent)
+        this.graph.return("logs", _in)
     },
 }
 

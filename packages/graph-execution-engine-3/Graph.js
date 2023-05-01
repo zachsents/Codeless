@@ -124,7 +124,7 @@ export class Graph {
 
         // setup new Promise stream & trackers
         this.promiseStream = new PromiseStream(promiseStreamOptions)
-        this.inputTracker = new ValueTracker()
+        this.inputTracker = new ValueTracker(false)
         this.outputTracker = new ValueTracker(false)
         this.errorTracker = new ValueTracker()
         this.returnTracker = new ValueTracker()

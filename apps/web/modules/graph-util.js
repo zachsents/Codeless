@@ -59,21 +59,10 @@ export function useConnectedEdges(id) {
  * @export
  */
 export function useCurrentlySelectedNode() {
-
-    const rf = useReactFlow()
-
-    const [selectedNode, setSelectedNode] = useState(() => {
-        const selected = rf.getNodes().filter(node => node.selected)
+    return useStore(s => {
+        const selected = [...s.nodeInternals.values()].filter(n => n.selected)
         return selected.length == 1 ? selected[0] : undefined
     })
-
-    useOnSelectionChange({
-        onChange: ({ nodes }) => setSelectedNode(
-            nodes.length == 1 ?
-                nodes[0] : undefined
-        ),
-    })
-    return selectedNode
 }
 
 

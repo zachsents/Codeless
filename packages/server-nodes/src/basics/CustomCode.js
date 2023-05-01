@@ -36,18 +36,9 @@ export default {
         // get outputs object
         const outputs = await (await jail.get("outputs")).copy()
 
-        // transform into publishable object
-        const outputListData = this.getListData("output")
-        const publishable = Object.fromEntries(
-            Object.entries(outputs).map(
-                ([key, val]) => [
-                    `output.${outputListData.find(item => item.name == key)?.id}`,
-                    val
-                ]
-            )
-        )
-
-        this.publish(publishable)
+        this.publish({
+            output: outputs,
+        })
 
         isolate.dispose()
     },

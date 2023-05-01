@@ -210,8 +210,6 @@ export class Node {
                 })
             )
 
-            // console.log(inputValues)
-
             // track inputs
             this.graph.inputTracker.report(this.id, inputValues)
 
@@ -234,12 +232,37 @@ export class Node {
      * @param {Object.<string, *>} outputs
      * @memberof Node
      */
-    publish(outputs) {
-        // track outputs
+    publish(_outputs) {
+
+        // convert raw outputs -- need this to handle list outputs
+        // properly
+        const outputs = Object.fromEntries(
+            Object.entries(_outputs).flatMap(([key, val]) => {
+                // get list data
+                const listData = this.getListData(key)
+
+                if (!listData)
+                    return [[key, val]]
+
+                // determine if the list should be an array or object
+                const isNamedList = listData?.every(item => item.name != null)
+
+                // if it is, return entries with the handle IDs looked up from the key names
+                if (isNamedList)
+                    return Object.entries(val).map(
+                        ([k, v]) => [`${key}.${listData.find(item => item.name == k)?.id}`, v]
+                    )
+
+                // otherwise, just make an array in the same order
+                return listData.map((item, i) => [`${key}.${item.id}`, val[i]])
+            })
+        )
+
+        // track outputs -- use the raw ones
         this.graph.outputTracker.report(
             this.id,
             Object.fromEntries(
-                Object.entries(outputs).map(([key, val]) =>
+                Object.entries(_outputs).map(([key, val]) =>
                     [key, val && ValueTracker.cleanValue(val)]
                 )
             )
