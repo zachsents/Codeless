@@ -12,8 +12,9 @@
     "license": "ISC",
     "type": "module",
     "dependencies": {
-        "@minus/server-sdk": "workspace:*",
         "@minus/gee3": "workspace:*",
+        "@minus/server-sdk": "workspace:*",
+        "chalk": "^5.2.0",
         "firebase-admin": "^11.5.0",
         "glob": "^9.2.1",
         "isolated-vm": "^4.4.2",

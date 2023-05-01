@@ -19,14 +19,13 @@ export default {
             description: "The name of the variable to use.",
             tooltip: "The name of the variable to use.",
             icon: Variable,
-            allowedModes: ["config", "handle"],
+            allowedModes: ["config"],
             defaultMode: "config",
         },
     ],
     outputs: [
         {
-            id: "$",
-            name: "Value",
+            id: "value",
             description: "The value of the variable.",
             tooltip: "The value of the variable.",
             icon: SquareX,

@@ -42,9 +42,9 @@ export function safeMap(operation, ...lists) {
     const result = longest.map(
         (_, i) => operation(
             ...lists.map(list => {
-                if(i in list)
+                if (i in list)
                     return list[i]
-                
+
                 return list.length == 1 ? list[0] : undefined
             })
         )
@@ -67,4 +67,16 @@ export function deepFlat(arr) {
     if (arr.some(item => item instanceof Array))
         return deepFlat(arr.flat())
     return arr
+}
+
+
+/**
+ * Converts an object to arrays of entries usable in safeMap
+ *
+ * @param {Object.<string, any[]>} obj
+ */
+export function objectToSafeMapEntries(obj) {
+    return safeMap((...values) => Object.fromEntries(
+        values.map((val, i) => [Object.keys(obj)[i], val])
+    ), ...Object.values(obj))
 }

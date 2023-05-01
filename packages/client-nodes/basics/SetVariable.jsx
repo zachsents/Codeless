@@ -19,12 +19,11 @@ export default {
             description: "The name of the variable to set.",
             tooltip: "The name of the variable to set.",
             icon: Variable,
-            allowedModes: ["config", "handle"],
+            allowedModes: ["config"],
             defaultMode: "config",
         },
         {
-            id: "$",
-            name: "Value",
+            id: "value",
             description: "The value of the variable.",
             tooltip: "The value of the variable.",
             icon: SquareX,
@@ -36,8 +35,8 @@ export default {
     renderName: () => {
         const [nameMode] = useInputMode(null, "name")
         const [name] = useInputValue(null, "name")
-        const [valueMode] = useInputMode(null, "$")
-        const [value] = useInputValue(null, "$")
+        const [valueMode] = useInputMode(null, "value")
+        const [value] = useInputValue(null, "value")
 
         if (nameMode == InputMode.Handle)
             return "Set Variable"

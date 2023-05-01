@@ -1,13 +1,17 @@
+import { ArrayMode } from "@minus/gee3"
 
 
 export default {
     id: "basic:DateTime",
-    name: "Date & Time",
 
-    inputs: [],
-    outputs: ["$"],
+    inputs: [
+        {
+            name: "internalDate",
+            arrayMode: ArrayMode.FlatSingle,
+        }
+    ],
 
-    onStart() {
-        this.publish({ $: new Date(this.state.$) })
+    onInputsReady({ internalDate }) {
+        this.publish({ $: new Date(internalDate) })
     },
 }

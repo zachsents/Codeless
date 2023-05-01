@@ -1,6 +1,5 @@
-import { ActionIcon, Code, CopyButton, Group, Stack, Text } from "@mantine/core"
 import { TbCopy, TbExternalLink } from "react-icons/tb"
-import { Copy, Check, ExternalLink, Link } from "tabler-icons-react"
+import { Link } from "tabler-icons-react"
 
 
 export default {

@@ -1,12 +1,20 @@
+import { ArrayMode } from "@minus/gee3"
 
 export default {
     id: "basic:SetVariable",
-    name: "Set Variable",
 
-    inputs: ["$"],
-    outputs: [],
+    inputs: [
+        {
+            name: "name",
+            arrayMode: ArrayMode.FlatSingle,
+        },
+        {
+            name: "value",
+            arrayMode: ArrayMode.FlatPreferSingle,
+        },
+    ],
 
-    onInputsReady({ $ }) {
-        this.graph.setVariable(this.state.name, $)
+    onInputsReady({ name, value }) {
+        this.graph.setVariable(name, value)
     },
 }

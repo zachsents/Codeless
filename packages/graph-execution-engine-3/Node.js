@@ -96,7 +96,7 @@ export class Node {
      * data.
      *
      * @param {string} inputId
-     * @return {"handle" | "config"} 
+     * @return {*} 
      * @memberof Node
      */
     getInputValue(inputId) {

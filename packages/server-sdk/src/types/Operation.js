@@ -1,7 +1,7 @@
 import { Sentinel } from "./Sentinel.js"
 
 
-const OperationFactory = {
+export const OperationFactory = {
     Fixed: (name, operationFunction) => (...params) => operationOrResult(name, operationFunction, ...params),
     Variadic: (name, binaryReducer) => (...params) => operationOrResult(name, (...params) => params.reduce(binaryReducer), ...params),
 }
