@@ -186,10 +186,8 @@ importers:
 
   packages/graph-execution-engine-3:
     specifiers:
-      '@minus/server-nodes': workspace:*
       jest: ^29.4.3
     devDependencies:
-      '@minus/server-nodes': link:../server-nodes
       jest: 29.4.3
 
   packages/node-creator-cli:

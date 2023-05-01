@@ -10,7 +10,6 @@
     "license": "ISC",
     "type": "module",
     "devDependencies": {
-        "jest": "^29.4.3",
-        "@minus/server-nodes": "workspace:*"
+        "jest": "^29.4.3"
     }
 }
