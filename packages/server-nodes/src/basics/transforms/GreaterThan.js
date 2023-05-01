@@ -1,23 +1,15 @@
-import { Operation, Sentinel } from "@minus/server-sdk"
+import { Operation } from "@minus/server-sdk"
 import { safeMap } from "../../arrayUtilities.js"
 
 
 export default {
     id: "basic:GreaterThan",
-    name: "Greater Than",
 
-    inputs: ["_a", "_b"],
-    outputs: ["$"],
+    inputs: ["input"],
 
-    onInputsReady({ _a, _b }) {
-        
-        ((a, b) => {
-            if (a instanceof Sentinel || b instanceof Sentinel)
-                return Operation.GreaterThan(a, b)
-
-            return a > b
+    onInputsReady({ input }) {
+        this.publish({
+            result: safeMap(Operation.GreaterThan, ...input),
         })
-            |> safeMap(^^, _a, _b)
-            |> this.publish({ $: ^^ })
     },
 }

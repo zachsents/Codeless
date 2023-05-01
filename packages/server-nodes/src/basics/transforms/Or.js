@@ -1,23 +1,15 @@
-import { Operation, Sentinel } from "@minus/server-sdk"
+import { Operation } from "@minus/server-sdk"
 import { safeMap } from "../../arrayUtilities.js"
 
 
 export default {
     id: "basic:Or",
-    name: "Or",
 
-    inputs: ["_a", "_b"],
-    outputs: ["$"],
-    
-    onInputsReady({ _a, _b }) {
+    inputs: ["input"],
 
-        ((a, b) => {
-            if (a instanceof Sentinel || b instanceof Sentinel)
-                return Operation.Or(a, b)
-
-            return a || b
+    onInputsReady({ input }) {
+        this.publish({
+            result: safeMap(Operation.Or, ...input),
         })
-            |> safeMap(^^, _a, _b)
-            |> this.publish({ $: ^^ })
     },
 }

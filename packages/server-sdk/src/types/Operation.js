@@ -2,8 +2,8 @@ import { Sentinel } from "./Sentinel.js"
 
 
 const OperationFactory = {
-    Fixed: (name, operationFunction) => (...params) => new Operation(name, operationFunction, ...params),
-    Variadic: (name, binaryReducer) => (...params) => new Operation(name, (...params) => params.reduce(binaryReducer), ...params),
+    Fixed: (name, operationFunction) => (...params) => operationOrResult(name, operationFunction, ...params),
+    Variadic: (name, binaryReducer) => (...params) => operationOrResult(name, (...params) => params.reduce(binaryReducer), ...params),
 }
 
 
@@ -39,15 +39,16 @@ export class Operation extends Sentinel {
 
 
     /**
-     * Creates an instance of Condition.
+     * Creates an instance of Operation.
      * @param {string} name
-     * @param {(x: *) => *} compareFunction
+     * @param {(...params: any[]) => *} operationFunction
+     * @param {...any} params
      * @memberof Operation
      */
-    constructor(name, compareFunction, ...params) {
+    constructor(name, operationFunction, ...params) {
         super()
         this.name = name
-        this.compareFunction = compareFunction
+        this.operationFunction = operationFunction
         this.params = params
     }
 
@@ -115,12 +116,12 @@ export class Operation extends Sentinel {
 
 
     /**
-     * Recursively evaluates Conditions.
+     * Recursively evaluates Operations.
      * @memberof Operation
      */
     valueOf() {
         return this.params.map(param => param?.valueOf())
-            |> this.compareFunction(...^^)
+            |> this.operationFunction(...^^)
     }
 
 
@@ -143,4 +144,22 @@ export class Operation extends Sentinel {
             // pipe into operation function
             |> (operationMappings[this.name] ?? defaultOp)(...^^)
     }
+}
+
+
+/**
+ * Returns an Operation if any of the params are Sentinels, otherwise returns the result of the operation function.
+ *
+ * @param {string} name
+ * @param {(...params: any[]) => *} operationFunction
+ * @param {...any} params
+ * @return {Operation | *} 
+ */
+function operationOrResult(name, operationFunction, ...params) {
+
+    const shouldReturnOperation = params.some(param => param instanceof Sentinel)
+
+    return shouldReturnOperation ?
+        new Operation(name, operationFunction, ...params) :
+        operationFunction(...params)
 }

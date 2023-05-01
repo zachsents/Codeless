@@ -16,6 +16,9 @@ import SendEmail from "./basics/actions/SendEmail"
 import And from "./basics/transforms/And"
 import Equals from "./basics/transforms/Equals"
 import GreaterThan from "./basics/transforms/GreaterThan"
+import GreaterThanOrEqualTo from "./basics/transforms/GreaterThanOrEqualTo"
+import LessThan from "./basics/transforms/LessThan"
+import LessThanOrEqualTo from "./basics/transforms/LessThanOrEqualTo"
 import Not from "./basics/transforms/Not"
 import NotEqual from "./basics/transforms/NotEqual"
 import Or from "./basics/transforms/Or"
@@ -99,7 +102,7 @@ const nodeDefinitions = [
     // Actions
     Print, RunFlow, ScheduleFlow, SendEmail,
     // Transforms
-    And, Or, Equals, NotEqual, Not, GreaterThan,
+    And, Or, Equals, NotEqual, Not, GreaterThan, GreaterThanOrEqualTo, LessThan, LessThanOrEqualTo,
     // Lists
     Count, ListRepeat, GetElement,
     // Objects

@@ -3,13 +3,13 @@ import { safeMap } from "../../arrayUtilities.js"
 
 
 export default {
-    id: "basic:And",
+    id: "basic:LessThanOrEqualTo",
 
     inputs: ["input"],
 
     onInputsReady({ input }) {
         this.publish({
-            result: safeMap(Operation.And, ...input),
+            result: safeMap(Operation.LessThanOrEqualTo, ...input),
         })
     },
 }

@@ -1,11 +1,11 @@
-import { ArrowBigRight, ArrowNarrowRight, MathGreater } from "tabler-icons-react"
+import { ArrowBigRight, ArrowNarrowRight, MathEqualGreater } from "tabler-icons-react"
 
 
 export default {
-    id: "basic:GreaterThan",
-    name: "Greater Than",
+    id: "basic:GreaterThanOrEqualTo",
+    name: "Greater Than Or Equal To",
     description: "Compares two numbers.",
-    icon: MathGreater,
+    icon: MathEqualGreater,
 
     tags: ["Logic", "Operations"],
 
