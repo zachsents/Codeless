@@ -25,7 +25,7 @@ export default {
             renderConfiguration: OtherFlowsControl,
         },
         {
-            id: "$time",
+            id: "time",
             name: "Date & Time",
             description: "The time to run the flow at.",
             tooltip: "The time to run the flow at.",

@@ -1,4 +1,6 @@
+import { Users } from "tabler-icons-react"
 import { LineDotted, Mail, TextCaption, User } from "tabler-icons-react"
+
 
 export default {
     id: "basic:SendEmail",
@@ -13,6 +15,15 @@ export default {
             tooltip: "The email address to send the email to.",
             icon: User,
             allowedModes: ["config", "handle"],
+            defaultMode: "config",
+        },
+        {
+            id: "cc",
+            name: "CC",
+            description: "The email address of the recipient to be CC'd.",
+            tooltip: "The email address of the recipient to be CC'd.",
+            icon: Users,
+            allowedModes: ["handle", "config"],
             defaultMode: "config",
         },
         {

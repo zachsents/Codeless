@@ -80,8 +80,15 @@ export class Node {
      * @memberof Node
      */
     getInputMode(inputName) {
-        return Object.entries(this.rfNode.data)
-            .find(([key]) => key == `InputMode.${inputName}`)[1]
+        const entry = Object.entries(this.rfNode.data)
+            .find(([key]) => key == `InputMode.${inputName}`)
+
+        if (!entry || !entry[1]) {
+            console.debug("There's a problem. Here's the node data:", this.rfNode.data)
+            throw new Error(`Input mode cannot be found for ${inputName}. This could indicate a problem with the node definition.`)
+        }
+
+        return entry[1]
     }
 
     /**

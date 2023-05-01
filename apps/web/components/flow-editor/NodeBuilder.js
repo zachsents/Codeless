@@ -64,8 +64,7 @@ export default function NodeBuilder() {
             //     backgroundColor: "white",
             // }}
             />
-            <Toolbar />
-            {/* <ConfigPanel /> */}
+            {/* <Toolbar /> */}
             <ReplayPanel />
 
             <ChangeWatcher onChange={setGraph} />

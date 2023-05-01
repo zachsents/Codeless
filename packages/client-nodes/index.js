@@ -8,7 +8,6 @@ import Switch from "./basics/Switch"
 import Text from "./basics/Text"
 import UseVariable from "./basics/UseVariable"
 
-import LoopFlow from "./basics/actions/LoopFlow"
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
 import ScheduleFlow from "./basics/actions/ScheduleFlow"
@@ -98,7 +97,7 @@ const nodeDefinitions = [
     // Data
     Number, Text, Switch, DateTime, Template, SetVariable, UseVariable, CustomCode,
     // Actions
-    Print, RunFlow, ScheduleFlow, LoopFlow, SendEmail,
+    Print, RunFlow, ScheduleFlow, SendEmail,
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan,
     // Lists
