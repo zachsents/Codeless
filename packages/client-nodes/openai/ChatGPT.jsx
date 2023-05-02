@@ -5,7 +5,7 @@ import TextAreaControl from "../components/TextAreaControl"
 
 
 export default {
-    id: "openai:AskGPT3",
+    id: "openai:ChatGPT",
     name: "ChatGPT",
     description: "Asks ChatGPT a prompt.",
     icon: SiOpenai,

@@ -51,9 +51,9 @@ import SetField from "./tables/SetColumn"
 import TableField from "./tables/TableField"
 import UpdateRows from "./tables/UpdateRows"
 
-import AskGPT3 from "./openai/AskGPT3"
+import ChatGPT from "./openai/ChatGPT"
 import Classify from "./openai/Classify"
-import Parse from "./openai/Parse"
+import OpenAIExtract from "./openai/Extract"
 import Rate from "./openai/Rate"
 
 import { BrandGmail, Link as LinkIcon, Run as RunIcon } from "tabler-icons-react"
@@ -140,7 +140,7 @@ const nodeDefinitions = [
 
 
     // ===== OpenAI =====
-    AskGPT3, Parse, Rate, Classify,
+    ChatGPT, OpenAIExtract, Rate, Classify,
 
 
     // ===== AirTable =====

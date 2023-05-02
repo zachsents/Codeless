@@ -1,12 +1,13 @@
 import { SiOpenai } from "react-icons/si"
 import { ArrowNarrowRight, FileText } from "tabler-icons-react"
 import TextAreaControl from "../components/TextAreaControl"
+import { Target } from "tabler-icons-react"
 
 
 export default {
-    id: "openai:Parse",
-    name: "Extract",
-    description: "Parse fields out of text with GPT3.",
+    id: "openai:Extract",
+    name: "Extract Text",
+    description: "Use AI to extract targets from text.",
     icon: SiOpenai,
     color: "dark",
 
@@ -15,21 +16,28 @@ export default {
     inputs: [
         {
             id: "text",
-            description: "The text to classify.",
-            tooltip: "The text to classify.",
+            description: "The text to extract from.",
+            tooltip: "The text to extract from.",
             icon: FileText,
             allowedModes: ["handle", "config"],
             renderConfiguration: TextAreaControl,
         },
+        {
+            id: "target",
+            description: "The target to extract.",
+            tooltip: "The target to extract.",
+            icon: Target,
+            allowedModes: ["handle", "config"],
+            defaultMode: "config",
+        },
     ],
     outputs: [
         {
-            id: "data",
+            id: "result",
+            name: "Extracted",
             description: "The data extracted from the text.",
             tooltip: "The data extracted from the text.",
             icon: ArrowNarrowRight,
-            listMode: "named",
-            defaultList: 1,
         },
     ],
 }

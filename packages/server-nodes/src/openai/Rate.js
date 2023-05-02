@@ -4,42 +4,45 @@ import openaiApi from "./api.js"
 
 export default {
     id: "openai:Rate",
-    name: "Rate with GPT",
 
-    inputs: ["text"],
-    outputs: ["rating"],
+    inputs: ["text", "property", "scale"],
 
-    async onInputsReady({ text }) {
+    async onInputsReady({ text, property, scale }) {
 
         // validate params
-        if (!this.state.property)
+        if (!property || !property.length)
             throw new Error("Must provide a property")
 
-        if (!this.state.scale)
+        if (!scale || !scale.length)
             throw new Error("Must provide a scale")
 
-        // construct prompt
-        const prompt = text => `Here's some text:
+
+        this.publish({
+            result: await safeMap(async (text, property, scale) => {
+                // call API
+                const resp = await openaiApi.createCompletion(
+                    createPrompt(text, property, scale)
+                )
+
+                // parse out rating
+                const result = parseFloat(resp?.match(/[\d.-]+/) ?? "")
+
+                if (isNaN(result))
+                    throw new Error("Didn't produce a rating")
+
+                return result
+            }, text, property, scale)
+        })
+    },
+}
+
+
+function createPrompt(text, property, scale) {
+    return `Here's some text:
 \`\`\`
 ${text.trim()}
 \`\`\`
-Provide an accurate rating of the ${this.state.property} out of ${this.state.scale}.
+Provide an accurate rating of the ${property} out of ${scale}.
 
 `
-
-        const rating = await safeMap(async text => {
-            // call API
-            const resp = await openaiApi.createCompletion(prompt(text))
-
-            // parse out rating
-            const result = parseFloat(resp?.match(/[\d.-]+/) ?? "")
-
-            if(isNaN(result))
-                throw new Error("Didn't produce a rating")
-            
-            return result
-        }, text)
-
-        this.publish({ rating })
-    },
 }

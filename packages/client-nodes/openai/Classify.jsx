@@ -7,7 +7,7 @@ import { useListHandle } from "../hooks/nodes"
 
 export default {
     id: "openai:Classify",
-    name: "Classify",
+    name: "Classify Text",
     description: "Classifies text as one of the specified categories.",
     icon: SiOpenai,
     color: "dark",
@@ -44,6 +44,6 @@ export default {
 
     renderTextContent: () => {
         const [list] = useListHandle(null, "categories")
-        return <><B>{list?.length ?? 0}</B> categor{list.length == 1 ? "y" : "ies"}</>
+        return <><B>{list?.length ?? 0}</B> categor{list?.length == 1 ? "y" : "ies"}</>
     },
 }

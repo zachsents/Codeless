@@ -4,7 +4,7 @@ import { useReactFlow } from "reactflow"
 import { openNodePalette } from "@web/modules/graph-util"
 
 import { useHotkeys } from "@mantine/hooks"
-import { arrayRemove, arrayUnion, updateUser, useCurrentUserRealtime, useUserPreferences } from "@minus/client-sdk"
+import { arrayRemove, arrayUnion, useUserPreferences } from "@minus/client-sdk"
 import { TbDots, TbSearch } from "react-icons/tb"
 import DraggableNodeButton from "./DraggableNodeButton"
 
@@ -13,7 +13,7 @@ const suggested = [
     "basic:Text",
     "googlesheets:Table",
     "airtable:UseTable",
-    "openai:Parse",
+    "openai:Extract",
 ]
 
 

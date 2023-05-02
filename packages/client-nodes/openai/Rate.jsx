@@ -10,7 +10,7 @@ import { useInputValue } from "../hooks/nodes"
 
 export default {
     id: "openai:Rate",
-    name: "Rate",
+    name: "Rate Text",
     description: "Rates an aspect of a text input on the specified number scale.",
     icon: SiOpenai,
     color: "dark",
@@ -50,7 +50,8 @@ export default {
     ],
     outputs: [
         {
-            id: "rating",
+            id: "result",
+            name: "Rating",
             description: "The rating of the text.",
             tooltip: "The rating of the text.",
             icon: Stars,
