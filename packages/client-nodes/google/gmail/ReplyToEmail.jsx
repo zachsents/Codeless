@@ -1,5 +1,5 @@
-import { FileText, MailOpened } from "tabler-icons-react"
-import TextAreaControl from "../../components/TextAreaControl"
+import { MailOpened } from "tabler-icons-react"
+import { HTMLBodyInput, PlainTextBodyInput } from "./shared"
 
 
 export default {
@@ -12,14 +12,8 @@ export default {
     tags: ["Gmail"],
 
     inputs: [
-        {
-            id: "body",
-            description: "The body of the email to send.",
-            tooltip: "The body of the email to send.",
-            icon: FileText,
-            allowedModes: ["handle", "config"],
-            renderConfiguration: TextAreaControl,
-        },
+        PlainTextBodyInput,
+        HTMLBodyInput,
     ],
     outputs: [],
 

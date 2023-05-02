@@ -1,16 +1,12 @@
-import { safeMap } from "../arrayUtilities.js"
 
 export default {
-    id: "basic:ListRepeat",
-    name: "Repeat",
+    id: "lists:ListRepeat",
 
-    inputs: ["value", "count"],
-    outputs: ["list"],
+    inputs: ["$value", "$count"],
 
-
-    onInputsReady({ value, count }) {
+    onInputsReady({ $value, $count }) {
         this.publish({
-            list: safeMap((value, count) => Array(count).fill(value), value, count)
+            list: Array($count).fill($value),
         })
     },
 }

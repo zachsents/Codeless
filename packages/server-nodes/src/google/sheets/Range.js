@@ -1,32 +1,35 @@
+import { sheets } from "@minus/server-sdk"
 
 
 export default {
     id: "googlesheets:Range",
-    name: "Range",
 
-    inputs: ["$sheet"],
-    outputs: ["data"],
+    inputs: [
+        "$spreadsheetUrl",
+        "$sheetName",
+        "$range",
+    ],
 
     /**
      * @param {object} inputs
      * @param {import("@minus/server-sdk").sheets.Sheet} inputs.$sheet
      */
-    async onInputsReady({ $sheet }) {
-        
+    async onInputsReady({ $sheetName, $range }) {
+
+        const sheetsApi = await sheets.getGoogleSheetsAPI()
+
+        const sheet = sheetsApi.spreadsheet(this.state.spreadsheetId).sheet($sheetName)
+
         // create range and get data
-        const data = await $sheet.range(...this.state.range).getData()
+        const data = await sheet.range($range).getData()
 
-        // return the values straight up if it's 1D or a single value
-        if (data.length == 1) {
-            if (data[0].length == 1) {
-                this.publish({ data: data[0][0] })
-                return
-            }
-            this.publish({ data: data[0] })
-            return
-        }
-
-        // otherwise, return straight up
-        this.publish({ data })
+        // favor single items
+        this.publish({
+            values: data.length == 1 ?
+                data[0].length == 1 ?
+                    data[0][0] :
+                    data[0] :
+                data,
+        })
     },
 }

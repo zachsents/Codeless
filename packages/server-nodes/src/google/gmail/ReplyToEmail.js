@@ -4,16 +4,14 @@ import { safeMap } from "../../arrayUtilities.js"
 
 export default {
     id: "gmail:ReplyToEmail",
-    name: "Reply to Email",
 
-    inputs: ["body"],
-    outputs: [],
+    inputs: ["bodyPlainText", "bodyHTML"],
 
     onBeforeStart() {
         this.state._triggerEmailPromise = this.graph.subscribeToVariable("_triggerEmail", true)
     },
 
-    async onInputsReady({ body }) {
+    async onInputsReady({ bodyPlainText, bodyHTML }) {
 
         // await original email from variable port
         const triggerEmail = await this.state._triggerEmailPromise
@@ -29,14 +27,16 @@ export default {
             + ` ${messageIdHeader}`
 
         // send email(s)
-        await safeMap((body) => {
-            if (!body)
+        await safeMap((bodyPlainText, bodyHTML) => {
+            if (!bodyPlainText && !bodyHTML)
                 return
 
             return gmail.sendEmail(gmailApi, {
                 to: triggerEmail.from,
                 subject: `Re: ${triggerEmail.subject}`,
-                plainText: body,
+
+                plainText: bodyPlainText || undefined,
+                html: bodyHTML || undefined,
 
                 // need these headers to make the reply RFC 2822 compliant
                 headers: [
@@ -46,6 +46,6 @@ export default {
             }, {
                 threadId: triggerEmail.rawMessage.threadId,
             })
-        }, body)
+        }, bodyPlainText, bodyHTML)
     },
 }

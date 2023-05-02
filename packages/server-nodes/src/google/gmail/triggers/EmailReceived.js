@@ -3,10 +3,8 @@ import { gmail } from "@minus/server-sdk"
 
 export default {
     id: "gmail:EmailReceivedTrigger",
-    name: "Gmail Received Email",
 
     inputs: [],
-    outputs: ["fromName", "fromEmail", "subject", "date", "plainText", "simpleText", "html"],
 
     onStart(setupPayload) {
         // "From" field sometimes looks like this: First Last <email@gmail.com>

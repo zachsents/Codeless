@@ -1,10 +1,8 @@
 
 export default {
-    id: "basic:Count",
-    name: "Count",
+    id: "lists:Count",
 
     inputs: ["list"],
-    outputs: ["count"],
 
     onInputsReady({ list }) {
         this.publish({ count: list.length })

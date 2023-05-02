@@ -4,20 +4,24 @@ import { safeMap } from "../../arrayUtilities.js"
 
 export default {
     id: "gmail:SendEmail",
-    name: "Send Email",
 
-    inputs: ["to", "cc", "subject", "body"],
-    outputs: [],
+    inputs: ["to", "cc", "subject", "bodyPlainText", "bodyHTML"],
 
-    async onInputsReady({ to, cc, subject, body }) {
+    async onInputsReady({ to, cc, subject, bodyPlainText, bodyHTML }) {
 
         const gmailApi = await gmail.getGmailAPI(global.info.appId)
 
-        await safeMap((to, cc, subject, body) => {
-            if(!to || !subject || !body)
+        await safeMap((to, cc, subject, bodyPlainText, bodyHTML) => {
+            if (!to || !subject || (!bodyPlainText && !bodyHTML))
                 return
 
-            return gmail.sendEmail(gmailApi, { to, cc, subject, plainText: body })
-        }, to, cc, subject, body)
+            return gmail.sendEmail(gmailApi, {
+                to,
+                cc,
+                subject,
+                plainText: bodyPlainText || undefined,
+                html: bodyHTML || undefined,
+            })
+        }, to, cc, subject, bodyPlainText, bodyHTML)
     },
 }

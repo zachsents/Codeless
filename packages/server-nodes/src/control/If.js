@@ -1,16 +1,12 @@
 
 export default {
     id: "control:If",
-    name: "If",
 
-    inputs: ["$condition", "_then", "_otherwise"],
-    outputs: ["then", "otherwise"],
+    inputs: ["$condition", "value"],
 
-    onInputsReady({ $condition, _then, _otherwise }) {
-        this.publish(
-            $condition ?
-                { then: _then } :
-                { otherwise: _otherwise }
-        )
+    onInputsReady({ $condition, value }) {
+        this.publish({
+            [$condition ? "then" : "otherwise"]: value,
+        })
     },
 }

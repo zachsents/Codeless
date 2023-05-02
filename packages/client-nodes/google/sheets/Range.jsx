@@ -31,7 +31,7 @@ export default {
             renderConfiguration: SpreadsheetURLControl,
         },
         {
-            id: "sheetName",
+            id: "$sheetName",
             name: "Sheet Name",
             description: "The name of the sheet you want to get data from.",
             tooltip: SheetNameTooltip,
@@ -41,7 +41,7 @@ export default {
             renderConfiguration: SheetNameControl,
         },
         {
-            id: "range",
+            id: "$range",
             description: "The range of cells you want to get data from.",
             tooltip: "The range of cells you want to get data from.",
             icon: BoxAlignTopLeft,
@@ -75,7 +75,7 @@ export default {
 
     renderTextContent: () => {
         const [state] = useInternalState()
-        const [sheetName] = useInputValue(null, "sheetName")
+        const [sheetName] = useInputValue(null, "$sheetName")
         const [range] = useInputValue(null, "range")
 
         if (!state.spreadsheetName) return "No Spreadsheet Provided"
