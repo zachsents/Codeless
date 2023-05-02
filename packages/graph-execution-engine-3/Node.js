@@ -130,7 +130,7 @@ export class Node {
         // get array mode
         const arrayMode = this.definition.getHandleDefinition(inputId).arrayMode
 
-        return processArray(arrayMode, isHandle ? this.inputs[inputId].consume() : [this.getInputValue(inputId)])
+        return processArray(arrayMode, isHandle ? this.inputs[inputId]?.consume() : [this.getInputValue(inputId)])
     }
 
     /**
