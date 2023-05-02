@@ -1,15 +1,14 @@
-import { recurse } from "../../arrayUtilities.js"
 
 
 export default {
     id: "math:Product",
-    name: "Product",
 
-    inputs: ["_in"],
-    outputs: ["product"],
-    
-    onInputsReady({ _in }) {
-        this.publish({ product: recurse(_in, product) })
+    inputs: ["list"],
+
+    onInputsReady({ list }) {
+        this.publish({
+            result: product(list)
+        })
     },
 }
 

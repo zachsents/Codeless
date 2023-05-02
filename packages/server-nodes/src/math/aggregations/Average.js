@@ -1,19 +1,18 @@
-import { recurse } from "../../arrayUtilities.js"
 
 
 export default {
     id: "math:Average",
-    name: "Average",
 
-    inputs: ["_in"],
-    outputs: ["average"],
-    
-    onInputsReady({ _in }) {
-        this.publish({ average: recurse(_in, average) })
+    inputs: ["list"],
+
+    onInputsReady({ list }) {
+        this.publish({
+            result: average(list)
+        })
     },
 }
 
 
 function average(list) {
-    return list.reduce((accum, cur) => accum + cur, 0) / list.length
+    return list.reduce((acc, cur) => acc + cur, 0) / list.length
 }
