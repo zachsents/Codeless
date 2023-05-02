@@ -167,13 +167,10 @@ export class Node {
         // fire onStart event
         await this.definition.onStart?.bind(this)(setupPayload)
 
-        // check if any input modes are "handle"
-        const hasHandles = Object.entries(this.rfNode.data).some(
-            ([key, val]) => key.includes("InputMode") && val == "handle"
-        )
-
-        // if not, then notify ourselves, which should trigger the node to run
-        !hasHandles && this.notify()
+        // notify so that onInputsReady is fired if necessary
+        // (input satisfaction will be checked, so this shouldn't cause
+        // onInputsReady to fire if it's not supposed to)
+        this.notify()
     }
 
     /**
