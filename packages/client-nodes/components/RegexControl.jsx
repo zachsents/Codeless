@@ -58,7 +58,8 @@ export default function RegexControl({ inputId, inputProps = {} }) {
             />
         </Box>
         <Text {...textProps}>/</Text>
-        <Menu closeOnItemClick={false} shadow="sm">
+        <Menu closeOnItemClick={false} shadow="sm" withinPortal
+            position="bottom-end">
             <Menu.Target>
                 <Tooltip label="Change Flags">
                     <Button color="gray" variant="light" size={inputProps.size} compact>
