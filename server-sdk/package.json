@@ -4,9 +4,9 @@
     "description": "",
     "main": "lib/index.js",
     "scripts": {
-        "build": "rimraf ./lib && babel src -d lib --config-file ../../babel.config.json --copy-files",
-        "dev": "babel src -w -d lib --config-file ../../babel.config.json --copy-files",
-        "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js"
+        "build": "rimraf ./lib && babel src -d lib --config-file ../babel.config.json --copy-files",
+        "dev": "babel src -w -d lib --config-file ../babel.config.json --copy-files",
+        "test": "node --experimental-vm-modules ../node_modules/jest/bin/jest.js"
     },
     "author": "",
     "license": "ISC",

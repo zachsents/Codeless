@@ -1,6 +1,6 @@
 const fs = require("fs/promises")
 
-const FirebaseConfigPath = "../../firebase.json"
+const FirebaseConfigPath = "../firebase.json"
 
 async function configureRoutes() {
     // read in dynamic routes from manifest
