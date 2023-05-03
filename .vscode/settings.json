@@ -2,6 +2,6 @@
     "javascript.validate.enable": false,
     "typescript.validate.enable": false,
     "eslint.workingDirectories": [
-        "./apps/web",
+        "./web",
     ],
 }

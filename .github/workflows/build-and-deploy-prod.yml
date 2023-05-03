@@ -45,9 +45,9 @@ jobs:
 
       - name: Write functions environment variables
         run: |
-          echo "OPENAI_SECRET_KEY=${{secrets.OPENAI_SECRET_KEY}}" >> apps/functions/.env
-          echo "GOOGLE_OAUTH_CLIENT_SECRET=${{secrets.GOOGLE_OAUTH_CLIENT_SECRET}}" >> apps/functions/.env
-          echo "AIRTABLE_OAUTH_CLIENT_SECRET=${{secrets.AIRTABLE_OAUTH_CLIENT_SECRET}}" >> apps/functions/.env
+          echo "OPENAI_SECRET_KEY=${{secrets.OPENAI_SECRET_KEY}}" >> functions/.env
+          echo "GOOGLE_OAUTH_CLIENT_SECRET=${{secrets.GOOGLE_OAUTH_CLIENT_SECRET}}" >> functions/.env
+          echo "AIRTABLE_OAUTH_CLIENT_SECRET=${{secrets.AIRTABLE_OAUTH_CLIENT_SECRET}}" >> functions/.env
       
       - name: Build & Deploy
         run: pnpm run deploy

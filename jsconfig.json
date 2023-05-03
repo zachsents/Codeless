@@ -3,25 +3,25 @@
         "baseUrl": ".",
         "paths": {
             "@minus/server-sdk/*": [
-                "packages/server-sdk/src/*"
+                "server-sdk/src/*"
             ],
             "@minus/server-sdk": [
-                "packages/server-sdk/src"
+                "server-sdk/src"
             ],
             "@minus/server-nodes/*": [
-                "packages/server-nodes/src/*"
+                "server-nodes/src/*"
             ],
             "@minus/server-nodes": [
-                "packages/server-nodes/src"
+                "server-nodes/src"
             ],
             "@minus/client-nodes": [
-                "packages/client-nodes"
+                "client-nodes"
             ],
             "@minus/client-nodes/*": [
-                "packages/client-nodes/*"
+                "client-nodes/*"
             ],
             "@web/*": [
-                "apps/web/*"
+                "web/*"
             ]
         }
     }
