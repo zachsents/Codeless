@@ -326,6 +326,8 @@ export function useListHandle(nodeId, handleId) {
     const [list, setList] = useNodeProperty(nodeId, ["data", `List.${getHandleDefinitionId(handleId)}`], true)
     const { definition: handleDef } = useHandleDefinition(nodeId, handleId)
 
+    const createEmptyListItem = useCreateEmptyListItem(nodeId, handleId)
+
     if (!handleDef.listMode)
         return []
 
@@ -334,8 +336,9 @@ export function useListHandle(nodeId, handleId) {
         if (list === undefined) {
             if (handleDef.defaultList != null) {
                 const defaultList = typeof handleDef.defaultList === "number" ?
-                    Array(handleDef.defaultList).fill().map(() => ({ id: generateId() })) :
+                    Array(handleDef.defaultList).fill().map(createEmptyListItem) :
                     handleDef.defaultList.map(item => ({ id: generateId(), ...item }))
+
                 setList(defaultList)
             }
             else setList([])
@@ -378,4 +381,25 @@ export function useHandleSuggestions(nodeTypeDefId, handleId) {
     nodeTypeDefId ??= useNodeProperty(null, "type")
     const { data: suggestions } = useNodeSuggestions(nodeTypeDefId)
     return suggestions?.[getHandleDefinitionId(handleId)] ?? []
+}
+
+
+/**
+ * Hook that returns a function to create an empty list item. Nice
+ * to have because named lists should have a name property.
+ *
+ * @export
+ * @param {string} [nodeId]
+ * @param {string} handleId
+ * @return {() => { id: string, name?: string }}
+ */
+export function useCreateEmptyListItem(nodeId, handleId) {
+    const { definition } = useHandleDefinition(nodeId, handleId)
+    const isNamed = definition.listMode === ListMode.Named
+
+    return useCallback(() => {
+        return isNamed ?
+            { id: generateId(), name: "" } :
+            { id: generateId() }
+    }, [isNamed])
 }

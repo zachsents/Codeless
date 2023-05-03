@@ -65,7 +65,10 @@ export class ValueTracker {
 
         // clean each value in the object
         return Object.fromEntries(
-            Object.entries(plain).map(([key, value]) => [key, ValueTracker.cleanValue(value)])
+            Object.entries(plain)
+                // filter out keys that are empty strings
+                .filter(([key]) => !!key)
+                .map(([key, value]) => [key, ValueTracker.cleanValue(value)])
         )
     }
 

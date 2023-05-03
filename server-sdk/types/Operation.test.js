@@ -83,9 +83,13 @@ test("(a < 50 || b == 8) && is a cat", () => {
 
 test("(a + b - 3) * b", () => {
     expect(mapOperation(
-        Operation.Add(new TableField("a"), new TableField("b"))
-        |> Operation.Subtract(^^, 3)
-        |> Operation.Multiply(^^, new TableField("b"))
+        Operation.Multiply(
+            Operation.Subtract(
+                Operation.Add(new TableField("a"), new TableField("b")),
+                3
+            ),
+            new TableField("b")
+        )
     )).toEqual(
         testData
             .map(x => (x.a + x.b - 3) * x.b)

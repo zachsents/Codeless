@@ -68,8 +68,8 @@ export class Table {
 
         // build ranges for those fields
         const ranges = filterFields.map(field => {
-            return this.dataRange.startColumn + this.fields.indexOf(field)
-                |> this.dataRange.absolute(null, ^^, null, ^^)
+            const col = this.dataRange.startColumn + this.fields.indexOf(field)
+            return this.dataRange.absolute(null, col, null, col)
         })
 
         let filteredRows
@@ -100,7 +100,9 @@ export class Table {
             // map into rows
             filteredRows = data.values.map((rowValues, i) => {
                 const rowData = this.fields ?
-                    rowValues.map((val, i) => [this.fields[i], val]) |> Object.fromEntries(^^) :
+                    Object.fromEntries(
+                        rowValues.map((val, i) => [this.fields[i], val])
+                    ) :
                     rowValues
                 return this.row(i, rowData)
             })
@@ -116,8 +118,7 @@ export class Table {
             })
 
             // calculate number of rows we have
-            const numRows = Object.values(columnData).map(data => data.length)
-                |> Math.max(...^^)
+            const numRows = Math.max(...Object.values(columnData).map(data => data.length))
 
             // transform the data into records
             const records = Array(numRows).fill(0).map(
@@ -156,7 +157,9 @@ export class Table {
             // add data to each row object
             rowData.forEach((data, i) => {
                 filteredRows[i].data = this.fields ?
-                    data.map((val, j) => [this.fields[j], val]) |> Object.fromEntries(^^) :
+                    Object.fromEntries(
+                        data.map((val, j) => [this.fields[j], val])
+                    ) :
                     data
             })
         }
@@ -209,7 +212,9 @@ export class Table {
         return updatedData.values.map(
             (rowData, i) => this.row(
                 newDataRange.startRow + i - this.dataRange.startRow,
-                this.fields.map((field, j) => [field, rowData[j]]) |> Object.fromEntries(^^)
+                Object.fromEntries(
+                    this.fields.map((field, j) => [field, rowData[j]])
+                )
             )
         )
     }
@@ -222,20 +227,21 @@ export class Table {
      * @memberof Table
      */
     async updateRows(updates = []) {
-
         // put updates in a form the API accepts
-        return updates.map(update => ({
+        const updatePaylods = updates.map(update => ({
             range: update.row.range(),
             values: Row.recordToArray(update.data, this.fields),
         }))
-            // make request
-            |> await this.spreadsheet.batchUpdate(^^, {
-                oneDimensional: true,
-            })
-            // map to new row objects with updated data
-            |> ^^.map((updatedData, i) => Object.assign(this.row(), updates[i].row, {
-                data: Row.arrayToRecord(updatedData, this.fields)
-            }))
+
+        // make request
+        const updatedRows = await this.spreadsheet.batchUpdate(updatePaylods, {
+            oneDimensional: true,
+        })
+
+        // map to new row objects with updated data
+        return updatedRows.map((updatedData, i) => Object.assign(this.row(), updates[i].row, {
+            data: Row.arrayToRecord(updatedData, this.fields)
+        }))
     }
 
     /**
@@ -245,7 +251,9 @@ export class Table {
      * @memberof Table
      */
     async deleteRows(rows = []) {
-        rows.map(row => row.range().startRow)
-            |> await this.spreadsheet.deleteRows(this.sheet.name, ^^)
+        await this.spreadsheet.deleteRows(
+            this.sheet.name,
+            rows.map(row => row.range().startRow)
+        )
     }
 }

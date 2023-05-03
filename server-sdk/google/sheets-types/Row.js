@@ -7,7 +7,9 @@ export class Row {
     }
 
     static arrayToRecord(arr, fields) {
-        return arr.map((item, i) => [fields[i], item]) |> Object.fromEntries(^^)
+        return Object.fromEntries(
+            arr.map((item, i) => [fields[i], item])
+        )
     }
 
     /**
@@ -49,8 +51,7 @@ export class Row {
 
     async getField(field, { refetch = false } = {}) {
         // TO DO: make it just fetch single field
-        return await this.getData({ refetch })
-            |> ^^ [field]
+        return (await this.getData({ refetch }))[field]
     }
 
     toString() {

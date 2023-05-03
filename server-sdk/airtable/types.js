@@ -80,9 +80,8 @@ export class Table {
         }
         // otherwise, we'll treat it as an Operation
         else {
-            filterFormula = deepFlat(filters)
-                |> Operation.And(...^^)
-                |> ^^.toString(AirtableFormula.ParamMappings, AirtableFormula.OperationMappings)
+            filterFormula = Operation.And(...deepFlat(filters))
+                .toString(AirtableFormula.ParamMappings, AirtableFormula.OperationMappings)
         }
 
         logger.table({ filters: filters.length, limit, sortBy, sortOrder })
@@ -113,11 +112,11 @@ export class Table {
      * @memberof Table
      */
     async addRows(newRowData = []) {
-        return newRowData.map(fields => ({ fields }))
-            |> await this.atTable.create(^^, {
-                typecast: true,
-            })
-            |> ^^.map(record => this.row(record))
+        const newRecords = await this.atTable.create(
+            newRowData.map(fields => ({ fields })),
+            { typecast: true }
+        )
+        return newRecords.map(record => this.row(record))
     }
 
     /**
@@ -129,16 +128,16 @@ export class Table {
      */
     async updateRows(updates = []) {
         // map into form the API accepts
-        return updates.map(update => ({
+        const updatePayloads = updates.map(update => ({
             id: update.row.atRecord.id,
             fields: update.data,
         }))
-            // make request
-            |> await this.atTable.update(^^, {
-                typecast: true,
-            })
-            // map to our Row objects
-            |> ^^.map(record => this.row(record))
+
+        // make request
+        const updatedRecords = await this.atTable.update(updatePayloads, { typecast: true })
+
+        // map to our Row objects
+        return updatedRecords.map(record => this.row(record))
     }
 
     /**
@@ -149,9 +148,10 @@ export class Table {
      */
     async deleteRows(rows = []) {
         // map to record IDs
-        rows.map(row => row.atRecord.id)
-            // make request
-            |> await this.atTable.destroy(^^)
+        const recordIds = rows.map(row => row.atRecord.id)
+
+        // make request
+        await this.atTable.destroy(recordIds)
     }
 
     row(...args) {

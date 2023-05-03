@@ -2,10 +2,8 @@
     "name": "@minus/server-nodes",
     "version": "3.0.0",
     "description": "",
-    "main": "lib/index.js",
+    "main": "index.js",
     "scripts": {
-        "build": "rimraf ./lib && babel src -d lib --config-file ../babel.config.json",
-        "dev": "babel src -w -d lib --config-file ../babel.config.json",
         "test": "node --experimental-vm-modules ../node_modules/jest/bin/jest.js"
     },
     "author": "",

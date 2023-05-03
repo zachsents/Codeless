@@ -93,8 +93,9 @@ export class Spreadsheet {
 
         // if keys are provided, map them in and return an object
         if (keys)
-            return result.map((data, i) => [keys[i], data])
-                |> Object.fromEntries(^^)
+            return Object.fromEntries(
+                result.map((data, i) => [keys[i], data])
+            )
 
         // otherwise, just return array
         return result

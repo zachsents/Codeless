@@ -30,7 +30,7 @@ export async function storeIntegrationAccount(integrationKey, integrationUserId,
     if (!integrationKey)
         throw new Error("Must provide integration key")
 
-    if(!integrationUserId)
+    if (!integrationUserId)
         throw new Error("Must include user ID")
 
     // set the data in the integrationAuth collection -- this will look a little different
@@ -148,9 +148,9 @@ async function precursor({ appId, app, integrationKey, accountRef, transaction }
 
     // get account ref if using if using app or app ID
     if (appId) {
-        app = db.collection("apps").doc(appId)
-            |> await (transaction?.get(^^) ?? ^^.get())
-            |> { id: ^^.id, ...^^.data() }
+        const appDocRef = db.collection("apps").doc(appId)
+        const appDoc = await (transaction?.get(appDocRef) ?? appDocRef.get())
+        app = { id: appDocRef.id, ...appDoc.data() }
     }
     if (app)
         accountRef = app.integrations?.[integrationKey]

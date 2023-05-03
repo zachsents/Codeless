@@ -205,7 +205,11 @@ export class Node {
                     const listData = this.getListData(inputDef.name)
 
                     // determine if the list should be an array or object
-                    const isNamedList = listData?.every(item => item.name != null)
+                    const isNamedList = listData?.every(item => item.name != null) ?? false
+
+                    // warn if there are names on some but not all
+                    if (!isNamedList && listData?.some(item => item.name != null))
+                        console.warn(`List data for ${inputDef.name} contains names on some items but not all. This will be treated as an array. If you want to use names, make sure all items have names.`)
 
                     // process values
                     const values = listData?.map(item => {

@@ -8,11 +8,10 @@ export default {
 
     onInputsReady({ template, data }) {
         this.publish({
-            result: safeMap((template, data) => Object.entries(data).reduce(
+            result: safeMap((template, data) => data && Object.entries(data).reduce(
                 (text, [key, val]) => text.replaceAll(`{${key}}`, val),
                 template
-            ),
-                template, objectToSafeMapEntries(data))
+            ), template, objectToSafeMapEntries(data))
         })
     },
 }

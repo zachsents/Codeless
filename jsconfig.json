@@ -2,24 +2,6 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@minus/server-sdk/*": [
-                "server-sdk/src/*"
-            ],
-            "@minus/server-sdk": [
-                "server-sdk/src"
-            ],
-            "@minus/server-nodes/*": [
-                "server-nodes/src/*"
-            ],
-            "@minus/server-nodes": [
-                "server-nodes/src"
-            ],
-            "@minus/client-nodes": [
-                "client-nodes"
-            ],
-            "@minus/client-nodes/*": [
-                "client-nodes/*"
-            ],
             "@web/*": [
                 "web/*"
             ]

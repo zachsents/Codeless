@@ -120,8 +120,7 @@ export class Operation extends Sentinel {
      * @memberof Operation
      */
     valueOf() {
-        return this.params.map(param => param?.valueOf())
-            |> this.operationFunction(...^^)
+        return this.operationFunction(...this.params.map(param => param?.valueOf()))
     }
 
 
@@ -137,7 +136,7 @@ export class Operation extends Sentinel {
         const defaultOp = (...params) => `(${params.join(` ${this.name} `)})`
 
         // prep parameters -- will recurse for Operations if it is not in the mappings
-        return this.params.map(param => {
+        const preppedParams = this.params.map(param => {
             const mapFunc = paramMappings[param?.constructor?.name] ?? paramMappings[typeof param]
 
             // return if there is a mapping for this type
@@ -158,8 +157,9 @@ export class Operation extends Sentinel {
                 throw err
             }
         })
-            // pipe into operation function
-            |> (operationMappings[this.name] ?? defaultOp)(...^^)
+
+        // pass params into operation function
+        return (operationMappings[this.name] ?? defaultOp)(...preppedParams)
     }
 }
 

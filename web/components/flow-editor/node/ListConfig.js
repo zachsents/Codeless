@@ -1,5 +1,5 @@
 import { ActionIcon, Box, Button, Center, Grid, Stack, Text, TextInput, ThemeIcon, Tooltip } from "@mantine/core"
-import { InputMode, ListMode, useHandleConnected, useHandleDefinition, useInputMode, useListHandle, useNodeContext } from "@minus/client-nodes/hooks/nodes"
+import { InputMode, ListMode, useCreateEmptyListItem, useHandleConnected, useHandleDefinition, useInputMode, useListHandle, useNodeContext } from "@minus/client-nodes/hooks/nodes"
 import { useUpdateNode } from "@web/modules/graph-util"
 import { Reorder, useDragControls } from "framer-motion"
 import { customAlphabet } from "nanoid"
@@ -12,9 +12,10 @@ import styles from "./ListConfig.module.css"
 export default function ListConfig({ handleId }) {
 
     const [list, setList] = useListHandle(null, handleId)
+    const createEmptyListItem = useCreateEmptyListItem(null, handleId)
 
     const addItem = () => {
-        setList([{ id: generateId() }], true)
+        setList([createEmptyListItem()], true)
     }
 
     // Side-Effect: fix node internals when list order changes

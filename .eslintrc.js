@@ -1,42 +1,20 @@
 module.exports = {
-    parser: "@babel/eslint-parser",
-    parserOptions: {
-        sourceType: "module",
-        babelOptions: {
-            "presets": ["@babel/preset-react"]
+    root: true,
+    // This tells ESLint to load the config from the package `eslint-config-custom`
+    extends: ["custom"],
+    settings: {
+        next: {
+            rootDir: ["web/"],
         },
     },
-    extends: [
-        "eslint:recommended",
-        "plugin:react/recommended",
-    ],
-    env: {
-        browser: true,
-        amd: true,
-        node: true,
-        es6: true,
-    },
-    rules: {
-        "no-extra-boolean-cast": 0,
-        "no-sparse-arrays": 0,
-        "react/react-in-jsx-scope": 0,
-        "react/prop-types": 0,
-        "react/no-unescaped-entities": 0,
-        "react-hooks/exhaustive-deps": 0,
-    },
-    overrides: [
-        {
-            files: [
-                "**/*.test.js"
-            ],
-            env: {
-                jest: true,
-            },
-        }
-    ],
-    settings: {
-        react: {
-            version: "detect",
-        }
-    }
+    // extends: [
+    //     "eslint:recommended",
+    //     "plugin:react/recommended",
+    // ],
+
+    // settings: {
+    //     react: {
+    //         version: "detect",
+    //     }
+    // }
 }
