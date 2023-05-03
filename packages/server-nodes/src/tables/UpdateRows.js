@@ -1,17 +1,15 @@
-import { safeMap } from "../arrayUtilities.js"
+import { objectToSafeMapEntries, safeMap } from "../arrayUtilities.js"
 
 
 export default {
     id: "tables:UpdateRows",
-    name: "Update Rows",
 
     inputs: ["rows", "data"],
-    outputs: ["updatedRows"],
 
     async onInputsReady({ rows, data }) {
 
         if (rows.length == 0)
-            return this.publish({ updateRows: [] })
+            return this.publish({ updatedRows: [] })
 
         const table = rows[0].table
 
@@ -19,14 +17,13 @@ export default {
             throw new Error("All rows must be from the same table")
 
         // map to update objects
-        safeMap((row, ...data) => ({
-            row,
-            data: data.map((item, i) => [this.state.dataLabels[i] ?? i, item])
-                |> Object.fromEntries(^^)
-        }), rows, ...data)
-            // make the updates
-            |> await table.updateRows(^^)
-            // output newly added rows
-            |> this.publish({ updatedRows: ^^ })
+        const updates = safeMap(
+            (row, data) => ({ row, data }),
+            rows, objectToSafeMapEntries(data)
+        )
+
+        this.publish({
+            updatedRows: await table.updateRows(updates)
+        })
     },
 }

@@ -1,12 +1,11 @@
 import { Operation, TableField } from "@minus/server-sdk"
+import { safeMap } from "../arrayUtilities.js"
 
 
 export default {
     id: "tables:FindRowsByField",
-    name: "Find Rows By Field",
 
-    inputs: ["$table", "value"],
-    outputs: ["rows"],
+    inputs: ["$table", "field", "value", "$multiple"],
 
     /**
      * @param {object} inputs
@@ -14,17 +13,20 @@ export default {
      *  import("@minus/server-sdk/google/sheets.js").Table} inputs.$table
      * @param {*[]} inputs.value
      */
-    async onInputsReady({ $table, value }) {
+    async onInputsReady({ $table, field, value, $multiple }) {
 
-        // build filter -- this node checks for equality with any of the provided values 
-        const filters = value.map(val => Operation.Equals(new TableField(this.state.field), val))
-            |> Operation.Or(...^^)
+        // build filters
+        const filters = safeMap((field, value) => Operation.Equals(
+            new TableField(field),
+            value
+        ), field, value)
 
         // execute query
-        await $table.findRows({
-            filters: [filters],
-            limit: this.state.multiple ? null : 1,
+        this.publish({
+            rows: await $table.findRows({
+                filters: filters,
+                limit: $multiple ? null : 1,
+            })
         })
-            |> this.publish({ rows: ^^ })
     },
 }

@@ -2,10 +2,8 @@
 
 export default {
     id: "tables:FindRows",
-    name: "Row Where",
 
-    inputs: ["$table", "filters"],
-    outputs: ["row"],
+    inputs: ["$table", "filters", "$limit"],
 
     /**
      * @param {object} inputs
@@ -13,13 +11,12 @@ export default {
      *  import("@minus/server-sdk/google/sheets.js").Table} inputs.$table
      * @param {Operation[]} inputs.filters
      */
-    async onInputsReady({ $table, filters }) {
-
-        // execute query
-        await $table.findRows({
-            filters,
-            limit: this.state.limit,
+    async onInputsReady({ $table, filters, $limit }) {
+        this.publish({
+            rows: await $table.findRows({
+                filters,
+                limit: $limit,
+            })
         })
-            |> this.publish({ row: ^^ })
     },
 }

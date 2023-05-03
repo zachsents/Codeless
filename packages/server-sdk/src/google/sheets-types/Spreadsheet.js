@@ -89,7 +89,7 @@ export class Spreadsheet {
             // sort into same order as original ranges array
             .sort((a, b) => sortTransform(a) - sortTransform(b))
             // if the data is 1D, then we'll just grab the first element
-            .map(vr => oneDimensional ? vr.valueRange.values[0] : vr.valueRange.values)
+            .map(vr => oneDimensional ? (vr.valueRange.values?.[0] ?? []) : vr.valueRange.values)
 
         // if keys are provided, map them in and return an object
         if (keys)
@@ -180,14 +180,14 @@ export class Spreadsheet {
         const fullDetails = await this.getDetails({ returnFullOutput: true })
         const sheetId = fullDetails.sheets.find(sheet => sheet.properties.title == sheetName)?.properties.sheetId
 
-        if(!sheetId)
+        if (!sheetId)
             throw new Error(`Can't find sheet "${sheetName}"`)
 
         // combine into ranges of rows
         const sorted = [...rows].sort((a, b) => a - b)
         const ranges = [{ start: sorted[0], end: sorted[0] }]
         sorted.reduce((last, current) => {
-            if(current - last <= 1)
+            if (current - last <= 1)
                 ranges[0].end = current
             else
                 ranges.unshift({ start: current })

@@ -14,7 +14,7 @@ export default {
 
     inputs: [
         {
-            id: "field",
+            id: "$field",
             name: "Field Name",
             description: "The name of the field or column you wish to target.",
             tooltip: "The name of the field or column you wish to target.",
@@ -34,8 +34,8 @@ export default {
     ],
 
     renderTextContent: () => {
-        const [field] = useInputValue(null, "field")
-        const [mode] = useInputMode(null, "field")
+        const [field] = useInputValue(null, "$field")
+        const [mode] = useInputMode(null, "$field")
         return field && mode == InputMode.Config && <B>{field}</B>
     },
 }

@@ -1,13 +1,12 @@
 import { TableField } from "@minus/server-sdk"
 
+
 export default {
     id: "tables:TableField",
-    name: "Table Field",
 
-    inputs: [],
-    outputs: ["$"],
+    inputs: ["$field"],
 
-    onStart() {
-        this.publish({ $: new TableField(this.state.field) })
+    onInputsReady({ $field }) {
+        this.publish({ $: new TableField($field) })
     },
 }

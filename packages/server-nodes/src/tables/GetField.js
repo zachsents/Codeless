@@ -3,14 +3,15 @@ import { safeMap } from "../arrayUtilities.js"
 
 export default {
     id: "tables:GetField",
-    name: "Column",
 
-    inputs: ["rows"],
-    outputs: ["field"],
+    inputs: ["rows", "field"],
 
-    async onInputsReady({ rows }) {
-        
-        await safeMap(row => row.getField(this.state.field), rows)
-            |> this.publish({ field: ^^})
+    async onInputsReady({ rows, field }) {
+        this.publish({
+            data: await safeMap(
+                (row, field) => row.getField(field),
+                rows, field
+            )
+        })
     },
 }

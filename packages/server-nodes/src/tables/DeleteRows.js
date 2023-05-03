@@ -2,10 +2,8 @@
 
 export default {
     id: "tables:DeleteRows",
-    name: "Delete Rows",
 
     inputs: ["rows"],
-    outputs: [],
 
     async onInputsReady({ rows }) {
 
