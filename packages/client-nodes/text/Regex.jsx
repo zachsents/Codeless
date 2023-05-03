@@ -12,7 +12,7 @@ export default {
 
     inputs: [
         {
-            id: "pattern",
+            id: "$pattern",
             name: "Pattern",
             description: "The Regex pattern.",
             tooltip: "The Regex pattern.",
@@ -33,6 +33,6 @@ export default {
     ],
 
     renderContent: props => {
-        return <RegexControl inputId="pattern" {...props} />
+        return <RegexControl inputId="$pattern" {...props} />
     },
 }

@@ -1,24 +1,25 @@
+import { safeMap } from "../arrayUtilities.js"
+
 
 export default {
     id: "text:Join",
-    name: "Join List to Text",
 
-    inputs: ["list"],
-    outputs: ["text"],
+    inputs: ["text", "mode", "join"],
 
-    async onInputsReady({ list }) {
-        const join = clean(this.state.join)
-        const last = clean(this.state.last)
-
+    async onInputsReady({ text, mode, join }) {
         this.publish({
-            text: (list.length <= 1 || !this.state.useLast) ?
-                list.join(join) :
-                list.slice(0, -1).join(join) + last + list[list.length - 1]
+            joinedText: safeMap((mode, join, ...text) => {
+
+                if (mode == "custom")
+                    return text.join(join)
+
+                const formatter = new Intl.ListFormat("en", {
+                    style: "long",
+                    type: mode,
+                })
+                return formatter.format(text)
+
+            }, mode, join, ...text)
         })
     },
-}
-
-function clean(str) {
-    return str.replaceAll("\\n", "\n")
-        .replaceAll("\\t", "\t")
 }

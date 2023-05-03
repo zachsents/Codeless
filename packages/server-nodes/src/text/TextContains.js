@@ -1,15 +1,20 @@
+import { safeRegex } from "@minus/server-sdk"
 import { safeMap } from "../arrayUtilities.js"
+
 
 export default {
     id: "text:TextContains",
-    name: "Text Contains",
 
-    inputs: ["text", "containedText"],
-    outputs: ["_result"],
+    inputs: ["text", "target"],
 
-    async onInputsReady({ text, containedText }) {
+    async onInputsReady({ text, target }) {
         this.publish({
-            _result: safeMap((a, b) => a?.includes?.(b), text, containedText)
+            result: safeMap(
+                (text, target) => typeof target === "string" ?
+                    text.includes(target) :
+                    safeRegex(target).test(text),
+                text, target
+            )
         })
     },
 }

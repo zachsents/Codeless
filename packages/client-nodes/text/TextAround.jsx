@@ -7,7 +7,7 @@ import TextOrRegexControl from "../components/TextOrRegexControl"
 
 export default {
     id: "text:TextAround",
-    name: "Around",
+    name: "Surrounding Text",
     description: "Gets the text surrounding a pattern.",
     icon: Container,
 
@@ -24,8 +24,8 @@ export default {
         },
         {
             id: "target",
-            description: "The text or Regex to target.",
-            tooltip: "The text or Regex to target.",
+            description: "The text or Regex to look for.",
+            tooltip: "The text or Regex to look for.",
             icon: Target,
             allowedModes: ["handle", "config"],
             defaultMode: "config",

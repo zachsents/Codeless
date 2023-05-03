@@ -1,30 +1,26 @@
 import { safeMap } from "../arrayUtilities.js"
 
+const WordRegex = /\w+/g
+
 export default {
     id: "text:Length",
-    name: "Text Length",
 
     inputs: ["text"],
-    outputs: ["count"],
 
     onInputsReady({ text }) {
         this.publish({
-            count: safeMap(text => {
-
-                if(typeof text !== "string")
-                    throw new Error("All inputs must be strings")
-
-                return operation(this.state.mode, text)
-            }, text)
+            wordCount: validateAndMap(text, text => text.match(WordRegex).length),
+            characterCount: validateAndMap(text, text => text.length),
         })
     },
 }
 
-function operation(mode, text) {
-    switch (mode) {
-        case "Character":
-            return text.length
-        case "Word":
-            return text.split(/\s+/).length
-    }
+function validateAndMap(text, operation) {
+    return safeMap(text => {
+
+        if (typeof text !== "string")
+            throw new Error("All inputs must be strings")
+
+        return operation(text)
+    }, text)
 }

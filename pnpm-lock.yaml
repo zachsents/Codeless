@@ -210,6 +210,7 @@ importers:
       firebase-admin: ^11.5.0
       glob: ^9.2.1
       isolated-vm: ^4.4.2
+      lodash: ^4.17.21
       openai: ^3.1.0
     dependencies:
       '@minus/gee3': link:../graph-execution-engine-3
@@ -218,6 +219,7 @@ importers:
       firebase-admin: 11.5.0
       glob: 9.2.1
       isolated-vm: 4.4.2
+      lodash: 4.17.21
       openai: 3.2.0
 
   packages/server-sdk:

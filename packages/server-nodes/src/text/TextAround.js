@@ -1,50 +1,35 @@
+import { safeRegex } from "@minus/server-sdk"
 import { safeMap } from "../arrayUtilities.js"
+
 
 export default {
     id: "text:TextAround",
-    name: "Text Around",
 
-    inputs: ["text", "target"],
-    outputs: ["surroundingText"],
+    inputs: ["text", "target", "reach", "onlyFirst"],
 
-
-    onInputsReady({ text, target }) {
-
-        const surroundingText = safeMap(
-            (text, target) => {
-
-                if (!text)
-                    return
-
-                const pattern = target?.source ?? target ?? ""
-
-                // only match one
-                if (this.state.onlyFirst) {
-                    const flags = "d" + (target?.flags?.replaceAll(/[gd]/g, "") ?? "")
-                    const result = text.match(new RegExp(pattern, flags))
-                    return grabSubstring(result, text, this.state.reach)
-                }
-
-                const flags = "dg" + (target?.flags?.replaceAll(/[gd]/g, "") ?? "")
-                const result = text.matchAll(new RegExp(pattern, flags))
-
-                return [...result].map(res => grabSubstring(res, text, this.state.reach))
-            },
-            text, target
-        )
-
+    onInputsReady({ text, target, reach, onlyFirst }) {
         this.publish({
-            surroundingText: surroundingText.length == 1 && !this.state.onlyFirst ?
-                surroundingText[0] :
-                surroundingText
+            result: safeMap((text, target, reach, onlyFirst) => {
+
+                // if target is a string, use it as RegExp source
+                const { source, flags } = typeof target === "string" ?
+                    { source: target, flags: "" } :
+                    safeRegex(target)
+
+                // we only need global flag if we're matching all
+                const requiredFlags = onlyFirst ? "is" : "gis"
+
+                // build the regex -- add required flags
+                const regex = new RegExp(
+                    `.{0,${reach}}(?:${source}).{0,${reach}}`,
+                    [...new Set([...(requiredFlags + flags)])].join("")
+                )
+
+                return regex.global ?
+                    (text.match(regex) ?? []) :
+                    text.match(regex)?.[0]
+
+            }, text, target, reach, onlyFirst)
         })
     }
-}
-
-
-function grabSubstring(regResult, text, reach) {
-    return regResult && text.slice(
-        Math.max(regResult.indices[0][0] - reach, 0),
-        Math.min(regResult.indices[0][1] + reach, text.length)
-    )
 }

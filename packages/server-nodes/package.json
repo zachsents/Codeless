@@ -18,6 +18,7 @@
         "firebase-admin": "^11.5.0",
         "glob": "^9.2.1",
         "isolated-vm": "^4.4.2",
+        "lodash": "^4.17.21",
         "openai": "^3.1.0"
     }
 }

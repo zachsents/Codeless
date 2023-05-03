@@ -1,12 +1,12 @@
 
 export default {
     id: "text:TrimWhitespace",
-    name: "Trim Whitespace",
 
-    inputs: ["inputText"],
-    outputs: ["trimmedText"],
+    inputs: ["text"],
 
-    async onInputsReady({ inputText }) {
-        this.publish({ trimmedText: inputText.map(text => text.trim?.()) })
+    async onInputsReady({ text }) {
+        this.publish({
+            trimmedText: text.map(text => text?.trim?.())
+        })
     },
 }

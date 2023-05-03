@@ -30,6 +30,10 @@ export default {
             icon: Regex,
             allowedModes: ["handle", "config"],
             defaultMode: "config",
+            defaultValue: {
+                source: "",
+                flags: { g: true },
+            },
             renderConfiguration: RegexControl,
         },
     ],

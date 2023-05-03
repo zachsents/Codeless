@@ -1,19 +1,21 @@
-import { expectRegexToBeGlobal, safeMap } from "../arrayUtilities.js"
+import { safeRegex } from "@minus/server-sdk"
+import { safeMap } from "../arrayUtilities.js"
+
 
 export default {
     id: "text:Remove",
-    name: "Text Remove",
 
-    inputs: ["inputText", "remove"],
-    outputs: ["outputText"],
+    inputs: ["text", "remove"],
 
-    async onInputsReady({ inputText, remove }) {
-
+    async onInputsReady({ text, remove }) {
         this.publish({
-            outputText: safeMap(
-                (input, remove) => input?.replaceAll(expectRegexToBeGlobal(remove), ""),
-                inputText, remove
-            )
+            result: safeMap((text, remove) => {
+                if (typeof remove === "string")
+                    return text?.replaceAll(remove, "")
+
+                const pattern = safeRegex(remove)
+                return text?.[pattern.global ? "replaceAll" : "replace"](pattern, "")
+            }, text, remove)
         })
     },
 }

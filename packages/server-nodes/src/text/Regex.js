@@ -1,20 +1,13 @@
+import { safeRegex } from "@minus/server-sdk"
 
 export default {
     id: "text:Regex",
-    name: "Regex",
 
-    inputs: [],
-    outputs: ["$"],
+    inputs: ["$pattern"],
 
-    onStart() {
+    onInputsReady({ $pattern }) {
         this.publish({
-            $: new RegExp(
-                this.state.$,
-                Object.entries(this.state.flags)
-                    .filter(([, enabled]) => enabled)
-                    .map(([flag]) => flag)
-                    .join("")
-            )
+            $: safeRegex($pattern),
         })
     },
 }
