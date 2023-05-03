@@ -54,6 +54,7 @@ export class Table {
         logger.table({ filters: filters.length, limit, sortBy, sortOrder })
 
         // compile filters
+        /** @type {boolean | Operation} */
         const joinedFilter = Operation.And(...deepFlat(filters))
 
         logger.debug("Filter:")
@@ -61,7 +62,8 @@ export class Table {
 
         // find which columns we need to get
         const filterFields = [...new Set(
-            joinedFilter.flatParams.filter(param => param instanceof TableField).map(tf => tf.field)
+            // if joinedFilter is a boolean, then we don't need to get any fields
+            [joinedFilter.flatParams ?? []].filter(param => param instanceof TableField).map(tf => tf.field)
         )]
 
         // build ranges for those fields
