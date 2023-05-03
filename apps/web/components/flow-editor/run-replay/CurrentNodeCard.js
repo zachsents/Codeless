@@ -42,7 +42,7 @@ const ValueTable = forwardRef(({ node, typeKey, noun }, ref) => {
 
     const typeDefinition = useTypeDefinition(node.id)
 
-    return typeDefinition[typeKey].length ?
+    return typeDefinition?.[typeKey]?.length ?
         <Table maw={300} ref={ref}>
             <thead>
                 <tr>
