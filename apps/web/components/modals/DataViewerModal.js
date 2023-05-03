@@ -5,6 +5,7 @@ import DataViewer from "../DataViewer"
 
 export const DataViewerModalName = "DataViewer"
 
+// eslint-disable-next-line no-unused-vars
 export function DataViewerModal({ context, id, innerProps: {
     data,
 } }) {

@@ -17,6 +17,7 @@ const NodeSearcher = new NodeDefinitionSearcher(CreatableNodeDefinitions)
 const NumColumns = 2
 
 
+// eslint-disable-next-line no-unused-vars
 export default function NodePalette({ context, id, innerProps: { rf, suggestions, onAdd } }) {
 
     // // adding nodes
