@@ -139,7 +139,24 @@ export class Operation extends Sentinel {
         // prep parameters -- will recurse for Operations if it is not in the mappings
         return this.params.map(param => {
             const mapFunc = paramMappings[param?.constructor?.name] ?? paramMappings[typeof param]
-            return mapFunc?.(param) ?? param.toString?.(paramMappings, operationMappings)
+
+            // return if there is a mapping for this type
+            const mapped = mapFunc?.(param)
+            if (mapped != null)
+                return mapped
+
+            // try to recurse the toString method, otherwise just call it
+            // normally
+            // * need this because calling Number.toString with these params
+            //   will throw an error
+            try {
+                return param.toString?.(paramMappings, operationMappings)
+            }
+            catch (err) {
+                if (err instanceof RangeError)
+                    return param.toString()
+                throw err
+            }
         })
             // pipe into operation function
             |> (operationMappings[this.name] ?? defaultOp)(...^^)
