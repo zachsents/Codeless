@@ -103,7 +103,7 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
 
     // add headers
     msg.setHeader("X-Triggered-By", "Minus")
-    headers.forEach(([ name, value ]) => msg.setHeader(name, value))
+    headers.forEach(([name, value]) => msg.setHeader(name, value))
 
     // encode message
     const encodedMessage = Buffer.from(msg.asRaw()).toString("base64url")

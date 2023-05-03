@@ -40,7 +40,7 @@ export default function ConfigPopover({ children }) {
         <Popover
             opened={isSelected && !isDragging}
             withinPortal
-            position={!!run ? "left" : "right"}
+            position={run ? "left" : "right"}
             shadow="sm"
             offset={20}
             zIndex={210}

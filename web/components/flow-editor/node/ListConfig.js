@@ -2,8 +2,6 @@ import { ActionIcon, Box, Button, Center, Grid, Stack, Text, TextInput, ThemeIco
 import { InputMode, ListMode, useCreateEmptyListItem, useHandleConnected, useHandleDefinition, useInputMode, useListHandle, useNodeContext } from "@minus/client-nodes/hooks/nodes"
 import { useUpdateNode } from "@web/modules/graph-util"
 import { Reorder, useDragControls } from "framer-motion"
-import { customAlphabet } from "nanoid"
-import { alphanumeric } from "nanoid-dictionary"
 import { useEffect } from "react"
 import { TbGridDots, TbPlus, TbX } from "react-icons/tb"
 import styles from "./ListConfig.module.css"
@@ -122,6 +120,3 @@ function Item({ handleId, item, i }) {
         </Reorder.Item >
     )
 }
-
-
-const generateId = customAlphabet(alphanumeric, 10)
