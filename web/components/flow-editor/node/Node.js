@@ -21,6 +21,7 @@ import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
 import OutputHandle from "./handle/OutputHandle"
+import { AnimatePresence } from "framer-motion"
 
 
 export default function Node({ id, type: typeDefId, selected, dragging }) {
@@ -76,12 +77,22 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
     useEffect(() => stopUpdating, [])
     // #endregion
 
+    // #region - Node animations
+    const wrapperAnimVariants = {
+        initial: { outline: "none" },
+        idle: { outline: `0px solid ${theme.colors.yellow[5]}` },
+        selected: { outline: `3px solid ${theme.colors.yellow[5]}` },
+        hovered: { outline: `3px solid ${theme.colors.yellow[2]}` },
+    }
+    // #endregion
+
     return (
         <NodeProvider value={{ id, displayProps }}>
             <motion.div
-                initial={{ outline: "none" }}
-                animate={{ outline: `${selected ? 3 : 0}px solid ${theme.colors.yellow[5]}` }}
-                transition={{ duration: 0.15 }}
+                variants={wrapperAnimVariants}
+                initial="initial"
+                animate={selected ? "selected" : hovered ? "hovered" : "idle"}
+                transition={{ duration: 0.1 }}
                 style={{ borderRadius: theme.radius.md }}
                 ref={hoverRef}
             >
