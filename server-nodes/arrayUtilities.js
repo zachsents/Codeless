@@ -1,3 +1,4 @@
+import _ from "lodash"
 
 /**
  * Extending the Array prototype with a bunch of utilities
@@ -30,7 +31,7 @@ export function elementWise(aList, bList, operation) {
 export function safeMap(operation, ...lists) {
     // make sure everything's an array
     lists.forEach((list, i) => {
-        lists[i] = list?.map ? list : [list]
+        lists[i] = _.castArray(list)
     })
 
     // find longest array to map through

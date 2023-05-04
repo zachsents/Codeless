@@ -36,7 +36,7 @@ export default {
             allowedModes: ["handle", "config"],
         },
         {
-            id: "$multiple",
+            id: "multiple",
             description: "Whether to return multiple rows or just the first one.",
             tooltip: "Whether to return multiple rows or just the first one.",
             icon: BoxMultiple,

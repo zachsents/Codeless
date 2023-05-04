@@ -1,9 +1,10 @@
+import { delist, safeMap } from "../arrayUtilities.js"
 
 
 export default {
     id: "tables:FindRows",
 
-    inputs: ["$table", "filters", "$limit"],
+    inputs: ["$table", "filters", "limit"],
 
     /**
      * @param {object} inputs
@@ -11,12 +12,16 @@ export default {
      *  import("@minus/server-sdk/google/sheets.js").Table} inputs.$table
      * @param {Operation[]} inputs.filters
      */
-    async onInputsReady({ $table, filters, $limit }) {
+    async onInputsReady({ $table, filters, limit }) {
+
+        // execute query
+        const queryResult = await safeMap((filter, limit) => $table.findRows({
+            filters: [filter],
+            limit,
+        }), filters, limit)
+
         this.publish({
-            rows: await $table.findRows({
-                filters,
-                limit: $limit,
-            })
+            rows: delist(queryResult)
         })
     },
 }

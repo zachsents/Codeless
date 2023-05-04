@@ -27,7 +27,7 @@ export default {
             icon: Search,
         },
         {
-            id: "$limit",
+            id: "limit",
             description: "The number of rows to return. Leave blank to not set a limit.",
             tooltip: "The number of rows to return. Leave blank to not set a limit.",
             icon: List,

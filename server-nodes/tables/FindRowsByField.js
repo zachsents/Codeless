@@ -1,19 +1,21 @@
 import { Operation, TableField } from "@minus/server-sdk"
-import { safeMap } from "../arrayUtilities.js"
+import { delist, safeMap } from "../arrayUtilities.js"
 
 
 export default {
     id: "tables:FindRowsByField",
 
-    inputs: ["$table", "field", "value", "$multiple"],
+    inputs: ["$table", "field", "value", "multiple"],
 
     /**
      * @param {object} inputs
      * @param {import("@minus/server-sdk/airtable/airtable.js").Table | 
      *  import("@minus/server-sdk/google/sheets.js").Table} inputs.$table
-     * @param {*[]} inputs.value
+     * @param {string[]} inputs.field
+     * @param {any[]} inputs.value
+     * @param {boolean[]} inputs.multiple
      */
-    async onInputsReady({ $table, field, value, $multiple }) {
+    async onInputsReady({ $table, field, value, multiple }) {
 
         // build filters
         const filters = safeMap((field, value) => Operation.Equals(
@@ -21,12 +23,20 @@ export default {
             value
         ), field, value)
 
-        // execute query
-        this.publish({
-            rows: await $table.findRows({
-                filters: filters,
-                limit: $multiple ? null : 1,
+        // execute queries
+        const queryResult = await safeMap(async (filter, multiple) => {
+            // execute query
+            const result = await $table.findRows({
+                filters: [filter],
+                limit: multiple ? null : 1,
             })
+
+            // delist result if multiple isn't set
+            return multiple ? result : delist(result)
+        }, filters, multiple)
+
+        this.publish({
+            rows: delist(queryResult)
         })
     },
 }

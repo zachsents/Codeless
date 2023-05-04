@@ -37,7 +37,7 @@ export class Table {
 
     /**
      * @param {object} options
-     * @param {Operation[]} options.filters
+     * @param {Operation[] | any[]} options.filters
      * @param {number} [options.limit]
      * @param {string} [options.sortBy]
      * @param {"asc" | "desc"} [options.sortOrder]
@@ -51,14 +51,14 @@ export class Table {
     } = {}) {
 
         logger.setPrefix("Google Sheets - Find Rows")
-        logger.table({ filters: filters.length, limit, sortBy, sortOrder })
+        // logger.table({ filters: filters.length, limit, sortBy, sortOrder })
 
         // compile filters
         /** @type {boolean | Operation} */
         const joinedFilter = Operation.And(...deepFlat(filters))
 
-        logger.debug("Filter:")
-        logger.debug(joinedFilter, "\n")
+        logger.debug("Filter:".joinedFilter?.constructor?.name ?? typeof joinedFilter)
+        // logger.debug(joinedFilter, "\n")
 
         // find which columns we need to get
         const filterFields = [...new Set(
