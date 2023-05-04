@@ -28,6 +28,16 @@ export function elementWise(aList, bList, operation) {
         aList.map((a, i) => operation(a, bList[i]))
 }
 
+/**
+ * Works like Array.map, but with multiple arrays. If arrays are the same
+ * length, elements are matched up in the operation function call. If an array
+ * is only of length 1, then it is used for every element in the other arrays.
+ *
+ * @export
+ * @param {(...elements: *) => *} operation
+ * @param {...any[]} lists One or more arrays to map over
+ * @return {any[] | Promise<any[]>} 
+ */
 export function safeMap(operation, ...lists) {
     // make sure everything's an array
     lists.forEach((list, i) => {

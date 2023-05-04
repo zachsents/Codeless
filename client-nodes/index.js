@@ -10,6 +10,7 @@ import UseVariable from "./basics/UseVariable"
 
 import Print from "./basics/actions/Print"
 import RunFlow from "./basics/actions/RunFlow"
+import ReturnFromFlow from "./basics/actions/ReturnFromFlow"
 import ScheduleFlow from "./basics/actions/ScheduleFlow"
 import SendEmail from "./basics/actions/SendEmail"
 
@@ -101,7 +102,7 @@ const nodeDefinitions = [
     // Data
     Number, Text, Switch, DateTime, Template, SetVariable, UseVariable, CustomCode,
     // Actions
-    Print, RunFlow, ScheduleFlow, SendEmail,
+    Print, RunFlow, ReturnFromFlow, ScheduleFlow, SendEmail,
     // Transforms
     And, Or, Equals, NotEqual, Not, GreaterThan, GreaterThanOrEqualTo, LessThan, LessThanOrEqualTo,
     // Lists

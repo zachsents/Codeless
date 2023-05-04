@@ -1,8 +1,7 @@
 import functions from "firebase-functions"
 import { db } from "./init.js"
 import { httpsCallable, url } from "firebase-admin-callable-functions"
-import { RunStatus } from "./flows.js"
-import { gmail, logger } from "@minus/server-sdk"
+import { RunStatus, gmail, logger } from "@minus/server-sdk"
 
 
 const EXCLUDED_LABELS = ["DRAFT", "SENT", "TRASH", "SPAM"]

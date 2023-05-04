@@ -1,4 +1,4 @@
-import { BoxSeam, ChartDots3, Run } from "tabler-icons-react"
+import { ArrowForward, BoxSeam, ChartDots3, Run } from "tabler-icons-react"
 import { OtherFlowsControl } from "../../components/index"
 
 /**
@@ -30,5 +30,13 @@ export default {
             renderConfiguration: OtherFlowsControl,
         }
     ],
-    outputs: [],
+    outputs: [
+        {
+            id: "return",
+            description: "The data returned from the flow.",
+            tooltip: "The data returned from the flow.",
+            icon: ArrowForward,
+            defaultShowing: false,
+        }
+    ],
 }

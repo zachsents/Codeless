@@ -4,7 +4,7 @@ import functions from "firebase-functions"
 import { db } from "./init.js"
 import { Graph } from "@minus/gee3"
 import { loadNodeDefinitions } from "@minus/server-nodes"
-import { logger } from "@minus/server-sdk"
+import { RunStatus, logger } from "@minus/server-sdk"
 
 
 export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {
@@ -419,15 +419,4 @@ class App {
     update(data) {
         return this.ref.update(data)
     }
-}
-
-
-export const RunStatus = {
-    Pending: "pending",
-    Scheduled: "scheduled",
-    Validated: "validated",
-    FailedValidation: "failed-validation",
-    Finished: "finished",
-    FinishedWithErrors: "finished-with-errors",
-    Failed: "failed",
 }
