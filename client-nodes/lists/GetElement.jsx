@@ -1,5 +1,7 @@
 import { BracketsContain, Numbers, Target } from "tabler-icons-react"
 import NumberControl from "../components/NumberControl"
+import { useInputValue } from "../hooks/nodes"
+import { Button, Group, Stack } from "@mantine/core"
 
 
 export default {
@@ -20,13 +22,30 @@ export default {
         {
             id: "index",
             name: "Position",
-            description: "The index of the element to get. The first element is at index 0.",
-            tooltip: "The index of the element to get. The first element is at index 0.",
+            description: "The position of the element to get. The first element is at position 1.",
+            tooltip: <>
+                The position of the element to get. The first element is at position 1.<br /><br />
+                To get the last element without knowing the length of the list, set this to 0.
+            </>,
             icon: Numbers,
             allowedModes: ["handle", "config"],
             defaultMode: "config",
-            defaultValue: 0,
-            renderConfiguration: NumberControl,
+            defaultValue: 1,
+            renderConfiguration: props => {
+                const [, setValue] = useInputValue(null, props.inputId)
+
+                return <Stack spacing={"xs"}>
+                    <NumberControl {...props} />
+                    <Group position="center">
+                        <Button size="xs" compact variant="subtle" onClick={() => setValue(1)}>
+                            First Item
+                        </Button>
+                        <Button size="xs" compact variant="subtle" onClick={() => setValue(0)}>
+                            Last Item
+                        </Button>
+                    </Group>
+                </Stack>
+            },
         },
     ],
     outputs: [

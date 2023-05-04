@@ -13,7 +13,7 @@ export default {
      */
     onInputsReady({ list, index }) {
         this.publish({
-            element: safeMap(index => list.at(index), index),
+            element: safeMap(index => list.at(index - 1), index),
         })
     },
 }
