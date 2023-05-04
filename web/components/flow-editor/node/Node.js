@@ -21,7 +21,6 @@ import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
 import OutputHandle from "./handle/OutputHandle"
-import { AnimatePresence } from "framer-motion"
 
 
 export default function Node({ id, type: typeDefId, selected, dragging }) {
@@ -93,7 +92,10 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
                 initial="initial"
                 animate={selected ? "selected" : hovered ? "hovered" : "idle"}
                 transition={{ duration: 0.1 }}
-                style={{ borderRadius: theme.radius.md }}
+                style={{
+                    borderRadius: theme.radius.md,
+                    cursor: "pointer",
+                }}
                 ref={hoverRef}
             >
                 <Group spacing={0} align="stretch">
