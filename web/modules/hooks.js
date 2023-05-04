@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { useDebouncedValue } from "@mantine/hooks"
+import { useDebouncedValue, useTimeout } from "@mantine/hooks"
 import { useRouter } from "next/router"
 import fuzzy from "fuzzy"
 import { useAuthState } from "@minus/client-sdk"
@@ -84,6 +84,13 @@ export function useCleanGhostEdgesEffect() {
     const rf = useReactFlow()
     const nodes = useNodes()
 
+    // waiting a few seconds to enable the cleaner -- workaround for now to 
+    // avoid the cleaner running on load
+    const [enabled, setEnabled] = useState(false)
+    useTimeout(() => setEnabled(true), 3000, {
+        autoInvoke: true,
+    })
+
     // create map of all source and target handle IDs
     const handleMap = useMemo(() => Object.fromEntries(
         nodes.map(node =>
@@ -96,6 +103,9 @@ export function useCleanGhostEdgesEffect() {
 
     // remove edges that have a source or target that doesn't exist
     useEffect(() => {
+        if (!enabled)
+            return console.debug("[Cleaner] Skipping cleanup because it is not enabled yet")
+
         // on load, handleMap is empty -- this will never be the case after the first render
         if (Object.keys(handleMap).length === 0)
             return console.debug("[Cleaner] Skipping cleanup because there are no nodes (load effect)")
