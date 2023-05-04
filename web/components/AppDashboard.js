@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { ActionIcon, AppShell, Button, Container, Group, Menu, Navbar, NavLink, Title, Tooltip } from "@mantine/core"
+import { ActionIcon, AppShell, Aside, Button, Container, Group, Menu, Navbar, NavLink, ScrollArea, Title, Tooltip } from "@mantine/core"
 import { TbReportAnalytics, TbPlugConnected, TbChevronDown, TbChevronLeft, TbBook, TbSlideshow, TbCurrencyDollar, TbExternalLink } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
 
@@ -22,7 +22,6 @@ export default function AppDashboard({ children, pageTitle, appName }) {
                 <meta property="og:title" content={`${pageTitle}${appName ? ` - ${appName}` : ""} | Minus`} key="ogtitle" />
             </Head>}
         <AppShell
-            padding="lg"
             styles={shellStyles}
             navbar={
                 <Navbar width={{ base: 280 }} withBorder={false} p="md">
@@ -74,16 +73,21 @@ export default function AppDashboard({ children, pageTitle, appName }) {
                     <Navbar.Section>{/* Footer with user */}</Navbar.Section>
                 </Navbar>}
         >
-            <Container size="lg" py={50}>
-                {children}
-            </Container>
+            <ScrollArea h="100vh">
+                <Container size="lg" py={50}>
+                    {children}
+                </Container>
+            </ScrollArea>
         </AppShell>
     </>)
 }
 
 const shellStyles = theme => ({
     main: {
-        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0]
+        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+        paddingTop: 0,
+        paddingRight: 0,
+        paddingBottom: 0,
     },
 })
 
