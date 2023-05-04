@@ -1,16 +1,16 @@
-import Link from "next/link"
 import { Box, Button, Group, Stack, Text } from "@mantine/core"
-import { TbExternalLink, TbPlus, TbArrowBigUpLines } from "react-icons/tb"
 import { useAppDetailsRealtime, useFlowsForAppRealtime, usePlan } from "@minus/client-sdk"
+import Link from "next/link"
+import { TbArrowBigUpLines, TbExternalLink, TbPlus } from "react-icons/tb"
 
+import AppDashboard from "../../../components/AppDashboard"
+import GlassButton from "../../../components/GlassButton"
+import GradientBox from "../../../components/GradientBox"
+import PageTitle from "../../../components/PageTitle"
+import Search from "../../../components/Search"
+import FlowCard from "../../../components/cards/FlowCard"
 import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
 import { plural } from "../../../modules/util"
-import GlassButton from "../../../components/GlassButton"
-import AppDashboard from "../../../components/AppDashboard"
-import PageTitle from "../../../components/PageTitle"
-import GradientBox from "../../../components/GradientBox"
-import FlowCard from "../../../components/cards/FlowCard"
-import Search from "../../../components/Search"
 
 
 export default function AppFlows() {
@@ -72,7 +72,7 @@ export default function AppFlows() {
                     </Group>
                 </GradientBox>
 
-                <Search 
+                <Search
                     list={flows}
                     selector={flow => flow.name}
                     noun="flow"

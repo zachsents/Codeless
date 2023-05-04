@@ -1,11 +1,11 @@
+import { ActionIcon, AppShell, Button, Container, Group, Menu, Navbar, NavLink, ScrollArea, Title, Tooltip } from "@mantine/core"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { ActionIcon, AppShell, Aside, Button, Container, Group, Menu, Navbar, NavLink, ScrollArea, Title, Tooltip } from "@mantine/core"
-import { TbReportAnalytics, TbPlugConnected, TbChevronDown, TbChevronLeft, TbBook, TbSlideshow, TbCurrencyDollar, TbExternalLink } from "react-icons/tb"
+import { TbBook, TbChevronDown, TbChevronLeft, TbCurrencyDollar, TbExternalLink, TbPlugConnected, TbReportAnalytics, TbSlideshow } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
 
-import { useAppId, useMustBeSignedIn } from "../modules/hooks"
 import Head from "next/head"
+import { useAppId, useMustBeSignedIn } from "../modules/hooks"
 
 
 export default function AppDashboard({ children, pageTitle, appName }) {
