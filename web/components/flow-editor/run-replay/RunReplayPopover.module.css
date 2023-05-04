@@ -1,13 +1,55 @@
 .runRow {
     cursor: pointer;
+    transition: scale 0.1s;
 }
 
 .runRow:hover {
     background-color: var(--mantine-color-gray-1);
+    scale: 1.01;
+}
+
+.runRow.first {
+    font-weight: bold;
+    position: relative;
+    height: 3.75em;
+    vertical-align: bottom;
+}
+
+.runRow.first:not(.selectedRunRow):hover {
+    background-color: var(--mantine-color-primary-1);
+}
+
+.runRow.first::after {
+    content: "Most Recent";
+    font-size: var(--mantine-font-size-xs);
+    color: var(--mantine-color-gray-6);
+    font-weight: normal;
+
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* left: var(--mantine-spacing-xs); */
 }
 
 .runRow.selectedRunRow {
     background-color: var(--mantine-color-yellow-2);
+    position: relative;
+    height: 3.75em;
+    vertical-align: bottom;
+}
+
+.runRow.selectedRunRow::after {
+    content: "Selected";
+    font-size: var(--mantine-font-size-xs);
+    color: var(--mantine-color-gray-6);
+    font-weight: normal;
+
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* left: var(--mantine-spacing-xs); */
 }
 
 .scrollViewport {

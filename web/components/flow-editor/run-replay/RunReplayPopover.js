@@ -59,7 +59,7 @@ export default function RunReplayPopover() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {runs.map(run => {
+                                    {runs.map((run, i) => {
                                         const isRunSelected = run.id === selectedRun?.id
 
                                         return <Tooltip
@@ -71,7 +71,7 @@ export default function RunReplayPopover() {
                                                     setRunId(run.id)
                                                     popoverHandlers.close()
                                                 }}
-                                                className={`${styles.runRow} ${isRunSelected && styles.selectedRunRow}`}
+                                                className={`${styles.runRow} ${isRunSelected ? styles.selectedRunRow : ""} ${i == 0 ? styles.first : ""}`}
                                             >
                                                 <td>
                                                     <Text ff="monospace">
