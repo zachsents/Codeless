@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
-import { useRouter } from "next/router"
-import { useAppDetailsRealtime, useAppIntegrations, useFlowGraphRealtime, useFlowRealtime, useLatestRunRealtime, useRunsRealtime } from "@minus/client-sdk"
 import { Integrations } from "@minus/client-nodes"
+import { useAppDetailsRealtime, useAppIntegrations, useFlowGraphRealtime, useFlowRealtime, useRunsRealtime } from "@minus/client-sdk"
+import { useRouter } from "next/router"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { useAppId, useFlowId } from "./hooks"
 
 
@@ -20,7 +20,9 @@ export function FlowProvider({ children, redirectOnNotExist = false, }) {
         redirectOnNotExist && flow === false && router.push(redirectOnNotExist)
     }, [flow])
 
-    return <FlowContext.Provider value={{ flow, flowGraph }}>
+    const [dirty, setDirty] = useState(false)
+
+    return <FlowContext.Provider value={{ flow, flowGraph, dirty, setDirty }}>
         {children}
     </FlowContext.Provider>
 }

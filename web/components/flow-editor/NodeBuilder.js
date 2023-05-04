@@ -1,7 +1,7 @@
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
 import { useEffect, useMemo } from "react"
-import ReactFlow, { Background, useEdges, useNodes } from "reactflow"
+import ReactFlow, { Background, useEdges, useNodes, useStoreApi } from "reactflow"
 
 import { NodeDefinitions } from "@minus/client-nodes"
 import { useFlowContext } from "@web/modules/context"
@@ -16,8 +16,12 @@ import ReplayPanel from "./run-replay/ReplayPanel"
 
 export default function NodeBuilder() {
 
-    const { flowGraph } = useFlowContext()
-    const updateFlowGraph = useUpdateFlowGraph(flowGraph?.id)
+    const { flowGraph, setDirty } = useFlowContext()
+    const _updateFlowGraph = useUpdateFlowGraph(flowGraph?.id)
+    const updateFlowGraph = async (...args) => {
+        await _updateFlowGraph(...args)
+        setDirty(false)
+    }
 
     // deserialize graph
     const { nodes: initialNodes, edges: initialEdges } = useMemo(
@@ -26,7 +30,13 @@ export default function NodeBuilder() {
     )
 
     // debounce graph changes and update flow document
-    const [, setGraph] = useDebouncedCustomState(flowGraph?.graph, updateFlowGraph, 1000)
+    const [, _setGraph] = useDebouncedCustomState(flowGraph?.graph, updateFlowGraph, 1000, {
+        onNoUpdate: () => setDirty(false),
+    })
+    const setGraph = (...args) => {
+        _setGraph(...args)
+        setDirty(true)
+    }
 
     // watch shift key tp enable snapping
     // const shiftPressed = useKeyPress("Shift")
@@ -76,11 +86,16 @@ export default function NodeBuilder() {
 
 function ChangeWatcher({ onChange }) {
 
+    const storeApi = useStoreApi()
     const nodes = useNodes()
     const edges = useEdges()
 
-    const [debouncedNodes] = useDebouncedValue(nodes, 200)
-    const [debouncedEdges] = useDebouncedValue(edges, 200)
+    const [debouncedNodes] = useDebouncedValue(JSON.stringify(nodes), 200)
+    const [debouncedEdges] = useDebouncedValue(JSON.stringify(edges), 200)
+
+    useEffect(() => {
+        storeApi.setState({ dirty: true })
+    }, [debouncedNodes, debouncedEdges, storeApi])
 
     const serialized = useMemo(() => serializeGraph(nodes, edges), [debouncedNodes, debouncedEdges])
 
@@ -96,6 +111,7 @@ function Cleaner() {
     useCleanGhostEdgesEffect()
     return <></>
 }
+
 
 const deleteKeyCodes = ["Delete", "Backspace"]
 

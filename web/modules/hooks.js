@@ -47,7 +47,9 @@ export function useFlowId() {
 }
 
 
-export function useDebouncedCustomState(remoteValue, remoteSetter, debounceTime = 200) {
+export function useDebouncedCustomState(remoteValue, remoteSetter, debounceTime = 200, {
+    onNoUpdate,
+} = {}) {
 
     const [value, setValue] = useState(remoteValue)
 
@@ -63,6 +65,8 @@ export function useDebouncedCustomState(remoteValue, remoteSetter, debounceTime 
     useEffect(() => {
         if (debounced !== undefined && debounced != remoteValue)
             remoteSetter?.(debounced)
+        else
+            onNoUpdate?.()
     }, [debounced])
 
     return [value, setValue]

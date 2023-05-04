@@ -9,7 +9,7 @@ import FlowControlButton from "@web/components/FlowControlButton"
 import { useFlowContext } from "@web/modules/context"
 import { deselectAll } from "@web/modules/graph-util"
 import { useState } from "react"
-import { useReactFlow } from "reactflow"
+import { useReactFlow, useStore } from "reactflow"
 import RunReplayPopover from "../run-replay/RunReplayPopover"
 import Breadcrumbs from "./Breadcrumbs"
 
@@ -18,7 +18,7 @@ export default function Header() {
 
     const rf = useReactFlow()
     const { query: { appId } } = useRouter()
-    const { flow } = useFlowContext()
+    const { flow, dirty: isFlowUnsaved } = useFlowContext()
 
     const publishFlow = usePublishFlow(flow?.id)
     const unpublishFlow = useUnpublishFlow(flow?.id)
@@ -28,6 +28,22 @@ export default function Header() {
         setIsPublishing(true)
         await (value ? publishFlow : unpublishFlow)()
         setIsPublishing(false)
+    }
+
+    const publishStatus = flow?.published ? {
+        label: "Enabled",
+        color: "green",
+    } : {
+        label: "Disabled",
+        color: "red",
+    }
+
+    const saveStatus = isFlowUnsaved ? {
+        label: "Saving",
+        color: "yellow",
+    } : {
+        label: "Saved",
+        color: "green",
     }
 
     return (
@@ -49,21 +65,34 @@ export default function Header() {
                     <Breadcrumbs />
                 </Group>
                 <Group spacing="xl">
-                    {/* Flow Controls */}
-                    <Group>
-                        {flow?.published && TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
-                            <FlowControlButton
-                                {...control}
-                                appId={appId}
-                                flow={flow}
-                                smallProps={{ size: "xl" }}
-                                iconSize="1.5em"
-                                key={control.id}
-                            />
-                        )}
-                    </Group>
+
+                    {/* Saving Indicator */}
+                    <Badge
+                        color="gray" variant="light" size="lg"
+                        leftSection={<Text color={saveStatus.color} size="xl">&bull;</Text>}
+                    >
+                        {saveStatus.label}
+                    </Badge>
 
                     <Divider orientation="vertical" />
+
+                    {/* Flow Controls */}
+                    {flow?.published && <>
+                        <Group>
+                            {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
+                                <FlowControlButton
+                                    {...control}
+                                    appId={appId}
+                                    flow={flow}
+                                    smallProps={{ size: "xl" }}
+                                    iconSize="1.5em"
+                                    key={control.id}
+                                />
+                            )}
+                        </Group>
+                        <Divider orientation="vertical" />
+                    </>}
+
 
                     {/* Publishing */}
                     {isPublishing ?
@@ -72,13 +101,12 @@ export default function Header() {
                             <Text size="xs" color="dimmed">Working on it...</Text>
                         </Group> :
                         <Group>
-                            {flow?.published ?
-                                <Badge color="green" variant="light" size="lg" leftSection={<Text color="green" size="xl">&bull;</Text>}>
-                                    Enabled
-                                </Badge> :
-                                <Badge color="red" variant="light" size="lg" leftSection={<Text color="red" size="xl">&bull;</Text>}>
-                                    Disabled
-                                </Badge>}
+                            <Badge
+                                color={publishStatus.color}
+                                variant="light" size="lg" leftSection={<Text color={publishStatus.color} size="xl">&bull;</Text>}
+                            >
+                                {publishStatus.label}
+                            </Badge>
                             <Switch
                                 color="green"
                                 checked={flow?.published}
