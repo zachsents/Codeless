@@ -9,7 +9,7 @@ export default {
     async onInputsReady({ rows, field }) {
         this.publish({
             data: await safeMap(
-                (row, field) => row.getField(field),
+                (row, field) => row?.getField(field),
                 rows, field
             )
         })
