@@ -95,9 +95,10 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
     const [query, setQuery] = useDebouncedState("", 200)
     const [filters, filterHandlers] = useListState([])
 
+    // side-effect: focus on search input when filters or node cart changes
     useEffect(() => {
         searchRef.current?.focus()
-    }, [filters])
+    }, [filters, nodeCart])
 
     const nodesShowing = useMemo(() =>
         NodeSearcher.search(query)
