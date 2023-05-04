@@ -1,5 +1,5 @@
 import { ActionIcon, Box, Button, Group, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
-import { runFlow } from "@minus/client-sdk"
+import { runFlow, waitForRunToEnd } from "@minus/client-sdk"
 import SlidingCard from "@web/components/SlidingCard"
 import { openDataViewer } from "@web/components/modals/DataViewerModal"
 import { useReplayContext } from "@web/modules/context"
@@ -21,12 +21,13 @@ export default function CurrentRunCard() {
     const runFlowWithSamePayload = async () => {
         setRerunLoading(true)
         const { runId } = await runFlow(flowId, run.payload)
+        await waitForRunToEnd(runId)
         setRunId(runId)
         setRerunLoading(false)
     }
 
     return (
-        <SlidingCard opened={!!run} withBorder>
+        <SlidingCard opened={!!run} withBorder miw={250} key={run?.id}>
             <Stack>
                 <Group position="apart" align="start">
                     <Stack spacing="xs">
@@ -63,27 +64,27 @@ export default function CurrentRunCard() {
                     </Tooltip>
                 </Group>
 
-                <Group>
-                    <Tooltip label="View Trigger Data">
-                        <Button
-                            onClick={() => openDataViewer(run.payload, {
-                                title: "Trigger Data for Run " + shortRunId(run.id),
-                            })}
-                            variant="light" color="gray" leftIcon={<TbClipboardData />}
-                        >
-                            Trigger Data
-                        </Button>
-                    </Tooltip>
-                    <Tooltip label="Re-Run Trigger">
+
+
+                <Stack spacing="xs">
+                    <Button
+                        onClick={() => openDataViewer(run.payload, {
+                            title: "Trigger Data for Run " + shortRunId(run.id),
+                        })}
+                        variant="light" color="gray" leftIcon={<TbClipboardData />}
+                    >
+                        View Trigger Data
+                    </Button>
+                    <Tooltip withinPortal label="Run this flow again with the same trigger data.">
                         <Button
                             onClick={runFlowWithSamePayload}
                             loading={rerunLoading}
                             variant="light" leftIcon={<TbPlayerPlay />}
                         >
-                            Re-Run
+                            {rerunLoading ? "Running" : "Re-Run This Trigger"}
                         </Button>
                     </Tooltip>
-                </Group>
+                </Stack>
             </Stack>
         </SlidingCard>
     )

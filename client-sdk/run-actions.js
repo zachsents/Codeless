@@ -97,7 +97,14 @@ export async function runFlow(flowId, payload) {
 }
 
 
-function waitForRunToEnd(runId) {
+/**
+ * Waits for a run to finish and resolves with the run data.
+ *
+ * @export
+ * @param {string} runId
+ * @return {object} 
+ */
+export function waitForRunToEnd(runId) {
     let unsubscribe
     return new Promise((resolve, reject) => {
         unsubscribe = onSnapshot(getRunRef(runId), snapshot => {
