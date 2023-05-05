@@ -1,7 +1,7 @@
-import { Button, Group, SimpleGrid, Stack, TextInput, Title } from "@mantine/core"
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { ActionIcon, Button, Group, SimpleGrid, Stack, TextInput, Title } from "@mantine/core"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
-import { useDebouncedState, useListState, useSetState } from "@mantine/hooks"
+import { useDebouncedState, useDebouncedValue, useListState, useSetState } from "@mantine/hooks"
 import { CreatableNodeDefinitions, CreatableTags } from "@minus/client-nodes"
 import { addNodeAtCenter, addNodesAtCenter } from "@web/modules/graph-util"
 import { NodeDefinitionSearcher } from "@web/modules/search"
@@ -92,7 +92,8 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
     // }, [suggestions])
 
     const searchRef = useRef()
-    const [query, setQuery] = useDebouncedState("", 200)
+    const [rawQuery, setRawQuery] = useState("")
+    const [query] = useDebouncedValue(rawQuery, 200)
     const [filters, filterHandlers] = useListState([])
 
     // side-effect: focus on search input when filters or node cart changes
@@ -107,18 +108,26 @@ export default function NodePalette({ context, id, innerProps: { rf, suggestions
         [query, filters]
     )
 
+    const clearSearch = () => {
+        setRawQuery("")
+        searchRef.current?.focus()
+    }
+
     return (
         <Stack ref={containerRef}>
             <Group>
                 <TextInput
-                    defaultValue={query}
-                    onChange={event => setQuery(event.currentTarget.value)}
+                    value={rawQuery}
+                    onChange={event => setRawQuery(event.currentTarget.value)}
                     placeholder={`Search ${NodeIds.length} nodes...`}
                     size="lg"
                     data-autofocus
                     tabIndex={0}
                     sx={{ flexGrow: 1, }}
                     onKeyDown={searchKeyHandler}
+                    rightSection={<ActionIcon onClick={clearSearch} size="xl">
+                        <TbX />
+                    </ActionIcon>}
                     ref={searchRef}
                 />
 
