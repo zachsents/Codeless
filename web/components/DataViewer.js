@@ -38,7 +38,7 @@ export default function DataViewer({ data, topLevel = false }) {
 
 function Label({ name, value }) {
 
-    return <Group>
+    return <Group noWrap>
         <Text weight={600}>{name}</Text>
         {requiresExpansion(value) ?
             <Text color="dimmed" size="xs">Click to expand</Text> :
