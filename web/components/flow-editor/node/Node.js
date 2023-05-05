@@ -6,6 +6,7 @@ import { useEffect } from "react"
 import { useAppContext } from "@web/modules/context"
 import {
     getNodeIntegrationsStatus,
+    selectNode,
     useNodeConnections,
     useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
@@ -21,11 +22,13 @@ import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
 import OutputHandle from "./handle/OutputHandle"
+import { useReactFlow } from "reactflow"
 
 
 export default function Node({ id, type: typeDefId, selected }) {
 
     const theme = useMantineTheme()
+    const rf = useReactFlow()
 
     const typeDefinition = NodeDefinitions[typeDefId]
     const [mainColor, bgColor] = useColors(id, ["primary", 0])
@@ -88,17 +91,21 @@ export default function Node({ id, type: typeDefId, selected }) {
 
     // #region - Node context menu
     const [, setContextMenu] = useStoreProperty("contextMenu")
-    const clickOutsideRef = useClickOutside(() => setContextMenu(null), ["click"])
+    // disabling this for now because it happens before the popover
+    // animation finishes
+    // const clickOutsideRef = useClickOutside(() => setContextMenu(null), ["click"])
     const handleContextMenu = event => {
         event.preventDefault()
         setContextMenu(id)
+        selectNode(rf, id)
     }
     // #endregion
 
     return (
         <NodeProvider value={{ id, displayProps }}>
             <Box
-                onContextMenu={handleContextMenu} ref={clickOutsideRef}
+                onContextMenu={handleContextMenu}
+            // ref={clickOutsideRef}
             >
                 <motion.div
                     variants={wrapperAnimVariants}
