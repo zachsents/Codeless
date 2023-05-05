@@ -1,5 +1,5 @@
-import { Group, Textarea } from "@mantine/core"
-import { AlphabetLatin } from "tabler-icons-react"
+import { Card, Center, Group, Textarea, useMantineTheme } from "@mantine/core"
+import { AlphabetLatin, Dots, GridDots } from "tabler-icons-react"
 import { useInternalState } from "../hooks/nodes.js"
 
 
@@ -30,22 +30,28 @@ export default {
     renderName: false,
 
     renderContent: () => {
+        const theme = useMantineTheme()
         const [state, setState] = useInternalState()
-        return <Group>
-            <Textarea
-                value={state.$ ?? ""}
-                onChange={event => setState({ $: event.currentTarget.value })}
-                placeholder="Type something..."
-                radius="md"
-                size="xs"
-                autosize
-                minRows={1}
-                maxRows={15}
-                w={200}
-                classNames={{
-                    // input: "nodrag"
-                }}
-            />
-        </Group>
+        return (
+            <Group spacing={0} py={5}>
+                <Center px="xs">
+                    <GridDots color={theme.colors.gray[5]} size="1em" />
+                </Center>
+                <Textarea
+                    value={state.$ ?? ""}
+                    onChange={event => setState({ $: event.currentTarget.value })}
+                    placeholder="Type something..."
+                    radius="md"
+                    size="xs"
+                    autosize
+                    minRows={1}
+                    maxRows={15}
+                    w={200}
+                    classNames={{
+                        input: "nodrag"
+                    }}
+                />
+            </Group>
+        )
     },
 }

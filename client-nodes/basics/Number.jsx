@@ -1,5 +1,5 @@
-import { Box, NumberInput } from "@mantine/core"
-import { Numbers } from "tabler-icons-react"
+import { Box, Center, Group, NumberInput, useMantineTheme } from "@mantine/core"
+import { GridDots, Numbers } from "tabler-icons-react"
 import { useInternalState } from "../hooks/nodes"
 
 export default {
@@ -26,16 +26,25 @@ export default {
     renderName: false,
 
     renderContent: () => {
+        const theme = useMantineTheme()
         const [state, setState] = useInternalState()
-        return <Box mr={2}>
-            <NumberInput
-                value={state.$}
-                onChange={val => setState({ $: val })}
-                placeholder="Pick a number..."
-                size="lg"
-                w={220}
-                controls
-            />
-        </Box>
+        return (
+            <Group spacing={0} py={5} mr={2}>
+                <Center px="xs">
+                    <GridDots color={theme.colors.gray[5]} size="1em" />
+                </Center>
+                <NumberInput
+                    value={state.$}
+                    onChange={val => setState({ $: val })}
+                    placeholder="Pick a number..."
+                    size="lg"
+                    w={220}
+                    controls
+                    classNames={{
+                        input: "nodrag"
+                    }}
+                />
+            </Group>
+        )
     },
 }
