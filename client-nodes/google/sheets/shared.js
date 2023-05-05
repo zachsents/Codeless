@@ -35,6 +35,8 @@ export function SpreadsheetURLControl({ inputId }) {
     const [value, setValue] = useInputValue(null, inputId)
     const isValid = value == null || SheetsURLRegex.test(value)
 
+    const shouldLinkToSpreadsheet = isValid && value != null
+
     return <>
         <TextInput
             value={value ?? ""}
@@ -51,10 +53,10 @@ export function SpreadsheetURLControl({ inputId }) {
             <Button
                 component="a"
                 // if it's not a valid URL, just link to the Google Sheets home page
-                href={isValid ? value : "https://docs.google.com/spreadsheets/u/0/"} target="_blank"
+                href={shouldLinkToSpreadsheet ? value : "https://docs.google.com/spreadsheets/u/0/"} target="_blank"
                 color="green" size="xs" variant="subtle" rightIcon={<TbExternalLink />} compact
             >
-                View Sheet{isValid ? "" : "s"}
+                View Sheet{shouldLinkToSpreadsheet ? "" : "s"}
             </Button>
         </Group>
     </>
