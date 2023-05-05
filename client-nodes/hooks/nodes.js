@@ -4,7 +4,7 @@ import produce from "immer"
 import _ from "lodash"
 import { customAlphabet } from "nanoid"
 import { alphanumeric } from "nanoid-dictionary"
-import { createContext, useCallback, useContext, useEffect } from "react"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { useReactFlow, useStore, useStoreApi } from "reactflow"
 import { NodeDefinitions } from ".."
 
@@ -419,4 +419,19 @@ export function useCreateEmptyListItem(nodeId, handleId) {
             { id: generateId(), name: "" } :
             { id: generateId() }
     }, [isNamed])
+}
+
+
+export function useDeselectAfter(nodeId) {
+    const [selected, setSelected] = useNodeProperty(nodeId, "selected", true)
+    const [shouldDeselect, setShouldDeselect] = useState(false)
+
+    useEffect(() => {
+        if (shouldDeselect && selected) {
+            setSelected(false)
+            setShouldDeselect(false)
+        }
+    }, [selected, shouldDeselect])
+
+    return () => setShouldDeselect(true)
 }

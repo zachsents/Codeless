@@ -2,11 +2,10 @@ import { Box, Card, Group, useMantineTheme } from "@mantine/core"
 import { useClickOutside, useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
-import { useReactFlow } from "reactflow"
 
 import { useAppContext } from "@web/modules/context"
 import {
-    deselectNode, getNodeIntegrationsStatus,
+    getNodeIntegrationsStatus,
     useNodeConnections,
     useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
@@ -24,10 +23,9 @@ import ListHandle from "./handle/ListHandle"
 import OutputHandle from "./handle/OutputHandle"
 
 
-export default function Node({ id, type: typeDefId, selected, dragging }) {
+export default function Node({ id, type: typeDefId, selected }) {
 
     const theme = useMantineTheme()
-    const rf = useReactFlow()
 
     const typeDefinition = NodeDefinitions[typeDefId]
     const [mainColor, bgColor] = useColors(id, ["primary", 0])
@@ -62,12 +60,6 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
         connections: { ...inputConnections, ...outputConnections },
         integrationsSatisfied,
     }
-    // #endregion
-
-    // #region - Side Effect: when dragging, deselect
-    useEffect(() => {
-        dragging && deselectNode(rf, id)
-    }, [dragging])
     // #endregion
 
     // #region - Periodically update node internals
@@ -105,7 +97,9 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
 
     return (
         <NodeProvider value={{ id, displayProps }}>
-            <Box onContextMenu={handleContextMenu} ref={clickOutsideRef}>
+            <Box
+                onContextMenu={handleContextMenu} ref={clickOutsideRef}
+            >
                 <motion.div
                     variants={wrapperAnimVariants}
                     initial="initial"

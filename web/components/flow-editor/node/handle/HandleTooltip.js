@@ -38,9 +38,7 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
     }
 
     // opening node palette
-    const openNodePalette = (event) => {
-        event.stopPropagation()
-
+    const openNodePalette = () => {
         _openNodePalette(rf, {
             subtitle: `${type == HandleType.Input ? "preceeding" : "following"} "${nodeTypeDefinition.name}"`,
             innerProps: {
@@ -93,7 +91,17 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
             {
                 !currentlyConnecting &&
                 (nodeHovered || handleHovered || nodeSelected) &&
-                <Box className={`${styles.tooltipWrapper} ${styles[type]}`}>
+                <Box
+                    className={`${styles.tooltipWrapper} ${styles[type]} nodrag`}
+
+                    /**
+                     * This is a hack to prevent clicks here from selecting the node.
+                     * Class name "nodrag" (above) helps with dragging, but not clicking.
+                     * See NodeBuilder and ConfigPopover for more info on this.
+                     */
+                    onClick={event => event.stopPropagation()}
+                    onMouseDownCapture={event => event.stopPropagation()}
+                >
                     <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}

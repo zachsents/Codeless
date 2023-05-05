@@ -1,4 +1,4 @@
-import { Textarea } from "@mantine/core"
+import { Group, Textarea } from "@mantine/core"
 import { AlphabetLatin } from "tabler-icons-react"
 import { useInternalState } from "../hooks/nodes.js"
 
@@ -31,16 +31,21 @@ export default {
 
     renderContent: () => {
         const [state, setState] = useInternalState()
-        return <Textarea
-            value={state.$ ?? ""}
-            onChange={event => setState({ $: event.currentTarget.value })}
-            placeholder="Type something..."
-            radius="md"
-            size="xs"
-            autosize
-            minRows={1}
-            maxRows={15}
-            w={200}
-        />
+        return <Group>
+            <Textarea
+                value={state.$ ?? ""}
+                onChange={event => setState({ $: event.currentTarget.value })}
+                placeholder="Type something..."
+                radius="md"
+                size="xs"
+                autosize
+                minRows={1}
+                maxRows={15}
+                w={200}
+                classNames={{
+                    // input: "nodrag"
+                }}
+            />
+        </Group>
     },
 }

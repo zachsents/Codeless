@@ -1,7 +1,7 @@
 import { useInterval } from "@mantine/hooks"
 import { produce } from "immer"
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react"
-import { applyNodeChanges, applyEdgeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport, useOnSelectionChange } from "reactflow"
+import { applyEdgeChanges, applyNodeChanges, useReactFlow, useStore, useUpdateNodeInternals, useViewport } from "reactflow"
 import shortUUID from "short-uuid"
 import shallow from "zustand/shallow"
 
@@ -382,7 +382,7 @@ export function selectNode(rf, nodeId, {
         selected: true,
     }]
 
-    if (deselectOthers)
+    if (deselectOthers) {
         rf.getNodes().forEach(node => {
             node.id != nodeId && changes.push({
                 id: node.id,
@@ -390,6 +390,14 @@ export function selectNode(rf, nodeId, {
                 selected: false,
             })
         })
+
+        const edges = rf.getEdges()
+        rf.setEdges(applyEdgeChanges(edges.map(edge => ({
+            id: edge.id,
+            type: "select",
+            selected: false,
+        })), edges))
+    }
 
     rf.setNodes(applyNodeChanges(changes, rf.getNodes()))
 }
@@ -468,6 +476,7 @@ export function addNeighborNode(rf, {
     handle,
     direction,
     topOffset = 0,
+    selectNewNode = false,
 } = {}) {
 
     const { position: { x, y }, width, height } = rf.getNode(originNodeId)
@@ -485,9 +494,10 @@ export function addNeighborNode(rf, {
     )
 
     rf.addNodes(newNode)
-    newEdge && rf.addEdges(newEdge)
+    // delay this so ghost edge cleaner doesn't pick it up
+    newEdge && setTimeout(() => rf.addEdges(newEdge), 50)
 
-    selectNode(rf, newNode.id)
+    selectNewNode && selectNode(rf, newNode.id)
 }
 
 

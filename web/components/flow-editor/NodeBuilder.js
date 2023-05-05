@@ -50,17 +50,23 @@ export default function NodeBuilder() {
             edgeTypes={edgeTypes}
             defaultNodes={initialNodes}
             defaultEdges={initialEdges}
-            elevateNodesOnSelect
             defaultEdgeOptions={valueEdgeProps}
             fitView
-            snapGrid={[20, 20]}
-            // snapToGrid={shiftPressed}
+
             connectOnClick={false}
+            snapGrid={[25, 25]}
+            // snapToGrid={true}
+            // snapToGrid={shiftPressed}
+
+            elevateNodesOnSelect
+
+            // This switches whether onMouseDown or onClick is used
+            selectNodesOnDrag={false}
 
             // connectionLineType="smoothstep"
 
-            selectionKeyCode={"Alt"}
-            multiSelectionKeyCode={"Alt"}
+            selectionKeyCode={"Control"}
+            multiSelectionKeyCode={"Shift"}
             zoomActivationKeyCode={null}
             deleteKeyCode={deleteKeyCodes}
 

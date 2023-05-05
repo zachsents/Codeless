@@ -57,7 +57,16 @@ export default function ConfigPopover({ children }) {
             </Popover.Target>
 
             {/* Controls */}
-            <Popover.Dropdown p="md">
+            <Popover.Dropdown
+                p="md"
+                /**
+                 * ReactFlow throws an error if we delete the node by clicking inside
+                 * the popover. The event used depends on the selectNodesOnDrag prop
+                 * on the ReactFlow component.
+                 */
+                onClick={event => event.stopPropagation()}
+                onMouseDownCapture={event => event.stopPropagation()}
+            >
                 <Stack spacing="xs">
                     <Group spacing="xs" noWrap position="center">
                         {/* Duplicate */}
