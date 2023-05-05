@@ -1,0 +1,39 @@
+.container {
+    position: absolute;
+    z-index: 1000;
+    top: var(--y);
+    left: var(--x);
+    transform: translate(-50%, -50%);
+
+    /* min-width: 50px;
+    min-height: 50px;
+    background: red; */
+
+    pointer-events: none;
+}
+
+.container.opened {
+    pointer-events: auto;
+}
+
+.buttonContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.buttonWrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    /* transform: translate(calc(-50% + var(--btn-x)), calc(-50% + var(--btn-y))); */
+}
+
+.plusButton {
+    position: relative;
+    z-index: 1;
+    box-shadow: var(--mantine-shadow-md);
+}
+
+.nodeButton {
+    box-shadow: var(--mantine-shadow-md);
+}

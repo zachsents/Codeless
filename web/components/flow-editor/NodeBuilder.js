@@ -11,7 +11,9 @@ import { useCleanGhostEdgesEffect, useDebouncedCustomState } from "@web/modules/
 import DataEdge from "./DataEdge"
 import Node from "./node/Node"
 
+import { useStoreProperty } from "@minus/client-nodes/hooks/nodes"
 import 'reactflow/dist/style.css'
+import PaneContextMenu from "./PaneContextMenu"
 import ReplayPanel from "./run-replay/ReplayPanel"
 
 
@@ -44,6 +46,18 @@ export default function NodeBuilder() {
     // watch shift key tp enable snapping
     // const shiftPressed = useKeyPress("Shift")
 
+    // pane context menu
+    const [, setPaneContextMenuOpened] = useStoreProperty("paneContextMenu")
+    const handlePaneContextMenu = event => {
+        event.preventDefault()
+        const nodeEditorEl = document.getElementById("node-editor").getBoundingClientRect()
+        setPaneContextMenuOpened({
+            x: event.clientX - nodeEditorEl.x,
+            y: event.clientY - nodeEditorEl.y,
+            opened: true,
+        })
+    }
+
     return flowGraph ?
         <ReactFlow
             nodeTypes={nodeTypes}
@@ -62,8 +76,7 @@ export default function NodeBuilder() {
 
             // This switches whether onMouseDown or onClick is used
             selectNodesOnDrag={false}
-
-            // connectionLineType="smoothstep"
+            onPaneContextMenu={handlePaneContextMenu}
 
             selectionKeyCode={"Control"}
             multiSelectionKeyCode={"Shift"}
@@ -86,6 +99,7 @@ export default function NodeBuilder() {
             />
             {/* <Toolbar /> */}
             <ReplayPanel />
+            <PaneContextMenu />
 
             <ChangeWatcher onChange={setGraph} />
             <Cleaner />
