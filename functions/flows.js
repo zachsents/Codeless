@@ -319,8 +319,8 @@ class FlowGraph {
         // create updates -- a double map of occurences of edges
         const updates = {}
         this.edges.forEach(edge => {
-            const sourceType = this.findNodeWithId(edge.source).type.id
-            const targetType = this.findNodeWithId(edge.target).type.id
+            const sourceType = this.findNodeWithId(edge.source).type
+            const targetType = this.findNodeWithId(edge.target).type
 
             // update with source as key
             updates[sourceType] ??= {}
