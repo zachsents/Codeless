@@ -87,7 +87,7 @@ function ValueRow({ nodeId, handleId, typeKey }) {
                     >
                         View Data
                     </Button> :
-                    <Code>{util.inspect(data)}</Code>}
+                    <Code sx={{ wordBreak: "break-word" }}>{util.inspect(data)}</Code>}
         </td>
     </tr>
 }
