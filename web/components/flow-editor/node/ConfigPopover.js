@@ -3,7 +3,8 @@ import { useDeleteNode, useNodeId, useNodeProperty, useStoreProperty, useTypeDef
 import AnimatedTabs from "@web/components/AnimatedTabs"
 import { useAppContext, useReplayContext } from "@web/modules/context"
 import { getNodeIntegrationsStatus, useCurrentlySelectedNode } from "@web/modules/graph-util"
-import { TbExternalLink, TbSettings, TbTrash } from "react-icons/tb"
+import { TbExternalLink, TbMaximize, TbSettings, TbTrash } from "react-icons/tb"
+import { useReactFlow } from "reactflow"
 import IntegrationAlert from "../config-panel/IntegrationAlert"
 import InputConfig from "./InputConfig"
 import OutputConfig from "./OutputConfig"
@@ -11,6 +12,7 @@ import OutputConfig from "./OutputConfig"
 
 export default function ConfigPopover({ children }) {
 
+    const rf = useReactFlow()
     const theme = useMantineTheme()
 
     const nodeId = useNodeId()
@@ -40,6 +42,18 @@ export default function ConfigPopover({ children }) {
     const defaultTab = hasMissingIntegrations ? "Integrations" :
         typeDefinition.inputs.length > 0 ? "Inputs" : "Outputs"
     // #endregion
+
+    const fitView = () => {
+        const node = rf.getNode(nodeId)
+        rf.fitBounds({
+            x: node.position.x,
+            y: node.position.y,
+            width: node.width,
+            height: node.height,
+        }, {
+            duration: 400,
+        })
+    }
 
     return (
         <Popover
@@ -91,6 +105,16 @@ export default function ConfigPopover({ children }) {
                                 onClick={() => setContextMenu(isContextMenu ? null : nodeId)}
                             >
                                 <TbSettings size={theme.fontSizes.lg} />
+                            </ActionIcon>
+                        </Tooltip>
+
+                        <Tooltip label="Focus">
+                            <ActionIcon
+                                size="lg"
+                                color="gray"
+                                onClick={fitView}
+                            >
+                                <TbMaximize size={theme.fontSizes.lg} />
                             </ActionIcon>
                         </Tooltip>
 
