@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Group, Popover, useMantineTheme } from "@mantine/core"
+import { Box, Card, Group, useMantineTheme } from "@mantine/core"
 import { useClickOutside, useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
