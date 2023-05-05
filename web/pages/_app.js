@@ -66,7 +66,7 @@ const theme = {
     },
     defaultRadius: "md",
     shadows: {
-        xs: "",
+        xs: "rgba(0, 0, 0, 0.1) 0px 2px 5px 0px",
         sm: "rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 10px 0px",
         md: "rgba(0, 0, 0, 0.05) 0px 3px 2px 0px, rgba(0, 0, 0, 0.1) 0px 7px 20px 0px",
         lg: "rgba(0, 0, 0, 0.05) 0px 5px 4px 0px, rgba(0, 0, 0, 0.1) 0px 10px 30px 0px",

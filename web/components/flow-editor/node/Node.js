@@ -1,5 +1,5 @@
-import { Box, Card, Group, useMantineTheme } from "@mantine/core"
-import { useHover, useSetState } from "@mantine/hooks"
+import { Box, Card, Flex, Group, Popover, useMantineTheme } from "@mantine/core"
+import { useClickOutside, useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
 import { useReactFlow } from "reactflow"
@@ -12,10 +12,11 @@ import {
 } from "@web/modules/graph-util"
 
 import { NodeDefinitions } from "@minus/client-nodes"
-import { NodeProvider, useColors, useNodeContext, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { NodeProvider, useColors, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppId, useFlowId } from "@web/modules/hooks"
 import ConfigPopover from "./ConfigPopover"
 import ErrorIcon from "./ErrorIcon"
+import styles from "./Node.module.css"
 import NodeInternal from "./NodeInternal"
 import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
@@ -78,82 +79,99 @@ export default function Node({ id, type: typeDefId, selected, dragging }) {
 
     // #region - Node animations
     const wrapperAnimVariants = {
-        initial: { outline: "none" },
-        idle: { outline: `0px solid ${theme.colors.yellow[5]}` },
-        selected: { outline: `3px solid ${theme.colors.yellow[5]}` },
-        hovered: { outline: `3px solid ${theme.colors.yellow[2]}` },
+        initial: {
+            outline: "none",
+        },
+        idle: {
+            outline: `0px solid ${theme.colors.yellow[5]}`,
+        },
+        selected: {
+            outline: `3px solid ${theme.colors.yellow[5]}`,
+        },
+        hovered: {
+            outline: `3px solid ${theme.colors.yellow[2]}`,
+        },
+    }
+    // #endregion
+
+    // #region - Node context menu
+    const [, setContextMenu] = useStoreProperty("contextMenu")
+    const clickOutsideRef = useClickOutside(() => setContextMenu(null), ["click"])
+    const handleContextMenu = event => {
+        event.preventDefault()
+        setContextMenu(id)
     }
     // #endregion
 
     return (
         <NodeProvider value={{ id, displayProps }}>
-            <motion.div
-                variants={wrapperAnimVariants}
-                initial="initial"
-                animate={selected ? "selected" : hovered ? "hovered" : "idle"}
-                transition={{ duration: 0.1 }}
-                style={{
-                    borderRadius: theme.radius.md,
-                    cursor: "pointer",
-                }}
-                ref={hoverRef}
-            >
-                <Group spacing={0} align="stretch">
+            <Box onContextMenu={handleContextMenu} ref={clickOutsideRef}>
+                <motion.div
+                    variants={wrapperAnimVariants}
+                    initial="initial"
+                    animate={selected ? "selected" : hovered ? "hovered" : "idle"}
+                    transition={{ duration: 0.1 }}
+                    style={{
+                        borderRadius: theme.radius.md,
+                        cursor: "pointer",
+                    }}
+                    ref={hoverRef}
+                >
+                    <Group spacing={0} align="stretch">
 
-                    {/* Input Handles */}
-                    <HandleStack>
-                        {typeDefinition.inputs.map(input =>
-                            input.listMode ?
-                                <ListHandle
-                                    {...handleProps(input.id)}
-                                    component={InputHandle}
-                                    key={input.id}
-                                /> :
-                                <InputHandle
-                                    {...handleProps(input.id)}
-                                    key={input.id}
-                                />
-                        )}
-                    </HandleStack>
+                        {/* Input Handles */}
+                        <HandleStack>
+                            {typeDefinition.inputs.map(input =>
+                                input.listMode ?
+                                    <ListHandle
+                                        {...handleProps(input.id)}
+                                        component={InputHandle}
+                                        key={input.id}
+                                    /> :
+                                    <InputHandle
+                                        {...handleProps(input.id)}
+                                        key={input.id}
+                                    />
+                            )}
+                        </HandleStack>
 
-                    <ConfigPopover>
-                        {typeDefinition.renderCard ?
-                            <Card
-                                px="lg" py="sm"
-                                className="ofv"
-                                bg={bgColor}
-                                sx={{
-                                    border: `1px solid ${mainColor}`,
-                                }}
-                            >
-                                <NodeInternal displayProps={displayProps} />
-                            </Card>
-                            :
-                            <Box>
-                                <NodeInternal displayProps={displayProps} />
-                            </Box>
-                        }
-                    </ConfigPopover>
+                        <ConfigPopover>
+                            {typeDefinition.renderCard ?
+                                <Card
+                                    px="lg" py="sm"
+                                    bg={bgColor}
+                                    shadow={selected ? "md" : "xs"}
+                                    className={`ofv ${styles.card}`}
+                                    sx={{ "--main-color": mainColor }}
+                                >
+                                    <NodeInternal displayProps={displayProps} />
+                                </Card>
+                                :
+                                <Box>
+                                    <NodeInternal displayProps={displayProps} />
+                                </Box>}
+                        </ConfigPopover>
 
-                    {/* Output Handles */}
-                    <HandleStack>
-                        {typeDefinition.outputs.map(output =>
-                            output.listMode ?
-                                <ListHandle
-                                    {...handleProps(output.id)}
-                                    component={OutputHandle}
-                                    key={output.id}
-                                /> :
-                                <OutputHandle
-                                    {...handleProps(output.id)}
-                                    key={output.id}
-                                />
-                        )}
-                    </HandleStack>
-                </Group>
+                        {/* Output Handles */}
+                        <HandleStack>
+                            {typeDefinition.outputs.map(output =>
+                                output.listMode ?
+                                    <ListHandle
+                                        {...handleProps(output.id)}
+                                        component={OutputHandle}
+                                        key={output.id}
+                                    /> :
+                                    <OutputHandle
+                                        {...handleProps(output.id)}
+                                        key={output.id}
+                                    />
+                            )}
+                        </HandleStack>
+                    </Group>
 
-                <ErrorIcon />
-            </motion.div>
+                    <ErrorIcon />
+                </motion.div>
+            </Box>
 
             <Presence />
         </NodeProvider>

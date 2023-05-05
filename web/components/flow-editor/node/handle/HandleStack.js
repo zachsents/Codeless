@@ -6,7 +6,7 @@ export default function HandleStack({ children }) {
             w={0}
             justify="space-evenly"
             align="center"
-            spacing={0}
+            spacing={4}
         >
             {children}
         </Stack>

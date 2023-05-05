@@ -1,3 +1,4 @@
+import { useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
 import { useEffect, useMemo } from "react"
@@ -15,6 +16,8 @@ import ReplayPanel from "./run-replay/ReplayPanel"
 
 
 export default function NodeBuilder() {
+
+    const theme = useMantineTheme()
 
     const { flowGraph, setDirty } = useFlowContext()
     const _updateFlowGraph = useUpdateFlowGraph(flowGraph?.id)
@@ -65,8 +68,10 @@ export default function NodeBuilder() {
         >
             <Background
                 variant="lines"
-                gap={40}
+                gap={25}
                 size={1}
+                color={theme.colors.gray[0]}
+
             // color="transparent"
             // style={{
             //     // backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],

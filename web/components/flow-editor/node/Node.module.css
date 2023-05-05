@@ -1,3 +1,4 @@
 .card {
-    overflow: visible;
+    transition: box-shadow 0.1s;
+    border: 1px solid var(--main-color);
 }

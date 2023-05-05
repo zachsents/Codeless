@@ -22,7 +22,8 @@ export default function NodeMenu() {
     const rf = useReactFlow()
 
     useHotkeys([
-        ["ctrl+P", () => openNodePalette(rf)]
+        ["mod+P", () => openNodePalette(rf)],
+        ["mod+K", () => openNodePalette(rf)],
     ])
 
     // user preferences

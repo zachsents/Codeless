@@ -17,7 +17,7 @@ export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin
     const node = NodeDefinitions[id]
 
     const mainColor = theme.colors[node.color][theme.fn.primaryShade()]
-    // const dimmedColor = theme.colors[node.color][3]
+    const dimmedColor = theme.colors[node.color][0]
 
     // used to hide the pin icon when dragging
     const [dragging, setDragging] = useState(false)
@@ -36,6 +36,8 @@ export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin
                 resetPosition()
                 addNodeAtWindowPoint(rf, id, info.point.x, info.point.y)
             }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.1 }}
 
             style={resetting && { x: 0, y: 0 }}
         >
@@ -44,7 +46,7 @@ export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin
                 <motion.div
                     onTap={() => addNodeAtCenter(rf, id)}
                     className={styles.button}
-                    style={{ borderColor: mainColor }}
+                    style={{ "--main-color": mainColor, "--dimmed-color": dimmedColor }}
                 >
                     <Group position="apart">
                         <Group spacing="0.5em" >

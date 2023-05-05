@@ -47,8 +47,8 @@ export default function Handle({ id, label, nodeHovered, onHover }) {
             <HandleTooltip
                 id={id}
                 label={label}
-                show={hovered || nodeHovered}
-                showSuggestions={hovered}
+                nodeHovered={nodeHovered}
+                handleHovered={hovered}
             />
         </Box>
     )

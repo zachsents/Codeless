@@ -19,6 +19,9 @@ export default function ConfigPopover({ children }) {
     const isSelected = selectedNode?.id == nodeId
     const isDragging = useNodeProperty(null, "dragging")
 
+    // const [_contextMenu] = useStoreProperty("contextMenu")
+    // const isContextMenu = _contextMenu === nodeId
+
     const deleteNode = useDeleteNode()
 
     const { integrations: appIntegrations, app } = useAppContext()
@@ -39,6 +42,7 @@ export default function ConfigPopover({ children }) {
     return (
         <Popover
             opened={isSelected && !isDragging}
+            // opened={isContextMenu && !isDragging}
             withinPortal
             position={run ? "left" : "right"}
             shadow="sm"

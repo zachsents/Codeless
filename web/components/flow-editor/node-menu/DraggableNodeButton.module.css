@@ -2,7 +2,16 @@
     padding: 0.25em 0.5em;
     background: white;
     border-radius: var(--mantine-radius-sm);
-    cursor: grab;
-    border-width: 2px;
-    border-style: solid;
+    cursor: pointer;
+    border: 2px solid var(--main-color);
+
+    transition: background-color 0.1s;
+}
+
+.button:hover {
+    background-color: var(--dimmed-color);
+}
+
+.button:active {
+    cursor: grabbing;
 }

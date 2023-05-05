@@ -50,7 +50,7 @@
 .tooltipWrapper {
     position: absolute;
     top: 50%;
-    --y-transform: calc(-1 * var(--mantine-spacing-md) - 10px)
+    --y-transform: calc(-1 * var(--mantine-spacing-md) - 14px)
 }
 
 .tooltipWrapper.source {
@@ -65,9 +65,7 @@
 
 .tooltip {
     font-size: 10px;
-    border-radius: var(--mantine-radius-xl);
-    background-color: var(--mantine-color-dark-4);
-    color: var(--mantine-color-gray-0);
+    color: var(--mantine-color-dark-6);
     padding: 2px 8px;
     white-space: nowrap;
 }

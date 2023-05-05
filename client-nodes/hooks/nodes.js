@@ -5,7 +5,7 @@ import _ from "lodash"
 import { customAlphabet } from "nanoid"
 import { alphanumeric } from "nanoid-dictionary"
 import { createContext, useCallback, useContext, useEffect } from "react"
-import { useReactFlow, useStore } from "reactflow"
+import { useReactFlow, useStore, useStoreApi } from "reactflow"
 import { NodeDefinitions } from ".."
 
 
@@ -75,6 +75,20 @@ export function useNodeProperty(id, selector, returnSetter = false) {
         , [id, selector, rf])
 
     return returnSetter ? [propertyValue, setter] : propertyValue
+}
+
+
+/**
+ * Hook to assign a node ID to a property in ReactFlow's store. 
+ *
+ * @export
+ * @param {string} property
+ */
+export function useStoreProperty(property) {
+    const storeApi = useStoreApi()
+    const val = useStore(s => s[property])
+
+    return [val, newVal => storeApi.setState({ [property]: newVal })]
 }
 
 
