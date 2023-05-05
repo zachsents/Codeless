@@ -60,7 +60,7 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
                     // case for input handles -- we'll look for a single output handle
                     if (type == HandleType.Input) {
                         const potentialOutputs = nodeTypeDef.outputs.filter(outputDef =>
-                            !outputDef.listMode
+                            !outputDef.listMode && outputDef.defaultShowing
                         )
                         if (potentialOutputs.length == 1)
                             suggestion.handle = potentialOutputs[0].id
@@ -70,7 +70,8 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
                     if (type == HandleType.Output) {
                         const potentialInputs = nodeTypeDef.inputs.filter(inputDef =>
                             !inputDef.listMode &&
-                            inputDef.allowedModes.includes(InputMode.Handle)
+                            inputDef.allowedModes.includes(InputMode.Handle) &&
+                            inputDef.defaultMode == InputMode.Handle
                         )
                         if (potentialInputs.length == 1)
                             suggestion.handle = potentialInputs[0].id
