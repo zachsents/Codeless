@@ -335,7 +335,7 @@ export function createNode(nodeType, position) {
 }
 
 
-export function createEdge(source, sourceHandle, target, targetHandle) {
+export function createEdge(source, sourceHandle, target, targetHandle, data = {}) {
     return {
         id: `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`,
         source,
@@ -343,6 +343,7 @@ export function createEdge(source, sourceHandle, target, targetHandle) {
         target,
         targetHandle,
         type: "dataEdge",
+        data,
     }
 }
 
@@ -489,8 +490,8 @@ export function addNeighborNode(rf, {
 
     const newEdge = originHandle && handle && (
         direction == HandleType.Input ?
-            createEdge(newNode.id, handle, originNodeId, originHandle) :
-            createEdge(originNodeId, originHandle, newNode.id, handle)
+            createEdge(newNode.id, handle, originNodeId, originHandle, { animate: true }) :
+            createEdge(originNodeId, originHandle, newNode.id, handle, { animate: true })
     )
 
     rf.addNodes(newNode)

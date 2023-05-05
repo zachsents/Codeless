@@ -22,6 +22,7 @@ export default function DataEdge({
     style = {},
     markerEnd,
     selected,
+    data,
 }) {
 
     const theme = useMantineTheme()
@@ -43,9 +44,19 @@ export default function DataEdge({
 
     const { hovered, ref: hoverRef } = useHover()
 
+    const draw = {
+        hidden: {
+            pathLength: 0,
+        },
+        visible: {
+            pathLength: 1,
+            transition: { type: "spring", duration: 1, bounce: 0 },
+        }
+    }
+
     return (
         <g ref={hoverRef}>
-            <path
+            <motion.path
                 id={id}
                 style={{
                     strokeWidth: 2,
@@ -55,6 +66,10 @@ export default function DataEdge({
                 className="react-flow__edge-path"
                 d={edgePath}
                 markerEnd={markerEnd}
+
+                variants={draw}
+                initial={data?.animate ? "hidden" : "visible"}
+                animate="visible"
             />
             <path
                 style={{
