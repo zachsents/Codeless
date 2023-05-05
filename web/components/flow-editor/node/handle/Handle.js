@@ -1,5 +1,5 @@
 import { Box } from "@mantine/core"
-import { useForceUpdate, useHover } from "@mantine/hooks"
+import { useHover } from "@mantine/hooks"
 import { Position, Handle as RFHandle } from "reactflow"
 
 import { HandleType, useColors, useHandleConnected, useHandleDefinition } from "@minus/client-nodes/hooks/nodes"

@@ -1,5 +1,5 @@
 import { Box, Card, Group, useMantineTheme } from "@mantine/core"
-import { useClickOutside, useHover, useSetState } from "@mantine/hooks"
+import { useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
 
@@ -14,6 +14,7 @@ import {
 import { NodeDefinitions } from "@minus/client-nodes"
 import { NodeProvider, useColors, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppId, useFlowId } from "@web/modules/hooks"
+import { useReactFlow } from "reactflow"
 import ConfigPopover from "./ConfigPopover"
 import ErrorIcon from "./ErrorIcon"
 import styles from "./Node.module.css"
@@ -22,7 +23,6 @@ import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
 import OutputHandle from "./handle/OutputHandle"
-import { useReactFlow } from "reactflow"
 
 
 export default function Node({ id, type: typeDefId, selected }) {

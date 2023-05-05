@@ -3,11 +3,10 @@ import { useDeleteNode, useNodeId, useNodeProperty, useStoreProperty, useTypeDef
 import AnimatedTabs from "@web/components/AnimatedTabs"
 import { useAppContext, useReplayContext } from "@web/modules/context"
 import { getNodeIntegrationsStatus, useCurrentlySelectedNode } from "@web/modules/graph-util"
-import { TbCopy, TbExternalLink, TbSettings, TbTrash } from "react-icons/tb"
+import { TbExternalLink, TbSettings, TbTrash } from "react-icons/tb"
 import IntegrationAlert from "../config-panel/IntegrationAlert"
 import InputConfig from "./InputConfig"
 import OutputConfig from "./OutputConfig"
-import { useEffect, useState } from "react"
 
 
 export default function ConfigPopover({ children }) {
