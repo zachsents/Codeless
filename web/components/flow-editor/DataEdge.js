@@ -36,7 +36,7 @@ export default function DataEdge({
         targetPosition,
     })
 
-    const onEdgeClick = event => {
+    const handleDelete = event => {
         event.stopPropagation()
         deleteEdgeById(rf, id)
     }
@@ -82,7 +82,7 @@ export default function DataEdge({
                                 exit={{ scale: 0 }}
                                 transition={{ type: "spring", duration: 0.2 }}
                             >
-                                <ActionIcon size="sm" radius="md" color="red" variant="filled" onClick={onEdgeClick}>
+                                <ActionIcon size="md" radius="xl" color="red" variant="filled" onClick={handleDelete}>
                                     <TbX />
                                 </ActionIcon>
                             </motion.div>}
