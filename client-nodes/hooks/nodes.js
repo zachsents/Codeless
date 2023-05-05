@@ -236,6 +236,9 @@ export function getHandleDefinitionId(handleId) {
 export function getHandleDefinition(nodeTypeDefId, handleDefId) {
     const nodeTypeDef = NodeDefinitions[nodeTypeDefId]
 
+    if (!nodeTypeDef)
+        throw new Error(`Node type definition not found: ${nodeTypeDefId}`)
+
     const input = nodeTypeDef.inputs.find(input => input.id == handleDefId)
     if (input)
         return { type: HandleType.Input, definition: input }
