@@ -4,7 +4,14 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "dev": "nodemon -q build-barrel.js",
+        "build": "node build-barrel.js"
+    },
+    "nodemonConfig": {
+        "ext": "js,jsx",
+        "ignore": [
+            "nodes-barrel.js"
+        ]
     },
     "author": "",
     "license": "ISC",
@@ -28,5 +35,8 @@
         "react-simple-code-editor": "^0.13.1",
         "reactflow": "~11.4.0",
         "tabler-icons-react": "^1.56.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.22"
     }
 }
