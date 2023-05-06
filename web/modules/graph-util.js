@@ -508,31 +508,23 @@ export function addNeighborNode(rf, {
 
 export function serializeGraph(nodes = [], edges = []) {
     return JSON.stringify({
-        nodes: nodes.map(produce(node => {
-            delete node.selected
-            delete node.dragging
-            delete node.positionAbsolute
-            delete node.width
-            delete node.height
-        })),
-        edges: edges.map(produce(edge => {
-            delete edge.selected
-        })),
+        nodes: nodes.map(({
+            // eslint-disable-next-line no-unused-vars
+            selected, dragging, positionAbsolute, width, height,
+            ...node
+        }) => node),
+        edges: edges.map(({
+            // eslint-disable-next-line no-unused-vars
+            selected,
+            ...edge
+        }) => edge),
     })
 }
 
 
 export function deserializeGraph(str = "{}") {
     const { nodes, edges } = JSON.parse(str)
-
     return { nodes, edges }
-
-    // return {
-    //     nodes: nodes?.map(produce(node => {
-
-    //     })),
-    //     edges
-    // }
 }
 
 

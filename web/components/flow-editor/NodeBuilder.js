@@ -2,7 +2,7 @@ import { useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
 import { useEffect, useMemo } from "react"
-import ReactFlow, { Background, useEdges, useNodes, useStoreApi } from "reactflow"
+import ReactFlow, { Background, useEdges, useNodes } from "reactflow"
 
 import { NodeDefinitions } from "@minus/client-nodes"
 import { useFlowContext } from "@web/modules/context"
