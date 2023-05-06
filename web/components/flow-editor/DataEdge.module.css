@@ -1,0 +1,10 @@
+.edge {
+    stroke: var(--mantine-color-gray-5) !important;
+    stroke-width: 2px;
+    transition: stroke 0.1s, stroke-width 0.1s;
+}
+
+.edge.selected {
+    stroke: var(--mantine-color-yellow-5) !important;
+    stroke-width: 3px;
+}

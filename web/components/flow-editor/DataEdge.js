@@ -1,10 +1,10 @@
-import { getBezierPath, useReactFlow } from 'reactflow'
-import { ActionIcon, Flex, useMantineTheme } from '@mantine/core'
-import { useHover } from '@mantine/hooks'
-import { motion, AnimatePresence } from "framer-motion"
-import { TbX } from 'react-icons/tb'
-
-import { deleteEdgeById } from '../../modules/graph-util'
+import { ActionIcon, Flex } from "@mantine/core"
+import { useHover } from "@mantine/hooks"
+import { AnimatePresence, motion } from "framer-motion"
+import { TbX } from "react-icons/tb"
+import { getBezierPath, useReactFlow } from "reactflow"
+import { deleteEdgeById } from "../../modules/graph-util"
+import styles from "./DataEdge.module.css"
 
 
 const InteractionPadding = 20
@@ -25,7 +25,6 @@ export default function DataEdge({
     data,
 }) {
 
-    const theme = useMantineTheme()
     const rf = useReactFlow()
 
     const [edgePath, labelX, labelY] = getBezierPath({
@@ -51,19 +50,16 @@ export default function DataEdge({
         visible: {
             pathLength: 1,
             transition: { type: "spring", duration: 1, bounce: 0 },
-        }
+        },
     }
+
 
     return (
         <g ref={hoverRef}>
             <motion.path
                 id={id}
-                style={{
-                    strokeWidth: 2,
-                    stroke: selected ? theme.colors.yellow[5] : theme.colors.gray[5],
-                    ...style,
-                }}
-                className="react-flow__edge-path"
+                style={style}
+                className={`react-flow__edge-path ${styles.edge} ${selected ? styles.selected : ""}`}
                 d={edgePath}
                 markerEnd={markerEnd}
 
@@ -90,7 +86,7 @@ export default function DataEdge({
             >
                 <Flex w="100%" h="100%" justify="center" align="center">
                     <AnimatePresence>
-                        {hovered &&
+                        {(hovered || selected) &&
                             <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
