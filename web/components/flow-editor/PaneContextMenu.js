@@ -79,9 +79,13 @@ function NodeButton({ id, index, total, ...props }) {
 
     const radius = 80
 
-    // calculate x and y position of button so that they are arranged in a circle
-    const x = Math.cos(index / total * Math.PI * 2) * radius
-    const y = Math.sin(index / total * Math.PI * 2) * radius
+    // calculate angle so that they are arranged in a circle
+    // - 0.25 is to start at the top
+    const angle = (index / total - 0.25) * Math.PI * 2
+
+    // calculate x and y position of button
+    const x = Math.cos(angle) * radius
+    const y = Math.sin(angle) * radius
 
     const variants = {
         start: { x: 0, y: 0, scale: 0.8 },
