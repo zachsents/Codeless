@@ -182,6 +182,5 @@ function createGraphWithTrigger(trigger) {
         deletable: false,
         focusable: false,
         data: { state: {} },
-        state: {},
     }])
 }

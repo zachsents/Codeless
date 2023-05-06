@@ -508,15 +508,31 @@ export function addNeighborNode(rf, {
 
 export function serializeGraph(nodes = [], edges = []) {
     return JSON.stringify({
-        nodes,
-        edges,
+        nodes: nodes.map(produce(node => {
+            delete node.selected
+            delete node.dragging
+            delete node.positionAbsolute
+            delete node.width
+            delete node.height
+        })),
+        edges: edges.map(produce(edge => {
+            delete edge.selected
+        })),
     })
 }
 
 
 export function deserializeGraph(str = "{}") {
     const { nodes, edges } = JSON.parse(str)
+
     return { nodes, edges }
+
+    // return {
+    //     nodes: nodes?.map(produce(node => {
+
+    //     })),
+    //     edges
+    // }
 }
 
 

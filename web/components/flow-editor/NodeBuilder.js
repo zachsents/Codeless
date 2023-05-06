@@ -111,16 +111,11 @@ export default function NodeBuilder() {
 
 function ChangeWatcher({ onChange }) {
 
-    const storeApi = useStoreApi()
     const nodes = useNodes()
     const edges = useEdges()
 
     const [debouncedNodes] = useDebouncedValue(JSON.stringify(nodes), 200)
     const [debouncedEdges] = useDebouncedValue(JSON.stringify(edges), 200)
-
-    useEffect(() => {
-        storeApi.setState({ dirty: true })
-    }, [debouncedNodes, debouncedEdges, storeApi])
 
     const serialized = useMemo(() => serializeGraph(nodes, edges), [debouncedNodes, debouncedEdges])
 
