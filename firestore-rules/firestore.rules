@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+    match /databases/{database}/documents {
+
+        function isOwnerByApp(appResource) {
+            return request.auth.uid in appResource.data.owners;
+        }
+
+        function checkIntegrations() {
+            return (
+                "integrations" in request.resource.data 
+                && "integrations" in resource.data
+                && request.resource.data.integrations == resource.data.integrations
+                ) || (
+                    !("integrations" in request.resource.data) 
+                    && !("integrations" in resource.data)
+                );
+        }
+
+        function isOwnerByFlow(flowResource) {
+            return isOwnerByApp(get(/databases/$(database)/documents/apps/$(flowResource.data.app)));
+        }
+
+        function isFlowRunOwner(runResource) {
+            return isOwnerByFlow(get(/databases/$(database)/documents/flows/$(runResource.data.flow)));
+        }
+
+        // Apps
+        // - restricted to app owners
+        // - can't write integrations field
+        match /apps/{appId} {
+            allow read: if isOwnerByApp(resource);
+            allow update: if isOwnerByApp(resource) && checkIntegrations();
+            allow create: if isOwnerByApp(request.resource) && !("integrations" in request.resource.data);
+            allow delete: if isOwnerByApp(resource);
+        }
+
+        // Flows
+        // - restricted to app owners
+        match /flows/{flowId} {
+            allow read, update, delete: if isOwnerByFlow(resource);
+            allow create: if isOwnerByFlow(request.resource);
+        }
+
+        // Flow Graphs
+        // - restricted to app owners
+        match /flowGraphs/{flowGraphId} {
+            allow read, update, delete: if isOwnerByFlow(get(/databases/$(database)/documents/flows/$(resource.data.flow)));
+            allow create: if isOwnerByFlow(get(/databases/$(database)/documents/flows/$(request.resource.data.flow)));
+        }
+
+        // Flow Runs
+        // - restricted to app owners
+        // - can only be created with status "pending"
+        // - can't be updated or deleted
+        match /flowRuns/{runId} {
+            allow read: if isFlowRunOwner(resource);
+            allow create: if isFlowRunOwner(request.resource) && request.resource.data.status == "pending";
+            allow update, delete: if false;
+        }
+
+        // Users
+        // - restricted to user
+        match /users/{userId} {
+            allow read, write: if request.auth.uid == userId;
+        }
+
+        // Mail
+        // - create only
+        // - for any authenticated user
+        match /mail/{document} {
+            allow read: if false;
+            allow create: if request.auth != null;
+            allow update, delete: if false;
+        }
+
+        // Plans
+        // - read only
+        // - public
+        match /plans/{document} {
+            allow read: if true;
+            allow write: if false;
+        }
+
+        // Edge Index
+        // - read only
+        // - for any authenticated user
+        match /edgeIndex/{document} {
+            allow read: if request.auth != null;
+            allow write: if false;
+        }
+       
+        // Everything else is closed -- integration accounts, oAuth challenges, etc.
+        match /{document=**} {
+            allow read, write: if false;
+        }
+  }
+}

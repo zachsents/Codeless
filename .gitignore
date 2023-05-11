@@ -41,3 +41,5 @@ yarn-error.log*
 *secret.local.json
 
 desktop.ini
+
+*.log

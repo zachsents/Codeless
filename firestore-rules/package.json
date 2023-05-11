@@ -1,0 +1,12 @@
+{
+    "name": "firestore-rules",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "deploy": "firebase deploy --only firestore:rules"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

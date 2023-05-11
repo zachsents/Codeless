@@ -2,7 +2,7 @@ import { addDoc, collection, deleteDoc, deleteField, doc, query, serverTimestamp
 import { firestore } from "./firebase-init.js"
 import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
 import { getPlanRef } from "./plans.js"
-import {deleteFlow, getFlowsForApp} from "./flow-actions.js"
+import { deleteFlow, getFlowsForApp } from "./flow-actions.js"
 
 
 export const AppsCollectionPath = "apps"
@@ -41,7 +41,8 @@ export function getAppDetails(appId) {
  */
 export function createApp({
     name,
-    ownerIds = []
+    ownerIds = [],
+    ...props
 } = {}) {
 
     if (!name)
@@ -56,6 +57,7 @@ export function createApp({
         owners: ownerIds,
         plan: getPlanRef("free"),
         color: "blue",
+        ...props,
     })
 }
 

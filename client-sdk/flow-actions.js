@@ -1,7 +1,7 @@
-import { addDoc, collection, deleteDoc, doc, documentId, getCountFromServer, getDoc, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
+import { collection, deleteDoc, doc, documentId, getCountFromServer, getDoc, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore"
 import { httpsCallable } from "firebase/functions"
 import { firestore, functions } from "./firebase-init.js"
-import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
+import { getDocWithId, getDocsWithIds } from "./firestore-util.js"
 
 
 export const FlowsCollectionPath = "flows"
@@ -76,18 +76,28 @@ export async function createFlow({
     if (!name) throw new Error("Must include a trigger when creating an flow.")
     if (!trigger) throw new Error("Must include a name when creating an flow.")
 
-    const { id: flowGraphId } = await addDoc(FlowGraphsCollection(), {
-        graph: initialGraph,
-    })
+    // create doc refs so we can reference them
+    const flowDocRef = doc(FlowsCollection())
+    const flowGraphDocRef = doc(FlowGraphsCollection())
 
-    return addDoc(FlowsCollection(), {
-        name,
-        app: appId,
-        graph: flowGraphId,
-        trigger,
-        created: serverTimestamp(),
-        published: false,
-    })
+    // create flow and flow graph documents
+    await Promise.all([
+        setDoc(flowDocRef, {
+            name,
+            app: appId,
+            graph: flowGraphDocRef.id,
+            trigger,
+            created: serverTimestamp(),
+            published: false,
+        }),
+        setDoc(flowGraphDocRef, {
+            flow: flowDocRef.id,
+            graph: initialGraph,
+        }),
+    ])
+
+    // return references
+    return [flowDocRef, flowGraphDocRef]
 }
 
 
