@@ -57,20 +57,16 @@ export default function AppDashboard({ children, pageTitle }) {
                     <Navbar.Section grow mt="md">
                         <Link href={`/app/${app?.id}`}>
                             <NavLink label="Overview" variant="filled" icon={<TbReportAnalytics />}
-                                styles={navlinkStyles} component="a" active={pathname.endsWith("/[appId]")} />
+                                styles={navlinkStyles} active={pathname.endsWith("/[appId]")} />
                         </Link>
                         <Link href={`/app/${app?.id}/flows`}>
                             <NavLink label="Flows" variant="filled" icon={<TiFlowMerge />}
-                                styles={navlinkStyles} component="a" active={pathname.endsWith("/flows")} />
+                                styles={navlinkStyles} active={pathname.endsWith("/flows")} />
                         </Link>
                         <Link href={`/app/${app?.id}/integrations`}>
                             <NavLink label="Integrations" variant="filled" icon={<TbPlugConnected />}
-                                styles={navlinkStyles} component="a" active={pathname.endsWith("/integrations")} />
+                                styles={navlinkStyles} active={pathname.endsWith("/integrations")} />
                         </Link>
-                        {/* <Link href={`/app/${app?.id}/settings`}>
-                            <NavLink label="Settings" variant="filled" icon={<TbSettings />}
-                                styles={navlinkStyles} component="a" active={pathname.endsWith("/settings")} />
-                        </Link> */}
                     </Navbar.Section>
                     <Navbar.Section>{/* Footer with user */}</Navbar.Section>
                 </Navbar>}
