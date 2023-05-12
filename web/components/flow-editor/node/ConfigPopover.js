@@ -129,7 +129,7 @@ export default function ConfigPopover({ children }) {
 
                     {isContextMenu && <>
                         <Divider />
-                        <AnimatedTabs tabs={tabData} defaultTab={defaultTab} miw={280}>
+                        <AnimatedTabs tabs={tabData} defaultTab={defaultTab} miw={400}>
 
                             <ScrollArea.Autosize mah="70vh" offsetScrollbars>
                                 <Stack spacing="xs">
