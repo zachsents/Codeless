@@ -61,12 +61,12 @@ export default function InputConfig({ id, divider = true }) {
 
                     <Group spacing="xs">
                         {canChangeMode && isHandle &&
-                            <Button size="xs" compact variant="light" onClick={() => setInputMode(InputMode.Config)}>
+                            <Button size="xs" compact variant="light" color="gray" onClick={() => setInputMode(InputMode.Config)}>
                                 Configure Here
                             </Button>}
 
                         {canChangeMode && isConfig &&
-                            <Button size="xs" compact variant="light" onClick={() => setInputMode(InputMode.Handle)}>
+                            <Button size="xs" compact variant="light" color="gray" onClick={() => setInputMode(InputMode.Handle)}>
                                 Add to Node
                             </Button>}
                     </Group>
