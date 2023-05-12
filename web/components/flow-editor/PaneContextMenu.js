@@ -3,7 +3,7 @@ import { useClickOutside } from "@mantine/hooks"
 import { NodeDefinitions } from "@minus/client-nodes"
 import { useStoreProperty } from "@minus/client-nodes/hooks/nodes"
 import { useUserPreferences } from "@minus/client-sdk"
-import { addNodeAtWindowPoint, openNodePalette } from "@web/modules/graph-util"
+import { addNodeAtWindowPoint, openNodePalette as _openNodePalette } from "@web/modules/graph-util"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbPlus } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
@@ -26,6 +26,13 @@ export default function PaneContextMenu() {
     // user preferences
     const [preferences] = useUserPreferences()
     const showingPinned = preferences?.pinned?.slice(0, 8)
+
+    // handle opening node palette -- add where clicked
+    const openNodePalette = () => _openNodePalette(rf, {
+        innerProps: {
+            onAdd: nodeType => addNodeAtWindowPoint(rf, nodeType.id, menu?.x + 80, menu?.y + 80)
+        }
+    })
 
     // handle adding node -- add where clicked
     const handleAddNode = nodeId => event => {
