@@ -4,29 +4,31 @@ import { useRouter } from "next/router"
 import { TbBook, TbChevronDown, TbChevronLeft, TbCurrencyDollar, TbExternalLink, TbPlugConnected, TbReportAnalytics, TbSlideshow } from "react-icons/tb"
 import { TiFlowMerge } from "react-icons/ti"
 
+import { useAppContext } from "@web/modules/context"
 import Head from "next/head"
-import { useAppId, useMustBeSignedIn } from "../modules/hooks"
+import { useMustBeSignedIn } from "../modules/hooks"
 
 
-export default function AppDashboard({ children, pageTitle, appName }) {
+export default function AppDashboard({ children, pageTitle }) {
 
     useMustBeSignedIn()
 
-    const appId = useAppId()
+    const { app } = useAppContext()
     const { pathname } = useRouter()
+
+    const dynamicPageTitle = `${pageTitle}${app?.name ? ` - ${app?.name}` : ""} | Minus`
 
     return (<>
         {pageTitle &&
             <Head>
-                <title key="title">{pageTitle}{appName ? ` - ${appName}` : ""} | Minus</title>
-                <meta property="og:title" content={`${pageTitle}${appName ? ` - ${appName}` : ""} | Minus`} key="ogtitle" />
+                <title key="title">{dynamicPageTitle}</title>
+                <meta property="og:title" content={dynamicPageTitle} key="ogtitle" />
             </Head>}
         <AppShell
             styles={shellStyles}
             navbar={
                 <Navbar width={{ base: 280 }} withBorder={false} p="md">
                     <Navbar.Section>
-
                         <Group >
                             <Link href="/dashboard">
                                 <Tooltip label="Back to Apps" position="right">
@@ -53,19 +55,19 @@ export default function AppDashboard({ children, pageTitle, appName }) {
                         </Group>
                     </Navbar.Section>
                     <Navbar.Section grow mt="md">
-                        <Link href={`/app/${appId}`}>
+                        <Link href={`/app/${app?.id}`}>
                             <NavLink label="Overview" variant="filled" icon={<TbReportAnalytics />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/[appId]")} />
                         </Link>
-                        <Link href={`/app/${appId}/flows`}>
+                        <Link href={`/app/${app?.id}/flows`}>
                             <NavLink label="Flows" variant="filled" icon={<TiFlowMerge />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/flows")} />
                         </Link>
-                        <Link href={`/app/${appId}/integrations`}>
+                        <Link href={`/app/${app?.id}/integrations`}>
                             <NavLink label="Integrations" variant="filled" icon={<TbPlugConnected />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/integrations")} />
                         </Link>
-                        {/* <Link href={`/app/${appId}/settings`}>
+                        {/* <Link href={`/app/${app?.id}/settings`}>
                             <NavLink label="Settings" variant="filled" icon={<TbSettings />}
                                 styles={navlinkStyles} component="a" active={pathname.endsWith("/settings")} />
                         </Link> */}

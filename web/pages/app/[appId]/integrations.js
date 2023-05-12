@@ -1,30 +1,36 @@
-import { useEffect, useState } from "react"
+import { Carousel } from "@mantine/carousel"
 import { Box, Group, Stack, Text, ThemeIcon } from "@mantine/core"
 import { useInterval } from "@mantine/hooks"
-import { Carousel } from "@mantine/carousel"
-import { TbBrandAirtable, TbBrandGmail, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from "react-icons/tb"
-import { SiGooglesheets } from "react-icons/si"
-import { useAppDetailsRealtime } from "@minus/client-sdk"
 import { Integrations } from "@minus/client-nodes"
+import { useEffect, useState } from "react"
+import { SiGooglesheets } from "react-icons/si"
+import { TbBrandAirtable, TbBrandGmail, TbBrandInstagram, TbBrandTwitter, TbExternalLink } from "react-icons/tb"
 
-import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
+import { AppProvider, useAppContext } from "@web/modules/context"
 import AppDashboard from "../../../components/AppDashboard"
 import GlassButton from "../../../components/GlassButton"
 import GradientBox from "../../../components/GradientBox"
 import PageTitle from "../../../components/PageTitle"
-import OurCard from "../../../components/cards/OurCard"
 import Search from "../../../components/Search"
+import OurCard from "../../../components/cards/OurCard"
+import { useMustBeSignedIn } from "../../../modules/hooks"
 
 
 const IntegrationsList = Object.values(Integrations)
 
 
-export default function AppSettings() {
+export default function AppIntegrationsPage() {
+
+    return <AppProvider redirectOnNotExist="/dashboard">
+        <AppIntegrations />
+    </AppProvider>
+}
+
+function AppIntegrations() {
 
     useMustBeSignedIn()
 
-    const appId = useAppId()
-    const [app] = useAppDetailsRealtime(appId)
+    const { app } = useAppContext()
 
     // auto scroll integrations carousel
     const [carousel, setCarousel] = useState()
@@ -35,7 +41,7 @@ export default function AppSettings() {
     }, [carousel])
 
     return (
-        <AppDashboard pageTitle="Integrations" appName={app?.name}>
+        <AppDashboard pageTitle="Integrations">
             <Stack spacing="xl">
                 <GradientBox centerAround={app?.color ?? null}>
                     <Group position="apart" sx={{ alignItems: "stretch" }}>
@@ -86,7 +92,6 @@ export default function AppSettings() {
                     noun="integration"
                     component={IntegrationCard}
                     componentItemProp="integration"
-                    componentProps={{ app }}
                 />
             </Stack>
         </AppDashboard>
@@ -94,7 +99,9 @@ export default function AppSettings() {
 }
 
 
-function IntegrationCard({ integration, app }) {
+function IntegrationCard({ integration }) {
+
+    const { app } = useAppContext()
 
     return (
         <OurCard>

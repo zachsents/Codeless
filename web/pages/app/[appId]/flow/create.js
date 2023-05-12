@@ -1,35 +1,41 @@
-import { useEffect, useMemo, useState } from "react"
 import { ActionIcon, Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput, Tooltip } from "@mantine/core"
 import { useForm } from "@mantine/form"
+import { TriggerCategories, TriggerNodeDefinitions } from "@minus/client-nodes"
+import { useCreateFlow, useFlowCountForApp, usePlan } from "@minus/client-sdk"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { useEffect, useMemo, useState } from "react"
 import { TbArrowNarrowRight } from "react-icons/tb"
-import { useAppDetailsRealtime, useCreateFlow, useFlowCountForApp, usePlan } from "@minus/client-sdk"
-import { TriggerNodeDefinitions, TriggerCategories } from "@minus/client-nodes"
 
-import { useAppId, useMustBeSignedIn } from "../../../../modules/hooks"
-import { serializeGraph } from "../../../../modules/graph-util"
-import AppDashboard from "../../../../components/AppDashboard"
-import FormSubsection from "../../../../components/forms/FormSubsection"
-import FormSection from "../../../../components/forms/FormSection"
+import { AppProvider, useAppContext } from "@web/modules/context"
 import { ArrowLeft } from "tabler-icons-react"
+import AppDashboard from "../../../../components/AppDashboard"
+import FormSection from "../../../../components/forms/FormSection"
+import FormSubsection from "../../../../components/forms/FormSubsection"
+import { serializeGraph } from "../../../../modules/graph-util"
+import { useMustBeSignedIn } from "../../../../modules/hooks"
 
+export default function CreateFlowPage() {
 
-export default function CreateFlow() {
+    return <AppProvider redirectOnNotExist="/dashboard">
+        <CreateFlow />
+    </AppProvider>
+}
+
+function CreateFlow() {
 
     useMustBeSignedIn()
     const router = useRouter()
 
-    const appId = useAppId()
-    const [app] = useAppDetailsRealtime(appId)
+    const { app } = useAppContext()
     const { plan } = usePlan({ ref: app?.plan })
-    const { flowCount } = useFlowCountForApp(appId)
-    const createFlow = useCreateFlow(appId)
+    const { flowCount } = useFlowCountForApp(app?.id)
+    const createFlow = useCreateFlow(app?.id)
 
     // check if user is maxed out on flows
     useEffect(() => {
         if (plan && flowCount != null && plan.flowCount <= flowCount)
-            router.push(`/app/${appId}/flows`)
+            router.push(`/app/${app?.id}/flows`)
     }, [plan, flowCount])
 
     // look up trigger types and map to data the SegmentedControl can use
@@ -58,12 +64,12 @@ export default function CreateFlow() {
     // submission
     const handleSubmit = async values => {
         setFormLoading(true)
-        const { id: newFlowId } = await createFlow({
+        const [{ id: newFlowId }] = await createFlow({
             name: values.name,
             trigger: values.trigger,
             initialGraph: createGraphWithTrigger(values.trigger),
         })
-        router.push(`/app/${appId}/flow/${newFlowId}/edit`)
+        router.push(`/app/${app?.id}/flow/${newFlowId}/edit`)
     }
 
     // when trigger type is changed
@@ -89,9 +95,9 @@ export default function CreateFlow() {
 
 
     return (
-        <AppDashboard pageTitle="Create a flow" appName={app?.name}>
+        <AppDashboard pageTitle="Create a flow">
             <Group position="apart">
-                <Link href={`/app/${appId}/flows`}>
+                <Link href={`/app/${app?.id}/flows`}>
                     <Tooltip position="right" label="Cancel">
                         <ActionIcon variant="light" size="xl"><ArrowLeft /></ActionIcon>
                     </Tooltip>

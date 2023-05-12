@@ -1,44 +1,51 @@
-import Link from "next/link"
 import {
     Avatar, Badge, Box, Button, Center, Group, Progress, SimpleGrid, Skeleton, Space, Stack, Text, Title,
     useMantineTheme
 } from "@mantine/core"
-import { TbArrowRight, TbTrendingUp } from "react-icons/tb"
-import { useAppDetailsRealtime, useAppIntegrations, useFlowCountForApp, usePlan, useUpdateApp } from "@minus/client-sdk"
 import { Integrations } from "@minus/client-nodes"
+import { useFlowCountForApp, usePlan, useUpdateApp } from "@minus/client-sdk"
+import Link from "next/link"
+import { TbArrowRight, TbTrendingUp } from "react-icons/tb"
 
-import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
+import { AppProvider, useAppContext } from "@web/modules/context"
 import AppDashboard from "../../../components/AppDashboard"
+import AppDescriptionEditor from "../../../components/AppDescriptionEditor"
 import GradientBox from "../../../components/GradientBox"
 import LoadingSkeleton from "../../../components/LoadingSkeleton"
 import PageTitle from "../../../components/PageTitle"
 import OurCard from "../../../components/cards/OurCard"
-import AppDescriptionEditor from "../../../components/AppDescriptionEditor"
+import { useMustBeSignedIn } from "../../../modules/hooks"
 
 
-const MAX_SHOWN = 5
+const MAX_INTEGRATIONS_SHOWN = 5
 
 
-export default function AppOverview() {
+export default function AppOverviewPage() {
+
+    return <AppProvider redirectOnNotExist="/dashboard">
+        <AppOverview />
+    </AppProvider>
+}
+
+function AppOverview() {
 
     const theme = useMantineTheme()
 
     useMustBeSignedIn()
-    const appId = useAppId()
-    const [app] = useAppDetailsRealtime(appId)
-    const updateApp = useUpdateApp(appId)
-    const appIntegrations = useAppIntegrations(app, Integrations)
+
+    const { app, integrations: appIntegrations } = useAppContext()
+
+    const updateApp = useUpdateApp(app?.id)
     const { plan } = usePlan({ ref: app?.plan })
     const { flowCount } = useFlowCountForApp(app?.id)
     const flowInfoLoaded = flowCount != null && !!plan
 
     const integrations = Object.keys(appIntegrations).map(intId => Integrations[intId])
-    const shown = integrations.slice(0, MAX_SHOWN)
-    const overflow = integrations.length - MAX_SHOWN
-
+    const shown = integrations.slice(0, MAX_INTEGRATIONS_SHOWN)
+    const overflow = integrations.length - MAX_INTEGRATIONS_SHOWN
 
     return (
-        <AppDashboard pageTitle="Overview" appName={app?.name}>
+        <AppDashboard pageTitle="Overview">
             <Stack spacing="xl">
                 <GradientBox centerAround={app?.color ?? null}>
                     {app ?
@@ -64,7 +71,7 @@ export default function AppOverview() {
                         <Stack>
                             <Group position="apart">
                                 <Title order={2}>Flows</Title>
-                                <Link href={`/app/${appId}/flows`}>
+                                <Link href={`/app/${app?.id}/flows`}>
                                     <Button
                                         radius="xl"
                                         variant="subtle"
@@ -118,7 +125,7 @@ export default function AppOverview() {
                         <Stack>
                             <Group position="apart">
                                 <Title order={2}>Integrations</Title>
-                                <Link href={`/app/${appId}/integrations`}>
+                                <Link href={`/app/${app?.id}/integrations`}>
                                     <Button
                                         radius="xl"
                                         variant="subtle"

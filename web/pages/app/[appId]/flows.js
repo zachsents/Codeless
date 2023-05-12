@@ -1,30 +1,38 @@
 import { Box, Button, Group, Stack, Text } from "@mantine/core"
-import { useAppDetailsRealtime, useFlowsForAppRealtime, usePlan } from "@minus/client-sdk"
+import { useFlowsForAppRealtime, usePlan } from "@minus/client-sdk"
 import Link from "next/link"
 import { TbArrowBigUpLines, TbExternalLink, TbPlus } from "react-icons/tb"
 
+import { AppProvider, useAppContext } from "@web/modules/context"
 import AppDashboard from "../../../components/AppDashboard"
 import GlassButton from "../../../components/GlassButton"
 import GradientBox from "../../../components/GradientBox"
 import PageTitle from "../../../components/PageTitle"
 import Search from "../../../components/Search"
 import FlowCard from "../../../components/cards/FlowCard"
-import { useAppId, useMustBeSignedIn } from "../../../modules/hooks"
+import { useMustBeSignedIn } from "../../../modules/hooks"
 import { plural } from "../../../modules/util"
 
 
-export default function AppFlows() {
+export default function AppFlowsPage() {
+
+    return <AppProvider redirectOnNotExist="/dashboard">
+        <AppFlows />
+    </AppProvider>
+}
+
+function AppFlows() {
 
     useMustBeSignedIn()
-    const appId = useAppId()
-    const [app] = useAppDetailsRealtime(appId)
+
+    const { app } = useAppContext()
     const { plan } = usePlan({ ref: app?.plan })
-    const [flows] = useFlowsForAppRealtime(appId)
+    const [flows] = useFlowsForAppRealtime(app?.id)
 
     const flowsLeft = plan?.flowCount - flows?.length
 
     return (
-        <AppDashboard pageTitle="Flows" appName={app?.name}>
+        <AppDashboard pageTitle="Flows">
             <Stack spacing="xl">
                 <GradientBox centerAround={app?.color ?? null}>
                     <Group position="apart" sx={{ alignItems: "stretch" }}>
