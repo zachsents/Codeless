@@ -1,10 +1,10 @@
-import { BackgroundImage, Button, Center, Loader, Stack, Text, TextInput, Title } from "@mantine/core"
-import { signInWithGoogle, sendEmailSignInLink } from "@minus/client-sdk"
+import { Button, Card, Center, Loader, Space, Stack, Text, TextInput, Title, useMantineTheme } from "@mantine/core"
 import { useForm } from "@mantine/form"
-import { useState } from "react"
+import { sendEmailSignInLink, signInWithGoogle } from "@minus/client-sdk"
 import { useRouter } from "next/router"
-import { createLinearGradient } from "../modules/colors"
-import { BsGoogle } from "react-icons/bs"
+import { useState } from "react"
+import { FcGoogle } from "react-icons/fc"
+import { TbArrowLeft, TbMail } from "react-icons/tb"
 
 
 const SignInMethod = {
@@ -15,9 +15,10 @@ const SignInMethod = {
 
 export default function Login() {
 
-    const [signInMethod, setSignInMethod] = useState()
-
+    const theme = useMantineTheme()
     const router = useRouter()
+
+    const [signInMethod, setSignInMethod] = useState()
 
     const handleLogin = result => {
         console.debug("Logged in as", result.user.displayName ?? result.user.email)
@@ -25,20 +26,25 @@ export default function Login() {
     }
 
     return (
-        <BackgroundImage src="/photon-bg.svg">
-            <Center sx={containerStyle} pb={100}>
-
-                <Stack w={400}>
+        <Center w="100vw" h="100vh" pb={100}>
+            <Card w={350} withBorder shadow="sm" p="xl">
+                <Stack spacing="xs">
                     {!signInMethod && <>
-                        <Title align="center" weight={400} color="dimmed">
-                            Welcome to
-                            <Text component="span" weight={600} sx={minusTitleStyle}> minus</Text>
+                        <Title align="center" size="1.5rem">
+                            Sign in to
+                            <Text component="span" weight={600} color={theme.primaryColor}> minus</Text>
                         </Title>
+                        <Text size="sm" color="dimmed" align="center">
+                            If you don't have an account, one will be created.
+                        </Text>
+
+                        <Space h="xs" />
 
                         <Button
-                            size="xl"
-                            leftIcon={<BsGoogle />}
-                            fullWidth
+                            variant="light"
+                            color="gray"
+                            radius="xl"
+                            leftIcon={<FcGoogle />}
                             onClick={() => {
                                 setSignInMethod(SignInMethod.Google)
                                 signInWithGoogle().then(handleLogin).catch(() => setSignInMethod(null))
@@ -48,8 +54,9 @@ export default function Login() {
                         </Button>
 
                         <Button
-                            fullWidth
-                            variant="subtle"
+                            radius="xl"
+                            variant="light"
+                            leftIcon={<TbMail />}
                             onClick={() => setSignInMethod(SignInMethod.Email)}
                         >
                             Sign in with email instead
@@ -59,21 +66,10 @@ export default function Login() {
                     {signInMethod == SignInMethod.Email && <EmailLogin goBack={() => setSignInMethod(null)} />}
                     {signInMethod == SignInMethod.Google && <GoogleLogin />}
                 </Stack>
-            </Center>
-        </BackgroundImage>
+            </Card>
+        </Center>
     )
 }
-
-const containerStyle = ({
-    width: "100vw",
-    height: "100vh",
-})
-
-const minusTitleStyle = theme => ({
-    background: createLinearGradient(theme.colors, "grape"),
-    backgroundClip: "text",
-    color: "transparent",
-})
 
 function EmailLogin({ goBack }) {
 
@@ -98,28 +94,49 @@ function EmailLogin({ goBack }) {
     }
 
     return loadingState == 2 ?
-        <Stack align="center" spacing="xs">
-            <Text size="lg">A sign-in link has been sent to your email.</Text>
-            <Text color="dimmed">You may close this window.</Text>
-        </Stack>
+        <>
+            <Text align="center">A sign-in link has been sent to your email.</Text>
+            <Text size="sm" color="dimmed" align="center">You may close this window.</Text>
+        </>
         :
         <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack>
-                <Title order={2} weight={400} color="dimmed" align="center">
-                    Log in with your email
-                </Title>
-                <TextInput placeholder="mark@facebook.com" size="xl" {...form.getInputProps("email")} disabled={!!loadingState} />
-                <Button type="submit" size="lg" fullWidth loading={!!loadingState}>Next</Button>
-                <Button variant="subtle" fullWidth onClick={goBack}>Go back</Button>
+            <Stack spacing="xs">
+                <Text color="dimmed" align="center">
+                    Enter your email
+                </Text>
+                <TextInput
+                    placeholder="mark@facebook.com"
+                    type="email"
+                    {...form.getInputProps("email")}
+                    disabled={!!loadingState}
+                />
+
+                <Space h="xs" />
+
+                <Button type="submit" loading={!!loadingState}>
+                    Next
+                </Button>
+                <Button leftIcon={<TbArrowLeft />} variant="subtle" onClick={goBack}>
+                    Go back
+                </Button>
             </Stack>
         </form>
 }
 
 function GoogleLogin() {
+
+    const theme = useMantineTheme()
+
     return (
-        <Stack align="center">
-            <Text size="lg" align="center" mb={10}>Logging you in...</Text>
-            <Loader />
-        </Stack>
+        <>
+            <Text align="center">Logging you in...</Text>
+            <Text align="center" size="sm" color="dimmed">
+                Sign in through the popup. If there's a problem, try{" "}
+                <Text component="a" href="/login" color={theme.primaryColor}>refreshing</Text>.
+            </Text>
+            <Center>
+                <Loader />
+            </Center>
+        </>
     )
 }

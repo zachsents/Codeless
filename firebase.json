@@ -59,13 +59,6 @@
                 "regex": "^/app/([^/]+?)/settings(?:/)?$",
                 "destination": "/app/[appId]/settings.html"
             }
-        ],
-        "redirects": [
-            {
-                "source": "/",
-                "destination": "/dashboard",
-                "type": 301
-            }
         ]
     }
 }

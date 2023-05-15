@@ -1,23 +1,38 @@
-import { Button } from "@mantine/core"
-import React from "react"
+import { Button, useMantineTheme } from "@mantine/core"
+import { motion } from "framer-motion"
 
-export default function GlassButton({ children, radius = "xl", animate = true, ...props }) {
+
+export default function GlassButton({ children, matchColor = false, ...props }) {
+
+    const theme = useMantineTheme()
+
     return (
         <Button
+            component={motion.button}
+            {...buttonAnimations(theme, matchColor && props.color)}
             {...props}
-            sx={{
-                backgroundColor: "#fff3",
-                color: "white",
-                outline: "0px solid #fff1",
-                transition: "all 0.3s",
-                "&:hover": animate ? {
-                    outline: "6px solid #fff1",
-                } : {},
-            }}
-            variant="white"
-            radius={radius}
         >
             {children}
         </Button>
     )
 }
+
+const Shade = 1
+const buttonAnimations = (theme, matchColor) => ({
+    style: {
+        outlineColor: matchColor === false ?
+            theme.colors.gray[Shade] :
+            (theme.colors[matchColor]?.[Shade] ?? matchColor ?? theme.colors[theme.primaryColor][Shade]),
+        outlineStyle: "solid",
+    },
+    variants: {
+        idle: {
+            outlineWidth: 0,
+        },
+        hovered: {
+            outlineWidth: "0.5em",
+        }
+    },
+    initial: "idle",
+    whileHover: "hovered",
+})
