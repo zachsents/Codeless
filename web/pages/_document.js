@@ -8,6 +8,9 @@ export default function Document() {
             <Head>
                 <meta charSet="UTF-8" />
 
+                {/* eslint-disable-next-line @next/next/no-title-in-document-head */}
+                <title>Minus - Automate your business</title>
+
                 <meta
                     property="og:title"
                     content="Minus - Automate your business"
