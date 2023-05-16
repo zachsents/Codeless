@@ -14,7 +14,7 @@ export default function Section({
     const allClasses = `${withBorder ? borderClasses : ""} ${className}`
 
     return (
-        <Box w="100%" {...props} className={allClasses}>
+        <Box component="section" w="100%" {...props} className={allClasses}>
             <Container size={size} {...containerProps}>
                 {stack ?
                     <Stack spacing={spacing} {...stackProps}>{children}</Stack> :

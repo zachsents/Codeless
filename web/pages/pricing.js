@@ -15,41 +15,44 @@ export default function PricingPage() {
         <>
             <Header />
 
-            <Section size="xs" p="xl" stack>
-                <Title order={1} align="center">
-                    A plan for everyone
-                </Title>
+            <main>
+                <Section size="xs" p="xl" stack>
+                    <Title order={1} align="center">
+                        A plan for everyone
+                    </Title>
 
-                <Text align="center" size="lg" color={theme.other.halfDimmed}>
-                    We offer a variety of plans to suit your needs. Whether you're a small business owner or a titan of enterprise, we've got you covered.
-                </Text>
+                    <Text align="center" size="lg" color={theme.other.halfDimmed}>
+                        We offer a variety of plans to suit your needs. Whether you're a small business owner or a titan of enterprise, we've got you covered.
+                    </Text>
 
-                <Text align="center" color="dimmed">
-                    Plans are charged per app.
-                </Text>
+                    <Text align="center" color="dimmed">
+                        Plans are charged per app.
+                    </Text>
 
-                <SegmentedControl
-                    data={paymentFrequencies}
-                    value={paymentFreq}
-                    onChange={setPaymentFreq}
-                />
-            </Section>
+                    <SegmentedControl
+                        data={paymentFrequencies}
+                        value={paymentFreq}
+                        onChange={setPaymentFreq}
+                    />
+                </Section>
 
-            <Section p="xl" mt="2.5rem">
-                <SimpleGrid cols={4} breakpoints={[
-                    { maxWidth: "lg", cols: 3 },
-                    { maxWidth: "md", cols: 2 },
-                    { maxWidth: "sm", cols: 1, verticalSpacing: "3rem" },
-                ]}>
-                    <PlanCard annual={paymentFreq == "annual"} plan="free" />
-                    <PlanCard annual={paymentFreq == "annual"} plan="starter" emph />
-                    <PlanCard annual={paymentFreq == "annual"} plan="professional" />
-                    <PlanCard annual={paymentFreq == "annual"} plan="business" />
-                </SimpleGrid>
-            </Section>
+                <Section p="xl" mt="2.5rem">
+                    <SimpleGrid cols={4} breakpoints={[
+                        { maxWidth: "lg", cols: 3 },
+                        { maxWidth: "md", cols: 2 },
+                        { maxWidth: "sm", cols: 1, verticalSpacing: "3rem" },
+                    ]}>
+                        <PlanCard annual={paymentFreq == "annual"} plan="free" />
+                        <PlanCard annual={paymentFreq == "annual"} plan="starter" emph />
+                        <PlanCard annual={paymentFreq == "annual"} plan="professional" />
+                        <PlanCard annual={paymentFreq == "annual"} plan="business" />
+                    </SimpleGrid>
+                </Section>
 
 
-            <Space h="5rem" />
+                <Space h="5rem" />
+
+            </main>
         </>
     )
 }

@@ -15,7 +15,7 @@ export default function Header() {
         <Center
             pos="sticky" top={0} className="z-50"
             p="0.5rem" bg="white"
-            component={motion.div} variants={headerAnimations(theme)} initial="top" animate={scroll.y > 0 ? "scrolled" : "top"}
+            component={motion.header} variants={headerAnimations(theme)} initial="top" animate={scroll.y > 0 ? "scrolled" : "top"}
         >
             <Group maw={theme.other.contentWidth} position="apart" className="flex-1">
                 <Group spacing="2.5rem">
@@ -61,7 +61,7 @@ function NavLink({ children, button = false, href, ...props }) {
                 </Button> :
                 <Text
                     className={jc("hover:text-primary", isActive && "text-primary")}
-                    weight={600}  {...props}
+                    size="md" weight={600} {...props}
                 >
                     {children}
                 </Text>}
