@@ -5,7 +5,7 @@ import { auth } from "./firebase-init.js"
 export async function signInWithGoogle(scopes = []) {
 
     // set up provider
-    const provider = new GoogleAuthProvider()    
+    const provider = new GoogleAuthProvider()
 
     // add scopes
     scopes.forEach(scope => provider.addScope(scope))
@@ -47,7 +47,7 @@ export async function sendEmailSignInLink(email) {
 export async function finishEmailSignIn() {
 
     if (isSignInWithEmailLink(auth, window.location.href)) {
-        let email = window.localStorage.getItem("signInEmail")
+        let email = window.localStorage.getItem("sign-in-email")
         if (!email)
             // TO DO: make an interface for this
             email = window.prompt('Please provide your email for confirmation')

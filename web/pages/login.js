@@ -1,5 +1,6 @@
 import { Button, Card, Center, Loader, Space, Stack, Text, TextInput, Title, useMantineTheme } from "@mantine/core"
 import { useForm } from "@mantine/form"
+import { useLocalStorage } from "@mantine/hooks"
 import { sendEmailSignInLink, signInWithGoogle } from "@minus/client-sdk"
 import { useRouter } from "next/router"
 import { useState } from "react"
@@ -20,8 +21,11 @@ export default function Login() {
 
     const [signInMethod, setSignInMethod] = useState()
 
+    const [hasLoggedIn, setHasLoggedIn] = useLocalStorage({ key: "has-logged-in" })
+
     const handleLogin = result => {
         console.debug("Logged in as", result.user.displayName ?? result.user.email)
+        setHasLoggedIn(true)
         router.push("/dashboard")
     }
 
@@ -31,7 +35,7 @@ export default function Login() {
                 <Stack spacing="xs">
                     {!signInMethod && <>
                         <Title align="center" size="1.5rem">
-                            Sign in to
+                            Sign {hasLoggedIn ? "in to" : "up for"}
                             <Text component="span" weight={600} color={theme.primaryColor}> minus</Text>
                         </Title>
                         <Text size="sm" color="dimmed" align="center">
@@ -89,7 +93,7 @@ function EmailLogin({ goBack }) {
     const handleSubmit = async values => {
         setLoadingState(1)
         await sendEmailSignInLink(values.email)
-        window.localStorage.setItem("signInEmail", values.email)    // save email for after they click link
+        window.localStorage.setItem("sign-in-email", values.email)    // save email for after they click link
         setLoadingState(2)
     }
 
