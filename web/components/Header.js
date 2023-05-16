@@ -27,7 +27,7 @@ export default function Header() {
 
                     <Group spacing="lg">
                         <NavLink href="#">Integrations</NavLink>
-                        <NavLink href="#">Pricing</NavLink>
+                        <NavLink href="/pricing">Pricing</NavLink>
                     </Group>
                 </Group>
 

@@ -61,6 +61,10 @@ export const tailwindTheme = {
     borderWidth: {
         "1": "0.0625rem",
     },
+    borderRadius: {
+        ...DEFAULT_THEME.radius,
+        DEFAULT: DEFAULT_THEME.radius.md,
+    },
 }
 
 // Adds primary colors as CSS variables

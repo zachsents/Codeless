@@ -17,6 +17,26 @@ export function useMustBeSignedIn() {
 }
 
 
+export function useQueryParam(queryKey, defaultValue, setDefaultOnMount = false) {
+
+    const router = useRouter()
+
+    const value = router.query[queryKey] || defaultValue
+
+    const setValue = newValue => {
+        router.query[queryKey] = newValue
+        router.replace(router, undefined, { shallow: true })
+    }
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    setDefaultOnMount && useEffect(() => {
+        setValue(defaultValue)
+    }, [])
+
+    return [value, setValue]
+}
+
+
 export function useSearch(list, selector, searchQueryArg) {
 
     if (searchQueryArg === undefined)

@@ -6,9 +6,9 @@ import ConnectAppsSection from "@web/components/landing/ConnectAppsSection"
 import FeatureTabPanel from "@web/components/landing/FeatureTabPanel"
 import InlineButton from "@web/components/landing/InlineButton"
 import SampleFlowSvg from "@web/components/landing/SampleFlowSvg"
+import { useQueryParam } from "@web/modules/hooks"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { CodeBlock, dracula } from "react-code-blocks"
 import { SiGooglesheets } from "react-icons/si"
 import { TbArrowDown, TbArrowRight, TbBrandGmail, TbBrandOpenai, TbChartDots3, TbClipboardData, TbDragDrop, TbLivePhoto } from "react-icons/tb"
@@ -16,16 +16,9 @@ import { TbArrowDown, TbArrowRight, TbBrandGmail, TbBrandOpenai, TbChartDots3, T
 
 export default function LandingPage() {
 
-    const router = useRouter()
-
     const theme = useMantineTheme()
 
-    const activeTab = router.query.feature || "tables"
-    const setActiveTab = tab => {
-        router.query.feature = tab
-        router.replace(router, undefined, { shallow: true })
-    }
-
+    const [activeTab, setActiveTab] = useQueryParam("feature", "tables")
 
     return (
         <>
