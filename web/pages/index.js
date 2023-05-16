@@ -4,6 +4,7 @@ import Header from "@web/components/Header"
 import Section from "@web/components/Section"
 import ConnectAppsSection from "@web/components/landing/ConnectAppsSection"
 import FeatureTabPanel from "@web/components/landing/FeatureTabPanel"
+import Footer from "@web/components/landing/Footer"
 import InlineButton from "@web/components/landing/InlineButton"
 import SampleFlowSvg from "@web/components/landing/SampleFlowSvg"
 import { useQueryParam } from "@web/modules/hooks"
@@ -338,8 +339,9 @@ outputs.answer = inputs.numbers.reduce(
                     </Grid>
                 </Section>
 
-                <Space h="10rem" />
+                <Space h="6rem" />
 
+                <Footer />
             </main>
         </>
     )

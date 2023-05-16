@@ -1,9 +1,8 @@
-import { Button, Center, Group, Text, useMantineTheme } from "@mantine/core"
+import { Center, Group, Text, useMantineTheme } from "@mantine/core"
 import { useWindowScroll } from "@mantine/hooks"
-import { jc } from "@web/modules/util"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { useRouter } from "next/router"
+import { NavLink } from "@web/components/landing/NavLink"
 
 
 export default function Header() {
@@ -45,27 +44,6 @@ export default function Header() {
                 </Group>
             </Group>
         </Center>
-    )
-}
-
-function NavLink({ children, button = false, href, ...props }) {
-
-    const router = useRouter()
-    const isActive = router.asPath.includes(href)
-
-    return (
-        <Link href={href} shallow={href?.startsWith("#")} scroll={!href?.startsWith("#")}>
-            {button ?
-                <Button radius="xl" size="md" {...props}>
-                    {children}
-                </Button> :
-                <Text
-                    className={jc("hover:text-primary", isActive && "text-primary")}
-                    size="md" weight={600} {...props}
-                >
-                    {children}
-                </Text>}
-        </Link>
     )
 }
 

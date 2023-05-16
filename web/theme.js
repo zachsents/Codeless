@@ -57,6 +57,8 @@ export const tailwindTheme = {
             ])
         ),
         primary: colorArrayToTailwindObject(DEFAULT_THEME.colors[mantineTheme.primaryColor]),
+        white: "#fff",
+        black: "#000",
     },
     borderWidth: {
         "1": "0.0625rem",

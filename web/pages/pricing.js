@@ -1,6 +1,7 @@
 import { Badge, Box, Button, Card, Center, Group, SegmentedControl, SimpleGrid, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
 import Header from "@web/components/Header"
 import Section from "@web/components/Section"
+import Footer from "@web/components/landing/Footer"
 import { useQueryParam } from "@web/modules/hooks"
 import { jc } from "@web/modules/util"
 import { TbCheck, TbSquare, TbStack, TbStack2, TbStack3 } from "react-icons/tb"
@@ -52,6 +53,7 @@ export default function PricingPage() {
 
                 <Space h="5rem" />
 
+                <Footer />
             </main>
         </>
     )
