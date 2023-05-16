@@ -7,3 +7,8 @@ export function plural(count) {
 export function objectOrFunction(item, ...args) {
     return typeof item == "function" ? item(...args) : item
 }
+
+
+export function jc(...args) {
+    return args.filter(Boolean).join(" ")
+}

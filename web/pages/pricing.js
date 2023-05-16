@@ -2,6 +2,7 @@ import { Badge, Box, Button, Card, Center, Group, SegmentedControl, SimpleGrid, 
 import Header from "@web/components/Header"
 import Section from "@web/components/Section"
 import { useQueryParam } from "@web/modules/hooks"
+import { jc } from "@web/modules/util"
 import { TbCheck, TbSquare, TbStack, TbStack2, TbStack3 } from "react-icons/tb"
 
 
@@ -113,10 +114,8 @@ function PlanCard({ plan: planKey, emph = false, annual = false }) {
 
     const [, setSelectedPlan] = useQueryParam("upgrade_app")
 
-    const boxClasses = "relative" + (emph ? " scale-105" : "")
-
     return (
-        <Stack className={boxClasses}>
+        <Stack className={jc("relative", emph && "scale-105")}>
             {emph &&
                 <Center p="xs" w="100%" className="absolute bottom-full">
                     <Badge>
