@@ -105,14 +105,14 @@ export default function SampleFlowSvg() {
             <defs>
                 <linearGradient id="linear-gradient" x1="317.5" y1="905.18" x2="317.5" y2="564.18" gradientUnits="userSpaceOnUse">
                     <stop offset="0" stopColor="#fff" />
-                    <stop offset=".04" stopColor="#fff" stop-opacity=".93" />
-                    <stop offset=".2" stopColor="#fff" stop-opacity=".69" />
-                    <stop offset=".35" stopColor="#fff" stop-opacity=".48" />
-                    <stop offset=".5" stopColor="#fff" stop-opacity=".31" />
-                    <stop offset=".64" stopColor="#fff" stop-opacity=".17" />
-                    <stop offset=".77" stopColor="#fff" stop-opacity=".08" />
-                    <stop offset=".9" stopColor="#fff" stop-opacity=".02" />
-                    <stop offset="1" stopColor="#fff" stop-opacity="0" />
+                    <stop offset=".04" stopColor="#fff" stopOpacity=".93" />
+                    <stop offset=".2" stopColor="#fff" stopOpacity=".69" />
+                    <stop offset=".35" stopColor="#fff" stopOpacity=".48" />
+                    <stop offset=".5" stopColor="#fff" stopOpacity=".31" />
+                    <stop offset=".64" stopColor="#fff" stopOpacity=".17" />
+                    <stop offset=".77" stopColor="#fff" stopOpacity=".08" />
+                    <stop offset=".9" stopColor="#fff" stopOpacity=".02" />
+                    <stop offset="1" stopColor="#fff" stopOpacity="0" />
                 </linearGradient>
             </defs>
             <g className={styles["cls-52"]}>
