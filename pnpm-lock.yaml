@@ -201,7 +201,7 @@ importers:
       '@mantine/form': ^6.0.6
       '@mantine/hooks': ^6.0.6
       '@mantine/modals': ^6.0.6
-      '@mantine/notifications': 6.0.6
+      '@mantine/notifications': ^6.0.6
       '@mantine/nprogress': ^6.0.6
       '@minus/client-nodes': workspace:*
       '@minus/client-sdk': workspace:*
