@@ -1,5 +1,8 @@
 
+import { useDebouncedValue } from "@mantine/hooks"
 import fuzzy from "fuzzy"
+import _ from "lodash"
+import { useMemo, useState } from "react"
 
 
 const searches = [
@@ -40,4 +43,48 @@ export class NodeDefinitionSearcher {
         scores.sort((a, b) => b[1] - a[1])
         return scores.map(([id]) => id)
     }
+}
+
+
+const DELIMITER = "***"
+
+/**
+ * Better search hook.
+ *
+ * @export
+ * @param {any[]} list
+ * @param {object} [options]
+ * @param {Function} [options.selector]
+ * @param {number} [options.debounce]
+ * @param {boolean} [options.highlight]
+ * @return {[any[], string, Function, string[][]]} 
+ */
+export function useSearch(list, {
+    selector,
+    debounce,
+    highlight = false,
+} = {}) {
+
+    const [query, setQuery] = useState("")
+    let queryToUse = query
+
+    if (debounce != null) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [debouncedQuery] = useDebouncedValue(query, debounce)
+        queryToUse = debouncedQuery
+    }
+
+    const [filtered, strings] = useMemo(
+        () => _.unzip(
+            fuzzy.filter(queryToUse, list, {
+                extract: selector,
+                pre: DELIMITER,
+                post: DELIMITER,
+            })
+                .map(result => [result.original, result.string.split(DELIMITER)])
+        ),
+        [list, queryToUse]
+    )
+
+    return [filtered ?? [], query, setQuery, highlight && (strings ?? [])]
 }

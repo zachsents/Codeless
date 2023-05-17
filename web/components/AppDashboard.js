@@ -30,7 +30,7 @@ export default function AppDashboard({ children, pageTitle }) {
                 <Navbar width={{ base: 280 }} withBorder={false} p="md">
                     <Navbar.Section>
                         <Group >
-                            <Link href="/dashboard">
+                            <Link href="/apps">
                                 <Tooltip label="Back to Apps" position="right">
                                     <ActionIcon
                                         variant="light"

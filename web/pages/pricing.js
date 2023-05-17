@@ -1,5 +1,5 @@
 import { Badge, Box, Button, Card, Center, Group, SegmentedControl, SimpleGrid, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
-import Header from "@web/components/Header"
+import Header from "@web/components/landing/Header"
 import Section from "@web/components/Section"
 import Footer from "@web/components/landing/Footer"
 import { useQueryParam } from "@web/modules/hooks"

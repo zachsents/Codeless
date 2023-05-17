@@ -17,7 +17,7 @@ import { useMustBeSignedIn } from "../../../../modules/hooks"
 
 export default function CreateFlowPage() {
 
-    return <AppProvider redirectOnNotExist="/dashboard">
+    return <AppProvider redirectOnNotExist="/apps">
         <CreateFlow />
     </AppProvider>
 }

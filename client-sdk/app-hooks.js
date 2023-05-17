@@ -44,7 +44,7 @@ export function useAppDetailsRealtime(appId) {
  */
 export function useCreateApp() {
 
-    const user = useAuthState(auth)
+    const { user } = useAuthState(auth)
 
     return useCallbackWithRequirements(
         name => createApp({

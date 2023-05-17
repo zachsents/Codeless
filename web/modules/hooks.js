@@ -2,16 +2,18 @@ import { useDebouncedValue, useTimeout } from "@mantine/hooks"
 import { useAuthState } from "@minus/client-sdk"
 import fuzzy from "fuzzy"
 import { useRouter } from "next/router"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useState } from "react"
+import { useQuery } from "react-query"
 import { useNodes, useReactFlow } from "reactflow"
 
 
 export function useMustBeSignedIn() {
-    const user = useAuthState()
     const router = useRouter()
+    const { user, isLoggedIn } = useAuthState()
+
     useEffect(() => {
-        user === null && router.push("/login")
-    }, [user])
+        isLoggedIn === false && router.replace("/login")
+    }, [isLoggedIn])
 
     return user
 }
@@ -54,6 +56,22 @@ export function useSearch(list, selector, searchQueryArg) {
     )
 
     return [filtered, searchQuery, setSearchQuery]
+}
+
+
+export function useActionQuery(queryFn, queryKey, queryProps = {}) {
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    queryKey ??= [useId()]
+
+    const { refetch, ...result } = useQuery({
+        queryKey,
+        queryFn,
+        enabled: false,
+        ...queryProps,
+    })
+
+    return [refetch, result]
 }
 
 

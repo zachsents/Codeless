@@ -21,7 +21,7 @@ const IntegrationsList = Object.values(Integrations)
 
 export default function AppIntegrationsPage() {
 
-    return <AppProvider redirectOnNotExist="/dashboard">
+    return <AppProvider redirectOnNotExist="/apps">
         <AppIntegrations />
     </AppProvider>
 }

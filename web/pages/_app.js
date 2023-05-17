@@ -15,6 +15,7 @@ import RenameFlowModal from "@web/components/modals/RenameFlowModal"
 import ScheduleFlowModal from "@web/components/modals/ScheduleFlowModal"
 
 import { initializeFirebase } from "@minus/client-sdk"
+import { Notifications } from "@mantine/notifications"
 initializeFirebase()
 
 
@@ -26,8 +27,12 @@ export default function MyApp({ Component, pageProps }) {
         <QueryClientProvider client={queryClient}>
             <MantineProvider theme={mantineTheme} withNormalizeCSS withGlobalStyles withCSSVariables>
                 <ModalsProvider modals={modals}>
-                    <Component {...pageProps} />
+                    {/* This wrapper makes the footer stick to the bottom of the page */}
+                    <div className="min-h-screen flex flex-col">
+                        <Component {...pageProps} />
+                    </div>
                     <RouterTransition />
+                    <Notifications />
                 </ModalsProvider>
             </MantineProvider>
         </QueryClientProvider>

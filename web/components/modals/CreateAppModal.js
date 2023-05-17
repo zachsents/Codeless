@@ -2,37 +2,43 @@ import { useState } from "react"
 import { Button, Group, Stack, TextInput } from "@mantine/core"
 import { useRouter } from "next/router"
 import { useCreateApp } from "@minus/client-sdk"
+import { useActionQuery } from "@web/modules/hooks"
+import { notifications } from "@mantine/notifications"
 
 
 export default function CreateAppModal({ context, id, /*  innerProps */ }) {
 
     const router = useRouter()
 
-    const createApp = useCreateApp()
     const [appName, setAppName] = useState("")
-    const [loading, setLoading] = useState(false)
 
-    const handleSubmit = async event => {
+    const _createApp = useCreateApp()
+    const [createApp, { isFetching: isLoading }] = useActionQuery(() => _createApp(appName), undefined, {
+        onSuccess: newApp => {
+            context.closeModal(id)
+            router.push(`/app/${newApp.id}`)
+
+            setTimeout(() => notifications.show({
+                title: "Welcome to your new app!",
+                message: "Now it's time to build a workflow!",
+            }), 1000)
+        },
+    })
+
+    const handleSubmit = event => {
         event.preventDefault()
-
-        if (!appName)
-            return
-
-        setLoading(true)
-        const { id: newAppId } = await createApp(appName)
-        router.push(`/app/${newAppId}`)
-        context.closeModal(id)
+        createApp()
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <Stack spacing="xl" mt="xl">
+            <Stack>
                 <TextInput
                     data-autofocus
-                    size="lg"
                     value={appName}
                     onChange={event => setAppName(event.currentTarget.value)}
-                    placeholder="Next big unicorn SaaS"
+                    placeholder="Automations for my business"
+                    required
                 />
                 <Group position="apart">
                     <Button
@@ -43,14 +49,14 @@ export default function CreateAppModal({ context, id, /*  innerProps */ }) {
                     >
                         Cancel
                     </Button>
+
                     {appName &&
                         <Button
-                            type="submit"
-                            radius="xl"
-                            variant="light"
-                            loading={loading}
+                            type="submit" loading={isLoading}
+                            radius="xl" variant="light"
+                            maw="16rem"
                         >
-                            Create "{appName}"
+                            <span className="truncate">Create "{appName}"</span>
                         </Button>}
                 </Group>
             </Stack>

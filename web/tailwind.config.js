@@ -7,8 +7,9 @@ module.exports = {
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     theme: {
-        extend: {},
-        ...tailwindTheme,
+        extend: {
+            ...tailwindTheme,
+        },
     },
     plugins: [],
     corePlugins: {

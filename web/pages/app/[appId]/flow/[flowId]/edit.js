@@ -17,8 +17,8 @@ export default function EditFlow() {
     useMustBeSignedIn()
 
     return (
-        <AppProvider redirectOnNotExist="/dashboard">
-            <FlowProvider redirectOnNotExist="/dashboard">
+        <AppProvider redirectOnNotExist="/apps">
+            <FlowProvider redirectOnNotExist="/apps">
                 <ReplayProvider>
                     <PageTitle />
                     <ReactFlowProvider>

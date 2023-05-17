@@ -65,6 +65,6 @@ export async function finishEmailSignIn() {
 }
 
 
-export function signOut() {
-    auth.signOut()
+export async function signOut() {
+    await auth.signOut()
 }

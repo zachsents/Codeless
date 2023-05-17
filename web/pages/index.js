@@ -1,6 +1,6 @@
 import { Badge, Box, Button, Card, Center, Container, Grid, Group, SimpleGrid, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
 import GlassButton from "@web/components/GlassButton"
-import Header from "@web/components/Header"
+import Header from "@web/components/landing/Header"
 import Section from "@web/components/Section"
 import ConnectAppsSection from "@web/components/landing/ConnectAppsSection"
 import FeatureTabPanel from "@web/components/landing/FeatureTabPanel"
@@ -13,11 +13,14 @@ import Link from "next/link"
 import { CodeBlock, dracula } from "react-code-blocks"
 import { SiGooglesheets } from "react-icons/si"
 import { TbArrowDown, TbArrowRight, TbBrandGmail, TbBrandOpenai, TbChartDots3, TbClipboardData, TbDragDrop, TbLivePhoto } from "react-icons/tb"
+import { useAuthState } from "@minus/client-sdk"
 
 
 export default function LandingPage() {
 
     const theme = useMantineTheme()
+
+    const { isLoggedIn } = useAuthState()
 
     const [activeTab, setActiveTab] = useQueryParam("feature", "tables")
 
@@ -59,7 +62,7 @@ export default function LandingPage() {
                                 See what's possible
                             </Button>
                         </Link>
-                        <Link href="/dashboard">
+                        <Link href={isLoggedIn ? "/apps" : "/login?plan"}>
                             <GlassButton radius="xl" rightIcon="🔨" matchColor>
                                 Get Building
                             </GlassButton>
@@ -355,7 +358,6 @@ function EditorFeatureCard({ children, title, icon: Icon, src }) {
 
     return (
         <Box>
-
             <Card w="60%" mr="auto" withBorder shadow="xs">
                 <Stack spacing="xs">
                     <Text weight={600}>

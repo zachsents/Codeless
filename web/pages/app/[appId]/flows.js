@@ -16,7 +16,7 @@ import { plural } from "../../../modules/util"
 
 export default function AppFlowsPage() {
 
-    return <AppProvider redirectOnNotExist="/dashboard">
+    return <AppProvider redirectOnNotExist="/apps">
         <AppFlows />
     </AppProvider>
 }

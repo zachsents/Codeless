@@ -1,7 +1,8 @@
-import { Button, Card, Center, Loader, Space, Stack, Text, TextInput, Title, useMantineTheme } from "@mantine/core"
+import { Box, Button, Card, Center, Loader, Space, Stack, Text, TextInput, Title, useMantineTheme } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useLocalStorage } from "@mantine/hooks"
 import { sendEmailSignInLink, signInWithGoogle } from "@minus/client-sdk"
+import Brand from "@web/components/Brand"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { FcGoogle } from "react-icons/fc"
@@ -26,11 +27,11 @@ export default function Login() {
     const handleLogin = result => {
         console.debug("Logged in as", result.user.displayName ?? result.user.email)
         setHasLoggedIn(true)
-        router.push("/dashboard")
+        router.push("/apps")
     }
 
     return (
-        <Center w="100vw" h="100vh" pb={100}>
+        <Center w="100vw" h="100vh" pb={100} pos="relative">
             <Card w={350} withBorder shadow="sm" p="xl">
                 <Stack spacing="xs">
                     {!signInMethod && <>
@@ -71,6 +72,10 @@ export default function Login() {
                     {signInMethod == SignInMethod.Google && <GoogleLogin />}
                 </Stack>
             </Card>
+
+            <Box px="xl" py="sm" className="absolute top-0 left-0">
+                <Brand variant="gray" />
+            </Box>
         </Center>
     )
 }
@@ -134,7 +139,7 @@ function GoogleLogin() {
     return (
         <>
             <Text align="center">Logging you in...</Text>
-            <Text align="center" size="sm" color="dimmed">
+            <Text align="center" size="xs" color="dimmed">
                 Sign in through the popup. If there's a problem, try{" "}
                 <Text component="a" href="/login" color={theme.primaryColor}>refreshing</Text>.
             </Text>

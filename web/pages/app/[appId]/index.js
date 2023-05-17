@@ -22,7 +22,7 @@ const MAX_INTEGRATIONS_SHOWN = 5
 
 export default function AppOverviewPage() {
 
-    return <AppProvider redirectOnNotExist="/dashboard">
+    return <AppProvider redirectOnNotExist="/apps">
         <AppOverview />
     </AppProvider>
 }

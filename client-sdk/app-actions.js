@@ -56,7 +56,7 @@ export function createApp({
         created: serverTimestamp(),
         owners: ownerIds,
         plan: getPlanRef("free"),
-        color: "blue",
+        color: "yellow",
         ...props,
     })
 }

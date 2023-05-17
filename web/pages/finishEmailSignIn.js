@@ -16,7 +16,7 @@ export default function FinishEmailSignIn() {
                 setLoading(false)
                 if (result) {
                     console.debug("Logged in as", result.user.displayName ?? result.user.email)
-                    router.push("/dashboard")
+                    router.push("/apps")
                 }
                 else
                     setError("Sign-in result is undefined.")

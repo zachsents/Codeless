@@ -2,10 +2,12 @@ import { DEFAULT_THEME } from "@mantine/core"
 
 const ContentWidth = 60 //rem
 
+const primaryColor = "violet"
+
 /** @type {import("@mantine/core").MantineThemeOverride} */
 export const mantineTheme = {
     fontFamily: "DM Sans",
-    primaryColor: "violet",
+    primaryColor,
     headings: {
         fontFamily: "DM Sans",
     },
@@ -13,12 +15,15 @@ export const mantineTheme = {
         // xs: 12,
     },
     defaultRadius: "md",
+    colors: {
+        primary: DEFAULT_THEME.colors[primaryColor],
+    },
     shadows: {
-        xs: "rgba(0, 0, 0, 0.1) 0px 2px 5px 0px",
-        sm: "rgba(0, 0, 0, 0.05) 0px 1px 0px 0px, rgba(0, 0, 0, 0.1) 0px 4px 10px 0px",
-        md: "rgba(0, 0, 0, 0.05) 0px 3px 2px 0px, rgba(0, 0, 0, 0.1) 0px 7px 20px 0px",
-        lg: "rgba(0, 0, 0, 0.05) 0px 5px 4px 0px, rgba(0, 0, 0, 0.1) 0px 10px 30px 0px",
-        xl: "rgba(0, 0, 0, 0.05) 0px 20px 40px 0px",
+        xs: "0 2px 3px -1px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        sm: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        md: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        lg: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+        xl: "0 25px 50px -12px rgb(0 0 0 / 0.25)",
     },
     other: {
         dateTimeFormat: "MMM D, YYYY h:mm A",
@@ -67,6 +72,15 @@ export const tailwindTheme = {
         ...DEFAULT_THEME.radius,
         DEFAULT: DEFAULT_THEME.radius.md,
     },
+    boxShadow: {
+        ...mantineTheme.shadows,
+        DEFAULT: mantineTheme.shadows.sm,
+    },
+    scale: {
+        "101": "1.01",
+        "102": "1.02",
+        "103": "1.03",
+    }
 }
 
 // Adds primary colors as CSS variables
