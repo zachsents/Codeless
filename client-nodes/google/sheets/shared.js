@@ -76,6 +76,7 @@ export function SheetNameControl({ inputId }) {
         data={state.sheets ?? []}
         disabled={state.isLoading || !state.spreadsheetId}
         rightSection={state.isLoading && <Loader size="xs" />}
+        withinPortal
     /> :
         <TextControl inputId={inputId} />
 }

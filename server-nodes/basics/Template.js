@@ -1,4 +1,4 @@
-import { objectToSafeMapEntries, safeMap } from "../arrayUtilities.js"
+import { unzipObject, safeMap } from "../arrayUtilities.js"
 
 
 export default {
@@ -11,7 +11,7 @@ export default {
             result: safeMap((template, data) => data && Object.entries(data).reduce(
                 (text, [key, val]) => text.replaceAll(`{${key}}`, val),
                 template
-            ), template, objectToSafeMapEntries(data))
+            ), template, unzipObject(data))
         })
     },
 }

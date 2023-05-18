@@ -1,4 +1,4 @@
-import { objectToSafeMapEntries, safeMap } from "../arrayUtilities.js"
+import { unzipObject, safeMap } from "../arrayUtilities.js"
 
 
 export default {
@@ -19,7 +19,7 @@ export default {
         // map to update objects
         const updates = safeMap(
             (row, data) => ({ row, data }),
-            rows, objectToSafeMapEntries(data)
+            rows, unzipObject(data)
         )
 
         this.publish({

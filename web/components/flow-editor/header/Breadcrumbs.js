@@ -1,8 +1,8 @@
-import { useAppContext, useFlowContext } from "@web/modules/context"
+import { ActionIcon, Box, Group, Text, Title, Tooltip, useMantineTheme } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
-import { ActionIcon, Box, Group, Stack, Text, Title, Tooltip, useMantineTheme } from "@mantine/core"
-import { TbChevronRight, TbPencil } from "react-icons/tb"
+import { useAppContext, useFlowContext } from "@web/modules/context"
 import Link from "next/link"
+import { TbChevronRight, TbPencil } from "react-icons/tb"
 
 
 export default function Breadcrumbs() {

@@ -23,7 +23,7 @@ export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (me
 
     // query for flows involving this email address
     const querySnapshot = await db.collection("flows")
-        .where("gmailTriggerEmailAddress", "==", emailAddress)
+        .where("triggerData_gmailEmailAddress", "==", emailAddress)
         .where("published", "==", true)
         .get()
 
@@ -52,8 +52,7 @@ export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (me
 
 export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newHistoryId }) => {
 
-    logger.setPrefix("Gmail")
-    logger.log(`Trying ${flows.length} flow(s) for app: ${appId}`)
+    console.debug(`Trying ${flows.length} flow(s) for app: ${appId}`)
 
     // get Gmail API
     const gmailApi = await gmail.getGmailAPI(appId)
@@ -69,17 +68,17 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
         const startHistoryId = await db.runTransaction(async t => {
             // grab history ID
             const doc = await t.get(flowDocRef)
-            const historyId = doc.data().gmailTriggerHistoryId
+            const historyId = doc.data().triggerData_gmailHistoryId
 
             // set new history ID
             await t.update(flowDocRef, {
-                gmailTriggerHistoryId: Math.max(newHistoryId, historyId),
+                "triggerData_gmailHistoryId": Math.max(newHistoryId, historyId),
             })
 
             return historyId
         })
 
-        console.log(`Getting history between ${startHistoryId} and ${newHistoryId}`)
+        console.debug(`Getting history between ${startHistoryId} and ${newHistoryId}`)
 
         // fetch history
         const { data: { history } } = await gmailApi.users.history.list({
@@ -102,7 +101,7 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
             )
             .flat() ?? []
 
-        logger.log(`Found ${messageIds.length} messages added in history. (Flow ID: ${flowId})`)
+        console.debug(`Found ${messageIds.length} messages added in history. (Flow ID: ${flowId})`)
 
         // loop through message IDs
         let messagesLoaded = 0
@@ -111,39 +110,22 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
 
                 // fetch message details
                 try {
-                    var { data: message } = await gmailApi.users.messages.get({
-                        userId: "me",
-                        id: messageId,
+                    var messageData = await gmail.getMessage(gmailApi, messageId, {
+                        format: "clean",
+                        asFirestoreDate: true,
                     })
                 }
                 catch (err) {
-                    logger.log(`[Flow-${flowId}] (${++messagesLoaded} / ${messageIds.length}) Unable to get message: ${messageId}`)
+                    console.debug(`[Flow-${flowId}] (${++messagesLoaded} / ${messageIds.length}) Unable to get message: ${messageId}`)
                     return
                 }
 
-                logger.log(`[Flow-${flowId}] (${++messagesLoaded} / ${messageIds.length}) Got details for message: ${messageId}`)
-
-                // pull out the data we want to pass to the flow
-                const flowPayload = {
-                    id: message.id,
-                    from: getHeader("From", message.payload),
-                    replyTo: getHeader("Reply-To", message.payload),
-                    subject: getHeader("Subject", message.payload),
-                    date: getHeader("Date", message.payload),
-                    plainText: decodeEmailBody(
-                        message.payload.body.data ??
-                        message.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
-                    ),
-                    html: decodeEmailBody(
-                        message.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
-                    ),
-                    rawMessage: message,
-                }
+                console.debug(`[Flow-${flowId}] (${++messagesLoaded} / ${messageIds.length}) Got details for message: ${messageId}`)
 
                 // add flow run
                 await db.collection("flowRuns").add({
                     flow: flowId,
-                    payload: flowPayload,
+                    payload: messageData,
                     status: RunStatus.Pending,
                     source: "gmail",
                 })
@@ -152,8 +134,6 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
     })
 
     await Promise.all(flowPromises)
-
-    logger.done()
 })
 
 

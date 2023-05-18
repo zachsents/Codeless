@@ -1,6 +1,7 @@
 import { google } from "googleapis"
 import { getGoogleOAuthClient } from "./google.js"
 import { createMimeMessage } from "mimetext"
+import admin from "firebase-admin"
 
 
 /**
@@ -61,8 +62,8 @@ export async function watchInbox(gmail, { flow }) {
 
     // put email address & history ID in flow document
     await flow.update({
-        gmailTriggerEmailAddress: emailAddress,
-        gmailTriggerHistoryId: historyId,
+        "triggerData_gmailEmailAddress": emailAddress,
+        "triggerData_gmailHistoryId": historyId,
     })
 }
 
@@ -118,4 +119,92 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
             ...requestBody,
         },
     })
+}
+
+
+/**
+ * Gets a message from the Gmail API given the message ID.
+ *
+ * @export
+ * @param {GmailAPI} gmail
+ * @param {string} id
+ * @param {object} [options]
+ * @param {"clean" | "raw"} [options.format="clean"]
+ * @param {boolean} [options.asFirestoreDate=false]
+ * @return {*} 
+ */
+export async function getMessage(gmail, id, {
+    format = "clean",
+    asFirestoreDate = false,
+} = {}) {
+    const { data: message } = await gmail.users.messages.get({
+        userId: "me",
+        id,
+    })
+
+    if (format == "raw")
+        return message
+
+    if (format == "clean") {
+        const { name, emailAddress } = parseFromHeader(getHeader(message, "From"))
+        const plainText = decodeEmailBody(
+            message.payload.body.data ??
+            message.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
+        )
+
+        const date = new Date(getHeader(message, "Date"))
+
+        return {
+            senderName: name,
+            senderEmailAddress: emailAddress,
+            replyTo: getHeader(message, "Reply-To"),
+            subject: getHeader(message, "Subject"),
+            date: asFirestoreDate ? admin.firestore.Timestamp.fromDate(date) : date,
+            plainText,
+            simpleText: cleanTextBody(plainText),
+            html: decodeEmailBody(
+                message.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
+            ),
+        }
+    }
+}
+
+
+export function getHeader(messageData, name) {
+    return messageData.payload.headers.find(h => h.name == name)?.value
+}
+
+
+export function decodeEmailBody(data) {
+    return Buffer.from(
+        data,
+        "base64"
+    ).toString()
+}
+
+
+/**
+ * Parses the "From" header of an email.
+ * Sometimes the "From" header is in the format "Name <email@example.com>"
+ *
+ * @param {string} fromHeader
+ * @return {{name: string, emailAddress: string}}} 
+ */
+export function parseFromHeader(fromHeader) {
+    // eslint-disable-next-line no-sparse-arrays
+    const [, name, emailAddress] = fromHeader.match(/(.+?\s)<(.+?)>/) ?? [, , fromHeader]
+    return { name, emailAddress }
+}
+
+
+/**
+ * Cleans up the text body of an email.
+ *
+ * @param {string} textBody
+ * @return {string} 
+ */
+export function cleanTextBody(textBody) {
+    return textBody
+        .replaceAll(/<http.+?>/g, "")   // remove links
+        .replaceAll(/\n{3,}/g, "\n\n")  // shrink more than 3 line breaks
 }

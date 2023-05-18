@@ -1,6 +1,6 @@
 import fetch from "node-fetch"
 import { safeMap } from "../arrayUtilities.js"
-import { objectToSafeMapEntries } from "../arrayUtilities.js"
+import { unzipObject } from "../arrayUtilities.js"
 
 
 export default {
@@ -44,7 +44,7 @@ export default {
 
             return resp
 
-        }, url, method, objectToSafeMapEntries(query), body, responseType)
+        }, url, method, unzipObject(query), body, responseType)
 
 
         this.publish({ response })

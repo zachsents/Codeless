@@ -1,4 +1,4 @@
-import { objectToSafeMapEntries } from "../arrayUtilities.js"
+import { unzipObject } from "../arrayUtilities.js"
 
 
 export default {
@@ -13,7 +13,7 @@ export default {
 
         this.publish({
             newRow: await $table.addRows(
-                objectToSafeMapEntries(data)
+                unzipObject(data)
             )
         })
     },

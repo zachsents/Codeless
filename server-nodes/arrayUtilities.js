@@ -82,12 +82,36 @@ export function deepFlat(arr) {
 
 
 /**
- * Converts an object to arrays of entries usable in safeMap
+ * Converts an object with array values into an array of objects with the same
+ * keys, but the values are the elements of the original arrays.
  *
  * @param {Object.<string, any[]>} obj
  */
-export function objectToSafeMapEntries(obj) {
+export function unzipObject(obj) {
     return safeMap((...values) => Object.fromEntries(
         values.map((val, i) => [Object.keys(obj)[i], val])
     ), ...Object.values(obj))
+}
+
+/**
+ * Converts an array of objects into an object with array values, where the
+ * keys are the keys of the original objects, and the values are the elements
+ * of the original arrays.
+ *
+ * @export
+ * @param {object[]} objects
+ */
+export function zipObjects(objects) {
+    // get all keys
+    const keys = [...new Set(objects.flatMap(obj => Object.keys(obj ?? {})))]
+
+    // reduce into object with array values
+    return objects.reduce((acc, obj) => {
+        // every object inserts a value for every key
+        keys.forEach(key => {
+            acc[key] ??= []
+            acc[key].push(obj?.[key])
+        })
+        return acc
+    }, {})
 }
