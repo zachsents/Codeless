@@ -29,7 +29,7 @@ export default function RunReplayPopover() {
                 <Button
                     onClick={popoverHandlers.toggle}
                     color={hasNoRuns && "gray"}
-                    variant="light" size="md" leftIcon={<TbClockPlay size={24} />}
+                    variant="light" size="xs" leftIcon={<TbClockPlay size="1rem" />}
                 >
                     View Runs
                 </Button>

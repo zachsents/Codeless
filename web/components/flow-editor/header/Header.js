@@ -49,7 +49,8 @@ export default function Header() {
     return (
         <MantineHeader
             onClick={() => deselectAll(rf)}
-            fixed={false} p="sm" zIndex={200} sx={{ overflow: "visible" }}
+            fixed={false} px="xs" py="0.25rem" zIndex={200}
+            className="ofv"
         >
             <Group position="apart">
                 <Group>
@@ -62,13 +63,15 @@ export default function Header() {
                             </Button>
                         </Tooltip>
                     </Link>
+
                     <Breadcrumbs />
                 </Group>
-                <Group spacing="xl">
+
+                <Group spacing="lg">
 
                     {/* Saving Indicator */}
                     <Badge
-                        color="gray" variant="light" size="lg"
+                        color="gray" variant="light" size="sm"
                         leftSection={<Text color={saveStatus.color} size="xl">&bull;</Text>}
                     >
                         {saveStatus.label}
@@ -84,8 +87,6 @@ export default function Header() {
                                     {...control}
                                     appId={appId}
                                     flow={flow}
-                                    smallProps={{ size: "xl" }}
-                                    iconSize="1.5em"
                                     key={control.id}
                                 />
                             )}
@@ -93,22 +94,22 @@ export default function Header() {
                         <Divider orientation="vertical" />
                     </>}
 
-
                     {/* Publishing */}
                     {isPublishing ?
                         <Group>
-                            <Loader size="sm" />
+                            <Loader size="xs" />
                             <Text size="xs" color="dimmed">Working on it...</Text>
                         </Group> :
                         <Group>
                             <Badge
                                 color={publishStatus.color}
-                                variant="light" size="lg" leftSection={<Text color={publishStatus.color} size="xl">&bull;</Text>}
+                                variant="light" leftSection={<Text color={publishStatus.color} size="xl">&bull;</Text>}
                             >
                                 {publishStatus.label}
                             </Badge>
                             <Switch
                                 color="green"
+                                size="xs"
                                 checked={flow?.published}
                                 onChange={event => handlePublishChange(event.currentTarget.checked)}
                             />
