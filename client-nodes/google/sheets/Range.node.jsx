@@ -67,7 +67,7 @@ export default {
         useGoogleSheetNode(props)
 
         // capitalize range
-        const [range, setRange] = useInputValue(null, "range")
+        const [range, setRange] = useInputValue(null, "$range")
         useEffect(() => {
             range && setRange(range.toUpperCase())
         }, [range])
