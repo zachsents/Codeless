@@ -1,5 +1,5 @@
 import { useDebouncedValue, useTimeout } from "@mantine/hooks"
-import { useAuthState } from "@minus/client-sdk"
+import { useAuthState, useRenameApp, useRenameFlow } from "@minus/client-sdk"
 import fuzzy from "fuzzy"
 import { useRouter } from "next/router"
 import { useEffect, useId, useMemo, useState } from "react"
@@ -36,14 +36,20 @@ export function useQueryParam(queryKey, defaultValue, setDefaultOnMount = false)
     const value = router.query[queryKey] || defaultValue
 
     const setValue = newValue => {
+        // getting a this error on fresh page load with dynamic routes and useQueryParam hook:
+        // https://nextjs.org/docs/messages/href-interpolation-failed
+        // This should fix it
+        if (!router.isReady)
+            return
+
         router.query[queryKey] = newValue
         router.replace(router, undefined, { shallow: true })
     }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    setDefaultOnMount && useEffect(() => {
-        setValue(defaultValue)
-    }, [])
+    useEffect(() => {
+        setDefaultOnMount && setValue(defaultValue)
+    }, [router.isReady])
 
     return [value, setValue]
 }
@@ -92,6 +98,56 @@ export function useAppId() {
 
 export function useFlowId() {
     return useRouter().query.flowId
+}
+
+
+/**
+ * Utility hook for renaming apps. Returns everything you need
+ * to rename an app with an EditbaleText component.
+ *
+ * @export
+ * @param {string} appId
+ * @return {{ isRenaming: boolean, startRenaming: () => void, onRename: (newName: string) => void, onCancel: () => void }} 
+ */
+export function useAppRenaming(appId) {
+    const [renaming, setRenaming] = useState(false)
+    const renameApp = useRenameApp(appId)
+    const rename = newName => {
+        renameApp(newName)
+        setRenaming(false)
+    }
+
+    return {
+        isRenaming: renaming,
+        startRenaming: () => setRenaming(true),
+        onRename: rename,
+        onCancel: () => setRenaming(false),
+    }
+}
+
+
+/**
+ * Utility hook for renaming flows. Returns everything you need
+ * to rename an app with an EditbaleText component.
+ *
+ * @export
+ * @param {string} flowId
+ * @return {{ isRenaming: boolean, startRenaming: () => void, onRename: (newName: string) => void, onCancel: () => void }} 
+ */
+export function useFlowRenaming(flowId) {
+    const [renaming, setRenaming] = useState(false)
+    const renameFlow = useRenameFlow(flowId)
+    const rename = newName => {
+        renameFlow(newName)
+        setRenaming(false)
+    }
+
+    return {
+        isRenaming: renaming,
+        startRenaming: () => setRenaming(true),
+        onRename: rename,
+        onCancel: () => setRenaming(false),
+    }
 }
 
 

@@ -1,27 +1,25 @@
-import { ActionIcon, Alert, Box, Button, Card, ColorSwatch, Grid, Group, Loader, Menu, SimpleGrid, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
+import { Alert, Box, Button, Card, Grid, Group, Loader, SimpleGrid, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
 import { useHover } from "@mantine/hooks"
 import { openContextModal } from "@mantine/modals"
-import { useAppDetailsForUserRealtime, useFlowCountForApp, useRenameApp, useUpdateApp } from "@minus/client-sdk"
+import { useAppDetailsForUserRealtime, useFlowCountForApp } from "@minus/client-sdk"
 import EditableText from "@web/components/EditableText"
 import GlassButton from "@web/components/GlassButton"
-import HeaderBase from "@web/components/HeaderBase"
-import { NavLink } from "@web/components/NavLink"
+import PageHead from "@web/components/PageHead"
 import SearchInput from "@web/components/SearchInput"
 import Section from "@web/components/Section"
+import AppMenu from "@web/components/dashboard/AppMenu"
+import Header from "@web/components/dashboard/Header"
 import Footer from "@web/components/landing/Footer"
-import { useMustBeSignedIn } from "@web/modules/hooks"
+import { useAppRenaming, useMustBeSignedIn } from "@web/modules/hooks"
 import { useSearch } from "@web/modules/search"
-import { jc, pageTitle, stopPropagation } from "@web/modules/util"
+import { jc } from "@web/modules/util"
 import { motion } from "framer-motion"
-import Head from "next/head"
 import Link from "next/link"
 import { useState } from "react"
-import { TbArrowRight, TbDots, TbPencil, TbPlus, TbTrash } from "react-icons/tb"
+import { TbArrowRight, TbPlus } from "react-icons/tb"
 
 
 export default function AppsPage() {
-
-    const theme = useMantineTheme()
 
     // user state
     const user = useMustBeSignedIn()
@@ -46,28 +44,9 @@ export default function AppsPage() {
 
     return (
         <>
-            <Head>
-                <title key="title">{pageTitle("Your Apps")}</title>
-                <meta property="og:title" content={pageTitle("Your Apps")} key="ogtitle" />
-            </Head>
+            <PageHead title="Your Apps" />
 
-            <HeaderBase
-                slim
-                brandVariant="gray"
-                showCTA={false}
-                leftSection={
-                    <Group spacing="lg">
-                        <NavLink href="/apps" size="sm">Your Apps</NavLink>
-                    </Group>
-                }
-                rightSection={
-                    <Group spacing="lg">
-                        <NavLink href="/docs" size="sm" color={theme.other.halfDimmed}>Docs</NavLink>
-                        <NavLink href="/docs/nodes" size="sm" color={theme.other.halfDimmed}>Nodes</NavLink>
-                        <NavLink href="/docs/guides" size="sm" color={theme.other.halfDimmed}>Guides</NavLink>
-                    </Group>
-                }
-            />
+            <Header />
 
             <Section size="xs" p="xl">
                 <motion.div
@@ -148,28 +127,8 @@ function AppCard({ app, displayNameParts }) {
     const theme = useMantineTheme()
     const { flowCount } = useFlowCountForApp(app.id)
 
-    const appUrl = `/app/${app.id}`
-
-    // deleting an app
-    const openDeleteModal = () => openContextModal({
-        modal: "DeleteApp",
-        title: "Delete " + app.name,
-        innerProps: { appId: app.id },
-    })
-
-    // changing the color of an app
-    const updateApp = useUpdateApp(app.id)
-    const changeColor = color => {
-        updateApp({ color })
-    }
-
     // renaming an app
-    const [renaming, setRenaming] = useState(false)
-    const renameApp = useRenameApp(app.id)
-    const rename = newName => {
-        renameApp(newName)
-        setRenaming(false)
-    }
+    const { isRenaming, startRenaming, onRename, onCancel } = useAppRenaming(app.id)
 
     // hover state
     const { hovered, ref: hoverRef } = useHover()
@@ -185,46 +144,23 @@ function AppCard({ app, displayNameParts }) {
                 <Box w="1.5rem" bg={app.color ?? theme.primaryColor} className="transition-colors" />
 
                 <Stack spacing="0.1rem" p="sm" className="flex-1">
-                    {renaming ?
+                    {isRenaming ?
                         <EditableText
                             highlight
                             initialValue={app.name}
-                            onEdit={rename}
-                            onCancel={() => setRenaming(false)}
+                            onEdit={onRename}
+                            onCancel={onCancel}
                         /> :
                         <Text weight={500}>{displayName}</Text>}
 
-                    <Text size="sm" color="dimmed">{flowCount || "No"} Workflows</Text>
+                    <Text size="sm" color="dimmed">{flowCount || "No"} Workflow{flowCount == 1 ? "" : "s"}</Text>
 
                     <Group position="apart" className="translate-y-1">
-                        <Menu withinPortal>
-                            <Menu.Target>
-                                <ActionIcon onClick={stopPropagation}>
-                                    <TbDots />
-                                </ActionIcon>
-                            </Menu.Target>
-
-                            <Menu.Dropdown miw="10rem" onClick={stopPropagation}>
-                                <SwatchArray
-                                    colors={["pink", "yellow", "teal", "indigo"]}
-                                    onChange={changeColor}
-                                    value={app.color}
-                                />
-                                <Menu.Item icon={<TbArrowRight />} component={Link} href={appUrl}>
-                                    Open
-                                </Menu.Item>
-                                <Menu.Item icon={<TbPencil />} onClick={() => setRenaming(true)}>
-                                    Rename
-                                </Menu.Item>
-                                <Menu.Item icon={<TbTrash />} color="red" onClick={openDeleteModal}>
-                                    Delete
-                                </Menu.Item>
-                            </Menu.Dropdown>
-                        </Menu>
+                        <AppMenu app={app} startRename={startRenaming} />
 
                         <Button
                             radius="xl" size="xs" variant="subtle" compact
-                            rightIcon={<TbArrowRight className={jc("transition-transform", hovered && !renaming && "translate-x-1")} />}
+                            rightIcon={<TbArrowRight className={jc("transition-transform", hovered && !isRenaming && "translate-x-1")} />}
                         >
                             Open
                         </Button>
@@ -234,30 +170,9 @@ function AppCard({ app, displayNameParts }) {
         </Card>
     )
 
-    return renaming ?
+    return isRenaming ?
         cardComponent :
-        <Link href={appUrl}>
+        <Link href={`/app/${app.id}`}>
             {cardComponent}
         </Link>
-}
-
-
-function SwatchArray({ colors, shade = 5, onChange, value }) {
-
-    const theme = useMantineTheme()
-
-    return <Group spacing="xs" p="xs" position="center">
-        {colors.map(color =>
-            <ColorSwatch
-                size="1rem"
-                color={theme.colors[color][shade]}
-                onClick={() => onChange?.(color)}
-                className={jc(
-                    "cursor-pointer hover:scale-125 active:scale-110 transition",
-                    color == value && "scale-125 ring-2 ring-offset-2 ring-offset-white ring-gray-500"
-                )}
-                key={color}
-            />
-        )}
-    </Group>
 }

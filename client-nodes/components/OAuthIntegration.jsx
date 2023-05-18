@@ -1,4 +1,4 @@
-import { Button, Center, Group, Loader, Stack, Text, ThemeIcon, Tooltip } from "@mantine/core"
+import { Box, Button, Center, Divider, Group, Loader, Stack, Text, ThemeIcon, Tooltip } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 import { Check } from "tabler-icons-react"
@@ -6,59 +6,56 @@ import { Check } from "tabler-icons-react"
 
 export default function OAuthIntegration({ id, app, manager, disconnectLabel }) {
 
-    const [loading, setLoading] = useState(true)
+    const [isConnecting, setConnecting] = useState(true)
 
     const { data: isAuthorized, refetch, isLoading } = useQuery({
         queryKey: ["app-integration", app?.id, id],
         queryFn: () => manager.isAppAuthorized(app),
         retry: false,
+        refetchOnMount: false,
     })
 
-    const handleConnect = () => {
-        setLoading(true)
+    const connect = () => {
+        setConnecting(true)
         manager.authorizeAppInPopup(app.id)
     }
 
-    const handleDisconnect = async () => {
-        setLoading(true)
+    const disconnect = async () => {
+        setConnecting(true)
         await manager.disconnect(app.id)
         refetch()
     }
 
     // when app is loaded or authorization state changes, clear loading state
     useEffect(() => {
-        setLoading(false)
-    }, [isAuthorized])
+        setConnecting(false)
+    }, [!!isAuthorized])
 
     const disconnectButton = <Button
-        onClick={handleDisconnect}
-        size="xs"
-        compact
-        variant="light"
-        color="gray"
+        onClick={disconnect} loading={isConnecting}
+        size="xs" variant="subtle" color="red"
     >
         Disconnect
     </Button>
 
     return (
-        <Center pr="md">
-            {loading || isLoading ?
-                <Loader size="sm" />
+        <Group>
+            {isAuthorized && <>
+                <ThemeIcon color="green" size="sm" radius="xl"><Check size="0.75rem" /></ThemeIcon>
+                <Divider orientation="vertical" />
+            </>}
+
+            {isLoading ?
+                <Loader size="xs" />
                 :
                 isAuthorized ?
-                    <Group>
-                        <Stack spacing="xs">
-                            <Text color="green">Connected!</Text>
-                            {disconnectLabel ?
-                                <Tooltip label={disconnectLabel}>{disconnectButton}</Tooltip> :
-                                disconnectButton}
-                        </Stack>
-                        <ThemeIcon size="lg" color="green" radius="xl"><Check size={18} /></ThemeIcon>
-                    </Group>
+                    disconnectLabel ?
+                        <Tooltip label={disconnectLabel} withinPortal>{disconnectButton}</Tooltip> :
+                        disconnectButton
                     :
-                    <Button onClick={handleConnect}>
+                    <Button onClick={connect} loading={isConnecting} size="xs" variant="subtle">
                         Connect
                     </Button>}
-        </Center>
+        </Group>
     )
 }

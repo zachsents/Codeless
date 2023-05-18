@@ -11,7 +11,7 @@ export default function DeleteAppModal({ context, id, innerProps: { appId } }) {
 
     const _deleteApp = useDeleteApp(appId)
     const [deleteApp, { isFetching: isLoading }] = useActionQuery(_deleteApp, ["delete", appId], {
-        onSuccess: () => console.log("deleted app") || context.closeModal(id),
+        onSuccess: () => context.closeModal(id),
     })
 
     const [confirmation, setConfirmation] = useState("")

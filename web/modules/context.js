@@ -42,7 +42,7 @@ export function AppProvider({ children, redirectOnNotExist = false }) {
     const [app] = useAppDetailsRealtime(appId)
     const integrations = useAppIntegrations(app, Integrations)
 
-    // redirect if flow doesn't exist
+    // redirect if app doesn't exist
     useEffect(() => {
         redirectOnNotExist && app === false && router.push(redirectOnNotExist)
     }, [app])

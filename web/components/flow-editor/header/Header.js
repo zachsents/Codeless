@@ -53,8 +53,8 @@ export default function Header() {
         >
             <Group position="apart">
                 <Group>
-                    <Link href={`/app/${appId}/flows`}>
-                        <Tooltip label="Back to Flows">
+                    <Link href={`/app/${appId}?tab=flows`}>
+                        <Tooltip label="Back to All Workflows">
                             <Button color="gray" variant="light">
                                 <Group spacing="xs">
                                     <TbArrowLeft size={16} /><TbLayoutList size={20} />

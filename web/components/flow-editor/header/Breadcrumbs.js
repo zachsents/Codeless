@@ -28,7 +28,7 @@ export default function Breadcrumbs() {
                     <Text size="xs" color="dimmed">{app?.name}</Text>
                 </Link>
                 <Text size="xs" color="dimmed" pt={3}><TbChevronRight /></Text>
-                <Link href={`/app/${app?.id}/flows`}>
+                <Link href={`/app/${app?.id}?tab=flows`}>
                     <Text size="xs" color="dimmed">Flows</Text>
                 </Link>
                 <Text size="xs" color="dimmed" pt={3}><TbChevronRight /></Text>

@@ -28,7 +28,7 @@ export default function FlowControlButton({ flow, appId, id, label, icon, small,
     const color = showStatus && currentlyShowingStatus ? (isSuccess ? "green" : isError ? "red" : "gray") : "gray"
 
     return small ?
-        <Tooltip label={label}>
+        <Tooltip label={label} withinPortal>
             <ActionIcon
                 onClick={() => refetch()}
                 color={color} size="lg" variant="light" loading={isLoading}
