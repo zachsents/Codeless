@@ -10,6 +10,8 @@ export default {
         this.publish({
             formatted: safeMap((date, type) => {
                 const dateObj = date instanceof Date ? date : new Date(date)
+                if (date == null)
+                    return null
 
                 if (type == "date")
                     return dateObj.toLocaleDateString()

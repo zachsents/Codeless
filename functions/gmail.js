@@ -112,7 +112,6 @@ export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newH
                 try {
                     var messageData = await gmail.getMessage(gmailApi, messageId, {
                         format: "clean",
-                        asFirestoreDate: true,
                     })
                 }
                 catch (err) {

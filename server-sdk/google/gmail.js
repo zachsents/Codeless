@@ -1,7 +1,6 @@
 import { google } from "googleapis"
-import { getGoogleOAuthClient } from "./google.js"
 import { createMimeMessage } from "mimetext"
-import admin from "firebase-admin"
+import { getGoogleOAuthClient } from "./google.js"
 
 
 /**
@@ -130,12 +129,10 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
  * @param {string} id
  * @param {object} [options]
  * @param {"clean" | "raw"} [options.format="clean"]
- * @param {boolean} [options.asFirestoreDate=false]
  * @return {*} 
  */
 export async function getMessage(gmail, id, {
     format = "clean",
-    asFirestoreDate = false,
 } = {}) {
     const { data: message } = await gmail.users.messages.get({
         userId: "me",
@@ -152,14 +149,12 @@ export async function getMessage(gmail, id, {
             message.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
         )
 
-        const date = new Date(getHeader(message, "Date"))
-
         return {
             senderName: name,
             senderEmailAddress: emailAddress,
             replyTo: getHeader(message, "Reply-To"),
             subject: getHeader(message, "Subject"),
-            date: asFirestoreDate ? admin.firestore.Timestamp.fromDate(date) : date,
+            date: new Date(getHeader(message, "Date")),
             plainText,
             simpleText: cleanTextBody(plainText),
             html: decodeEmailBody(

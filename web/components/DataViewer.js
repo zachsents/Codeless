@@ -66,7 +66,13 @@ function TextDisplay({ data, ...props }) {
 }
 
 function requiresExpansion(value) {
-    return typeof value == "object" && value !== null
+    if (value instanceof Timestamp)
+        return false
+
+    if (value == null)
+        return false
+
+    return typeof value == "object"
 }
 
 DataViewer.requiresExpansion = requiresExpansion
