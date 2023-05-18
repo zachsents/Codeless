@@ -53,11 +53,14 @@ function Label({ name, value }) {
 
 function TextDisplay({ data, ...props }) {
 
+    if (data == null)
+        return <Code {...props}>{`<None>`}</Code>
+
     if (Array.isArray(data) && data.length == 0)
         return <Code {...props}>{`<Empty List>`}</Code>
 
     if (Array.isArray(data) && data.length == 1)
-        return <TextDisplay data={data[0]} {...props} />
+        return <DataViewer data={data[0]} textProps={props} />
 
     if (typeof data === "string")
         return <Code {...props}>{data}</Code>
@@ -69,8 +72,13 @@ function TextDisplay({ data, ...props }) {
 }
 
 function requiresExpansion(value) {
-    if (Array.isArray(value) && value.length <= 1)
-        return false
+    if (Array.isArray(value)) {
+        switch (value.length) {
+            case 0: return false
+            case 1: return requiresExpansion(value[0])
+            default: return true
+        }
+    }
 
     if (value instanceof Timestamp)
         return false
