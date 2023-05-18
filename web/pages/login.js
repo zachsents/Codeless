@@ -3,6 +3,7 @@ import { useForm } from "@mantine/form"
 import { useLocalStorage } from "@mantine/hooks"
 import { sendEmailSignInLink, signInWithGoogle } from "@minus/client-sdk"
 import Brand from "@web/components/Brand"
+import { useMustNotBeSignedIn } from "@web/modules/hooks"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { FcGoogle } from "react-icons/fc"
@@ -19,6 +20,8 @@ export default function Login() {
 
     const theme = useMantineTheme()
     const router = useRouter()
+
+    useMustNotBeSignedIn()
 
     const [signInMethod, setSignInMethod] = useState()
 

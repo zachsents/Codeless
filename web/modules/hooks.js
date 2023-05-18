@@ -7,15 +7,25 @@ import { useQuery } from "react-query"
 import { useNodes, useReactFlow } from "reactflow"
 
 
-export function useMustBeSignedIn() {
+export function useMustBeSignedIn(route = "/login") {
     const router = useRouter()
     const { user, isLoggedIn } = useAuthState()
 
     useEffect(() => {
-        isLoggedIn === false && router.replace("/login")
+        isLoggedIn === false && router.replace(route)
     }, [isLoggedIn])
 
     return user
+}
+
+
+export function useMustNotBeSignedIn(route = "/apps") {
+    const router = useRouter()
+    const { isLoggedIn } = useAuthState()
+
+    useEffect(() => {
+        isLoggedIn && router.replace(route)
+    }, [isLoggedIn])
 }
 
 

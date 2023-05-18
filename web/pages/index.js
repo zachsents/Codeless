@@ -30,7 +30,7 @@ export default function LandingPage() {
 
             <main>
                 <Center p="xl">
-                    <Link href="#">
+                    <Link href="/login">
                         <GlassButton variant="light"
                             leftIcon={<Badge variant="filled">New</Badge>}
                             rightIcon={<TbArrowRight />}
