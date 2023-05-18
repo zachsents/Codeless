@@ -32,7 +32,7 @@ export default {
             renderConfiguration: CheckboxControl,
         },
     ],
-    outputs: EmailPayloadOutputs,
+    outputs: EmailPayloadOutputs(["subject", "date"]),
 
     requiredIntegrations: ["integration:Gmail"],
 }

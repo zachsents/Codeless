@@ -12,7 +12,7 @@ export default {
     tags: ["Gmail", "Trigger"],
 
     inputs: [],
-    outputs: EmailPayloadOutputs,
+    outputs: EmailPayloadOutputs(["senderEmailAddress", "subject", "simpleText"]),
 
     requiredIntegrations: ["integration:Gmail"],
 
