@@ -85,7 +85,7 @@ export default function ConfigPopover({ children }) {
                  * on the ReactFlow component.
                  */
                 onClick={event => event.stopPropagation()}
-                onMouseDownCapture={event => event.stopPropagation()}
+            // onMouseDownCapture={event => event.stopPropagation()}
 
             >
                 <Stack spacing="xs">
