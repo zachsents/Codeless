@@ -4,13 +4,10 @@ import styles from "./DataViewer.module.css"
 import { Timestamp } from "firebase/firestore"
 
 
-export default function DataViewer({ data, topLevel = false }) {
+export default function DataViewer({ data, topLevel = false, textProps = {} }) {
 
     if (!requiresExpansion(data))
-        return <TextDisplay data={data} className={styles.onlyCode} />
-
-    if (Array.isArray(data) && data.length == 1 && topLevel)
-        return <TextDisplay data={data[0]} />
+        return <TextDisplay data={data} {...textProps} />
 
     return (
         <Accordion
@@ -56,6 +53,12 @@ function Label({ name, value }) {
 
 function TextDisplay({ data, ...props }) {
 
+    if (Array.isArray(data) && data.length == 0)
+        return <Code {...props}>{`<Empty List>`}</Code>
+
+    if (Array.isArray(data) && data.length == 1)
+        return <TextDisplay data={data[0]} {...props} />
+
     if (typeof data === "string")
         return <Code {...props}>{data}</Code>
 
@@ -66,6 +69,9 @@ function TextDisplay({ data, ...props }) {
 }
 
 function requiresExpansion(value) {
+    if (Array.isArray(value) && value.length <= 1)
+        return false
+
     if (value instanceof Timestamp)
         return false
 

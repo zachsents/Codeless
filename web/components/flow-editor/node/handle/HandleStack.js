@@ -7,6 +7,7 @@ export default function HandleStack({ children }) {
             justify="space-evenly"
             align="center"
             spacing={4}
+            py="xs"
         >
             {children}
         </Stack>

@@ -123,13 +123,13 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
 
                                 <ActionIcon
                                     radius="xl"
-                                    // size="xs"
+                                    size="sm"
                                     variant="filled"
                                     color=""
                                     onClick={openNodePalette}
                                     sx={theme => ({ boxShadow: theme.shadows.xs })}
                                 >
-                                    <TbPlus />
+                                    <TbPlus size="0.75rem" />
                                 </ActionIcon>
                             </Group>
 

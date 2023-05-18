@@ -1,14 +1,14 @@
-import { SiOpenai } from "react-icons/si"
 import { MessageCircle, MessageCircle2, Temperature } from "tabler-icons-react"
 import SliderControl from "../components/SliderControl"
 import TextAreaControl from "../components/TextAreaControl"
+import { OpenAIIcon } from "./shared"
 
 
 export default {
     id: "openai:ChatGPT",
     name: "ChatGPT",
     description: "Asks ChatGPT a prompt.",
-    icon: SiOpenai,
+    icon: OpenAIIcon,
     color: "dark",
 
     tags: ["Open AI", "AI"],

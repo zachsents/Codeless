@@ -1,18 +1,18 @@
 import { Text } from "@mantine/core"
-import { SiOpenai } from "react-icons/si"
 
 import { FileText, LineDashed, SquareX, Stars } from "tabler-icons-react"
 import B from "../components/B"
 import NumberControl from "../components/NumberControl"
 import TextAreaControl from "../components/TextAreaControl"
 import { useInputValue } from "../hooks/nodes"
+import { OpenAIIcon } from "./shared"
 
 
 export default {
     id: "openai:Rate",
     name: "Rate Text",
     description: "Rates an aspect of a text input on the specified number scale.",
-    icon: SiOpenai,
+    icon: OpenAIIcon,
     color: "dark",
 
     tags: ["Open AI", "AI"],

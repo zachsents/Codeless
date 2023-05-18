@@ -80,7 +80,11 @@ export const tailwindTheme = {
         "101": "1.01",
         "102": "1.02",
         "103": "1.03",
-    }
+    },
+    fontSize: {
+        ...DEFAULT_THEME.fontSizes,
+        base: DEFAULT_THEME.fontSizes.md,
+    },
 }
 
 // Adds primary colors as CSS variables

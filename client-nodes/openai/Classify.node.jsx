@@ -1,15 +1,15 @@
-import { SiOpenai } from "react-icons/si"
 import { FileText, Triangle, TriangleSquareCircle } from "tabler-icons-react"
 import B from "../components/B"
 import TextAreaControl from "../components/TextAreaControl"
 import { useListHandle } from "../hooks/nodes"
+import { OpenAIIcon } from "./shared"
 
 
 export default {
     id: "openai:Classify",
     name: "Classify Text",
     description: "Classifies text as one of the specified categories.",
-    icon: SiOpenai,
+    icon: OpenAIIcon,
     color: "dark",
 
     tags: ["Open AI", "AI"],

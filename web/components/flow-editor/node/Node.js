@@ -12,12 +12,11 @@ import {
 } from "@web/modules/graph-util"
 
 import { NodeDefinitions } from "@minus/client-nodes"
-import { NodeProvider, useColors, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { NodeProvider, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppId, useFlowId } from "@web/modules/hooks"
 import { useReactFlow } from "reactflow"
 import ConfigPopover from "./ConfigPopover"
 import ErrorIcon from "./ErrorIcon"
-import styles from "./Node.module.css"
 import NodeInternal from "./NodeInternal"
 import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
@@ -31,7 +30,6 @@ export default function Node({ id, type: typeDefId, selected }) {
     const rf = useReactFlow()
 
     const typeDefinition = NodeDefinitions[typeDefId]
-    const [mainColor, bgColor] = useColors(id, ["primary", 0])
 
     // #region - Integrations (satisfaction, loading, etc.)
     const { integrations: appIntegrations } = useAppContext()
@@ -118,7 +116,7 @@ export default function Node({ id, type: typeDefId, selected }) {
                     }}
                     ref={hoverRef}
                 >
-                    <Group spacing={0} align="stretch">
+                    <Group spacing={0} align="stretch" p="xs">
 
                         {/* Input Handles */}
                         <HandleStack>
@@ -139,11 +137,10 @@ export default function Node({ id, type: typeDefId, selected }) {
                         <ConfigPopover>
                             {typeDefinition.renderCard ?
                                 <Card
-                                    px="lg" py="sm"
-                                    bg={bgColor}
-                                    shadow={selected ? "md" : "xs"}
-                                    className={`ofv ${styles.card}`}
-                                    sx={{ "--main-color": mainColor }}
+                                    px="md" py="xs"
+                                    shadow={selected ? "sm" : "xs"}
+                                    className="ofv border-1 border-solid border-dark-400"
+                                // sx={{ borderRadius: "1.25rem" }}
                                 >
                                     <NodeInternal displayProps={displayProps} />
                                 </Card>

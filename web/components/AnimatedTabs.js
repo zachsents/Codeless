@@ -1,8 +1,8 @@
-import { Box, Center, Group, Stack, Text } from "@mantine/core"
+import { Box, Group, Stack, Text } from "@mantine/core"
+import { useForceUpdate, useResizeObserver } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { forwardRef, useEffect, useRef, useState } from "react"
 import styles from "./AnimatedTabs.module.css"
-import { useForceUpdate, useResizeObserver } from "@mantine/hooks"
 
 
 export default function AnimatedTabs({
@@ -34,17 +34,16 @@ export default function AnimatedTabs({
             <Box pos="relative" ref={el => widthRef.current = el?.offsetWidth}>
                 <Group grow={grow} spacing={0}>
                     {tabs.map(tab => (
-                        <Center
+                        <Text
                             onClick={() => onChange(tab)}
-                            px="lg" py="xs" className={styles.tabContainer} key={tab}
                             ref={el => tabRefs.current[tab] = el}
+                            align="center" size={size} weight={600} ff="Rubik" py={size}
+                            tt="uppercase" color={active == tab ? "dark" : "gray"}
+                            className="nosel hover:bg-gray-100 cursor-pointer rounded-sm"
+                            key={tab}
                         >
-                            <Text align="center" size={size} weight={600} ff="Rubik"
-                                transform="uppercase" color={active == tab ? "dark" : "gray"}
-                                className="nosel">
-                                {tab}
-                            </Text>
-                        </Center>
+                            {tab}
+                        </Text>
                     ))}
                 </Group>
 

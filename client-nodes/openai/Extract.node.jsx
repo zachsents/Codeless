@@ -1,14 +1,13 @@
-import { SiOpenai } from "react-icons/si"
-import { ArrowNarrowRight, FileText } from "tabler-icons-react"
+import { ArrowNarrowRight, FileText, Target } from "tabler-icons-react"
 import TextAreaControl from "../components/TextAreaControl"
-import { Target } from "tabler-icons-react"
+import { OpenAIIcon } from "./shared"
 
 
 export default {
     id: "openai:Extract",
     name: "Extract Text",
     description: "Use AI to extract targets from text.",
-    icon: SiOpenai,
+    icon: OpenAIIcon,
     color: "dark",
 
     tags: ["Open AI", "AI"],

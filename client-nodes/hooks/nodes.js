@@ -21,7 +21,7 @@ export function useNodeContext() {
 }
 
 export function useNodeId() {
-    return useNodeContext().id
+    return useNodeContext()?.id
 }
 
 

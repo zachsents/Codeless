@@ -1,6 +1,5 @@
 import { ClipboardData, LayoutList, RowInsertBottom, Table } from "tabler-icons-react"
-import B from "../components/B"
-import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
+import { InputMode, useInputMode, useInputValue, useTypeDefinition } from "../hooks/nodes"
 
 
 export default {
@@ -37,9 +36,8 @@ export default {
         },
     ],
 
-    renderTextContent: () => {
-        const [field] = useInputValue(null, "field")
-        const [mode] = useInputMode(null, "field")
-        return field && mode == InputMode.Config && <B>{field}</B>
-    },
+    renderName: () => useTypeDefinition().name +
+        (useInputMode(null, "field")[0] == InputMode.Config ?
+            ` "${useInputValue(null, "field")[0]}"` :
+            ""),
 }

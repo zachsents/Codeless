@@ -1,8 +1,8 @@
 import { Box, ScrollArea, Stack } from "@mantine/core"
 import { useReplayContext } from "@web/modules/context"
-import CurrentNodeCard from "./CurrentNodeCard"
 import CurrentRunCard from "./CurrentRunCard"
 import styles from "./ReplayPanel.module.css"
+import CurrentNodeCard from "./CurrentNodeCard"
 
 
 export default function ReplayPanel() {
@@ -15,7 +15,7 @@ export default function ReplayPanel() {
                 root: styles.scrollArea,
                 scrollbar: styles.scrollbar,
             }}>
-                <Stack py="lg" pr="lg" align="flex-end" justify="flex-start">
+                <Stack py="xs" pr="xs" align="flex-end" justify="flex-start">
                     <CurrentRunCard />
                     <CurrentNodeCard />
                 </Stack>

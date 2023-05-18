@@ -1,31 +1,34 @@
-import { Group, Stack, Text } from "@mantine/core"
+import { Badge, Divider, Group, Stack, Text } from "@mantine/core"
 import { useColors, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 
 export default function NodeInternal({ displayProps }) {
 
     const typeDefinition = useTypeDefinition()
-    const [mainColor, dimmedColor] = useColors(null, ["primary", 3])
+    const [mainColor] = useColors(null, ["primary"])
 
     return (
-        <Stack>
+        <Stack spacing="xs" h="100%">
             {typeDefinition.renderName &&
-                <Group position="apart">
+                <Group position="apart" spacing="xl" className="flex-auto">
                     <Group>
                         {/* Icon */}
-                        <typeDefinition.icon color={mainColor} size={24} />
+                        <typeDefinition.icon color={mainColor} size={24} strokeWidth={1.5} />
 
                         {/* Name */}
-                        <Text size="sm" weight={600} color={typeDefinition.color} transform="uppercase" ff="Rubik">
+                        <Text size="sm" weight={500}>
                             <typeDefinition.renderName {...displayProps} />
                         </Text>
                     </Group>
 
                     {/* Tags */}
                     {typeDefinition.tags[0] && typeDefinition.showMainTag &&
-                        <Text size="sm" weight={500} color={dimmedColor} transform="uppercase" ff="Rubik">
+                        <Badge size="sm" color={typeDefinition.color} >
                             {typeDefinition.tags[0]}
-                        </Text>}
+                        </Badge>}
                 </Group>}
+
+            {(typeDefinition.renderTextContent || typeDefinition.renderContent) &&
+                <Divider />}
 
             {/* Text Content */}
             {typeDefinition.renderTextContent &&

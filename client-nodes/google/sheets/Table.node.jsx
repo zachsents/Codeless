@@ -1,4 +1,4 @@
-import { Checkbox, Stack, Text } from "@mantine/core"
+import { Box, Checkbox, Divider, Group, Stack, Text } from "@mantine/core"
 import { SiGooglesheets } from "react-icons/si"
 import { BoxAlignTop, BoxAlignTopLeft, ClipboardData, FileSpreadsheet, Link, Table } from "tabler-icons-react"
 import B from "../../components/B"
@@ -13,9 +13,9 @@ import { SheetNameControl, SheetNameTooltip, SpreadsheetURLControl, SpreadsheetU
  */
 export default {
     id: "googlesheets:Table",
-    name: "Read Table",
+    name: "Load Table",
     description: "Uses a Google Sheet as a table.",
-    icon: SiGooglesheets,
+    icon: ({ strokeWidth, ...props }) => <SiGooglesheets {...props} />, // block strokeWidth prop for this icon
     color: "green",
 
     tags: ["Google Sheets", "Tables", "Database"],
@@ -33,7 +33,7 @@ export default {
         },
         {
             id: "$sheetName",
-            name: "Sheet Name",
+            name: "Worksheet",
             description: "The name of the sheet you want to get data from.",
             tooltip: SheetNameTooltip,
             icon: FileSpreadsheet,
@@ -117,15 +117,32 @@ export default {
 
     useNodePresent: useGoogleSheetNode,
 
-    renderTextContent: () => {
+    renderContent: () => {
         const [state] = useInternalState()
         const [sheetName] = useInputValue(null, "$sheetName")
         const [range] = useInputValue(null, "$range")
 
-        if (!state.spreadsheetName) return "No Spreadsheet Provided"
-        if (!sheetName) return "No Sheet Selected"
-        if (!state.useEntireSheet && !range) return "No Range Provided"
+        if (!state.spreadsheetName) return <Text>No Spreadsheet Provided</Text>
+        if (!sheetName) return <Text>No Worksheet Provided</Text>
+        if (!state.useEntireSheet && !range) return <Text>No Range Provided</Text>
 
-        return <>Use <B>{state.useEntireSheet ? "entire sheet" : range}</B> from <B>{sheetName}</B> in <B>{state.spreadsheetName}</B></>
+        return <Stack maw="15rem" spacing="xs">
+            <Group position="apart" noWrap>
+                <Text color="dimmed" size="xs">Spreadsheet</Text>
+                <Text weight={500} align="right">{state.spreadsheetName}</Text>
+            </Group>
+            <Divider />
+            <Group position="apart" noWrap>
+                <Text color="dimmed" size="xs">Worksheet</Text>
+                <Text weight={500} align="right">{sheetName}</Text>
+            </Group>
+            {!state.useEntireSheet && <>
+                <Divider />
+                <Group position="apart" noWrap>
+                    <Text color="dimmed" size="xs">Range</Text>
+                    <Text weight={500} align="right">{range}</Text>
+                </Group>
+            </>}
+        </Stack>
     },
 }

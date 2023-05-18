@@ -11,7 +11,7 @@ import { deselectAll } from "@web/modules/graph-util"
 import { useState } from "react"
 import { useReactFlow } from "reactflow"
 import RunReplayPopover from "../run-replay/RunReplayPopover"
-import Breadcrumbs from "./Breadcrumbs"
+import FlowTitle from "./FlowTitle"
 
 
 export default function Header() {
@@ -49,14 +49,14 @@ export default function Header() {
     return (
         <MantineHeader
             onClick={() => deselectAll(rf)}
-            fixed={false} px="xs" py="0.25rem" zIndex={200}
+            fixed={false} px="xs" py="0.5rem" zIndex={200}
             className="ofv"
         >
             <Group position="apart">
                 <Group>
                     <Link href={`/app/${appId}?tab=flows`}>
                         <Tooltip label="Back to All Workflows">
-                            <Button color="gray" variant="light">
+                            <Button color="gray" variant="light" size="xs">
                                 <Group spacing="xs">
                                     <TbArrowLeft size={16} /><TbLayoutList size={20} />
                                 </Group>
@@ -64,7 +64,7 @@ export default function Header() {
                         </Tooltip>
                     </Link>
 
-                    <Breadcrumbs />
+                    <FlowTitle />
                 </Group>
 
                 <Group spacing="lg">
