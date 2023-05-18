@@ -21,6 +21,12 @@ export async function getDocsWithIds(ref) {
 }
 
 
+/**
+ * Hook that provides a real-time updated state object
+ *
+ * @export
+ * @param {import("firebase/firestore").DocumentReference | import("firebase/firestore").CollectionReference | import("firebase/firestore").Query} ref
+ */
 export function useRealtime(ref, {
     selector,
     dependencies = [],
@@ -37,6 +43,10 @@ export function useRealtime(ref, {
                     //  3. map single doc with standard selector
                     selector?.(snap) ?? snap.docs?.map(docDataWithId) ?? docDataWithId(snap)
                 )
+            }, err => {
+                console.error(err)
+                console.error("Permission denied accessing realtime data for:", ref?.path)
+                setState(false)
             })
     }, [!!ref, ...dependencies])
 
