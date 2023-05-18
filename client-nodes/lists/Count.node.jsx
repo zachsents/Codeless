@@ -24,6 +24,7 @@ export default {
     outputs: [
         {
             id: "count",
+            type: "number",
             description: "The number of items in the list.",
             tooltip: "The number of items in the list.",
             icon: Numbers,

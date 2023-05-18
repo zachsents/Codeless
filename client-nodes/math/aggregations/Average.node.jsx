@@ -19,6 +19,7 @@ export default {
     outputs: [
         {
             id: "result",
+            type: "number",
             description: "Average of the numbers.",
             tooltip: "Average of the numbers.",
             icon: Equal,

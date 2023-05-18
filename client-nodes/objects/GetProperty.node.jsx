@@ -12,6 +12,7 @@ export default {
     inputs: [
         {
             id: "object",
+            type: "data object",
             description: "The data object.",
             tooltip: "The data object.",
             icon: Package,

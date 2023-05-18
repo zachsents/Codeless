@@ -118,7 +118,17 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
                             >
                                 {label &&
                                     <Card p={0} withBorder radius="xl" shadow="xs">
-                                        <Text className={styles.tooltip}>{label}</Text>
+                                        <Group spacing="0.5rem" noWrap className="px-[0.4rem] py-[0.1rem]" >
+                                            <Text className={styles.tooltip}>{label}</Text>
+                                            {definition.type &&
+                                                <Text
+                                                    tt="capitalize"
+                                                    color="dimmed"
+                                                    className={styles.tooltip}
+                                                >
+                                                    ({definition.type})
+                                                </Text>}
+                                        </Group>
                                     </Card>}
 
                                 <ActionIcon

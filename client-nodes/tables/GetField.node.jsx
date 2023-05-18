@@ -20,6 +20,7 @@ export default {
         },
         {
             id: "field",
+            type: "text",
             description: "The field to get the data from.",
             tooltip: "The field to get the data from.",
             icon: RowInsertBottom,

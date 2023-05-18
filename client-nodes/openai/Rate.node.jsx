@@ -20,6 +20,7 @@ export default {
     inputs: [
         {
             id: "text",
+            type: "text",
             description: "The text to classify.",
             tooltip: "The text to classify.",
             icon: FileText,
@@ -28,6 +29,7 @@ export default {
         },
         {
             id: "property",
+            type: "text",
             description: "The property of the text you want to rate. e.g. 'urgency', 'satisfaction'",
             tooltip: <>
                 The property of the text you want to rate.<br />
@@ -39,6 +41,7 @@ export default {
         },
         {
             id: "scale",
+            type: "number",
             description: "The scale you want to rate the text on. A value of 10 here provides a rating between 0 and 10.",
             tooltip: "The scale you want to rate the text on. A value of 10 here provides a rating between 0 and 10.",
             icon: LineDashed,
@@ -52,6 +55,7 @@ export default {
         {
             id: "result",
             name: "Rating",
+            type: "number",
             description: "The rating of the text.",
             tooltip: "The rating of the text.",
             icon: Stars,

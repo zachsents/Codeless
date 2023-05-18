@@ -11,6 +11,7 @@ export default {
     inputs: [
         {
             id: "input",
+            type: "number",
             description: "The inputs to divide. Lists are computed element-wise.",
             tooltip: "The inputs to divide. Lists are computed element-wise.",
             icon: ArrowNarrowRight,
@@ -21,6 +22,7 @@ export default {
     outputs: [
         {
             id: "result",
+            type: "number",
             description: "The result of the division.",
             tooltip: "The result of the division.",
             icon: Equal,

@@ -23,6 +23,7 @@ export default {
         },
         {
             id: "$count",
+            type: "number",
             description: "The number of times to repeat the value.",
             tooltip: "The number of times to repeat the value.",
             icon: Numbers,

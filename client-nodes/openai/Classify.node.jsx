@@ -17,6 +17,7 @@ export default {
     inputs: [
         {
             id: "text",
+            type: "text",
             description: "The text to classify.",
             tooltip: "The text to classify.",
             icon: FileText,
@@ -25,10 +26,12 @@ export default {
         },
         {
             id: "categories",
+            type: "text",
             description: "The categories, one of which the text will be classified as.",
             tooltip: "The categories, one of which the text will be classified as.",
             icon: TriangleSquareCircle,
             listMode: "unnamed",
+            defaultList: 1,
             allowedModes: ["handle", "config"],
             defaultMode: "config",
         },
@@ -36,6 +39,7 @@ export default {
     outputs: [
         {
             id: "category",
+            type: "text",
             description: "The category the text was classified as.",
             tooltip: "The category the text was classified as.",
             icon: Triangle,

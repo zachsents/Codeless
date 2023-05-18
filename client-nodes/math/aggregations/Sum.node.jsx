@@ -19,6 +19,7 @@ export default {
     outputs: [
         {
             id: "result",
+            type: "number",
             description: "Sum of the numbers.",
             tooltip: "Sum of the numbers.",
             icon: Equal,

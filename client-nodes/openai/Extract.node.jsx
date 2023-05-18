@@ -15,6 +15,7 @@ export default {
     inputs: [
         {
             id: "text",
+            type: "text",
             description: "The text to extract from.",
             tooltip: "The text to extract from.",
             icon: FileText,
@@ -23,6 +24,7 @@ export default {
         },
         {
             id: "target",
+            type: "text",
             description: "The target to extract.",
             tooltip: "The target to extract.",
             icon: Target,
@@ -33,6 +35,7 @@ export default {
     outputs: [
         {
             id: "result",
+            type: "text",
             name: "Extracted",
             description: "The data extracted from the text.",
             tooltip: "The data extracted from the text.",

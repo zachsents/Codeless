@@ -16,6 +16,7 @@ export default {
     inputs: [
         {
             id: "prompt",
+            type: "text",
             description: "The prompt to ask ChatGPT.",
             tooltip: "The prompt to ask ChatGPT.",
             icon: MessageCircle2,
@@ -24,6 +25,7 @@ export default {
         },
         {
             id: "temperature",
+            type: "number",
             description: "How random the response should be.",
             tooltip: "How random the response should be.",
             icon: Temperature,
@@ -41,6 +43,7 @@ export default {
     outputs: [
         {
             id: "response",
+            type: "text",
             description: "The response from ChatGPT.",
             tooltip: "The response from ChatGPT.",
             icon: MessageCircle,

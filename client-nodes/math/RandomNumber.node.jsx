@@ -16,6 +16,7 @@ export default {
         {
             id: "min",
             name: "Minimum",
+            type: "number",
             description: "Minimum value.",
             tooltip: "Minimum value.",
             icon: LayoutAlignLeft,
@@ -27,6 +28,7 @@ export default {
         {
             id: "max",
             name: "Maximum",
+            type: "number",
             description: "Maximum value.",
             tooltip: "Maximum value.",
             icon: LayoutAlignRight,
@@ -37,6 +39,7 @@ export default {
         },
         {
             id: "integer",
+            type: "boolean",
             name: "Whole Numbers Only",
             description: "Whether to only generate whole numbers.",
             tooltip: "Whether to only generate whole numbers.",
@@ -50,7 +53,8 @@ export default {
     outputs: [
         {
             id: "$",
-            name: "Random Number",
+            name: "Random",
+            type: "number",
             description: "The generated random number.",
             tooltip: "The generated random number.",
             icon: Numbers,

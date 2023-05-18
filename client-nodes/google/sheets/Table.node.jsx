@@ -24,6 +24,7 @@ export default {
         {
             id: "$spreadsheetUrl",
             name: "Spreadsheet URL",
+            type: "url",
             description: "The URL of the spreadsheet you want to get data from.",
             tooltip: SpreadsheetURLTooltip,
             icon: Link,
@@ -34,6 +35,7 @@ export default {
         {
             id: "$sheetName",
             name: "Worksheet",
+            type: "text",
             description: "The name of the sheet you want to get data from.",
             tooltip: SheetNameTooltip,
             icon: FileSpreadsheet,
@@ -43,6 +45,7 @@ export default {
         },
         {
             id: "$range",
+            type: "text",
             description: "The range of the table you want to read. To use the entire sheet, select the 'Use Entire Sheet' option.",
             tooltip: "The range of the table you want to read. To use the entire sheet, select the 'Use Entire Sheet' option.",
             icon: BoxAlignTopLeft,
@@ -67,6 +70,7 @@ export default {
         },
         {
             id: "$headerRow",
+            type: "number",
             description: "The row of the table which contains the headers (column names) for the table. Headers are required.",
             tooltip: <>
                 The row of the table which contains the headers (column names) for the table. <br /> <b>Headers are required.</b>
@@ -82,6 +86,7 @@ export default {
         },
         {
             id: "$dataStartRow",
+            type: "number",
             description: "The row of the table which contains the first row of data. If the data starts directly after the header row, set this to the header row + 1.",
             tooltip: <>
                 The row of the table which contains the first row of data.<br />
@@ -103,6 +108,7 @@ export default {
     outputs: [
         {
             id: "table",
+            type: "table",
             description: "The table. Use the yellow 'Tables' nodes to create, read, update, and delete rows.",
             tooltip: "The table. Use the yellow 'Tables' nodes to create, read, update, and delete rows.",
             icon: Table,

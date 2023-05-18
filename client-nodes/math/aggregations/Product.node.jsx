@@ -19,6 +19,7 @@ export default {
     outputs: [
         {
             id: "result",
+            type: "number",
             description: "Product of the numbers.",
             tooltip: "Product of the numbers.",
             icon: Equal,
