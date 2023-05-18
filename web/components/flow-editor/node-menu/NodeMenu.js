@@ -24,6 +24,7 @@ export default function NodeMenu() {
     useHotkeys([
         ["mod+P", () => openNodePalette(rf)],
         ["mod+K", () => openNodePalette(rf)],
+        ["/", () => openNodePalette(rf)],
     ])
 
     // user preferences

@@ -15,8 +15,10 @@ const SearchInput = forwardRef(({ noun, quantity, onClear, ...props }, ref) => {
     // hotkey for search
     useHotkeys([
         ["mod+k", () => searchRef.current?.focus()],
+        ["/", () => searchRef.current?.focus()],
     ])
 
+    // clearing text input
     const handleClear = () => {
         searchRef.current?.focus()
         onClear?.()
@@ -31,10 +33,10 @@ const SearchInput = forwardRef(({ noun, quantity, onClear, ...props }, ref) => {
                     <TbX size="0.9em" />
                 </ActionIcon>
             }
-            sx={{
-                "&:hover .clearButton": {
-                    opacity: 1,
-                }
+            styles={{
+                root: {
+                    "&:hover .clearButton": { opacity: 1 }
+                },
             }}
             {...props}
             ref={searchRef}
