@@ -2,6 +2,7 @@ module.exports = {
     extends: ["eslint:recommended", "prettier"],
     parserOptions: {
         sourceType: "module",
+        ecmaVersion: "2022",
     },
     rules: {
         // "no-extra-boolean-cast": 0,
