@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Card, Center, Container, Grid, Group, SimpleGrid, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
+import { Avatar, Badge, Box, Button, Card, Center, Container, Grid, Group, SimpleGrid, Space, Stack, Text, Title, useMantineTheme } from "@mantine/core"
 import GlassButton from "@web/components/GlassButton"
 import Header from "@web/components/landing/Header"
 import Section from "@web/components/Section"
@@ -78,9 +78,12 @@ export default function LandingPage() {
                             <SampleFlowSvg />
                         </Card>
                         <Card w={240} withBorder shadow="sm" ml={-30} pos="relative" top={30}>
-                            <Stack align="flex-start">
-                                <Badge>Demo</Badge>
-                                <Text>
+                            <Stack>
+                                <Group position="left">
+                                    <Avatar size="md" src="/zack_allen.png" radius="xl" />
+                                    <Badge>Demo</Badge>
+                                </Group>
+                                <Text mt={`-${theme.spacing.sm}`}>
                                     We can update our inventory in <b>Google Sheets</b> when we receive new shipping updates from <b>Gmail</b>.
                                 </Text>
                                 <Text color="dimmed" size="sm">
