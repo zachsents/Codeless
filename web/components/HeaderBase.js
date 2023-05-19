@@ -60,7 +60,7 @@ export default function HeaderBase({ leftSection, rightSection, showCTA = true, 
                                         component={Link} href="/apps" icon={<TbApps />}
                                         color="violet" py="0.5rem"
                                     >
-                                        <Text span weight={500}>Dashboard</Text>
+                                        <Text span weight={500}>Your Apps</Text>
                                     </Menu.Item>
                                     <Menu.Item
                                         onClick={signOut} icon={isSigningOut ? <Loader size="xs" /> : <TbLogout />}
