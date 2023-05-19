@@ -27,7 +27,7 @@ export default function NodeInternal({ displayProps }) {
                         </Badge>}
                 </Group>}
 
-            {(typeDefinition.renderTextContent || typeDefinition.renderContent) &&
+            {!!(typeDefinition.renderName && (typeDefinition.renderTextContent || typeDefinition.renderContent)) &&
                 <Divider />}
 
             {/* Text Content */}
