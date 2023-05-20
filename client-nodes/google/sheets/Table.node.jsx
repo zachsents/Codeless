@@ -1,11 +1,9 @@
-import { Box, Checkbox, Divider, Group, Stack, Text } from "@mantine/core"
-import { SiGooglesheets } from "react-icons/si"
+import { Checkbox, Divider, Group, Stack, Text } from "@mantine/core"
 import { BoxAlignTop, BoxAlignTopLeft, ClipboardData, FileSpreadsheet, Link, Table } from "tabler-icons-react"
-import B from "../../components/B"
 import NumberControl from "../../components/NumberControl"
 import TextControl from "../../components/TextControl"
 import { useInputValue, useInternalState } from "../../hooks/nodes"
-import { SheetNameControl, SheetNameTooltip, SpreadsheetURLControl, SpreadsheetURLTooltip, useGoogleSheetNode } from "./shared"
+import { SheetNameControl, SheetNameTooltip, SheetsIcon, SpreadsheetURLControl, SpreadsheetURLTooltip, useGoogleSheetNode } from "./shared"
 
 
 /** 
@@ -15,7 +13,7 @@ export default {
     id: "googlesheets:Table",
     name: "Load Table",
     description: "Uses a Google Sheet as a table.",
-    icon: ({ strokeWidth, ...props }) => <SiGooglesheets {...props} />, // block strokeWidth prop for this icon
+    icon: SheetsIcon,
     color: "green",
 
     tags: ["Google Sheets", "Tables", "Database"],

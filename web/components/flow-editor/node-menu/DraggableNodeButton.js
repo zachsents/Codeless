@@ -1,82 +1,165 @@
-import { ActionIcon, Box, Center, Group, Text, Tooltip, useMantineTheme } from "@mantine/core"
+import { Card, Center, Group, Menu, OptionalPortal, Stack, Text, useMantineTheme } from "@mantine/core"
+import { useClickOutside, useWindowEvent } from "@mantine/hooks"
 import { NodeDefinitions } from "@minus/client-nodes"
 import { addNodeAtCenter, addNodeAtWindowPoint } from "@web/modules/graph-util"
-import { useMonostable } from "@web/modules/hooks"
-import { motion } from "framer-motion"
-import { useState } from "react"
+import { jc } from "@web/modules/util"
+import { motion, useMotionValue, useTransform } from "framer-motion"
+import { useRef, useState } from "react"
 import { TbPin, TbPinnedOff } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
-import styles from "./DraggableNodeButton.module.css"
 
 
-export default function DraggableNodeButton({ id, pinned = false, onPin, onUnpin }) {
+export default function DraggableNodeButton({
+    id, showDescription = false,
+    pinned = false, onPin, onUnpin,
+    scaleOnHover = false, bgOnHover = false,
+}) {
 
     const theme = useMantineTheme()
     const rf = useReactFlow()
 
-    const node = NodeDefinitions[id]
+    const nodeDef = NodeDefinitions[id]
 
-    const mainColor = theme.colors[node.color][theme.fn.primaryShade()]
-    const dimmedColor = theme.colors[node.color][0]
+    // Ref for getting size of node
+    const ref = useRef()
 
-    // used to hide the pin icon when dragging
-    const [dragging, setDragging] = useState(false)
+    // Dragging state -- null if not dragging
+    const [dragStart, setDragStart] = useState(null)
+    const dragging = dragStart != null
 
-    // used to put element back in original position when drag is finished
-    const [resetting, resetPosition] = useMonostable()
+    // Track x, y, width & height for rendering within portal
+    const x = useMotionValue(0)
+    const y = useMotionValue(0)
+    const width = useMotionValue(0)
+    const height = useMotionValue(0)
+    // Widths that get floored tend to cause text to wrap -- we'll add 1px to avoid that
+    const biggerWidth = useTransform(width, w => w + 1)
+    const biggerHeight = useTransform(height, h => h + 1)
 
-    return node && (
+    // Window events for dragging and ending dragging
+    useWindowEvent("pointermove", event => {
+        if (dragging) {
+            x.set(event.clientX - dragStart.offsetX)
+            y.set(event.clientY - dragStart.offsetY)
+        }
+    })
+
+    useWindowEvent("pointerup", event => {
+        if (dragging) {
+            setDragStart(null)
+            x.set(0)
+            y.set(0)
+
+            // If distance was insignificant, add node at center
+            const dist = Math.sqrt(
+                Math.pow(event.clientX - dragStart.x, 2) +
+                Math.pow(event.clientY - dragStart.y, 2)
+            )
+
+            if (dist > 3)
+                addNodeAtWindowPoint(rf, id, event.clientX, event.clientY)
+            else
+                addNodeAtCenter(rf, id)
+        }
+    })
+
+    // Menu state
+    const [menuOpened, setMenuOpened] = useState(false)
+    const clickOutsideRef = useClickOutside(() => setMenuOpened(false), ["pointerdown"])
+
+    return nodeDef && (
+        // Wrapper maintains size in original position
         <motion.div
-            drag
-            dragSnapToOrigin
-            whileDrag={{ zIndex: 100 }}
-            onDragStart={() => setDragging(true)}
-            onDragEnd={(event, info) => {
-                setDragging(false)
-                resetPosition()
-                addNodeAtWindowPoint(rf, id, info.point.x, info.point.y)
+            style={{
+                width: dragging ? width : "auto",
+                height: dragging ? height : "auto",
             }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.1 }}
-
-            style={resetting && { x: 0, y: 0 }}
+            ref={clickOutsideRef}
         >
-            {/* This needs to be a child of the motion.div above for the tap event to be cancelled by the drag event */}
-            <Box pos="relative">
-                <motion.div
-                    onTap={() => addNodeAtCenter(rf, id)}
-                    className={styles.button}
-                    style={{ "--main-color": mainColor, "--dimmed-color": dimmedColor }}
-                >
-                    <Group position="apart">
-                        <Group spacing="0.5em" >
-                            <node.icon size="1.2em" color={mainColor} />
-                            <Text size="sm" weight={600} color={mainColor} transform="uppercase" ff="Rubik">
-                                {node.name}
-                            </Text>
-                        </Group>
-                        {/* {node.tags[0] && node.showMainTag &&
-                            <Text size="sm" weight={500} color={dimmedColor} transform="uppercase" ff="Rubik">
-                                {node.tags[0]}
-                            </Text>} */}
-                    </Group>
-                </motion.div>
+            {/* Render within portal to avoid issues inside scroll containers */}
+            <OptionalPortal withinPortal={dragging}>
+                <Menu opened={menuOpened} onChange={setMenuOpened} shadow="sm">
+                    <Menu.Target>
+                        <Card
+                            withBorder pl="xxs" py="xxxs" pr="xs"
+                            className={jc(
+                                "pointer-events-auto nosel cursor-pointer",
+                                dragging && "absolute top-0 left-0 z-100"
+                            )}
 
-                {!dragging &&
-                    <Center p={8} pos="absolute" right={0} top="50%" sx={{ transform: "translate(100%, -50%)" }}>
+                            component={motion.div}
+                            onPointerDown={event => {
+                                if (event.button !== 0) return // Only left click
+
+                                const elPosition = ref.current?.getBoundingClientRect()
+                                setDragStart({
+                                    x: event.clientX,
+                                    y: event.clientY,
+                                    offsetX: event.clientX - elPosition.x,
+                                    offsetY: event.clientY - elPosition.y,
+                                })
+                                x.set(elPosition.x)
+                                y.set(elPosition.y)
+                                width.set(ref.current?.offsetWidth)
+                                height.set(ref.current?.offsetHeight)
+                            }}
+
+                            whileHover={{
+                                ...(scaleOnHover && { scale: 1.05 }),
+                                ...(bgOnHover && { backgroundColor: theme.colors.gray[0] })
+                            }}
+                            transition={{
+                                scale: { duration: 0.1 },
+                                backgroundColor: { duration: 0 },
+                            }}
+                            style={{
+                                x, y,
+                                width: dragging ? biggerWidth : "auto",
+                                height: dragging ? biggerHeight : "auto",
+                            }}
+                            ref={ref}
+
+                            onContextMenu={event => {
+                                event.preventDefault()
+                                setMenuOpened(true)
+                            }}
+                        >
+
+                            <Stack spacing="xxxs">
+                                <Group spacing="sm" noWrap>
+                                    <Center>
+                                        <nodeDef.icon strokeWidth={1.5} color={theme.colors[nodeDef.color][theme.fn.primaryShade()]} />
+                                    </Center>
+                                    <Text size="xs" weight={500}>{nodeDef.name}</Text>
+                                </Group>
+
+                                {showDescription &&
+                                    <Text size="xxs" color="dimmed">
+                                        {nodeDef.description}
+                                    </Text>}
+                            </Stack>
+                        </Card>
+                    </Menu.Target>
+
+                    <Menu.Dropdown className="pointer-events-auto">
                         {pinned ?
-                            <Tooltip label="Unpin" position="right">
-                                <ActionIcon radius="sm" size="sm" onClick={() => onUnpin?.(id)}>
-                                    <TbPinnedOff color={theme.colors.gray[theme.primaryShade.light]} />
-                                </ActionIcon>
-                            </Tooltip> :
-                            <Tooltip label="Pin" position="right">
-                                <ActionIcon radius="sm" size="sm" onClick={() => onPin?.(id)}>
-                                    <TbPin color={theme.colors.gray[theme.primaryShade.light]} />
-                                </ActionIcon>
-                            </Tooltip>}
-                    </Center>}
-            </Box>
+                            <Menu.Item
+                                icon={<TbPinnedOff />}
+                                fz="xs" px="xs" py="xxxs"
+                                onClick={() => onUnpin?.(id)}
+                            >
+                                Unpin
+                            </Menu.Item> :
+                            <Menu.Item
+                                icon={<TbPin />}
+                                fz="xs" px="xs" py="xxxs"
+                                onClick={() => onPin?.(id)}
+                            >
+                                Pin
+                            </Menu.Item>}
+                    </Menu.Dropdown>
+                </Menu>
+            </OptionalPortal>
         </motion.div>
     )
 }

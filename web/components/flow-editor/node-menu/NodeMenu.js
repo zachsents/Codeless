@@ -1,150 +1,93 @@
-import { ActionIcon, Box, Button, Checkbox, Kbd, Menu, Stack, Text, Tooltip } from "@mantine/core"
+import { Box, Group, ScrollArea, Stack, useMantineTheme } from "@mantine/core"
 import { useReactFlow } from "reactflow"
 
 import { openNodePalette } from "@web/modules/graph-util"
 
-import { useHotkeys } from "@mantine/hooks"
+import { useFocusWithin, useHotkeys } from "@mantine/hooks"
+import { CreatableNodeDefinitions } from "@minus/client-nodes"
 import { arrayRemove, arrayUnion, useUserPreferences } from "@minus/client-sdk"
-import { TbDots, TbSearch } from "react-icons/tb"
+import SearchInput from "@web/components/SearchInput"
+import { useSearch } from "@web/modules/search"
 import DraggableNodeButton from "./DraggableNodeButton"
-
-
-const suggested = [
-    "basic:Text",
-    "googlesheets:Table",
-    "airtable:UseTable",
-    "openai:Extract",
-]
 
 
 export default function NodeMenu() {
 
     const rf = useReactFlow()
+    const theme = useMantineTheme()
 
+    // hotkeys for opening node palette
     useHotkeys([
         ["mod+P", () => openNodePalette(rf)],
         ["mod+K", () => openNodePalette(rf)],
-        ["/", () => openNodePalette(rf)],
     ])
 
     // user preferences
     const [preferences, setPreference] = useUserPreferences()
 
-    const showSuggested = preferences?.showSuggested ?? true
-    const showPinned = preferences?.showPinned ?? true
+    // searching nodes
+    const [filteredNodeDefDefs, query, setQuery] = useSearch(NodeDefDefList, {
+        selector: node => node.name + " " + node.description,
+    })
+
+    // changing search input placeholder if it's focused
+    const { focused: searchFocused, ref: searchInputRef } = useFocusWithin()
 
     return (
-        <Stack spacing="md" p="xl" pos="absolute" top={0} left={0} miw={220}>
-            <Box pos="relative">
-                <Text align="center" weight={600} size="lg">Add Nodes</Text>
-                <Box pos="absolute" right={0} top="50%" sx={{ transform: "translateY(-50%)", zIndex: 199 }}>
-                    <Menu>
-                        <Menu.Target>
-                            <ActionIcon>
-                                <TbDots />
-                            </ActionIcon>
-                        </Menu.Target>
-                        <Menu.Dropdown>
-                            <Menu.Item
-                                closeMenuOnClick={false}
-                                icon={<Checkbox checked={showSuggested} radius="sm" readOnly />}
-                                p="xs"
-                                onClick={() => setPreference("showSuggested", !showSuggested)}
-                            >
-                                <Text>Get Started</Text>
-                            </Menu.Item>
-                            <Menu.Item
-                                closeMenuOnClick={false}
-                                icon={<Checkbox checked={showPinned} radius="sm" readOnly />}
-                                p="xs"
-                                onClick={() => setPreference("showPinned", !showPinned)}
-                            >
-                                <Text>Pinned</Text>
-                            </Menu.Item>
-                        </Menu.Dropdown>
-                    </Menu>
-                </Box>
-            </Box>
+        <Box className="absolute top-0 left-0 pointer-events-none">
+            <Group p="xs" spacing={0} noWrap align="flex-start">
+                <Stack
+                    w="14rem"
+                    className="pointer-events-auto"
+                >
 
-            <Tooltip
-                color="transparent"
-                position="right" label={<Text color="dark">
-                    <Kbd>Ctrl</Kbd> + <Kbd>P</Kbd>
-                </Text>}
-            >
-                <Button onClick={() => openNodePalette(rf)} leftIcon={<TbSearch />} variant="light">
-                    Search Nodes
-                </Button>
-            </Tooltip>
+                    <SearchInput
+                        noun="node"
+                        quantity={NodeDefDefList.length}
+                        hotkeys={["/"]}
+                        value={query}
+                        onChange={event => setQuery(event.currentTarget.value)}
+                        onClear={() => setQuery("")}
 
-            {showSuggested &&
-                <Stack spacing="sm">
-                    <Text size="xs" lh={0.5} color="dimmed">Get Started</Text>
+                        // if search is focused, show "Start typing..." placeholder
+                        {...(searchFocused && { placeholder: "Start typing..." })}
+                        ref={searchInputRef}
+                        // this makes the input line up with the node cards
+                        mr="xxs"
+                    />
 
-                    {suggested.filter(sugg => !preferences?.pinned?.includes(sugg))
-                        .map(sugg =>
-                            <DraggableNodeButton
-                                id={sugg}
-                                onPin={() => setPreference("pinned", arrayUnion(sugg))}
-                                key={sugg}
-                            />
-                        )}
-                </Stack>}
+                    {query.length > 0 &&
+                        <ScrollArea.Autosize mah="80vh" offsetScrollbars scrollbarSize={theme.spacing.xxs}>
+                            <Stack spacing="xxs">
+                                {filteredNodeDefDefs.slice(0, 20).map(nodeDefDef =>
+                                    <DraggableNodeButton
+                                        id={nodeDefDef.id}
+                                        showDescription bgOnHover
+                                        pinned={preferences?.pinned?.includes(nodeDefDef.id)}
+                                        onPin={() => setPreference("pinned", arrayUnion(nodeDefDef.id))}
+                                        onUnpin={() => setPreference("pinned", arrayRemove(nodeDefDef.id))}
+                                        key={nodeDefDef.id}
+                                    />
+                                )}
+                            </Stack>
+                        </ScrollArea.Autosize>}
+                </Stack>
 
-            {showPinned &&
-                <Stack spacing="sm">
-                    <Text size="xs" lh={0.5} color="dimmed">Pinned</Text>
-
-                    {preferences?.pinned?.map(sugg =>
+                <Group spacing="xxs" className="flex-1">
+                    {preferences?.pinned?.map(pinnedId =>
                         <DraggableNodeButton
-                            id={sugg}
-                            onUnpin={() => setPreference("pinned", arrayRemove(sugg))}
+                            id={pinnedId}
                             pinned
-                            key={sugg}
+                            onUnpin={() => setPreference("pinned", arrayRemove(pinnedId))}
+                            bgOnHover
+                            scaleOnHover
+                            key={pinnedId}
                         />
                     )}
-                </Stack>}
-        </Stack>
+                </Group>
+            </Group>
+        </Box>
     )
-
-    // return (
-    //     <Navbar
-    //         width={{ base: expanded ? 240 : 70 }}
-    //         p="md"
-    //         sx={navbarStyle}
-    //     >
-    //         <Group position="right">
-    //             <CollapseButton expanded={expanded} open={expandHandlers.open} close={expandHandlers.close} />
-    //         </Group>
-
-    //         <Space h="xl" />
-
-    //         <Stack>
-    //             <AddNodeButton expanded={expanded} />
-
-    //             <SimpleGrid cols={expanded ? 3 : 1}>
-    //                 <ActionButton
-    //                     expanded={expanded}
-    //                     label="Fit View to Nodes"
-    //                     icon={TbMaximize}
-    //                     onClick={() => rf.fitView({ duration: 200 })}
-    //                 />
-    //                 <ActionButton
-    //                     expanded={expanded}
-    //                     label="Find Node (WIP)"
-    //                     icon={TbSearch}
-    //                 />
-    //                 <ActionButton
-    //                     expanded={expanded}
-    //                     label="Add Caption (WIP)"
-    //                     icon={TbTypography}
-    //                 />
-    //             </SimpleGrid>
-
-    //             <Space h="xl" />
-
-    //             {expanded && <ColorSelector />}
-    //         </Stack>
-    //     </Navbar >
-    // )
 }
+
+const NodeDefDefList = Object.values(CreatableNodeDefinitions)

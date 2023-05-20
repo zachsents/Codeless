@@ -12,7 +12,11 @@ export const mantineTheme = {
         fontFamily: "DM Sans",
     },
     fontSizes: {
-        // xs: 12,
+        xxs: "0.625rem",
+    },
+    spacing: {
+        xxs: "0.5rem",
+        xxxs: "0.375rem",
     },
     defaultRadius: "md",
     colors: {
@@ -83,6 +87,7 @@ export const tailwindTheme = {
     },
     fontSize: {
         ...DEFAULT_THEME.fontSizes,
+        ...mantineTheme.fontSizes,
         base: DEFAULT_THEME.fontSizes.md,
     },
 }

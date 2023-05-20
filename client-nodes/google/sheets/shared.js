@@ -1,13 +1,16 @@
 import { Button, Center, Group, Image, Loader, Select, Text, TextInput } from "@mantine/core"
 import { useSpreadsheetDetails } from "@minus/client-sdk/integrations/sheets"
 import { useEffect } from "react"
+import { SiGooglesheets } from "react-icons/si"
 import { TbExternalLink } from "react-icons/tb"
-import { useSyncWithNodeState } from "../../hooks"
-import { useInputValue, useInternalState, useInputMode, InputMode } from "../../hooks/nodes"
 import TextControl from "../../components/TextControl"
+import { useSyncWithNodeState } from "../../hooks"
+import { InputMode, useInputMode, useInputValue, useInternalState } from "../../hooks/nodes"
 
 
 export const SheetsURLRegex = /d\/([0-9A-Za-z_-]{40,})\/edit/
+
+export const SheetsIcon = ({ strokeWidth, ...props }) => <SiGooglesheets {...props} /> // block strokeWidth prop for this icon
 
 
 export const SpreadsheetURLTooltip = <>

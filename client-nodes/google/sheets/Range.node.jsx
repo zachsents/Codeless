@@ -1,10 +1,9 @@
 import { useEffect } from "react"
-import { SiGooglesheets } from "react-icons/si"
 import { BoxAlignTopLeft, FileSpreadsheet, Link, Numbers } from "tabler-icons-react"
 import B from "../../components/B"
 import TextControl from "../../components/TextControl"
 import { useInputValue, useInternalState } from "../../hooks/nodes"
-import { SheetNameControl, SheetNameTooltip, SpreadsheetURLControl, SpreadsheetURLTooltip, useGoogleSheetNode } from "./shared"
+import { SheetNameControl, SheetNameTooltip, SheetsIcon, SpreadsheetURLControl, SpreadsheetURLTooltip, useGoogleSheetNode } from "./shared"
 
 
 /** 
@@ -14,7 +13,7 @@ export default {
     id: "googlesheets:Range",
     name: "Get Range",
     description: "Gets a range of values from a Google Sheet.",
-    icon: SiGooglesheets,
+    icon: SheetsIcon,
     color: "green",
 
     tags: ["Google Sheets"],
