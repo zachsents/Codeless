@@ -1,6 +1,6 @@
 import { ActionIcon, Kbd, TextInput } from "@mantine/core"
-import { useFocusWithin, useHotkeys, useHover } from "@mantine/hooks"
-import { forwardRef, useImperativeHandle, useRef } from "react"
+import { useFocusWithin, useHotkeys, useHover, useMergedRef } from "@mantine/hooks"
+import { forwardRef } from "react"
 import { TbSearch, TbX } from "react-icons/tb"
 
 
@@ -11,32 +11,26 @@ const SearchInput = forwardRef(({
     ...props
 }, ref) => {
 
-    const searchRef = useRef()
-
     // focusing & hovering states
     const { focused, ref: focusRef } = useFocusWithin()
     const { hovered, ref: hoverRef } = useHover()
-
-    // fix refs
-    // source: https://stackoverflow.com/questions/68162617/whats-the-correct-way-to-use-useref-and-forwardref-together
-    useImperativeHandle(ref, () => searchRef.current)
-    useImperativeHandle(focusRef, () => searchRef.current)
+    const hoverAndFocusRef = useMergedRef(focusRef, hoverRef)
 
     // hotkey for search
     useHotkeys(hotkeys.map(hk => [hk, () => {
-        searchRef.current?.focus()
-        searchRef.current?.select()
+        ref.current?.focus()
+        ref.current?.select()
     }]))
 
     // clearing text input
     const handleClear = () => {
-        searchRef.current?.focus()
+        ref.current?.focus()
         onClear?.()
     }
 
     return (
         // hover ref goes on wrapper so right section doesn't interfere with hover detection
-        <div ref={hoverRef}>
+        <div ref={hoverAndFocusRef}>
             <TextInput
                 size="xs" icon={<TbSearch />}
                 placeholder={(noun != null & quantity != null) ?
@@ -53,7 +47,10 @@ const SearchInput = forwardRef(({
                             <Kbd size="xs">/</Kbd>
                 }
                 {...props}
-                ref={searchRef}
+                ref={ref}
+
+                // blur when escape is pressed
+                onKeyDown={event => event.key === "Escape" && ref.current?.blur()}
             />
         </div>
     )
