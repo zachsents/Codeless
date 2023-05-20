@@ -33,7 +33,7 @@ export function useQueryParam(queryKey, defaultValue, setDefaultOnMount = false)
 
     const router = useRouter()
 
-    const value = router.query[queryKey] || defaultValue
+    const value = router.query[queryKey]
 
     const setValue = newValue => {
         // getting a this error on fresh page load with dynamic routes and useQueryParam hook:
@@ -48,10 +48,10 @@ export function useQueryParam(queryKey, defaultValue, setDefaultOnMount = false)
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-        setDefaultOnMount && setValue(defaultValue)
+        setDefaultOnMount && value == null && setValue(defaultValue)
     }, [router.isReady])
 
-    return [value, setValue]
+    return [value ?? defaultValue, setValue]
 }
 
 
