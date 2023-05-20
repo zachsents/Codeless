@@ -8,6 +8,22 @@
     background-position: calc(var(--scale) / 2) calc(var(--scale) / 2);
 }
 
+.grid-bg-anim {
+    animation: sliding-grid-anim 2s linear infinite;
+}
+
+@keyframes sliding-grid-anim {
+    0% {
+        background-position-x: 0px;
+        background-position-y: 0px;
+    }
+
+    100% {
+        background-position-x: calc(var(--scale));
+        background-position-y: calc(var(--scale));
+    }
+}
+
 .dots-bg {
     --color: var(--mantine-color-gray-1);
     --size: 10%;

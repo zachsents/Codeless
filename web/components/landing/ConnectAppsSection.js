@@ -65,7 +65,7 @@ export default function ConnectAppsSection() {
             </Box>
 
             {/* Responsive */}
-            <SimpleGrid className="lg:hidden" cols={2} breakpoints={[
+            <SimpleGrid className="lg:hidden" cols={2} verticalSpacing="xl" breakpoints={[
                 { maxWidth: "xs", cols: 1 },
             ]}>
                 {apps.map((app, i) =>

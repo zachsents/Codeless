@@ -1,4 +1,3 @@
-import { Box } from "@mantine/core"
 import { motion } from "framer-motion"
 
 
@@ -11,9 +10,9 @@ export default function TabPanel({ children, value, activeTab }) {
             animate={active ? "visible" : "hidden"} {...tabAnimations} key={value}
             className={active ? "" : "pointer-events-none"}
         >
-            <Box p="lg">
+            <div className="p-sm sm:p-lg">
                 {children}
-            </Box>
+            </div>
         </motion.div>
     )
 }

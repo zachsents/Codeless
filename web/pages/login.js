@@ -34,8 +34,8 @@ export default function Login() {
     }
 
     return (
-        <Center w="100vw" h="100vh" pb={100} pos="relative">
-            <Card w={350} withBorder shadow="sm" p="xl">
+        <Center w="100vw" h="100vh" pb={100} pos="relative" px="sm" className="grid-bg grid-bg-anim">
+            <Card w={350} withBorder shadow="sm" className="px-sm py-xl sm:px-xl">
                 <Stack spacing="xs">
                     {!signInMethod && <>
                         <Title align="center" size="1.5rem">
@@ -67,7 +67,7 @@ export default function Login() {
                             leftIcon={<TbMail />}
                             onClick={() => setSignInMethod(SignInMethod.Email)}
                         >
-                            Sign in with email instead
+                            Sign in with email
                         </Button>
                     </>}
 

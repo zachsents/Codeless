@@ -1,4 +1,5 @@
 import { Box, Container, Stack } from "@mantine/core"
+import { jc } from "@web/modules/util"
 
 
 export default function Section({
@@ -6,15 +7,14 @@ export default function Section({
     withBorder = false,
     stack = false, spacing, stackProps = {},
     size = "md", containerProps = {},
-    className = "",
+    className,
     ...props
 }) {
 
-    const borderClasses = `border-1 border-solid border-gray-400 ${className}`
-    const allClasses = `${withBorder ? borderClasses : ""} ${className}`
-
     return (
-        <Box component="section" w="100%" {...props} className={allClasses}>
+        <Box component="section" w="100%" {...props} className={jc(
+            withBorder && "base-border", className
+        )}>
             <Container size={size} {...containerProps}>
                 {stack ?
                     <Stack spacing={spacing} {...stackProps}>{children}</Stack> :

@@ -5,6 +5,7 @@ import Footer from "@web/components/landing/Footer"
 import { useQueryParam } from "@web/modules/hooks"
 import { jc } from "@web/modules/util"
 import { TbCheck, TbSquare, TbStack, TbStack2, TbStack3 } from "react-icons/tb"
+import { notifications } from "@mantine/notifications"
 
 
 export default function PricingPage() {
@@ -40,7 +41,7 @@ export default function PricingPage() {
                 <Section p="xl" mt="2.5rem">
                     <SimpleGrid cols={4} breakpoints={[
                         { maxWidth: "lg", cols: 3 },
-                        { maxWidth: "md", cols: 2 },
+                        { maxWidth: "md", cols: 2, verticalSpacing: "3rem" },
                         { maxWidth: "sm", cols: 1, verticalSpacing: "3rem" },
                     ]}>
                         <PlanCard annual={paymentFreq == "annual"} plan="free" />
@@ -117,7 +118,7 @@ function PlanCard({ plan: planKey, emph = false, annual = false }) {
     const { title, subtitle, monthlyPrice, annualPrice, features } = plans[planKey]
     const isFree = monthlyPrice == 0
 
-    const [, setSelectedPlan] = useQueryParam("upgrade_app")
+    // const [, setSelectedPlan] = useQueryParam("upgrade_app")
 
     return (
         <Stack className={jc("relative", emph && "scale-105")}>
@@ -144,7 +145,12 @@ function PlanCard({ plan: planKey, emph = false, annual = false }) {
                     <Box>
                         <Button
                             fullWidth radius="xl" size="xs" variant={emph ? "filled" : "light"}
-                            onClick={() => setSelectedPlan(planKey)}
+                            // onClick={() => setSelectedPlan(planKey)}
+                            onClick={() => notifications.show({
+                                title: "Everything is free!",
+                                message: "All features are free during the beta period. Go get your hands dirty!",
+                                autoClose: 2500,
+                            })}
                         >
                             {isFree ? "Start Now" : "Upgrade an App"}
                         </Button>

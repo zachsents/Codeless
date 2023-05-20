@@ -22,12 +22,15 @@ export default function FeatureTabPanel({ value, activeTab, title, subtitle, tex
                 </Text>
                 <Group
                     position="apart" align="flex-end"
+                    className=""
                     pos="absolute" p="lg" bottom={0} left={0} right={0}
                 >
-                    {typeof Icon === "function" &&
-                        <Icon />}
-                    {typeof Icon === "string" &&
-                        <Image src={Icon} width={45} height={45} alt={`${value} icon`} style={{ filter: "saturate(0.7)" }} />}
+                    <div className="hidden sm:block">
+                        {typeof Icon === "function" &&
+                            <Icon />}
+                        {typeof Icon === "string" &&
+                            <Image src={Icon} width={45} height={45} alt={`${value} icon`} style={{ filter: "saturate(0.7)" }} />}
+                    </div>
 
                     <Link href={docsHref}>
                         <Button size="xs" leftIcon="📚" variant="subtle">Read the docs</Button>

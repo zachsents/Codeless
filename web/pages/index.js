@@ -29,13 +29,14 @@ export default function LandingPage() {
             <Header />
 
             <main>
-                <Center p="xl">
+                <Center px="sm" py="xl">
                     <Link href="/login">
                         <GlassButton variant="light"
                             leftIcon={<Badge variant="filled">New</Badge>}
                             rightIcon={<TbArrowRight />}
+                            className="h-auto py-xs"
                         >
-                            <Text span color={theme.other.halfDimmed}>
+                            <Text span color={theme.other.halfDimmed} className="whitespace-normal">
                                 We're accepting beta testers!{" "}
                                 <Text span weight={400} color={theme.other.halfDimmed}>
                                     Beta testers get free access to all paid features.
@@ -47,9 +48,11 @@ export default function LandingPage() {
 
                 <Section size="xs" stack>
                     <Title order={1} align="center">
-                        Automate your business,<br />
-                        <SpecialHeadline>minus</SpecialHeadline>
-                        {" "}the code
+                        <span className="text-[0.9em] sm:text-[1em]">
+                            Automate your business,<br />
+                            <SpecialHeadline>minus</SpecialHeadline>
+                            {" "}the code
+                        </span>
                     </Title>
 
                     <Text align="center" size="lg" color={theme.other.halfDimmed}>
@@ -73,11 +76,12 @@ export default function LandingPage() {
                 <Space h="2.5rem" />
 
                 <Section px="xl">
-                    <Group align="flex-start">
-                        <Card withBorder shadow="xs" p="xl" className="grid-bg flex-1">
+                    <Group align="start">
+                        <Card withBorder shadow="xs" p="xl" className="grid-bg w-full md:flex-1">
                             <SampleFlowSvg />
                         </Card>
-                        <Card w={240} withBorder shadow="sm" ml={-30} pos="relative" top={30}>
+
+                        <Card withBorder shadow="sm" className="relative md:w-56 md:top-[30px] md:ml-[-30px]">
                             <Stack>
                                 <Group position="left">
                                     <Avatar size="md" src="/zack_allen.png" radius="xl" />
@@ -103,7 +107,7 @@ export default function LandingPage() {
 
                 <Space h="5rem" />
 
-                <Section id="features" withBorder bg="gray.1" px="xl" py="2rem">
+                <Section id="features" withBorder bg="gray.1" className="px-sm sm:px-xl" py="2rem">
 
                     <Grid align="center">
                         <Grid.Col sm={12} md={6}>
@@ -133,9 +137,9 @@ export default function LandingPage() {
                         <Grid.Col sm={12} md={6}>
                             <Card withBorder p={0} w="100%">
                                 <Group spacing={0} align="stretch">
-                                    <Box bg={theme.primaryColor} w="1.5rem"></Box>
+                                    <Box bg={theme.primaryColor} className="w-4 sm:w-6"></Box>
 
-                                    <Box pos="relative" h={240} className="flex-1">
+                                    <Box pos="relative" className="flex-1 h-80 sm:h-60">
 
                                         <FeatureTabPanel
                                             title="Tables & Spreadsheets"
@@ -227,13 +231,15 @@ export default function LandingPage() {
                     <Grid>
                         <Grid.Col sm={12} md={12}>
                             <Container size="xs">
-                                <Title order={2} align="center">
-                                    📝 Visual editor <Text span color={theme.primaryColor}>anyone</Text> can use
-                                </Title>
+                                <Stack>
+                                    <Title order={2} align="center">
+                                        📝 Visual editor <Text span color={theme.primaryColor}>anyone</Text> can use
+                                    </Title>
 
-                                <Text mb="md" align="center">
-                                    Building workflows is as easy as drag & drop. If you can draw a flowchart, you can build an automated workflow.
-                                </Text>
+                                    <Text mb="md" align="center">
+                                        Building workflows is as easy as drag & drop. If you can draw a flowchart, you can build an automated workflow.
+                                    </Text>
+                                </Stack>
                             </Container>
                         </Grid.Col>
 
@@ -260,8 +266,8 @@ export default function LandingPage() {
 
                 <Space h="4rem" />
 
-                <Section px="xl">
-                    <Card withBorder shadow="xs" px="4rem" py="2rem" className="relative dots-bg">
+                <Section className="px-0 sm:px-xl">
+                    <Card withBorder shadow="xs" className="relative dots-bg px-lg py-lg sm:px-16 sm:py-8 -mx-4 sm:mx-0">
                         <Stack>
                             <Title order={3} align="center">
                                 Connect your favorite apps
@@ -279,9 +285,13 @@ export default function LandingPage() {
                             <ConnectAppsSection />
                         </Stack>
 
-                        <Button variant="subtle" radius="xl" rightIcon={<TbArrowRight />} className="absolute top-5 right-5">
-                            See All Integrations
-                        </Button>
+                        <Center className="mt-lg lg:mt-0 ">
+                            <Link href="#">
+                                <Button variant="subtle" radius="xl" rightIcon={<TbArrowRight />} className="lg:absolute lg:top-5 lg:right-5">
+                                    See All Integrations
+                                </Button>
+                            </Link>
+                        </Center>
                     </Card>
                 </Section>
 
@@ -307,7 +317,7 @@ export default function LandingPage() {
                                     </motion.div>
                                 </Group>
                                 <Text color="gray.5">
-                                    Never fear, write your own code! Minus has a <b>JavaScript node</b> that lets you write sandboxed code to do anything you want.
+                                    Never fear, write your own code! Minus has a Custom Code node that lets you write sandboxed <b>JavaScript code</b> to do anything you want.
                                 </Text>
                                 <Text size="xs" color="gray.5">
                                     <b>Pro tip:</b> Code can be piped into a node just like any other data. This means you can load code from a remote source, or even run code that AI generates on the fly!
@@ -359,28 +369,34 @@ function EditorFeatureCard({ children, title, icon: Icon, src }) {
 
     const theme = useMantineTheme()
 
+    const iconComponent = Icon && <Icon size="2rem" strokeWidth={1.5} color={theme.fn.primaryColor()} />
+
     return (
         <Box>
-            <Card w="60%" mr="auto" withBorder shadow="xs">
+            <Card mr="auto" className="sm:shadow-xs sm:base-border sm:w-3/5">
                 <Stack spacing="xs">
-                    <Text weight={600}>
-                        {title}
-                    </Text>
-                    <Text size="sm" color={theme.other.halfDimmed}>
+                    <Group>
+                        <Center className="sm:hidden">
+                            {iconComponent}
+                        </Center>
+                        <Text weight={600}>
+                            {title}
+                        </Text>
+                    </Group>
+
+                    <Text size="sm" color={theme.other.halfDimmed} className="ml-12 sm:m-0">
                         {children}
                     </Text>
-                    {Icon && <Icon size="2rem" strokeWidth={1.5} color={theme.fn.primaryColor()} />}
+
+                    <div className="hidden sm:block">
+                        {iconComponent}
+                    </div>
                 </Stack>
             </Card>
 
             <Box
-                w="80%" ml="auto" mt="-2.5rem"
-                className="relative z-10 aspect-[4/3] overflow-hidden border-1 border-solid"
-                sx={{
-                    boxShadow: theme.shadows.sm,
-                    borderRadius: theme.radius.md,
-                    borderColor: theme.colors.gray[2],
-                }}
+                ml="auto"
+                className="relative z-10 aspect-[4/3] overflow-hidden base-border rounded-md shadow-sm sm:w-4/5 sm:mt-[-2.5rem]"
             >
                 <video
                     autoPlay loop muted playsInline preload="none"

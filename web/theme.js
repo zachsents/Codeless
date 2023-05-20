@@ -90,6 +90,10 @@ export const tailwindTheme = {
         ...mantineTheme.fontSizes,
         base: DEFAULT_THEME.fontSizes.md,
     },
+    spacing: {
+        ...DEFAULT_THEME.spacing,
+        ...mantineTheme.spacing,
+    },
 }
 
 // Adds primary colors as CSS variables
