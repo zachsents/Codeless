@@ -14,14 +14,15 @@ export default function CreateAppModal({ context, id, /*  innerProps */ }) {
 
     const _createApp = useCreateApp()
     const [createApp, { isFetching: isLoading }] = useActionQuery(() => _createApp(appName), undefined, {
-        onSuccess: newApp => {
+        onSuccess: async newApp => {
             context.closeModal(id)
-            router.push(`/app/${newApp.id}`)
+            await router.push(`/app/${newApp.id}`)
 
-            setTimeout(() => notifications.show({
+            notifications.show({
                 title: "Welcome to your new app!",
                 message: "Now it's time to build a workflow!",
-            }), 1000)
+                autoClose: 3500,
+            })
         },
     })
 
