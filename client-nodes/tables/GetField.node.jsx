@@ -37,8 +37,12 @@ export default {
         },
     ],
 
-    renderName: () => useTypeDefinition().name +
-        (useInputMode(null, "field")[0] == InputMode.Config ?
-            ` "${useInputValue(null, "field")[0]}"` :
-            ""),
+    renderName: () => {
+
+        const name = useTypeDefinition().name
+        const [field] = useInputValue(null, "field")
+        const [mode] = useInputMode(null, "field")
+
+        return `${name}${mode == InputMode.Config && field ? ` "${field}"` : ""}`
+    }
 }

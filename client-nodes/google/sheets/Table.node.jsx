@@ -1,5 +1,6 @@
-import { Checkbox, Divider, Group, Stack, Text } from "@mantine/core"
+import { Checkbox, Stack, Text } from "@mantine/core"
 import { BoxAlignTop, BoxAlignTopLeft, ClipboardData, FileSpreadsheet, Link, Table } from "tabler-icons-react"
+import NodeBodyTable from "../../components/NodeBodyTable"
 import NumberControl from "../../components/NumberControl"
 import TextControl from "../../components/TextControl"
 import { useInputValue, useInternalState } from "../../hooks/nodes"
@@ -130,23 +131,12 @@ export default {
         if (!sheetName) return <Text>No Worksheet Provided</Text>
         if (!state.useEntireSheet && !range) return <Text>No Range Provided</Text>
 
-        return <Stack maw="15rem" spacing="xs">
-            <Group position="apart" noWrap>
-                <Text color="dimmed" size="xs">Spreadsheet</Text>
-                <Text weight={500} align="right">{state.spreadsheetName}</Text>
-            </Group>
-            <Divider />
-            <Group position="apart" noWrap>
-                <Text color="dimmed" size="xs">Worksheet</Text>
-                <Text weight={500} align="right">{sheetName}</Text>
-            </Group>
-            {!state.useEntireSheet && <>
-                <Divider />
-                <Group position="apart" noWrap>
-                    <Text color="dimmed" size="xs">Range</Text>
-                    <Text weight={500} align="right">{range}</Text>
-                </Group>
-            </>}
-        </Stack>
+        const tableItems = [
+            ["Spreadsheet", state.spreadsheetName],
+            ["Worksheet", sheetName],
+        ]
+        !state.useEntireSheet && tableItems.push(["Range", range])
+
+        return <NodeBodyTable items={tableItems} />
     },
 }

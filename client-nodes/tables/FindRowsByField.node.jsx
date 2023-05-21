@@ -1,6 +1,7 @@
+import { Text } from "@mantine/core"
 import { BoxMultiple, ListSearch, RowInsertBottom, Search, Table } from "tabler-icons-react"
-import B from "../components/B"
 import CheckboxControl from "../components/CheckboxControl"
+import NodeBodyTable from "../components/NodeBodyTable"
 import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
 
 
@@ -55,9 +56,17 @@ export default {
         },
     ],
 
-    renderTextContent: () => {
+    renderContent: () => {
         const [field] = useInputValue(null, "field")
         const [mode] = useInputMode(null, "field")
-        return field && mode == InputMode.Config && <>Searching <B>{field}</B></>
+
+        if (mode != InputMode.Config)
+            return <></>
+
+        if (!field) return <Text>No field provided</Text>
+
+        return <NodeBodyTable items={[
+            ["Field", field],
+        ]} />
     },
 }

@@ -67,8 +67,8 @@ function Item({ handleId, item, i }) {
             dragListener={false}
             dragControls={controls}
         >
-            <Stack spacing={5}>
-                <Grid align="center" gutter={5} py={2}>
+            <Stack spacing="xxxs">
+                <Grid align="center" gutter="xxxs" py={2}>
 
                     <Grid.Col span="content">
                         <Center w={30}>
@@ -93,6 +93,7 @@ function Item({ handleId, item, i }) {
                                 value={item.name ?? ""}
                                 onChange={event => setName(event.currentTarget.value)}
                                 placeholder={definition.listNamePlaceholder}
+                                size="xs"
                             />
                         </Grid.Col> :
                         <Grid.Col span="auto">
