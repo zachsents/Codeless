@@ -3,7 +3,7 @@ import { ArrowNarrowRight, Equal, Plus } from 'tabler-icons-react'
 export default {
     id: "math:Add",
     name: "Add",
-    description: "Adds things. (Come up with a better description later)",
+    description: "Adds numbers.",
     icon: Plus,
 
     tags: ["Math", "Operations"],

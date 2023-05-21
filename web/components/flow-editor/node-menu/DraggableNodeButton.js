@@ -13,6 +13,7 @@ export default function DraggableNodeButton({
     id, showDescription = false,
     pinned = false, onPin, onUnpin,
     scaleOnHover = false, bgOnHover = false,
+    includeMenu = true,
 }) {
 
     const theme = useMantineTheme()
@@ -78,7 +79,7 @@ export default function DraggableNodeButton({
         >
             {/* Render within portal to avoid issues inside scroll containers */}
             <OptionalPortal withinPortal={dragging}>
-                <Menu opened={menuOpened} onChange={setMenuOpened} shadow="sm">
+                <Menu opened={includeMenu && menuOpened} onChange={setMenuOpened} shadow="sm">
                     <Menu.Target>
                         <Card
                             withBorder pl="xxs" py="xxxs" pr="xs"

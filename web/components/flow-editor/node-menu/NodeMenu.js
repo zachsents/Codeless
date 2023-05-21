@@ -1,13 +1,14 @@
-import { Box, Group, ScrollArea, Stack, useMantineTheme } from "@mantine/core"
+import { Box, Group, ScrollArea, Stack, Text, useMantineTheme } from "@mantine/core"
 import { useReactFlow } from "reactflow"
 
 import { openNodePalette } from "@web/modules/graph-util"
 
 import { useFocusWithin, useHotkeys } from "@mantine/hooks"
 import { CreatableNodeDefinitions } from "@minus/client-nodes"
-import { arrayRemove, arrayUnion, useUserPreferences } from "@minus/client-sdk"
+import { arrayRemove, arrayUnion, getNodeSuggestions, useUserPreferences } from "@minus/client-sdk"
 import SearchInput from "@web/components/SearchInput"
 import { useSearch } from "@web/modules/search"
+import { useQuery } from "react-query"
 import DraggableNodeButton from "./DraggableNodeButton"
 
 
@@ -26,7 +27,7 @@ export default function NodeMenu() {
     const [preferences, setPreference] = useUserPreferences()
 
     // searching nodes
-    const [filteredNodeDefDefs, query, setQuery] = useSearch(NodeDefDefList, {
+    const [filteredNodeDefDefs, query, setQuery] = useSearch(NodeDefList, {
         selector: node => node.name + " " + node.description,
     })
 
@@ -43,7 +44,7 @@ export default function NodeMenu() {
 
                     <SearchInput
                         noun="node"
-                        quantity={NodeDefDefList.length}
+                        quantity={NodeDefList.length}
                         hotkeys={["/"]}
                         value={query}
                         onChange={event => setQuery(event.currentTarget.value)}
@@ -56,19 +57,28 @@ export default function NodeMenu() {
                         mr="xxs"
                     />
 
-                    {query.length > 0 &&
+                    {(query.length > 0 || searchFocused) &&
                         <ScrollArea.Autosize mah="80vh" offsetScrollbars scrollbarSize={theme.spacing.xxs}>
                             <Stack spacing="xxs">
-                                {filteredNodeDefDefs.slice(0, 20).map(nodeDefDef =>
-                                    <DraggableNodeButton
-                                        id={nodeDefDef.id}
-                                        showDescription bgOnHover
-                                        pinned={preferences?.pinned?.includes(nodeDefDef.id)}
-                                        onPin={() => setPreference("pinned", arrayUnion(nodeDefDef.id))}
-                                        onUnpin={() => setPreference("pinned", arrayRemove(nodeDefDef.id))}
-                                        key={nodeDefDef.id}
-                                    />
-                                )}
+                                {query.length > 0 ?
+                                    filteredNodeDefDefs.slice(0, 20).map(nodeDefDef =>
+                                        <DraggableNodeButton
+                                            id={nodeDefDef.id}
+                                            showDescription bgOnHover
+                                            pinned={preferences?.pinned?.includes(nodeDefDef.id)}
+                                            onPin={() => setPreference("pinned", arrayUnion(nodeDefDef.id))}
+                                            onUnpin={() => setPreference("pinned", arrayRemove(nodeDefDef.id))}
+                                            key={nodeDefDef.id}
+                                        />
+                                    ) :
+                                    <>
+                                        {/* <Group>
+                                        <Badge>
+                                            TO DO: add category search
+                                        </Badge>
+                                    </Group> */}
+                                        <Suggestions />
+                                    </>}
                             </Stack>
                         </ScrollArea.Autosize>}
                 </Stack>
@@ -90,4 +100,51 @@ export default function NodeMenu() {
     )
 }
 
-const NodeDefDefList = Object.values(CreatableNodeDefinitions)
+const NodeDefList = Object.values(CreatableNodeDefinitions)
+
+
+function Suggestions() {
+
+    const rf = useReactFlow()
+
+    const { data: suggestions } = useQuery({
+        queryKey: "node-suggestions",
+        queryFn: async () => {
+            const nodes = rf.getNodes()
+            const nodeTypes = [...new Set(nodes.map(node => node.type))]
+            let suggestions = await Promise.all(
+                nodeTypes.map(type =>
+                    getNodeSuggestions(type)
+                        .then(sugg => Object.values(sugg).flat())
+                )
+            ).then(arr => arr.flat())
+
+            // sort by score
+            suggestions.sort((a, b) => b.score - a.score)
+
+            // remove duplicates
+            suggestions = [...new Set(suggestions.map(sugg => sugg.node))]
+
+            // filter out nodes that are already in the graph
+            suggestions = suggestions.filter(sugg => !nodeTypes.includes(sugg))
+
+            return suggestions
+        },
+        refetchOnMount: true,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+    })
+
+    return suggestions && <>
+        <Text size="xxs" color="dimmed">Suggested</Text>
+
+        {suggestions.map(sugg =>
+            <DraggableNodeButton
+                id={sugg}
+                showDescription bgOnHover
+                includeMenu={false}
+                key={sugg}
+            />
+        )}
+    </>
+}

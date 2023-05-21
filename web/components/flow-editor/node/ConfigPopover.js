@@ -78,7 +78,7 @@ export default function ConfigPopover({ children }) {
 
             {/* Controls */}
             <Popover.Dropdown
-                p={isContextMenu ? "xs" : "xxs"}
+                p={isContextMenu ? "xs" : "xxxs"}
                 /**
                  * ReactFlow throws an error if we delete the node by clicking inside
                  * the popover. The event used depends on the selectNodesOnDrag prop
