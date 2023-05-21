@@ -9,6 +9,7 @@ export default function TextControl({ inputId, inputProps = {} }) {
         value={value ?? ""}
         onChange={event => setValue(event.currentTarget.value)}
         placeholder="Type something..."
+        size="xs"
         {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
     />
 }

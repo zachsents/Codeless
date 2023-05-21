@@ -1,4 +1,4 @@
-import { Box, Button, Center, Divider, Group, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
+import { Button, Center, Divider, Group, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
 import { InputMode, useHandleDefinition, useInputMode, useNodeContext, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { formatHandleName } from "@web/modules/graph-util"
 import { TbInfoCircle } from "react-icons/tb"
@@ -27,8 +27,9 @@ export default function InputConfig({ id, divider = true }) {
         <>
             {divider &&
                 <Divider color="gray.2" />}
-            <Stack spacing="xs">
-                <Group position="apart" noWrap>
+
+            <Group spacing="sm" noWrap>
+                <Stack spacing="xxxs" w={(isConfig || isList) ? "10rem" : "auto"}>
                     <Group spacing="xs" noWrap>
 
                         {isHandle ?
@@ -41,17 +42,17 @@ export default function InputConfig({ id, divider = true }) {
                                     <definition.icon size={theme.fontSizes.md} />}
                             </ThemeIcon>}
 
-                        <Text>
+                        <Text size="xs">
                             {definition.name || formatHandleName(definition.id)}
                         </Text>
 
-                        {definition.tooltip &&
+                        {definition.tooltip && definition.tooltip != definition.description &&
                             <Tooltip
                                 withinPortal
                                 label={<Text sx={{ overflowWrap: "anywhere" }}>{definition.tooltip}</Text>}
                                 // position="left"
                                 multiline
-                                maw={300}
+                                maw="17rem"
                             >
                                 <Center>
                                     <TbInfoCircle color={theme.colors.gray[6]} />
@@ -67,19 +68,24 @@ export default function InputConfig({ id, divider = true }) {
 
                         {canChangeMode && isConfig &&
                             <Button size="xs" compact variant="light" color="gray" onClick={() => setInputMode(InputMode.Handle)}>
-                                Add to Node
+                                Add as Input
                             </Button>}
                     </Group>
-                </Group>
 
-                {isConfig && definition.renderConfiguration && !isList &&
-                    <Box ml="xl">
-                        <definition.renderConfiguration inputId={definition.id} {...displayProps} />
-                    </Box>}
+                    <Text size="xs" color="dimmed">
+                        {definition.description}
+                    </Text>
+                </Stack>
 
-                {isList &&
-                    <ListConfig handleId={id} />}
-            </Stack>
+                {(isConfig || isList) &&
+                    <Stack justify="center" className="flex-1 self-stretch">
+                        {isConfig && definition.renderConfiguration && !isList &&
+                            <definition.renderConfiguration inputId={definition.id} {...displayProps} />}
+
+                        {isList &&
+                            <ListConfig handleId={id} />}
+                    </Stack>}
+            </Group>
         </>
     )
 }

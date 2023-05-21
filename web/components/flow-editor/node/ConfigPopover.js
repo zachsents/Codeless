@@ -61,7 +61,7 @@ export default function ConfigPopover({ children }) {
             // opened={isContextMenu && !isDragging}
             withinPortal
             position={!isContextMenu ? "top" : run ? "left" : "right"}
-            shadow="sm"
+            shadow="md"
             offset={20}
             zIndex={210}
             classNames={{
@@ -78,7 +78,7 @@ export default function ConfigPopover({ children }) {
 
             {/* Controls */}
             <Popover.Dropdown
-                p={isContextMenu ? "sm" : 4}
+                p={isContextMenu ? "xs" : "xxs"}
                 /**
                  * ReactFlow throws an error if we delete the node by clicking inside
                  * the popover. The event used depends on the selectNodesOnDrag prop
@@ -88,7 +88,7 @@ export default function ConfigPopover({ children }) {
             // onMouseDownCapture={event => event.stopPropagation()}
 
             >
-                <Stack spacing="xs">
+                <Stack spacing="xxs">
                     <Group spacing={isContextMenu ? "md" : "xs"} noWrap position="center">
                         {/* Duplicate */}
                         {/* <Tooltip label="Duplicate">
@@ -129,34 +129,34 @@ export default function ConfigPopover({ children }) {
 
                     {isContextMenu && <>
                         <Divider />
-                        <AnimatedTabs tabs={tabData} defaultTab={defaultTab} miw={400}>
+                        <AnimatedTabs tabs={tabData} defaultTab={defaultTab} size="xxs" w="24rem">
 
                             <ScrollArea.Autosize mah="70vh" offsetScrollbars>
-                                <Stack spacing="xs">
+                                <Stack spacing="xxs">
                                     {typeDefinition.inputs.length ?
                                         typeDefinition.inputs.map((input, i) =>
                                             <InputConfig id={input.id} divider={i != 0} key={input.id} />
                                         ) :
-                                        <Text align="center" size="sm" color="dimmed">
+                                        <Text align="center" size="xs" color="dimmed">
                                             No Inputs
                                         </Text>}
                                 </Stack>
                             </ScrollArea.Autosize>
 
                             <ScrollArea.Autosize mah="70vh" offsetScrollbars>
-                                <Stack spacing="xs">
+                                <Stack spacing="xxs">
                                     {typeDefinition.outputs.length ?
                                         typeDefinition.outputs.map((output, i) =>
                                             <OutputConfig id={output.id} divider={i != 0} key={output.id} />
                                         ) :
-                                        <Text align="center" size="sm" color="dimmed">
+                                        <Text align="center" size="xs" color="dimmed">
                                             No Outputs
                                         </Text>}
                                 </Stack>
                             </ScrollArea.Autosize>
 
                             {hasIntegrations &&
-                                <Stack spacing="xs">
+                                <Stack spacing="xxs">
                                     {nodeIntegrations.map(
                                         int => <IntegrationAlert integration={int} key={int.id} />
                                     )}
@@ -165,7 +165,7 @@ export default function ConfigPopover({ children }) {
                                         <Flex justify="flex-end">
                                             <Button
                                                 component="a"
-                                                href={`/app/${app?.id}/integrations`}
+                                                href={`/app/${app?.id}?tab=integrations`}
                                                 target="_blank"
                                                 rightIcon={<TbExternalLink />}
                                                 size="xs"

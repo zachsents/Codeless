@@ -14,6 +14,7 @@ export default function OtherFlowsControl({ inputId, flowId, appId }) {
             data={otherFlows ?? []}
             value={value ?? null}
             onChange={setValue}
+            size="xs"
             rightSection={!otherFlows && <Loader size="xs" />}
         />
     )

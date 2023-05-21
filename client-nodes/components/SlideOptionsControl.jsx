@@ -9,6 +9,7 @@ export default function SlideOptionsControl({ inputId, data, inputProps = {} }) 
         value={value ?? ""}
         onChange={setValue}
         data={data}
+        size="xs"
         {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
     />
 }

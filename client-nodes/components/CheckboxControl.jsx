@@ -10,6 +10,5 @@ export default function CheckboxControl({ inputId, inputProps = {} }) {
         onChange={event => setValue(event.currentTarget.checked)}
         {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
         label="Yes / No"
-        radius="sm"
     />
 }

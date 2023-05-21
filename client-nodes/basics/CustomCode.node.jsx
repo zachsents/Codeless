@@ -30,9 +30,17 @@ export default {
             icon: Code,
             allowedModes: ["config", "handle"],
             defaultMode: "config",
-            renderConfiguration: props => <CodeControl {...props} language="js" inputProps={{
-                placeholder: "outputs.sum = inputs.a + inputs.b",
-            }} />,
+            defaultValue: `/*
+ * Inputs are available under the "inputs" global variable.
+ * e.g. inputs.a, inputs.name, etc.
+ * 
+ * Outputs are set by setting a property on the "outputs" global variable.
+ * e.g. outputs.result = "some value";
+ * 
+ */
+
+`,
+            renderConfiguration: props => <CodeControl {...props} language="javascript" />,
         }
     ],
     outputs: [

@@ -11,6 +11,7 @@ export default function SelectControl({ inputId, data, inputProps = {} }) {
         data={data}
         placeholder="Pick one"
         withinPortal
+        size="xs"
         {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
     />
 }

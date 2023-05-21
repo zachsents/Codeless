@@ -48,6 +48,11 @@ export const mantineTheme = {
                 p: 0,
             },
         },
+        Checkbox: {
+            defaultProps: {
+                radius: "sm",
+            },
+        },
     },
     // transitionTimingFunction: "steps(5, end)"
 }

@@ -41,7 +41,7 @@ export default function RegexControl({ inputId, inputProps = {} }) {
         color: "dimmed",
     }
 
-    return <Group spacing="xs">
+    return <Group spacing="xs" className="nodrag">
         <Text {...textProps}>/</Text>
         <Box className={styles.editor}>
             <CodeEditor

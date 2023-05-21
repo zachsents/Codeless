@@ -21,6 +21,7 @@
         "@mantine/nprogress": "^6.0.6",
         "@minus/client-nodes": "workspace:*",
         "@minus/client-sdk": "workspace:*",
+        "@monaco-editor/react": "^4.5.1",
         "embla-carousel-react": "^7.0.5",
         "firebase": "^9.17.1",
         "framer-motion": "^7.6.7",

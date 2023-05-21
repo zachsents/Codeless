@@ -68,7 +68,7 @@ export function ReplayProvider({ children }) {
     })
     const [runId, setRunId] = useState()
 
-    const run = useMemo(() => runs?.find(run => run.id === runId), [runs, runId])
+    const run = useMemo(() => runs && runs.find(run => run.id === runId), [runs, runId])
 
     return <ReplayContext.Provider value={{ runs, run, setRunId, runLimit, setRunLimit }}>
         {children}

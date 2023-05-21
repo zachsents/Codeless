@@ -1,14 +1,20 @@
-import { NumberInput } from "@mantine/core"
+import { Center, NumberInput } from "@mantine/core"
 import { useInputValue } from "../hooks/nodes"
 
 export default function NumberControl({ inputId, inputProps = {} }) {
 
     const [value, setValue] = useInputValue(null, inputId)
 
-    return <NumberInput
-        value={value ?? ""}
-        onChange={setValue}
-        placeholder="Pick a number..."
-        {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
-    />
+    return (
+        <Center>
+            <NumberInput
+                value={value ?? ""}
+                onChange={setValue}
+                placeholder="Pick a number..."
+                size="xs"
+                w="8rem"
+                {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
+            />
+        </Center>
+    )
 }
