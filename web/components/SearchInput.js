@@ -8,6 +8,8 @@ const SearchInput = forwardRef(({
     noun, quantity,
     hotkeys = ["mod+k", "/"],
     onClear,
+
+    onKeyDown,
     ...props
 }, ref) => {
 
@@ -50,7 +52,10 @@ const SearchInput = forwardRef(({
                 ref={ref}
 
                 // blur when escape is pressed
-                onKeyDown={event => event.key === "Escape" && ref.current?.blur()}
+                onKeyDown={event => {
+                    event.key === "Escape" && ref.current?.blur()
+                    onKeyDown?.(event)
+                }}
             />
         </div>
     )

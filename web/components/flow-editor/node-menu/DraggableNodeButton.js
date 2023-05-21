@@ -14,6 +14,7 @@ export default function DraggableNodeButton({
     pinned = false, onPin, onUnpin,
     scaleOnHover = false, bgOnHover = false,
     includeMenu = true,
+    cardProps = {},
 }) {
 
     const theme = useMantineTheme()
@@ -83,9 +84,11 @@ export default function DraggableNodeButton({
                     <Menu.Target>
                         <Card
                             withBorder pl="xxs" py="xxxs" pr="xs"
+                            {...cardProps}
                             className={jc(
                                 "pointer-events-auto nosel cursor-pointer",
-                                dragging && "absolute top-0 left-0 z-100"
+                                dragging && "absolute top-0 left-0 z-100",
+                                cardProps.className
                             )}
 
                             component={motion.div}
