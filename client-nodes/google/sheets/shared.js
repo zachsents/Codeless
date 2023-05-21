@@ -47,6 +47,7 @@ export function SpreadsheetURLControl({ inputId }) {
             name="spreadsheetUrl"
             placeholder="https://docs.google.com/..."
             error={!isValid && "This doesn't look like a valid Google Sheets URL"}
+            size="xs"
         />
 
         {state.spreadsheetName &&
@@ -80,8 +81,9 @@ export function SheetNameControl({ inputId }) {
         disabled={state.isLoading || !state.spreadsheetId}
         rightSection={state.isLoading && <Loader size="xs" />}
         withinPortal
+        size="xs"
     /> :
-        <TextControl inputId={inputId} />
+        <TextControl inputId={inputId} size="xs" />
 }
 
 
