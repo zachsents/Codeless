@@ -1,5 +1,7 @@
 import { AlphabetLatin, SquareX, Template } from "tabler-icons-react"
 import TextAreaControl from "../components/TextAreaControl"
+import { InputMode, useInputMode, useInputValue, useTypeDefinition } from "../hooks/nodes"
+import { Text } from "@mantine/core"
 
 
 export default {
@@ -39,4 +41,16 @@ export default {
             icon: AlphabetLatin,
         }
     ],
+
+    renderContent: () => {
+
+        const [template] = useInputValue(null, "template")
+        const [mode] = useInputMode(null, "template")
+
+        return mode == InputMode.Config && (
+            template ?
+                <Text lineClamp={2} size="sm" color="dimmed" maw="14rem">{template}</Text> :
+                <Text>No template provided</Text>
+        )
+    }
 }
