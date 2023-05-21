@@ -121,7 +121,6 @@ importers:
 
   functions:
     specifiers:
-      '@minus/auth-lib': workspace:*
       '@minus/gee3': workspace:*
       '@minus/server-nodes': workspace:*
       '@minus/server-sdk': workspace:*
@@ -132,7 +131,6 @@ importers:
       firebase-functions: ^4.2.1
       node-fetch: ^3.3.0
     dependencies:
-      '@minus/auth-lib': link:../auth-lib
       '@minus/gee3': link:../graph-execution-engine-3
       '@minus/server-nodes': link:../server-nodes
       '@minus/server-sdk': link:../server-sdk
