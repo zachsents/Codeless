@@ -1,6 +1,6 @@
 .wrapper {
     --handleSize: 16px;
-    --connectedFactor: 0.5;
+    --connectedFactor: 1;
     --hoverFactor: 1.6;
 
     position: relative;

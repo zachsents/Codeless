@@ -39,7 +39,7 @@ export default function Handle({ id, label, nodeHovered, onHover }) {
                         border: `1px solid ${mainColor}`,
                     }}
                 >
-                    {definition.showHandleIcon && !connected && definition.icon &&
+                    {definition.showHandleIcon && definition.icon &&
                         <definition.icon size="0.7rem" color={mainColor} />}
                 </RFHandle>
             </div>
