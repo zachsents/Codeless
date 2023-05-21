@@ -28,7 +28,8 @@ export default function NodeInternal({ displayProps }) {
                 </Group>}
 
             {!!(typeDefinition.renderName && (typeDefinition.renderTextContent || typeDefinition.renderContent)) &&
-                <Divider />}
+                // last:hidden makes it so that the divider is not shown if there's nothing rendered beneath it
+                <Divider className="last:hidden" />}
 
             {/* Text Content */}
             {typeDefinition.renderTextContent &&
