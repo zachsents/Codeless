@@ -1,7 +1,7 @@
+import { Text } from "@mantine/core"
 import { AlphabetLatin, SquareX, Template } from "tabler-icons-react"
 import TextAreaControl from "../components/TextAreaControl"
-import { InputMode, useInputMode, useInputValue, useTypeDefinition } from "../hooks/nodes"
-import { Text } from "@mantine/core"
+import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
 
 
 export default {
