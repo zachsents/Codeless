@@ -1,0 +1,11 @@
+{
+    "scopes": [
+        "data.records:read",
+        "data.records:write",
+        "webhook:manage",
+        "schema.bases:read"
+    ],
+    "clientId": "f6a41412-8f04-4099-8703-25b85c3c5afd",
+    "callbackUrl": "https://us-central1-minus-dev.cloudfunctions.net/airtable-appAuthorizationRedirect",
+    "environment": "dev"
+}

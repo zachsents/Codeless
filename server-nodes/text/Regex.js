@@ -1,4 +1,4 @@
-import { safeRegex } from "@minus/server-sdk"
+import { safeRegex } from "@minus/server-lib"
 
 export default {
     id: "text:Regex",

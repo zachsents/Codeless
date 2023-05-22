@@ -16,7 +16,8 @@
     "dependencies": {
         "@minus/gee3": "workspace:*",
         "@minus/server-nodes": "workspace:*",
-        "@minus/server-sdk": "workspace:*",
+        "@minus/server-lib": "workspace:*",
+        "@minus/auth-lib": "workspace:*",
         "dotenv": "^16.0.3",
         "firebase-admin": "^11.3.0",
         "firebase-admin-callable-functions": "workspace:*",

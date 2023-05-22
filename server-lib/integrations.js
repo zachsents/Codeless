@@ -1,5 +1,4 @@
 import { FieldValue } from "firebase-admin/firestore"
-import { logger } from "./logger.js"
 
 
 /** @type {import("firebase-admin").firestore.Firestore} */
@@ -25,8 +24,6 @@ export async function storeIntegrationAccount(integrationKey, integrationUserId,
     transaction,
 } = {}) {
 
-    logger.setPrefix("Integrations")
-
     if (!integrationKey)
         throw new Error("Must provide integration key")
 
@@ -43,7 +40,7 @@ export async function storeIntegrationAccount(integrationKey, integrationUserId,
         integrationDocRef.set(data, { merge: true })
     )
 
-    logger.debug(`Created new account for "${integrationKey}"`)
+    console.debug(`Created new account for "${integrationKey}"`)
 
     // if an app is provided, we'll store the integration doc ID there, too
     if (appId) {
@@ -57,10 +54,9 @@ export async function storeIntegrationAccount(integrationKey, integrationUserId,
             appDocRef.update(updateData)
         )
 
-        logger.debug(`Stored account for app "${appId}"`)
+        console.debug(`Stored account for app "${appId}"`)
     }
 
-    logger.done()
     return integrationDocRef
 }
 

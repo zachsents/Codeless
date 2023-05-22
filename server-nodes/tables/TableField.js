@@ -1,4 +1,4 @@
-import { TableField } from "@minus/server-sdk"
+import { TableField } from "@minus/server-lib"
 
 
 export default {

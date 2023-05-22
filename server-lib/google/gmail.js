@@ -1,39 +1,4 @@
-import { google } from "googleapis"
 import { createMimeMessage } from "mimetext"
-import { getGoogleOAuthClient } from "./google.js"
-
-
-/**
- * @typedef {import("googleapis").gmail_v1.Gmail} GmailAPI
- */
-
-let gmailApi
-
-export const GmailIntegrationKey = "gmail"
-
-
-
-/**
- * Creates an instance of the Gmail API.
- *
- * @export
- * @param {string} [appId=global.info.appId]
- * @param {object} [options]
- * @param {boolean} [options.cache=false]
- * @return {Promise<GmailAPI>} 
- */
-export async function getGmailAPI(appId = global.info.appId, {
-    cache = false,
-} = {}) {
-
-    if (cache && gmailApi)
-        return gmailApi
-
-    const auth = await getGoogleOAuthClient(appId)
-    gmailApi = google.gmail({ version: "v1", auth })
-
-    return gmailApi
-}
 
 
 /**

@@ -1,4 +1,4 @@
-import { airtable } from "@minus/server-sdk"
+import { airtable } from "@minus/server-lib"
 
 
 export default {
@@ -15,7 +15,7 @@ export default {
         if (!this.state.tableId)
             throw new Error("Missing a Table ID")
 
-        const at = await airtable.getAirTableAPI()
+        const at = await airtable.getAirtableAPIFromNode(this)
         const atTable = at.base(this.state.baseId).table(this.state.tableId)
 
         this.publish({

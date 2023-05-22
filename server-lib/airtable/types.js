@@ -1,4 +1,3 @@
-import { logger } from "../logger.js"
 import { Operation } from "../types/Operation.js"
 import { deepFlat } from "../util.js"
 import { AirtableFormula } from "./formulas.js"
@@ -69,8 +68,6 @@ export class Table {
         sortOrder = "asc"
     } = {}) {
 
-        logger.setPrefix("Airtable - Find Rows")
-
         // compile filters
         let filterFormula
 
@@ -84,8 +81,8 @@ export class Table {
                 .toString(AirtableFormula.ParamMappings, AirtableFormula.OperationMappings)
         }
 
-        logger.table({ filters: filters.length, limit, sortBy, sortOrder })
-        logger.debug("Filter Formula:", filterFormula)
+        console.table({ filters: filters.length, limit, sortBy, sortOrder })
+        console.debug("Filter Formula:", filterFormula)
 
         // make request
         const records = await this.atTable.select({

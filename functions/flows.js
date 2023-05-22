@@ -4,7 +4,7 @@ import functions from "firebase-functions"
 import { db } from "./init.js"
 import { Graph } from "@minus/gee3"
 import { loadNodeDefinitions } from "@minus/server-nodes"
-import { RunStatus, logger } from "@minus/server-sdk"
+import { RunStatus, logger } from "@minus/server-lib"
 
 
 export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {

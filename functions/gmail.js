@@ -1,15 +1,20 @@
 import functions from "firebase-functions"
 import { db } from "./init.js"
 import { httpsCallable, url } from "firebase-admin-callable-functions"
-import { RunStatus, gmail, logger } from "@minus/server-sdk"
+import { RunStatus, google } from "@minus/server-lib"
 
 
 const EXCLUDED_LABELS = ["DRAFT", "SENT", "TRASH", "SPAM"]
 
 
-export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message) => {
+/**
+ * Need to change pretty mcuh everything in here to use PubSub instead of callable
+ * functions to be scalable. Also need to accomodate new integration account system.
+ */
 
-    logger.setPrefix("Gmail")
+
+
+export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message) => {
 
     if (!message.data)
         throw new Error("No message data in PubSub message from Gmail topic")
@@ -19,7 +24,7 @@ export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (me
         Buffer.from(message.data, 'base64').toString()
     )
 
-    logger.log(`Received event for ${emailAddress} (History ID: ${newHistoryId})`)
+    console.log(`Received event for ${emailAddress} (History ID: ${newHistoryId})`)
 
     // query for flows involving this email address
     const querySnapshot = await db.collection("flows")
@@ -36,7 +41,7 @@ export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (me
         return map
     }, {})
 
-    logger.log(`Handling event for ${Object.keys(appMap).length} apps.`)
+    console.log(`Handling event for ${Object.keys(appMap).length} apps.`)
 
     // fan out by app -- calling runFlowsForApp for each one
     // doing this so we can asynchronously authorize a bunch of Gmail APIs
@@ -45,14 +50,14 @@ export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (me
             appId => httpsCallable(url("gmail-runFlowsForApp"))(appMap[appId])
         )
     )
-
-    logger.done()
 })
 
 
 export const runFlowsForApp = functions.https.onCall(async ({ appId, flows, newHistoryId }) => {
 
     console.debug(`Trying ${flows.length} flow(s) for app: ${appId}`)
+
+    throw new Error("Need to fix the way Gmail triggers work to account for new authorization system")
 
     // get Gmail API
     const gmailApi = await gmail.getGmailAPI(appId)

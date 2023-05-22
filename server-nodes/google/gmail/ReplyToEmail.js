@@ -1,4 +1,4 @@
-import { gmail } from "@minus/server-sdk"
+import { gmail } from "@minus/server-lib"
 import { safeMap } from "../../arrayUtilities.js"
 
 

@@ -1,4 +1,4 @@
-import { safeRegex } from "@minus/server-sdk"
+import { safeRegex } from "@minus/server-lib"
 import { safeMap } from "../arrayUtilities.js"
 
 
