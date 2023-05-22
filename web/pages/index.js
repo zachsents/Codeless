@@ -266,8 +266,8 @@ export default function LandingPage() {
 
                 <Space h="4rem" />
 
-                <Section className="px-0 sm:px-xl">
-                    <Card withBorder shadow="xs" className="relative dots-bg px-lg py-lg sm:px-16 sm:py-8 -mx-4 sm:mx-0">
+                <Section className="sm:px-xl">
+                    <Card withBorder shadow="xs" className="relative dots-bg px-sm sm:px-16 py-xl sm:py-8 rounded-none sm:rounded-md max-sm:!border-x-0">
                         <Stack>
                             <Title order={3} align="center">
                                 Connect your favorite apps
