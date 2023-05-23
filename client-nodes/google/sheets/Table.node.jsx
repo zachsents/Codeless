@@ -114,7 +114,7 @@ export default {
         },
     ],
 
-    requiredIntegrations: ["integration:GoogleSheets"],
+    requiredIntegrations: ["google"],
 
     defaultState: {
         useEntireSheet: true,

@@ -34,5 +34,5 @@ export default {
     ],
     outputs: EmailPayloadOutputs(["subject", "date"]),
 
-    requiredIntegrations: ["integration:Gmail"],
+    requiredIntegrations: ["google"],
 }

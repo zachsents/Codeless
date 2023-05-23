@@ -14,7 +14,7 @@ export default {
     inputs: [],
     outputs: EmailPayloadOutputs(["senderEmailAddress", "subject", "simpleText"]),
 
-    requiredIntegrations: ["integration:Gmail"],
+    requiredIntegrations: ["google"],
 
     creatable: false,
     trigger: true,

@@ -1,8 +1,8 @@
-import { ActionIcon, Button, Divider, Flex, Group, Popover, ScrollArea, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
-import { useDeleteNode, useNodeId, useNodeProperty, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { ActionIcon, Button, Divider, Group, Popover, ScrollArea, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
+import { useDeleteNode, useIntegrationAccounts, useNodeId, useNodeProperty, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import AnimatedTabs from "@web/components/AnimatedTabs"
 import { useAppContext, useReplayContext } from "@web/modules/context"
-import { getNodeIntegrationsStatus, useCurrentlySelectedNode } from "@web/modules/graph-util"
+import { useCurrentlySelectedNode } from "@web/modules/graph-util"
 import { TbExternalLink, TbMaximize, TbSettings, TbTrash } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
 import IntegrationAlert from "../config-panel/IntegrationAlert"
@@ -27,19 +27,20 @@ export default function ConfigPopover({ children }) {
     const deleteNode = useDeleteNode()
 
     // #region - Integration stuff
-    const { integrations: appIntegrations, app } = useAppContext()
-    const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
-    const hasIntegrations = nodeIntegrations.length > 0
-    const hasMissingIntegrations = nodeIntegrations.some(int => !int.status.data)
+    const { app } = useAppContext()
+
+    const { requiredIntegrations, missingSelections, needsAccounts } = useIntegrationAccounts(null, app)
+
     // #endregion
 
     const { run } = useReplayContext()
 
     // #region - Tab stuff
     const tabData = ["Inputs", "Outputs"]
-    hasIntegrations && tabData.push("Integrations")
+    needsAccounts && tabData.push("Integrations")
 
-    const defaultTab = hasMissingIntegrations ? "Integrations" :
+    const defaultTab = missingSelections ?
+        "Integrations" :
         typeDefinition.inputs.length > 0 ? "Inputs" : "Outputs"
     // #endregion
 
@@ -155,27 +156,25 @@ export default function ConfigPopover({ children }) {
                                 </Stack>
                             </ScrollArea.Autosize>
 
-                            {hasIntegrations &&
-                                <Stack spacing="xxs">
-                                    {nodeIntegrations.map(
-                                        int => <IntegrationAlert integration={int} key={int.id} />
-                                    )}
+                            {needsAccounts &&
+                                <Stack py="xs">
+                                    <Group position="apart">
+                                        <Text color="dimmed" size="sm">Integration Accounts</Text>
 
-                                    {nodeIntegrations.length > 0 &&
-                                        <Flex justify="flex-end">
-                                            <Button
-                                                component="a"
-                                                href={`/app/${app?.id}?tab=integrations`}
-                                                target="_blank"
-                                                rightIcon={<TbExternalLink />}
-                                                size="xs"
-                                                compact
-                                                variant="light"
-                                                color="gray"
-                                            >
-                                                Open Integrations
-                                            </Button>
-                                        </Flex>}
+                                        <Button
+                                            component="a"
+                                            href={`/app/${app?.id}?tab=integrations`}
+                                            target="_blank"
+                                            rightIcon={<TbExternalLink />}
+                                            size="xs" compact variant="light" color="gray"
+                                        >
+                                            Manage Accounts
+                                        </Button>
+                                    </Group>
+
+                                    {requiredIntegrations.map(integrationId =>
+                                        <IntegrationAlert id={integrationId} key={integrationId} />
+                                    )}
                                 </Stack>}
                         </AnimatedTabs>
                     </>}

@@ -60,7 +60,7 @@ export default {
         },
     ],
 
-    requiredIntegrations: ["integration:GoogleSheets"],
+    requiredIntegrations: ["google"],
 
     useNodePresent: props => {
         useGoogleSheetNode(props)

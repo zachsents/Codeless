@@ -1,52 +1,37 @@
-import { Alert, Group, Loader, Center, Button } from "@mantine/core"
+import { Group, Select, Text, ThemeIcon } from "@mantine/core"
 
-import { useAppId } from "../../../modules/hooks"
+import { Integrations } from "@minus/client-nodes"
+import { useIntegrationAccounts } from "@minus/client-nodes/hooks/nodes"
+import { useAppContext } from "@web/modules/context"
 
 
-export default function IntegrationAlert({ integration: int }) {
+export default function IntegrationAlert({ id }) {
 
-    const appId = useAppId()
+    const integration = Integrations[id]
 
-    if (int.status.isFetching)
-        return (
-            <Alert
-                title={<Group>
-                    <Loader size="sm" />
-                    <AlertTitle name={int.name} icon={<int.icon />} />
-                </Group>}
-                color="gray"
-                p="xs"
-                pb={0}
-                key={int.id}
-            />
-        )
-
-    if (int.status.data)
-        return (
-            <Alert
-                p="xs"
-                pb={0}
-                title={<AlertTitle name={int.name} icon={<int.icon />} prefix="Connected to " />}
-                color="green"
-                key={int.id}
-            />
-        )
-
-    const connectIntegration = () => int.manager.oneClickAuth(appId)
+    const { app } = useAppContext()
+    const { selectAccount: _select, selectedAccounts: _selected, availableAccounts: _available } = useIntegrationAccounts(null, app)
+    const select = accountId => _select(id, accountId)
+    const selected = _selected[id]
+    const available = _available[id]
 
     return (
-        <Alert title="Integration Required!" color="red" key={int.id}>
-            This node uses <b>{int.name}</b>.
-            <Center mt="xs">
-                <Button compact color={int.color} onClick={connectIntegration}>
-                    <AlertTitle name={int.name} icon={<int.icon />} prefix="Connect " />
-                </Button>
-            </Center>
-        </Alert>
+        <Group position="apart" px="sm">
+            <Group spacing="xs">
+                <ThemeIcon color={integration.color}>
+                    <integration.icon size="0.9rem" />
+                </ThemeIcon>
+                <Text size="sm" weight={500} >
+                    {integration.name}
+                </Text>
+            </Group>
+
+            <Select
+                data={available.map(account => ({ value: account.id, label: account.nickname }))}
+                value={selected}
+                onChange={select}
+                size="xs" withinPortal
+            />
+        </Group>
     )
-}
-
-
-function AlertTitle({ icon, name, prefix = "" }) {
-    return <Group spacing={5}>{prefix}{icon} {name}</Group>
 }

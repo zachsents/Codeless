@@ -1,30 +1,22 @@
 import { ActionIcon, Box } from "@mantine/core"
-import { useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { useIntegrationAccounts, useNodeId } from "@minus/client-nodes/hooks/nodes"
 import { useAppContext, useFlowContext } from "@web/modules/context"
-import { getNodeIntegrationsStatus } from "@web/modules/graph-util"
 import { AnimatePresence, motion } from "framer-motion"
 import { TbExclamationMark } from "react-icons/tb"
 
 
 export default function ErrorIcon() {
 
-    const typeDefinition = useTypeDefinition()
-
     const id = useNodeId()
     const { latestRun } = useFlowContext()
     const errors = latestRun?.errors?.[id]
 
-    const { integrations: appIntegrations } = useAppContext()
-    const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
-    const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
-    const integrationsLoading = nodeIntegrations.some(int => int.status.isLoading)
+    const { app } = useAppContext()
+    const { missingSelections } = useIntegrationAccounts(null, app)
 
     return (
         <AnimatePresence>
-            {(
-                errors?.length > 0 ||
-                (!integrationsSatisfied && !integrationsLoading)
-            ) &&
+            {(errors?.length > 0 || (app && missingSelections)) &&
                 <Box className="absolute top-1 left-1 z-[5]">
                     <motion.div
                         initial={{ scale: 0, rotate: -135 }}

@@ -26,7 +26,7 @@ export default {
 
     tags: ["Airtable", "Tables", "Database"],
 
-    requiredIntegrations: ["integration:AirTable"],
+    requiredIntegrations: ["airtable"],
 
     inputs: [
         {
