@@ -145,7 +145,7 @@ export class Node {
      * @memberof Node
      */
     getAccountId(integrationId) {
-        return this.rfNode.data.accounts?.[integrationId]
+        return this.rfNode.data.selectedAccounts?.[integrationId]
     }
 
     /**

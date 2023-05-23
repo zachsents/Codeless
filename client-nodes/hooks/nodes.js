@@ -463,3 +463,8 @@ export function useIntegrationAccounts(nodeId, app) {
         requiredIntegrations: typeDef.requiredIntegrations ?? [],
     }
 }
+
+
+export function useSelectedIntegrationAccount(nodeId, integrationId) {
+    return useNodeProperty(nodeId, ["data", "selectedAccounts", integrationId])
+}

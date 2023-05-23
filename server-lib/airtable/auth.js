@@ -41,5 +41,5 @@ authManager.use(new FirestoreStrategy({
 
 // Convenience function to get Airtable API from node-code
 export function getAirtableAPIFromNode(node) {
-    return authManager.getAPI(node.getAccountId("integration:AirTable"))
+    return authManager.getAPI(node.getAccountId("airtable"))
 }

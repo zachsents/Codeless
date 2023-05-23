@@ -6,7 +6,8 @@ import { BrandAirtable } from "tabler-icons-react"
 import { Link } from "tabler-icons-react"
 import RequiresConfiguration from "../components/RequiresConfiguration"
 import { useSyncWithNodeState } from "../hooks"
-import { useInputValue, useInternalState } from "../hooks/nodes"
+import { useInputValue, useInternalState, useSelectedIntegrationAccount } from "../hooks/nodes"
+import NodeBodyTable from "../components/NodeBodyTable"
 
 
 const color = "blue"
@@ -71,7 +72,7 @@ export default {
         tableId: null,
     },
 
-    useNodePresent: ({ appId, integrationsSatisfied }) => {
+    useNodePresent: ({ integrationsSatisfied }) => {
 
         const [, setState] = useInternalState()
         const [airtableUrl] = useInputValue(null, "$airtableUrl")
@@ -83,32 +84,31 @@ export default {
         )
 
         // fetch table name
-        const { tableName, isLoading, isError } = useTableNameFromId(integrationsSatisfied && appId, baseId, tableId)
+        const accountId = useSelectedIntegrationAccount(null, "airtable")
+        const { tableName, isLoading, isError } = useTableNameFromId(integrationsSatisfied && accountId, baseId, tableId)
 
         // sync state with node state
         useSyncWithNodeState({ tableName, isLoading, isError, baseId, tableId }, setState)
     },
 
-    renderTextContent: ({ integrationsSatisfied }) => {
+    renderContent: ({ integrationsSatisfied }) => {
 
         const [state] = useInternalState()
+        const [airtableUrl] = useInputValue(null, "$airtableUrl")
+
+        if (!airtableUrl)
+            return <Text>No URL provided</Text>
+
+        if (!state.baseId || !state.tableId)
+            return <Text>Invalid URL</Text>
+
+        if (state.isError)
+            return <Text color="red" size="sm">Error loading table</Text>
 
         return (
-            // TO DO: make this look at the input mode and only require the base ID and table ID if it's in config mode
-            <RequiresConfiguration includeCenter={false} span dependencies={[
-                state.baseId,
-                state.tableId,
-                integrationsSatisfied,
-                !state.isError,
-            ]}>
-                {state.isLoading ?
-                    <Loader size="xs" color={color} />
-                    :
-                    <>
-                        <Text span color="dimmed">Using table{" "}</Text>
-                        <Text span weight={500}>"{state.tableName ?? "..."}"</Text>
-                    </>}
-            </RequiresConfiguration>
+            <NodeBodyTable items={[
+                ["Table Name", state.tableName],
+            ]} />
         )
     },
 }

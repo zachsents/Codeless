@@ -8,25 +8,24 @@ import { functions } from "../firebase-init.js"
  * app ID for authentication, as well.
  *
  * @export
- * @param {string} appId Minus App ID
+ * @param {string} accountId Integration account ID
  * @param {string} baseId Airtable Base ID
  * @param {string} tableId Airtable Table ID
  * @return {Promise<string>} 
  */
-export async function getTableNameFromId(appId, baseId, tableId) {
+export async function getTableNameFromId(accountId, baseId, tableId) {
 
-    if (!appId || !baseId || !tableId)
+    if (!accountId || !baseId || !tableId)
         return console.warn("Invalid arguments or not authenticated")
 
-    const { data } = await httpsCallable(functions, "airtable-getTableNameFromId")({ appId, baseId, tableId })
-    return data
+    return httpsCallable(functions, "airtable-getTableNameFromId")({ accountId, baseId, tableId }).then(res => res.data)
 }
 
 
-export function useTableNameFromId(appId, baseId, tableId) {
+export function useTableNameFromId(accountId, baseId, tableId) {
     const { data: tableName, ...result } = useQuery(
-        ["airtable-table-name", appId, baseId, tableId],
-        () => getTableNameFromId(appId, baseId, tableId)
+        ["airtable-table-name", accountId, baseId, tableId],
+        () => getTableNameFromId(accountId, baseId, tableId)
     )
 
     return { tableName, ...result }

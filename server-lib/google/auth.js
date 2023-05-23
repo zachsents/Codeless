@@ -39,7 +39,7 @@ authManager.use(new FirestoreStrategy({
 
 // Convenience function to get a Google API from node-code
 export function getGoogleAPIFromNode(node, api, version) {
-    return authManager.getAPI(node.getAccountId("integration:Google"), {
+    return authManager.getAPI(node.getAccountId("google"), {
         api,
         version,
     })
