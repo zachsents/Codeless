@@ -53,7 +53,7 @@ export class ServerOAuth2Manager {
      * @return {string} 
      * @memberof ServerOAuth2Manager
      */
-    async generateAuthUrl(payload) {
+    async generateAuthUrl(payload = {}) {
 
         // Generate state
         const state = nanoid(this.options.stateLength)
@@ -305,6 +305,7 @@ export class ServerOAuth2Manager {
         }
         catch (err) {
             console.debug(this.options.debugPrefix, "Not authorized")
+            console.debug(err)
             return false
         }
     }

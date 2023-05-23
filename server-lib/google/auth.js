@@ -1,5 +1,6 @@
 import { FirestoreStrategy, ServerGoogleManager } from "@minus/auth-lib"
 import { loadProfile } from "../oauth-profiles/util.js"
+import { FieldValue } from "firebase-admin/firestore"
 
 
 /** @type {import("firebase-admin").firestore.Firestore} */
@@ -28,6 +29,11 @@ authManager.use(new FirestoreStrategy({
     stateCollection: "oauthStates",
     accountCollection: "integrationAccounts",
     accountKeyPrefix: "google:",
+    linkAccountId: {
+        documentPath: ({ payload }) => `apps/${payload.appId}`,
+        fieldPath: () => `integrations.google`,
+        transform: accountId => FieldValue.arrayUnion(accountId),
+    }
 }))
 
 

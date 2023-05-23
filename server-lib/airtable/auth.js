@@ -1,5 +1,6 @@
 import { FirestoreStrategy, ServerAirtableManager } from "@minus/auth-lib"
 import { loadProfile } from "../oauth-profiles/util.js"
+import { FieldValue } from "firebase-admin/firestore"
 
 
 /** @type {import("firebase-admin").firestore.Firestore} */
@@ -30,6 +31,11 @@ authManager.use(new FirestoreStrategy({
     accountCollection: "integrationAccounts",
     accountKeyPrefix: "airtable:",
     getAccessTokenInsideTransaction: true,
+    linkAccountId: {
+        documentPath: ({ payload }) => `apps/${payload.appId}`,
+        fieldPath: () => `integrations.airtable`,
+        transform: accountId => FieldValue.arrayUnion(accountId),
+    }
 }))
 
 

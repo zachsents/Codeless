@@ -1,8 +1,9 @@
-import { addDoc, collection, deleteDoc, deleteField, doc, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
-import { firestore } from "./firebase-init.js"
-import { getDocsWithIds, getDocWithId } from "./firestore-util.js"
-import { getPlanRef } from "./plans.js"
+import { addDoc, collection, deleteDoc, doc, query, serverTimestamp, updateDoc, where } from "firebase/firestore"
+import { httpsCallable } from "firebase/functions"
+import { firestore, functions } from "./firebase-init.js"
+import { getDocWithId, getDocsWithIds } from "./firestore-util.js"
 import { deleteFlow, getFlowsForApp } from "./flow-actions.js"
+import { getPlanRef } from "./plans.js"
 
 
 export const AppsCollectionPath = "apps"
@@ -97,15 +98,14 @@ export function updateApp(appId, changes = {}) {
  *
  * @export
  * @param {string} appId
- * @param {string} integrationName
+ * @param {string} integrationId
  */
-export function disconnectIntegration(appId, integrationName) {
-    console.log(appId, integrationName)
-    const updateObj = {
-        [`integrations.${integrationName}`]: deleteField(),
-    }
-    console.log(updateObj)
-    return updateApp(appId, updateObj)
+export function disconnectIntegration(appId, integrationId, accountId) {
+    return httpsCallable(functions, "integrations-disconnect")({
+        appId,
+        integrationId,
+        accountId,
+    })
 }
 
 

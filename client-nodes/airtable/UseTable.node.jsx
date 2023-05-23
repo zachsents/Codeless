@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { BrandAirtable } from "tabler-icons-react"
 
 import { Link } from "tabler-icons-react"
-import { RequiresConfiguration } from "../components/index"
+import RequiresConfiguration from "../components/RequiresConfiguration"
 import { useSyncWithNodeState } from "../hooks"
 import { useInputValue, useInternalState } from "../hooks/nodes"
 

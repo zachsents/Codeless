@@ -12,9 +12,12 @@ import { Strategy } from "./Strategy.js"
  * 
  * @property {boolean} getAccessTokenInsideTransaction
  * 
+ * @property {{
+ *   documentPath: ({ payload: any, accountId: string }) => string,
+ *   fieldPath: ({ payload: any, accountId: string }) => string,
+ *   transform: (accountId: string) => any,
+ * }} [linkAccountId]
  */
-
-
 
 
 export class FirestoreStrategy extends Strategy {
@@ -83,22 +86,32 @@ export class FirestoreStrategy extends Strategy {
              * Set auth info in database -- inside a transaction if provided
              */
             setAuthInfo: async (accountId, { payload, ...info }, { transaction } = {}) => {
-                console.log("TO DO: use payload to link account to app", payload)
 
                 const accountRef = this.db.collection(this.options.accountCollection).doc(accountId)
 
+                // Optionally link account to another document
+                const link = this.options.linkAccountId && payload !== undefined && {
+                    docRef: this.db.doc(this.options.linkAccountId.documentPath({ payload, accountId })),
+                    fieldPath: this.options.linkAccountId.fieldPath({ payload, accountId }),
+                    value: this.options.linkAccountId.transform?.(accountId) ?? accountId,
+                }
+
                 // Use transaction if provided
-                if (transaction)
-                    return await transaction.set(accountRef, info, { merge: true })
+                if (transaction) {
+                    await transaction.set(accountRef, info, { merge: true })
+                    link && await transaction.update(link.docRef, { [link.fieldPath]: link.value })
+                    return
+                }
 
                 // Otherwise, just set the doc
                 await accountRef.set(info, { merge: true })
+                link && await link.docRef.update({ [link.fieldPath]: link.value })
             },
 
             /**
              * Create account key -- a document ref
              */
-            createAccountKey: userId => this.db.collection(this.options.accountCollection).doc(`${this.options.accountKeyPrefix}${userId}`),
+            createAccountKey: userId => `${this.options.accountKeyPrefix}${userId}`,
         }
     }
 

@@ -41,7 +41,7 @@ export class ServerGoogleManager extends ServerOAuth2Manager {
     }
 
 
-    async generateAuthUrl(payload) {
+    async generateAuthUrl({ additionalScopes = [], ...payload } = {}) {
 
         // Generate state
         const state = nanoid(this.options.stateLength)
@@ -55,7 +55,7 @@ export class ServerGoogleManager extends ServerOAuth2Manager {
         // Generate auth URL
         return this.getGoogleOAuth2Client().generateAuthUrl({
             access_type: "offline",
-            scope: this.options.scopes,
+            scope: [...new Set([...this.options.scopes, ...additionalScopes])],
             state,
             include_granted_scopes: true,
         })
@@ -129,7 +129,7 @@ export class ServerGoogleManager extends ServerOAuth2Manager {
                 `${authorized ? "" : "NOT "}authorized for these scopes (${debug}):`,
                 scopes.map(s => `\n\t${s}`).join(",")
             )
-            return authorized
+            return authorized && grantedScopes
         }
 
         // Get auth info

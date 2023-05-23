@@ -22,7 +22,7 @@ importers:
       jest: 29.5.0
       prettier: 2.8.8
       rimraf: 4.4.1
-      turbo: 1.9.8
+      turbo: 1.9.9
 
   auth-lib:
     specifiers:
@@ -44,6 +44,7 @@ importers:
       '@mantine/hooks': ^6.0.6
       '@mantine/modals': ^6.0.6
       '@minus/client-sdk': workspace:*
+      firebase: ^9.17.1
       framer-motion: ^7.6.7
       highlight.js: ^11.7.0
       immer: ^9.0.16
@@ -64,6 +65,7 @@ importers:
       '@mantine/hooks': 6.0.6_react@18.2.0
       '@mantine/modals': 6.0.6_feqrfkte3oaz5jjghkdwfk53i4
       '@minus/client-sdk': link:../client-sdk
+      firebase: 9.17.1
       framer-motion: 7.10.3_biqbaboplfbrettd7655fr4n2y
       highlight.js: 11.7.0
       immer: 9.0.19
@@ -82,18 +84,22 @@ importers:
   client-sdk:
     specifiers:
       '@firebase/rules-unit-testing': ^2.0.7
+      '@minus/util': workspace:*
       '@testing-library/react': ^13.4.0
       '@types/jest': ^29.5.1
       chalk: ^5.2.0
       dotenv: ^16.0.3
       firebase: ^9.17.1
       jest: ^29.5.0
+      lodash: ^4.17.21
       react: ^18.2.0
       react-dom: ^18.2.0
       react-query: ^3.39.3
     dependencies:
+      '@minus/util': link:../util
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
       firebase: 9.17.1
+      lodash: 4.17.21
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-query: 3.39.3_biqbaboplfbrettd7655fr4n2y
@@ -209,6 +215,12 @@ importers:
       node-fetch: 3.3.0
       openai: 3.2.0
 
+  util:
+    specifiers:
+      lodash: ^4.17.21
+    dependencies:
+      lodash: 4.17.21
+
   web:
     specifiers:
       '@mantine/carousel': ^6.0.6
@@ -221,6 +233,7 @@ importers:
       '@mantine/nprogress': ^6.0.6
       '@minus/client-nodes': workspace:*
       '@minus/client-sdk': workspace:*
+      '@minus/util': workspace:*
       '@monaco-editor/react': ^4.5.1
       autoprefixer: ^10.4.14
       embla-carousel-react: ^7.0.5
@@ -256,6 +269,7 @@ importers:
       '@mantine/nprogress': 6.0.6_feqrfkte3oaz5jjghkdwfk53i4
       '@minus/client-nodes': link:../client-nodes
       '@minus/client-sdk': link:../client-sdk
+      '@minus/util': link:../util
       '@monaco-editor/react': 4.5.1_gesakegkf6ivhdtrwoiybdd3ni
       embla-carousel-react: 7.0.9_react@18.2.0
       firebase: 9.17.1
@@ -1334,21 +1348,6 @@ packages:
     dev: true
     optional: true
 
-  /@google-cloud/firestore/6.4.3:
-    resolution: {integrity: sha512-78Ymo6DCQ1t33UWK5TuV98ZbbinC1PwNLsfWIjQTaqSbQydvVfQrG3EsOk+WKKMSwdjEqqnehJ5V1FXb7S1iQQ==}
-    engines: {node: '>=12.0.0'}
-    requiresBuild: true
-    dependencies:
-      fast-deep-equal: 3.1.3
-      functional-red-black-tree: 1.0.1
-      google-gax: 3.6.0
-      protobufjs: 7.2.3
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
-    optional: true
-
   /@google-cloud/firestore/6.5.0:
     resolution: {integrity: sha512-U0QwG6pEQxO5c0v0eUylswozmuvlvz7iXSW+I18jzqR2hAFrUq2Weu1wm3NaH8wGD4ZL7W9Be4cMHG5CYU8LuQ==}
     engines: {node: '>=12.0.0'}
@@ -1428,34 +1427,6 @@ packages:
 
   /@google-cloud/storage/6.10.1:
     resolution: {integrity: sha512-EtLlT0YbXtrbUxaNbEfTyTytrjELtl4i42flf8COg+Hu5+apdNjsFO9XEY39wshxAuVjLf4fCSm7GTSW+BD3gQ==}
-    engines: {node: '>=12'}
-    requiresBuild: true
-    dependencies:
-      '@google-cloud/paginator': 3.0.7
-      '@google-cloud/projectify': 3.0.0
-      '@google-cloud/promisify': 3.0.1
-      abort-controller: 3.0.0
-      async-retry: 1.3.3
-      compressible: 2.0.18
-      duplexify: 4.1.2
-      ent: 2.2.0
-      extend: 3.0.2
-      gaxios: 5.1.0
-      google-auth-library: 8.7.0
-      mime: 3.0.0
-      mime-types: 2.1.35
-      p-limit: 3.1.0
-      retry-request: 5.0.2
-      teeny-request: 8.0.3
-      uuid: 8.3.2
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
-    optional: true
-
-  /@google-cloud/storage/6.9.3:
-    resolution: {integrity: sha512-ucbHoDvjXlcR/DrJNQlCFnQSaO7pXHTPGs3Gt2TQtPQ+b7Y6DR0ztIt/CEeH+O03I41g9e+T2N1SOOVq5UyaKQ==}
     engines: {node: '>=12'}
     requiresBuild: true
     dependencies:
@@ -5371,8 +5342,8 @@ packages:
       node-forge: 1.3.1
       uuid: 9.0.0
     optionalDependencies:
-      '@google-cloud/firestore': 6.4.3
-      '@google-cloud/storage': 6.9.3
+      '@google-cloud/firestore': 6.5.0
+      '@google-cloud/storage': 6.10.1
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -10202,65 +10173,65 @@ packages:
       safe-buffer: 5.2.1
     dev: true
 
-  /turbo-darwin-64/1.9.8:
-    resolution: {integrity: sha512-PkTdBjPfgpj/Dob/6SjkzP0BBP80/KmFjLEocXVEECCLJE6tHKbWLRdvc79B0N6SufdYdZ1uvvoU3KPtBokSPw==}
+  /turbo-darwin-64/1.9.9:
+    resolution: {integrity: sha512-UDGM9E21eCDzF5t1F4rzrjwWutcup33e7ZjNJcW/mJDPorazZzqXGKEPIy9kXwKhamUUXfC7668r6ZuA1WXF2Q==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64/1.9.8:
-    resolution: {integrity: sha512-sLwqOx3XV57QCEoJM9GnDDnnqidG8wf29ytxssBaWHBdeJTjupyrmzTUrX+tyKo3Q+CjWvbPLyqVqxT4g5NuXQ==}
+  /turbo-darwin-arm64/1.9.9:
+    resolution: {integrity: sha512-VyfkXzTJpYLTAQ9krq2myyEq7RPObilpS04lgJ4OO1piq76RNmSpX9F/t9JCaY9Pj/4TL7i0d8PM7NGhwEA5Ag==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64/1.9.8:
-    resolution: {integrity: sha512-AMg6VT6sW7aOD1uOs5suxglXfTYz9T0uVyKGKokDweGOYTWmuTMGU5afUT1tYRUwQ+kVPJI+83Atl5Ob0oBsgw==}
+  /turbo-linux-64/1.9.9:
+    resolution: {integrity: sha512-Fu1MY29Odg8dHOqXcpIIGC3T63XLOGgnGfbobXMKdrC7JQDvtJv8TUCYciRsyknZYjyyKK1z6zKuYIiDjf3KeQ==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64/1.9.8:
-    resolution: {integrity: sha512-tLnxFv+OIklwTjiOZ8XMeEeRDAf150Ry4BCivNwgTVFAqQGEqkFP6KGBy56hb5RRF1frPQpoPGipJNVm7c8m1w==}
+  /turbo-linux-arm64/1.9.9:
+    resolution: {integrity: sha512-50LI8NafPuJxdnMCBeDdzgyt1cgjQG7FwkyY336v4e95WJPUVjrHdrKH6jYXhOUyrv9+jCJxwX1Yrg02t5yJ1g==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64/1.9.8:
-    resolution: {integrity: sha512-r3pCjvXTMR7kq2E3iqwFlN1R7pFO/TOsuUjMhOSPP7HwuuUIinAckU4I9foM3q7ZCQd1XXScBUt3niDyHijAqQ==}
+  /turbo-windows-64/1.9.9:
+    resolution: {integrity: sha512-9IsTReoLmQl1IRsy3WExe2j2RKWXQyXujfJ4fXF+jp08KxjVF4/tYP2CIRJx/A7UP/7keBta27bZqzAjsmbSTA==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64/1.9.8:
-    resolution: {integrity: sha512-CWzRbX2TM5IfHBC6uWM659qUOEDC4h0nn16ocG8yIq1IF3uZMzKRBHgGOT5m1BHom+R08V0NcjTmPRoqpiI0dg==}
+  /turbo-windows-arm64/1.9.9:
+    resolution: {integrity: sha512-CUu4hpeQo68JjDr0V0ygTQRLbS+/sNfdqEVV+Xz9136vpKn2WMQLAuUBVZV0Sp0S/7i+zGnplskT0fED+W46wQ==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo/1.9.8:
-    resolution: {integrity: sha512-dTouGZBm4a2fE0OPafcTQERCp4i3ZOow0Pr0JlOyxKmzJy0JRwXypH013kbZoK6k1ET5tS/g9rwUXIM/AmWXXQ==}
+  /turbo/1.9.9:
+    resolution: {integrity: sha512-+ZS66LOT7ahKHxh6XrIdcmf2Yk9mNpAbPEj4iF2cs0cAeaDU3xLVPZFF0HbSho89Uxwhx7b5HBgPbdcjQTwQkg==}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      turbo-darwin-64: 1.9.8
-      turbo-darwin-arm64: 1.9.8
-      turbo-linux-64: 1.9.8
-      turbo-linux-arm64: 1.9.8
-      turbo-windows-64: 1.9.8
-      turbo-windows-arm64: 1.9.8
+      turbo-darwin-64: 1.9.9
+      turbo-darwin-arm64: 1.9.9
+      turbo-linux-64: 1.9.9
+      turbo-linux-arm64: 1.9.9
+      turbo-windows-64: 1.9.9
+      turbo-windows-arm64: 1.9.9
     dev: true
 
   /tweetnacl/0.14.5:

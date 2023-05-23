@@ -13,16 +13,10 @@ export const authorizeApp = functions.https.onRequest(async (req, res) => {
         throw new Error("Must include app ID")
     }
 
-    // Add scopes
-    const passedScopes = req.query.scopes?.split(",") || []
-    google.authManager.options.scopes = [...new Set([
-        ...google.authManager.options.scopes,
-        ...passedScopes,
-    ])]
-
     // Respond with auth URL
     await google.authManager.respondWithAuthUrl(res, {
         appId: req.query.app_id,
+        additionalScopes: req.query.scopes?.split(",") || [],
     })
 })
 
