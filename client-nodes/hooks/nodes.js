@@ -453,7 +453,7 @@ export function useIntegrationAccounts(nodeId, app) {
         availableAccounts: Object.fromEntries(
             typeDef.requiredIntegrations?.map(integrationId => [
                 integrationId,
-                app?.integrations[integrationId]?.map(accountId => ({
+                app?.integrations?.[integrationId]?.map(accountId => ({
                     id: accountId,
                     nickname: app?.accountNicknames?.[accountId] || accountId.split(":")[1],
                 })) ?? []
