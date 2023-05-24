@@ -3,6 +3,7 @@ import { Group, Select, Text, ThemeIcon } from "@mantine/core"
 import { Integrations } from "@minus/client-nodes"
 import { useIntegrationAccounts } from "@minus/client-nodes/hooks/nodes"
 import { useAppContext } from "@web/modules/context"
+import { useEffect } from "react"
 
 
 export default function IntegrationAlert({ id }) {
@@ -14,6 +15,12 @@ export default function IntegrationAlert({ id }) {
     const select = accountId => _select(id, accountId)
     const selected = _selected[id]
     const available = _available[id]
+
+    // Side-effect: select the only available account
+    useEffect(() => {
+        if (available.length == 1 && !selected)
+            select(available[0].id)
+    }, [JSON.stringify(available)])
 
     return (
         <Group position="apart" px="sm">
