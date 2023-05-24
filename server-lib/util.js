@@ -52,3 +52,11 @@ export function regexFromObject(obj) {
 export function safeRegex(obj) {
     return obj instanceof RegExp ? obj : regexFromObject(obj)
 }
+
+
+export function dataWithId(doc) {
+    return {
+        ...doc.data(),
+        id: doc.id,
+    }
+}

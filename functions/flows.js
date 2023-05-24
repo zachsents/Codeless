@@ -105,9 +105,9 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
 })
 
 
-export const publish = functions.https.onCall(async (data) => {
+export const publish = functions.https.onCall(async ({ flowId }) => {
     try {
-        const flow = await Flow.fromId(data.flowId)
+        const flow = await Flow.fromId(flowId)
 
         const NodeDefinitions = await loadNodeDefinitions()
 
@@ -131,9 +131,9 @@ export const publish = functions.https.onCall(async (data) => {
 })
 
 
-export const unpublish = functions.https.onCall(async (data) => {
+export const unpublish = functions.https.onCall(async ({ flowId }) => {
     try {
-        const flow = await Flow.fromId(data.flowId)
+        const flow = await Flow.fromId(flowId)
 
         const NodeDefinitions = await loadNodeDefinitions()
 

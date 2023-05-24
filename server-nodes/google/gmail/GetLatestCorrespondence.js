@@ -1,4 +1,4 @@
-import { gmail } from "@minus/server-lib"
+import { gmail, google } from "@minus/server-lib"
 import { safeMap, zipObjects } from "../../arrayUtilities.js"
 
 
@@ -9,7 +9,7 @@ export default {
 
     async onInputsReady({ emailAddress, includeSelf }) {
 
-        const gmailApi = await gmail.getGmailAPI(global.info.appId)
+        const gmailApi = await google.getGoogleAPIFromNode(this, "gmail", "v1")
 
         const result = await safeMap(async (emailAddress, includeSelf) => {
 

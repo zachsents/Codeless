@@ -1,4 +1,9 @@
 import { createMimeMessage } from "mimetext"
+import { FieldValue } from "firebase-admin/firestore"
+
+
+/** @type {import("firebase-admin").firestore.Firestore} */
+const db = global.db
 
 
 /**
@@ -24,10 +29,19 @@ export async function watchInbox(gmail, { flow }) {
         userId: "me",
     })
 
-    // put email address & history ID in flow document
-    await flow.update({
-        "triggerData_gmailEmailAddress": emailAddress,
-        "triggerData_gmailHistoryId": historyId,
+    // put email address & history ID in trigger data document
+    await db.collection("triggerData").doc(flow.id).set({
+        gmailEmailAddress: emailAddress,
+        gmailHistoryId: historyId,
+    }, { merge: true })
+}
+
+
+export async function unwatchInbox(gmail, { flow }) {
+    // remove email address & history ID from trigger data document
+    await db.collection("triggerData").doc(flow.id).update({
+        gmailEmailAddress: FieldValue.delete(),
+        gmailHistoryId: FieldValue.delete(),
     })
 }
 

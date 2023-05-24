@@ -133,6 +133,7 @@ importers:
 
   functions:
     specifiers:
+      '@google-cloud/pubsub': ^3.6.0
       '@minus/auth-lib': workspace:*
       '@minus/gee3': workspace:*
       '@minus/server-lib': workspace:*
@@ -144,6 +145,7 @@ importers:
       firebase-functions: ^4.2.1
       node-fetch: ^3.3.0
     dependencies:
+      '@google-cloud/pubsub': 3.6.0
       '@minus/auth-lib': link:../auth-lib
       '@minus/gee3': link:../graph-execution-engine-3
       '@minus/server-lib': link:../server-lib
@@ -1378,12 +1380,10 @@ packages:
     dependencies:
       arrify: 2.0.1
       extend: 3.0.2
-    dev: true
 
   /@google-cloud/precise-date/3.0.1:
     resolution: {integrity: sha512-crK2rgNFfvLoSgcKJY7ZBOLW91IimVNmPfi1CL+kMTf78pTJYd29XqEVedAeBu4DwCJc0EDIp1MpctLgoPq+Uw==}
     engines: {node: '>=12.0.0'}
-    dev: true
 
   /@google-cloud/projectify/3.0.0:
     resolution: {integrity: sha512-HRkZsNmjScY6Li8/kb70wjGlDDyLkVk3KvoEo9uIoxSjYLJasGiCch9+PqRVDOCGUFvEIqyogl+BeqILL4OJHA==}
@@ -1392,7 +1392,6 @@ packages:
   /@google-cloud/promisify/2.0.4:
     resolution: {integrity: sha512-j8yRSSqswWi1QqUGKVEKOG03Q7qOoZP6/h2zN2YO+F5h2+DHU0bSrHCK9Y7lo2DI9fBd8qGAw795sf+3Jva4yA==}
     engines: {node: '>=10'}
-    dev: true
 
   /@google-cloud/promisify/3.0.1:
     resolution: {integrity: sha512-z1CjRjtQyBOYL+5Qr9DdYIfrdLBe746jRTYfaYU6MeXkqp7UfYs/jX16lFFVzZ7PGEJvqZNqYUEtb1mvDww4pA==}
@@ -1400,8 +1399,8 @@ packages:
     dev: false
     optional: true
 
-  /@google-cloud/pubsub/3.4.1:
-    resolution: {integrity: sha512-6sTJAFQYeUeAEyBiz2hMvEku3fUvFwNHKrkHjM3w6hcnN37xCH60NDlnZvGuT2rRXG24QBq6Fx3Pe/3nkaybUQ==}
+  /@google-cloud/pubsub/3.6.0:
+    resolution: {integrity: sha512-txGVVrQLUZZHh88BTwo2fUodCozbqC9F4YAMm7zZikQ1vlaLKrZtAK5U5QYikQcOtMwrNejFGx2rHegEKEHUuQ==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@google-cloud/paginator': 4.0.1
@@ -1423,7 +1422,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: true
 
   /@google-cloud/storage/6.10.1:
     resolution: {integrity: sha512-EtLlT0YbXtrbUxaNbEfTyTytrjELtl4i42flf8COg+Hu5+apdNjsFO9XEY39wshxAuVjLf4fCSm7GTSW+BD3gQ==}
@@ -2146,12 +2144,10 @@ packages:
   /@opentelemetry/api/1.4.1:
     resolution: {integrity: sha512-O2yRJce1GOc6PAy3QxFM4NzFiWzvScDC1/5ihYBL6BUEVdq0XMWN01sppE+H6bBXbaFYipjwFLEWLg5PaSOThA==}
     engines: {node: '>=8.0.0'}
-    dev: true
 
   /@opentelemetry/semantic-conventions/1.3.1:
     resolution: {integrity: sha512-wU5J8rUoo32oSef/rFpOT1HIjLjAv3qIDHkw1QIhODV3OpAVHi5oVzlouozg9obUmZKtbZ0qUe/m7FP0y0yBzA==}
     engines: {node: '>=8.12.0'}
-    dev: true
 
   /@pkgr/utils/2.3.1:
     resolution: {integrity: sha512-wfzX8kc1PMyUILA+1Z/EqoE4UCXGy0iRGMhPwdfae1+f0OXlLqCk+By+aMzgJBzR9AzS4CDizioG6Ss1gvAFJw==}
@@ -2714,7 +2710,6 @@ packages:
     resolution: {integrity: sha512-n0zoEj/fMdMOvqbHxmqnza/kXyoGgJmEpsXjpP+gEqE1Ye4yNqc7xWipKnUoMpWhMuzJQSfK2gMrwlElly7OGQ==}
     dependencies:
       '@types/node': 18.15.11
-    dev: true
 
   /@types/express-serve-static-core/4.17.33:
     resolution: {integrity: sha512-TPBqmR/HRYI3eC2E5hmiivIzv+bidAfXofM+sbonAGvyDhySGw9/PQZFt2BLOrjUUR++4eJVpx6KnLQK1Fk9tA==}
@@ -5392,7 +5387,7 @@ packages:
     engines: {node: ^14.18.0 || >=16.4.0}
     hasBin: true
     dependencies:
-      '@google-cloud/pubsub': 3.4.1
+      '@google-cloud/pubsub': 3.6.0
       abort-controller: 3.0.0
       ajv: 6.12.6
       archiver: 5.3.1
@@ -6138,7 +6133,6 @@ packages:
   /heap-js/2.2.0:
     resolution: {integrity: sha512-G3uM72G9F/zo9Hph/T7m4ZZVlVu5bx2f5CiCS78TBHz2mNIXnB5KRdEEYssXZJ7ldLDqID29bZ1D5ezCKQD2Zw==}
     engines: {node: '>=10.0.0'}
-    dev: true
 
   /hey-listen/1.0.8:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
@@ -7549,7 +7543,6 @@ packages:
 
   /lodash.snakecase/4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
-    dev: true
 
   /lodash.union/4.6.0:
     resolution: {integrity: sha512-c4pB2CdGrGdjMKYLA+XiRDO7Y0PRQbm/Gzg8qMj+QH+pFVAoTp5sBpO0odL3FjoPCGjK96p6qsP+yQoiLoOBcw==}
@@ -8378,7 +8371,6 @@ packages:
   /p-defer/3.0.0:
     resolution: {integrity: sha512-ugZxsxmtTln604yeYd29EGrNhazN2lywetzpKhfmQjW/VJmhpDmWbiX+h0zL8V91R0UXkhb3KtPmyq9PZw3aYw==}
     engines: {node: '>=8'}
-    dev: true
 
   /p-limit/2.3.0:
     resolution: {integrity: sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==}

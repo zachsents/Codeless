@@ -1,4 +1,4 @@
-import { gmail } from "@minus/server-lib"
+import { google, gmail } from "@minus/server-lib"
 import { safeMap } from "../../arrayUtilities.js"
 
 
@@ -17,7 +17,7 @@ export default {
         const triggerEmail = await this.state._triggerEmailPromise
 
         // get Gmail API
-        const gmailApi = await gmail.getGmailAPI(global.info.appId)
+        const gmailApi = await google.getGoogleAPIFromNode(this, "gmail", "v1")
 
         // get Message-ID header
         const messageIdHeader = triggerEmail.rawMessage.payload.headers.find(header => header.name == "Message-ID")?.value ?? ""

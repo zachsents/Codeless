@@ -1,4 +1,4 @@
-import { gmail } from "@minus/server-lib"
+import { gmail, google } from "@minus/server-lib"
 
 
 export default {
@@ -14,11 +14,14 @@ export default {
     },
 
     async onDeploy({ flow }) {
-        const gmailApi = await gmail.getGmailAPI(flow.app.id)
+        const gmailApi = await google.authManager.getAPI(this.data.selectedAccounts.google, {
+            api: "gmail",
+            version: "v1",
+        })
         await gmail.watchInbox(gmailApi, { flow })
     },
 
-    async onUndeploy() {
-
+    async onUndeploy({ flow }) {
+        await gmail.unwatchInbox(null, { flow })
     },
 }

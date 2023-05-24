@@ -1,4 +1,4 @@
-import { gmail } from "@minus/server-lib"
+import { gmail, google } from "@minus/server-lib"
 import { safeMap } from "../../arrayUtilities.js"
 
 
@@ -9,7 +9,7 @@ export default {
 
     async onInputsReady({ to, cc, subject, bodyPlainText, bodyHTML }) {
 
-        const gmailApi = await gmail.getGmailAPI(global.info.appId)
+        const gmailApi = await google.getGoogleAPIFromNode(this, "gmail", "v1")
 
         await safeMap((to, cc, subject, bodyPlainText, bodyHTML) => {
             if (!to || !subject || (!bodyPlainText && !bodyHTML))
