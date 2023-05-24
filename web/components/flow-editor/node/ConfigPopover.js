@@ -157,24 +157,26 @@ export default function ConfigPopover({ children }) {
                             </ScrollArea.Autosize>
 
                             {needsAccounts &&
-                                <Stack py="xs">
-                                    <Group position="apart">
-                                        <Text color="dimmed" size="sm">Integration Accounts</Text>
+                                <Stack spacing="xxs">
+                                    <Group position="right">
+                                        {/* <Text color={theme.other.halfDimmed} size="sm">Integration Accounts</Text> */}
 
                                         <Button
                                             component="a"
                                             href={`/app/${app?.id}?tab=integrations`}
                                             target="_blank"
                                             rightIcon={<TbExternalLink />}
-                                            size="xs" compact variant="light" color="gray"
+                                            size="xs" compact variant="subtle" color="gray"
                                         >
                                             Manage Accounts
                                         </Button>
                                     </Group>
 
-                                    {requiredIntegrations.map(integrationId =>
-                                        <IntegrationAlert id={integrationId} key={integrationId} />
-                                    )}
+                                    <Stack spacing="xxxs" px="sm">
+                                        {requiredIntegrations.map(integrationId =>
+                                            <IntegrationAlert id={integrationId} key={integrationId} />
+                                        )}
+                                    </Stack>
                                 </Stack>}
                         </AnimatedTabs>
                     </>}

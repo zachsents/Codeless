@@ -26,7 +26,7 @@ import { useActionQuery, useAppRenaming, useFlowRenaming, useMustBeSignedIn, use
 import { useSearch } from "@web/modules/search"
 import { jc, stopPropagation } from "@web/modules/util"
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { TbArrowRight, TbChartDots3, TbChevronUp, TbConfetti, TbConfettiOff, TbDots, TbPencil, TbPlug, TbPlus, TbReportMoney, TbTrash } from "react-icons/tb"
 
 
@@ -64,6 +64,9 @@ function AppOverview() {
         selector: flow => flow.name,
         highlight: true,
     })
+
+    // keep track of "integration" param so we can show this one at the top of the list
+    const [integrationParam] = useQueryParam("integration")
 
 
     return (
@@ -158,8 +161,11 @@ function AppOverview() {
                                     </Title>
 
                                     <SimpleGrid cols={1}>
-                                        {Object.entries(Integrations)
-                                            .map(([, integration]) =>
+                                        {Object.values(Integrations)
+                                            // put integration param on top
+                                            .sort((a, b) => a.id == integrationParam ? -1 : b.id == integrationParam ? 1 : 0)
+                                            // map to cards
+                                            .map(integration =>
                                                 <IntegrationCard integration={integration} key={integration.id} />
                                             )}
                                     </SimpleGrid>
@@ -248,7 +254,6 @@ function FlowCard({ flow, displayNameParts }) {
 
     // edit url
     const editUrl = `/app/${app?.id}/flow/${flow.id}/edit`
-
 
     /**
      * Trials & tribulations for making the text overflow properly:
@@ -384,6 +389,12 @@ function IntegrationCard({ integration }) {
         // Open the authorization function in a new window
         window.open(`${functionUrl(integration.authorizationFunction)}?${params.toString()}`)
     }
+
+    // Side-effect: when query param "integration" changes, open the card
+    const [integrationParam] = useQueryParam("integration")
+    useEffect(() => {
+        integrationParam == integration.id && handlers.open()
+    }, [integrationParam])
 
     return (
         <Card withBorder shadow="xs">

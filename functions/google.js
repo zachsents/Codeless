@@ -33,5 +33,5 @@ export const appAuthorizationRedirect = onRequest(
  * Check if a Google app is authorized
  */
 export const checkAuthorization = onCall(
-    ({ accountId, requiredScopes }) => google.authManager.isAuthorized(accountId, { scopes: requiredScopes })
+    ({ data: { accountId, requiredScopes } }) => google.authManager.isAuthorized(accountId, { scopes: requiredScopes })
 )
