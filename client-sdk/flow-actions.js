@@ -233,13 +233,8 @@ export async function getFlowCountForApp(appId) {
  * @param {string} flowId
  */
 export async function publishFlow(flowId) {
-
     assertFlowId(flowId)
-
-    const { error } = await httpsCallable(functions, "flow-publish")({ flowId })
-
-    if (error)
-        throw new Error(error)
+    await httpsCallable(functions, "flow-publish")({ flowId })
 }
 
 
@@ -250,13 +245,8 @@ export async function publishFlow(flowId) {
  * @param {string} flowId
  */
 export async function unpublishFlow(flowId) {
-
     assertFlowId(flowId)
-
-    const { error } = await httpsCallable(functions, "flow-unpublish")({ flowId })
-
-    if (error)
-        throw new Error(error)
+    await httpsCallable(functions, "flow-unpublish")({ flowId })
 }
 
 

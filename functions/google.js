@@ -1,11 +1,11 @@
 import { google } from "@minus/server-lib"
-import functions from "firebase-functions"
+import { onCall, onRequest } from "firebase-functions/v2/https"
 
 
 /**
  * Authorize Google by redirecting to auth URL
  */
-export const authorizeApp = functions.https.onRequest(async (req, res) => {
+export const authorizeApp = onRequest(async (req, res) => {
 
     // Verify params -- must include app ID
     if (!req.query.app_id) {
@@ -24,7 +24,7 @@ export const authorizeApp = functions.https.onRequest(async (req, res) => {
 /**
  * Handle authorization callback from Google
  */
-export const appAuthorizationRedirect = functions.https.onRequest(
+export const appAuthorizationRedirect = onRequest(
     google.authManager.handleAuthorizationCallback.bind(google.authManager)
 )
 
@@ -32,6 +32,6 @@ export const appAuthorizationRedirect = functions.https.onRequest(
 /**
  * Check if a Google app is authorized
  */
-export const checkAuthorization = functions.https.onCall(
+export const checkAuthorization = onCall(
     ({ accountId, requiredScopes }) => google.authManager.isAuthorized(accountId, { scopes: requiredScopes })
 )

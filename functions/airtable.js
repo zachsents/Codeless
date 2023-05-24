@@ -33,14 +33,14 @@ export const appAuthorizationRedirect = onRequest(
  * Check if Airtable is authorized
  */
 export const checkAuthorization = onCall(
-    ({ accountId }) => airtable.authManager.isAuthorized(accountId)
+    ({ data: { accountId } }) => airtable.authManager.isAuthorized(accountId)
 )
 
 
 /**
  * Get table name given base ID and table ID
  */
-export const getTableNameFromId = onCall(async ({ accountId, baseId, tableId }) => {
+export const getTableNameFromId = onCall(async ({ data: { accountId, baseId, tableId } }) => {
 
     // check params
     if (!accountId || !baseId || !tableId)

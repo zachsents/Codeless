@@ -16,6 +16,14 @@ export async function getFlow(id, { transaction } = {}) {
     return dataWithId(doc)
 }
 
+
+export async function updateFlow(id, changes = {}, { transaction } = {}) {
+    const docRef = db.collection("flows").doc(id)
+
+    return transaction ? transaction.update(docRef, changes) : docRef.update(changes)
+}
+
+
 export async function getFlowTriggerData(id, { transaction } = {}) {
 
     const docRef = db.collection("triggerData").doc(id)
@@ -27,6 +35,7 @@ export async function getFlowTriggerData(id, { transaction } = {}) {
     return dataWithId(doc)
 }
 
+
 export async function updateFlowTriggerData(id, changes = {}, { transaction } = {}) {
 
     const docRef = db.collection("triggerData").doc(id)
@@ -34,7 +43,11 @@ export async function updateFlowTriggerData(id, changes = {}, { transaction } = 
     return transaction ? transaction.update(docRef, changes) : docRef.update(changes)
 }
 
-export async function getFlowGraph(id, { transaction } = {}) {
+
+export async function getFlowGraph(id, {
+    transaction,
+    parse = false,
+} = {}) {
 
     const docRef = db.collection("flowGraphs").doc(id)
     const doc = transaction ? await transaction.get(docRef) : await docRef.get()
@@ -42,8 +55,11 @@ export async function getFlowGraph(id, { transaction } = {}) {
     if (!doc.exists)
         throw new Error(`No flow graph found for ID ${id}.`)
 
-    return dataWithId(doc)
+    const docData = dataWithId(doc)
+
+    return parse ? JSON.parse(docData.graph) : docData
 }
+
 
 export async function getFlowGraphForFlow(flowId, {
     transaction,
@@ -51,7 +67,5 @@ export async function getFlowGraphForFlow(flowId, {
 } = {}) {
 
     const flow = await getFlow(flowId, { transaction })
-    const graph = await getFlowGraph(flow.graph, { transaction })
-
-    return parse ? JSON.parse(graph.graph) : graph
+    return getFlowGraph(flow.graph, { transaction, parse })
 }

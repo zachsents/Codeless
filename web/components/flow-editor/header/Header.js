@@ -8,7 +8,7 @@ import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
 import FlowControlButton from "@web/components/FlowControlButton"
 import { useFlowContext } from "@web/modules/context"
 import { deselectAll } from "@web/modules/graph-util"
-import { useState } from "react"
+import { useActionQuery } from "@web/modules/hooks"
 import { useReactFlow } from "reactflow"
 import RunReplayPopover from "../run-replay/RunReplayPopover"
 import FlowTitle from "./FlowTitle"
@@ -20,15 +20,11 @@ export default function Header() {
     const { query: { appId } } = useRouter()
     const { flow, dirty: isFlowUnsaved } = useFlowContext()
 
-    const publishFlow = usePublishFlow(flow?.id)
-    const unpublishFlow = useUnpublishFlow(flow?.id)
-    const [isPublishing, setIsPublishing] = useState(false)
-
-    const handlePublishChange = async value => {
-        setIsPublishing(true)
-        await (value ? publishFlow : unpublishFlow)()
-        setIsPublishing(false)
-    }
+    // Enabling/disabling a flow
+    const _publishFlow = usePublishFlow(flow?.id)
+    const _unpublishFlow = useUnpublishFlow(flow?.id)
+    const [enableFlow, { isFetching: isEnabling }] = useActionQuery(_publishFlow, ["publish", flow?.id])
+    const [disableFlow, { isFetching: isDisabling }] = useActionQuery(_unpublishFlow, ["unpublish", flow?.id])
 
     const publishStatus = flow?.published ? {
         label: "Enabled",
@@ -95,7 +91,7 @@ export default function Header() {
                     </>}
 
                     {/* Publishing */}
-                    {isPublishing ?
+                    {(isEnabling || isDisabling) ?
                         <Group>
                             <Loader size="xs" />
                             <Text size="xs" color="dimmed">Working on it...</Text>
@@ -111,7 +107,7 @@ export default function Header() {
                                 color="green"
                                 size="xs"
                                 checked={flow?.published}
-                                onChange={event => handlePublishChange(event.currentTarget.checked)}
+                                onChange={flow?.published ? disableFlow : enableFlow}
                             />
                         </Group>}
 
