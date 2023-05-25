@@ -151,7 +151,7 @@ function PlanCard({ plan: planKey, emph = false, annual = false }) {
 
                     <Box>
                         {isFree ?
-                            <Link href="/apps">
+                            <Link href="/login">
                                 <Button
                                     fullWidth radius="xl" size="xs" variant={emph ? "filled" : "light"}
                                 >
