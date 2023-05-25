@@ -14,13 +14,13 @@ const db = global.db
  * @param {object} [options]
  * @param {object} [options.flow]
  */
-export async function watchInbox(gmail, { flow, ...options }) {
+export async function watchInbox(gmail, { flow, labelIds = ["INBOX"], labelFilterAction = "include", ...options } = {}) {
 
     // start watching
     const { data: { historyId } } = await gmail.users.watch({
         userId: "me",
-        labelIds: ["INBOX"],
-        labelFilterAction: "include",
+        labelIds,
+        labelFilterAction,
         topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/gmail`,
         ...options,
     })
@@ -34,6 +34,7 @@ export async function watchInbox(gmail, { flow, ...options }) {
     await db.collection("triggerData").doc(flow.id).set({
         gmailEmailAddress: emailAddress,
         gmailHistoryId: historyId,
+        gmailLabelIds: labelIds,
     }, { merge: true })
 }
 

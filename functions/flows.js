@@ -26,7 +26,7 @@ export const runWritten = onDocumentWritten("flowRuns/{flowRunId}", async ({ dat
              * Pending - validate flow
              */
             case RunStatus.Pending: {
-                const { valid, errors } = await _validate(run.flow)
+                const { valid, errors } = await _validate(run.flow, run.payload)
 
                 const status = valid ?
                     RunStatus.Validated :
@@ -215,7 +215,7 @@ export const runFromUrl = onRequest({
 })
 
 
-async function _validate(flowId) {
+async function _validate(flowId, payload) {
 
     // Load flow
     const flow = await getFlow(flowId)
@@ -235,6 +235,7 @@ async function _validate(flowId) {
             try {
                 await NodeDefinitions[node.type].validate?.call(node, {
                     flow,
+                    payload,
                 })
             }
             catch (err) {

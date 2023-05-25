@@ -8,14 +8,18 @@ const HISTORY_UPDATE_FOR_FLOW_TOPIC = "gmail-history-update-for-flow"
 const EXCLUDED_LABELS = ["DRAFT", "SENT", "TRASH", "SPAM"]
 
 
-export const handleMessage = onMessagePublished("gmail", async (message) => {
+export const handleMessage = onMessagePublished("gmail", async (_event) => {
 
-    if (!message.data)
+    // Functions shell only works with v1, so payload gets messed up -- this is a 
+    // workaround for testing locally
+    const event = _event.message == null ? _event.data : event
+
+    if (!event.message.data)
         throw new Error("No message data in PubSub message from Gmail topic")
 
     // Parse out message data
     const { emailAddress, historyId: newHistoryId } = JSON.parse(
-        Buffer.from(message.data, 'base64').toString()
+        Buffer.from(event.message.data, "base64").toString()
     )
 
     // Query for flows involving this email address
@@ -38,14 +42,23 @@ export const handleMessage = onMessagePublished("gmail", async (message) => {
 })
 
 
-export const handleHistoryUpdateForFlow = onMessagePublished(HISTORY_UPDATE_FOR_FLOW_TOPIC, async ({ flowId, newHistoryId }) => {
+export const handleHistoryUpdateForFlow = onMessagePublished(HISTORY_UPDATE_FOR_FLOW_TOPIC, async (_event) => {
+
+    // Functions shell only works with v1, so payload gets messed up -- this is a 
+    // workaround for testing locally
+    const event = _event.message == null ? _event.data : event
+
+    const { flowId, newHistoryId } = JSON.parse(event.message.data)
 
     // Load in flow graph and find trigger
     const flowGraph = await getFlowGraphForFlow(flowId, { parse: true })
     const triggerNode = flowGraph.nodes.find(node => node.id === "trigger")
 
     // Get Gmail API
-    const gmailApi = await google.getGoogleAPIFromNode(triggerNode, "gmail", "v1")
+    const gmailApi = await google.authManager.getAPI(triggerNode.data.selectedAccounts.google, {
+        api: "gmail",
+        version: "v1",
+    })
 
     /**
      * Fetch and update flow's old history ID -- it's important this happens
@@ -122,7 +135,7 @@ export const refreshWatches = onSchedule("every day 00:00", async () => {
 
     // Create a unique set of email addresses
     const emailAddresses = [...new Set(
-        querySnapshot.docs.map(doc => doc.gmailEmailAddress)
+        querySnapshot.docs.map(doc => doc.data().gmailEmailAddress)
     )]
 
     console.log(`Refreshing Gmail watch for ${emailAddresses.length} email addresses.`)
@@ -134,10 +147,13 @@ export const refreshWatches = onSchedule("every day 00:00", async () => {
             version: "v1",
         })
 
+        // Get trigger data
+        const triggerData = querySnapshot.docs.find(doc => doc.data().gmailEmailAddress === emailAddress).data()
+
         // Refresh watch
         await gmailApi.users.watch({
             userId: "me",
-            labelIds: ["INBOX"],
+            labelIds: triggerData.gmailLabelIds,
             labelFilterAction: "include",
             topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/gmail`,
         })

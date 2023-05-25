@@ -1,4 +1,4 @@
-import { gmail, google } from "@minus/server-lib"
+import { gmail, google, safeRegex } from "@minus/server-lib"
 
 
 export default {
@@ -18,10 +18,27 @@ export default {
             api: "gmail",
             version: "v1",
         })
-        await gmail.watchInbox(gmailApi, { flow })
+
+        await gmail.watchInbox(gmailApi, {
+            flow,
+            labelIds: this.data["InputValue.labels"],
+        })
     },
 
     async onUndeploy({ flow }) {
         await gmail.unwatchInbox(null, { flow })
     },
+
+    validate({ payload }) {
+        const subjectFilter = this.data["InputValue.subjectFilter"]
+
+        if (!subjectFilter || !subjectFilter.source)
+            return  // no filter, so no validation needed
+
+        if (typeof subjectFilter === "string" && !payload.subject.includes(subjectFilter))
+            throw new Error("Subject does not match filter")
+
+        if (!safeRegex(subjectFilter).test(payload.subject))
+            throw new Error("Subject does not match filter")
+    }
 }
