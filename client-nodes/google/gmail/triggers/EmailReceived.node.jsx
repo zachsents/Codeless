@@ -57,8 +57,8 @@ export default {
         },
         {
             id: "subjectFilter",
-            description: "Only emails with a subject containing this text will trigger the node.",
-            tooltip: "Only emails with a subject containing this text will trigger the node.",
+            description: "Only emails with a subject containing this text will trigger the node. Leave blank to allow all emails.",
+            tooltip: "Only emails with a subject containing this text will trigger the node. Leave blank to allow all emails.",
             icon: Filter,
             allowedModes: ["config"],
             defaultMode: "config",
