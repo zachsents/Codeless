@@ -14,7 +14,7 @@ const db = global.db
  * @param {object} [options]
  * @param {object} [options.flow]
  */
-export async function watchInbox(gmail, { flow }) {
+export async function watchInbox(gmail, { flow, ...options }) {
 
     // start watching
     const { data: { historyId } } = await gmail.users.watch({
@@ -22,6 +22,7 @@ export async function watchInbox(gmail, { flow }) {
         labelIds: ["INBOX"],
         labelFilterAction: "include",
         topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/gmail`,
+        ...options,
     })
 
     // get email address for user
@@ -178,7 +179,18 @@ export function parseFromHeader(fromHeader) {
  * @return {string} 
  */
 export function cleanTextBody(textBody) {
-    return textBody
-        .replaceAll(/<http.+?>/g, "")   // remove links
+    let cleaned = textBody
+        .replaceAll(/<http.+?>/g, "")   // remove links in <brackets>
         .replaceAll(/\n{3,}/g, "\n\n")  // shrink more than 3 line breaks
+        .replaceAll(/&\w{3,5};/g, "")   // remove HTML entities
+        .replaceAll(/@media.+?{.+}/gs, "") // remove media queries
+
+    // if there's more than 5 URLs >80 characters in the email, remove them all
+    // these are probably product links with marketing tags
+    const urlPattern = /https?:\/\/\S{80,}/g
+    const urls = cleaned.match(urlPattern)?.length ?? 0
+    if (urls > 5)
+        cleaned = cleaned.replaceAll(urlPattern, "")
+
+    return cleaned
 }
