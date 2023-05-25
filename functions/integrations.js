@@ -1,9 +1,9 @@
 import { FieldValue } from "firebase-admin/firestore"
-import { onCall } from "firebase-functions/v2/https"
+import functions from "firebase-functions"
 import { db } from "./init.js"
 
 
-export const disconnect = onCall(async ({ data: { appId, integrationId, accountId }, auth }) => {
+export const disconnect = functions.https.onCall(async ({ appId, integrationId, accountId }, { auth }) => {
 
     // Get app
     const appRef = db.collection("apps").doc(appId)

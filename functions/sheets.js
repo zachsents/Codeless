@@ -1,9 +1,8 @@
 import { sheets } from "@minus/server-lib"
 import functions from "firebase-functions"
-import { onCall } from "firebase-functions/v2/https"
 
 
-export const getSpreadsheetDetails = onCall(async ({ data: { accountId, spreadsheetId } }) => {
+export const getSpreadsheetDetails = functions.https.onCall(async ({ accountId, spreadsheetId }) => {
 
     // Check params
     if (!accountId || !spreadsheetId)

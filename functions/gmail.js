@@ -1,6 +1,5 @@
 import { RunStatus, getFlowGraphForFlow, getFlowTriggerData, gmail, google, updateFlowTriggerData } from "@minus/server-lib"
-import { onMessagePublished } from "firebase-functions/v2/pubsub"
-import { onSchedule } from "firebase-functions/v2/scheduler"
+import functions from "firebase-functions"
 import { db, pubsub } from "./init.js"
 
 
@@ -8,18 +7,14 @@ const HISTORY_UPDATE_FOR_FLOW_TOPIC = "gmail-history-update-for-flow"
 const EXCLUDED_LABELS = ["DRAFT", "SENT", "TRASH", "SPAM"]
 
 
-export const handleMessage = onMessagePublished("gmail", async (_event) => {
+export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message) => {
 
-    // Functions shell only works with v1, so payload gets messed up -- this is a 
-    // workaround for testing locally
-    const event = _event.message == null ? _event.data : event
-
-    if (!event.message.data)
+    if (!message.data)
         throw new Error("No message data in PubSub message from Gmail topic")
 
     // Parse out message data
     const { emailAddress, historyId: newHistoryId } = JSON.parse(
-        Buffer.from(event.message.data, "base64").toString()
+        Buffer.from(message.data, "base64").toString()
     )
 
     // Query for flows involving this email address
@@ -42,13 +37,9 @@ export const handleMessage = onMessagePublished("gmail", async (_event) => {
 })
 
 
-export const handleHistoryUpdateForFlow = onMessagePublished(HISTORY_UPDATE_FOR_FLOW_TOPIC, async (_event) => {
+export const handleHistoryUpdateForFlow = functions.pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).onPublish(async (message) => {
 
-    // Functions shell only works with v1, so payload gets messed up -- this is a 
-    // workaround for testing locally
-    const event = _event.message == null ? _event.data : event
-
-    const { flowId, newHistoryId } = JSON.parse(event.message.data)
+    const { flowId, newHistoryId } = JSON.parse(message.data)
 
     // Load in flow graph and find trigger
     const flowGraph = await getFlowGraphForFlow(flowId, { parse: true })
@@ -126,7 +117,7 @@ export const handleHistoryUpdateForFlow = onMessagePublished(HISTORY_UPDATE_FOR_
 })
 
 
-export const refreshWatches = onSchedule("every day 00:00", async () => {
+export const refreshWatches = functions.pubsub.schedule("every day 00:00").onRun(async () => {
 
     // Get triggerData documents with Gmail email attached
     const querySnapshot = await db.collection("triggerData")

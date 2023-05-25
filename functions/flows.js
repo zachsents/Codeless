@@ -3,13 +3,11 @@ import { RunStatus, getFlow, getFlowGraph, updateFlow } from "@minus/server-lib"
 import { loadNodeDefinitions } from "@minus/server-nodes"
 import { FieldValue } from "firebase-admin/firestore"
 import { getFunctions } from "firebase-admin/functions"
-import { onDocumentWritten } from "firebase-functions/v2/firestore"
-import { onCall, onRequest } from "firebase-functions/v2/https"
-import { onTaskDispatched } from "firebase-functions/v2/tasks"
+import functions from "firebase-functions"
 import { db } from "./init.js"
 
 
-export const runWritten = onDocumentWritten("flowRuns/{flowRunId}", async ({ data: change }) => {
+export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {
 
     // Quit if document is deleted
     if (!change.after.exists)
@@ -117,7 +115,7 @@ export const runWritten = onDocumentWritten("flowRuns/{flowRunId}", async ({ dat
 /**
  * Publish a flow
  */
-export const publish = onCall(async ({ data: { flowId } }) => {
+export const publish = functions.https.onCall(async ({ flowId }) => {
 
     // Load flow
     const flow = await getFlow(flowId)
@@ -145,7 +143,7 @@ export const publish = onCall(async ({ data: { flowId } }) => {
 /**
  * Unpublish a flow
  */
-export const unpublish = onCall(async ({ data: { flowId } }) => {
+export const unpublish = functions.https.onCall(async ({ flowId }) => {
 
     // Load flow
     const flow = await getFlow(flowId)
@@ -173,7 +171,7 @@ export const unpublish = onCall(async ({ data: { flowId } }) => {
 /**
  * Start a run scheduled previously
  */
-export const startScheduledRun = onTaskDispatched(async ({ data: { flowRunId } }) => {
+export const startScheduledRun = functions.tasks.taskQueue().onDispatch(async ({ flowRunId }) => {
     await db.doc(`flowRuns/${flowRunId}`).update({ status: RunStatus.Pending })
 })
 
@@ -181,9 +179,10 @@ export const startScheduledRun = onTaskDispatched(async ({ data: { flowRunId } }
 /**
  * Run a flow from a URL
  */
-export const runFromUrl = onRequest({
-    cors: "*",
-}, async (req, res) => {
+export const runFromUrl = functions.https.onRequest(async (req, res) => {
+
+    // allow CORS from all origins
+    res.set("Access-Control-Allow-Origin", "*")
 
     const flowId = req.query.flow_id
 

@@ -1,12 +1,12 @@
 import { airtable } from "@minus/server-lib"
-import { HttpsError, onCall, onRequest } from "firebase-functions/v2/https"
+import functions from "firebase-functions"
 import fetch from "node-fetch"
 
 
 /**
  * Authorize Airtable by redirecting to auth URL
  */
-export const authorizeApp = onRequest(async (request, response) => {
+export const authorizeApp = functions.https.onRequest(async (request, response) => {
 
     // Verify params -- must include app ID
     if (!request.query.app_id) {
@@ -24,7 +24,7 @@ export const authorizeApp = onRequest(async (request, response) => {
 /**
  * Handle authorization callback from Airtable
  */
-export const appAuthorizationRedirect = onRequest(
+export const appAuthorizationRedirect = functions.https.onRequest(
     airtable.authManager.handleAuthorizationCallback.bind(airtable.authManager)
 )
 
@@ -32,19 +32,19 @@ export const appAuthorizationRedirect = onRequest(
 /**
  * Check if Airtable is authorized
  */
-export const checkAuthorization = onCall(
-    ({ data: { accountId } }) => airtable.authManager.isAuthorized(accountId)
+export const checkAuthorization = functions.https.onCall(
+    ({ accountId }) => airtable.authManager.isAuthorized(accountId)
 )
 
 
 /**
  * Get table name given base ID and table ID
  */
-export const getTableNameFromId = onCall(async ({ data: { accountId, baseId, tableId } }) => {
+export const getTableNameFromId = functions.https.onCall(async ({ accountId, baseId, tableId }) => {
 
     // check params
     if (!accountId || !baseId || !tableId)
-        throw new HttpsError("invalid-argument", "Must include integration account path and Airtable base ID and table ID")
+        throw new functions.https.HttpsError("invalid-argument", "Must include integration account path and Airtable base ID and table ID")
 
     // airtable.js library doesn't provide access to the Metadata API
     const res = await fetch(`https://api.airtable.com/v0/meta/bases/${baseId}/tables`, {
@@ -55,7 +55,7 @@ export const getTableNameFromId = onCall(async ({ data: { accountId, baseId, tab
 
     // check for errors
     if (res.error)
-        throw new HttpsError("unknown", `${res.error.type}: ${res.error.message}`)
+        throw new functions.https.HttpsError("unknown", `${res.error.type}: ${res.error.message}`)
 
     return res.tables?.find(table => table.id == tableId)?.name
 })
