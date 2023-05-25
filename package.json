@@ -19,7 +19,7 @@
         "jest": "^29.5.0",
         "prettier": "latest",
         "rimraf": "^4.4.1",
-        "turbo": "latest"
+        "turbo": "^1.9.9"
     },
     "engines": {
         "node": ">=14.0.0"
