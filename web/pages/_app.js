@@ -32,7 +32,7 @@ export default function MyApp({ Component, pageProps }) {
                         <Component {...pageProps} />
                     </div>
                     <RouterTransition />
-                    <Notifications />
+                    <Notifications autoClose={4000} />
                 </ModalsProvider>
             </MantineProvider>
         </QueryClientProvider>
