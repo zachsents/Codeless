@@ -1,6 +1,5 @@
-import { logger } from "../../logger.js"
-import { deepFlat } from "../../util.js"
-import { Operation, TableField } from "../../types/index.js"
+import { deepFlat } from "../../../util.js"
+import { Operation, TableField } from "../../../types/index.js"
 import { Row } from "./Row.js"
 import { Range } from "./Range.js"
 
@@ -50,15 +49,14 @@ export class Table {
         sortOrder = "asc",
     } = {}) {
 
-        logger.setPrefix("Google Sheets - Find Rows")
-        // logger.table({ filters: filters.length, limit, sortBy, sortOrder })
+        // console.table({ filters: filters.length, limit, sortBy, sortOrder })
 
         // compile filters
         /** @type {boolean | Operation} */
         const joinedFilter = Operation.And(...deepFlat(filters))
 
-        logger.debug("Filter:".joinedFilter?.constructor?.name ?? typeof joinedFilter)
-        // logger.debug(joinedFilter, "\n")
+        console.debug("Filter:".joinedFilter?.constructor?.name ?? typeof joinedFilter)
+        // console.debug(joinedFilter, "\n")
 
         // find which columns we need to get
         const filterFields = [...new Set(
@@ -76,13 +74,13 @@ export class Table {
 
         // if there's no ranges, we should just evaluate the filter condition
         if (ranges.length == 0) {
-            logger.debug("No field ranges to query")
+            console.debug("No field ranges to query")
 
             // first see if condition is falsey
             if (!joinedFilter.valueOf())
-                return logger.debug("Condition is false. Returning empty set."), []
+                return console.debug("Condition is false. Returning empty set."), []
 
-            logger.debug("Condition is truthy. Continuing.")
+            console.debug("Condition is truthy. Continuing.")
 
             // if we're not sorting, limit here
             const range = sortBy || limit == null ?
@@ -108,7 +106,7 @@ export class Table {
             })
         }
         else {
-            logger.debug("Querying field ranges")
+            console.debug("Querying field ranges")
 
             // query the column ranges
             const columnData = await this.spreadsheet.batchGet(ranges, {
@@ -135,7 +133,7 @@ export class Table {
                 record => joinedFilter.substitute(TableField, tf => record[tf.field]).valueOf()
             )
 
-            logger.debug(`Filtered from ${records.length} to ${filteredRecords.length} row(s)`)
+            console.debug(`Filtered from ${records.length} to ${filteredRecords.length} row(s)`)
 
             // if we're not sorting, then limit before we fetch
             if (!sortBy && limit != null)
@@ -164,7 +162,7 @@ export class Table {
             })
         }
 
-        logger.debug(`Got ${filteredRows.length} row(s)`)
+        console.debug(`Got ${filteredRows.length} row(s)`)
 
         // sort & limit
         if (sortBy) {

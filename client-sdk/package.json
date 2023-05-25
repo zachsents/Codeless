@@ -9,8 +9,10 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@minus/util": "workspace:*",
         "@testing-library/react": "^13.4.0",
         "firebase": "^9.17.1",
+        "lodash": "^4.17.21",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-query": "^3.39.3"

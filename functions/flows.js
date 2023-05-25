@@ -1,98 +1,109 @@
+import { Graph } from "@minus/gee3"
+import { RunStatus, getFlow, getFlowGraph, updateFlow } from "@minus/server-lib"
+import { loadNodeDefinitions } from "@minus/server-nodes"
 import { FieldValue } from "firebase-admin/firestore"
 import { getFunctions } from "firebase-admin/functions"
-import functions from "firebase-functions"
+import { onDocumentWritten } from "firebase-functions/v2/firestore"
+import { onCall, onRequest } from "firebase-functions/v2/https"
+import { onTaskDispatched } from "firebase-functions/v2/tasks"
 import { db } from "./init.js"
-import { Graph } from "@minus/gee3"
-import { loadNodeDefinitions } from "@minus/server-nodes"
-import { RunStatus, logger } from "@minus/server-sdk"
 
 
-export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {
+export const runWritten = onDocumentWritten("flowRuns/{flowRunId}", async ({ data: change }) => {
 
+    // Quit if document is deleted
     if (!change.after.exists)
         return
 
+    // Grab run
     const run = { id: change.after.id, ...change.after.data() }
 
-    logger.setPrefix(`Flow-${run.flow}`)
+    const debugPrefix = `[Flow: ${run.flow}, Run: ${run.id}]`
 
     try {
-        /**
-         * Pending
-         */
-        if (run.status == RunStatus.Pending || !run.status) {
-            const { valid, error } = await _validate(run.flow)
+        switch (run.status) {
+            /**
+             * Pending - validate flow
+             */
+            case RunStatus.Pending: {
+                const { valid, errors } = await _validate(run.flow, run.payload)
 
-            const status = valid ? RunStatus.Validated : RunStatus.FailedValidation
-            await change.after.ref.update({
-                status,
-                validationError: error ?? null,
-                validatedAt: FieldValue.serverTimestamp()
-            })
+                const status = valid ?
+                    RunStatus.Validated :
+                    RunStatus.FailedValidation
 
-            logger.log(`Finished validation with status: "${status}"`)
-            logger.done()
-            return
-        }
+                await change.after.ref.update({
+                    status,
+                    validationErrors: errors ?? null,
+                    validatedAt: FieldValue.serverTimestamp()
+                })
 
-        /**
-         * Scheduled
-         */
-        if (run.status == RunStatus.Scheduled) {
-
-            if (!run.scheduledFor)
-                throw new Error("Scheduled run doesn't include a time in 'scheduledFor' field")
-
-            await getFunctions().taskQueue("flow-startScheduledRun").enqueue({
-                flowRunId: run.id
-            }, {
-                scheduleTime: new Date(run.scheduledFor.toMillis()),
-            })
-
-            logger.log(`Scheduled flow`)
-            logger.done()
-            return
-        }
-
-        /**
-         * Validated
-         */
-        if (run.status == RunStatus.Validated) {
-
-            // execute flow
-            logger.log(`Beginning flow run ${run.id}`)
-            const flow = await Flow.fromId(run.flow)
-            global.info = {
-                flow,
-                flowId: flow.id,
-                app: flow.app,
-                appId: flow.app.id,
-            }
-            const { errors, inputs, outputs, returns } = await flow.run(run.payload)
-
-            // update doc with run info
-            const status = Object.keys(errors).length ? RunStatus.FinishedWithErrors : RunStatus.Finished
-            await change.after.ref.update({
-                status,
-                errors,
-                inputs,
-                outputs,
-                returns,
-                ranAt: FieldValue.serverTimestamp(),
-            })
-
-            // index the flow's edges if it was successful
-            try {
-                if (status == RunStatus.Finished)
-                    await flow.graph.indexEdges()
-            }
-            catch (err) {
-                console.error(err)
+                console.debug(debugPrefix, `Finished validation with status: "${status}"`)
+                break
             }
 
-            logger.log(`Finished flow run ${run.id} with status: "${status}"`)
-            logger.done()
-            return
+            /**
+             * Scheduled - enqueue flow to run at scheduled time
+             */
+            case RunStatus.Scheduled: {
+
+                if (!run.scheduledFor)
+                    throw new Error("Scheduled run doesn't include a time in 'scheduledFor' field")
+
+                await getFunctions().taskQueue("flow-startScheduledRun").enqueue({
+                    flowRunId: run.id
+                }, {
+                    scheduleTime: new Date(run.scheduledFor.toMillis()),
+                })
+
+                console.debug(debugPrefix, `Scheduled flow`)
+                break
+            }
+
+            /**
+             * Validated - run flow, store results, index edges
+             */
+            case RunStatus.Validated: {
+
+                console.debug(debugPrefix, "Running flow")
+
+                // Load flow
+                const flow = await Flow.fromId(run.flow)
+
+                // Globalize some info
+                global.info = {
+                    flow,
+                    flowId: flow.id,
+                    app: flow.app,
+                    appId: flow.app.id,
+                }
+
+                // Run flow
+                const { errors, inputs, outputs, returns } = await flow.run(run.payload)
+
+                // update doc with run info
+                const status = Object.keys(errors).length ? RunStatus.FinishedWithErrors : RunStatus.Finished
+                await change.after.ref.update({
+                    status,
+                    errors,
+                    inputs,
+                    outputs,
+                    returns,
+                    ranAt: FieldValue.serverTimestamp(),
+                })
+
+                // Index the flow's edges if it was successful
+                try {
+                    if (status == RunStatus.Finished)
+                        await flow.graph.indexEdges()
+                }
+                catch (err) {
+                    console.error(err)
+                }
+
+                console.debug(debugPrefix, `Finished with status: "${status}"`)
+                break
+            }
         }
     }
     catch (error) {
@@ -100,79 +111,83 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
             status: RunStatus.Failed,
             failureError: JSON.stringify(error, Object.getOwnPropertyNames(error)),
         })
-        logger.done()
     }
 })
 
+/**
+ * Publish a flow
+ */
+export const publish = onCall(async ({ data: { flowId } }) => {
 
-export const publish = functions.https.onCall(async (data) => {
-    try {
-        const flow = await Flow.fromId(data.flowId)
+    // Load flow
+    const flow = await getFlow(flowId)
+    const flowGraph = await getFlowGraph(flow.graph, {
+        parse: true,
+    })
 
-        const NodeDefinitions = await loadNodeDefinitions()
+    // Load node definitions
+    const NodeDefinitions = await loadNodeDefinitions()
 
-        // run deploy routine for each node
-        await Promise.all(
-            flow.graph.nodes.map(
-                node => NodeDefinitions[node.type].onDeploy?.bind(node)({
-                    flow,
-                })
-            )
+    // Run deploy routine for each node
+    await Promise.all(
+        flowGraph.nodes.map(
+            node => NodeDefinitions[node.type].onDeploy?.call(node, {
+                flow,
+            })
         )
+    )
 
-        flow.update({ published: true })
-    }
-    catch (error) {
-        console.error(error)
-        return { success: false, error }
-    }
-
-    return { success: true }
+    // Update published field
+    await updateFlow(flowId, { published: true })
 })
 
 
-export const unpublish = functions.https.onCall(async (data) => {
-    try {
-        const flow = await Flow.fromId(data.flowId)
+/**
+ * Unpublish a flow
+ */
+export const unpublish = onCall(async ({ data: { flowId } }) => {
 
-        const NodeDefinitions = await loadNodeDefinitions()
+    // Load flow
+    const flow = await getFlow(flowId)
+    const flowGraph = await getFlowGraph(flow.graph, {
+        parse: true,
+    })
 
-        // run undeploy routine for each node
-        await Promise.all(
-            flow.graph.nodes.map(
-                node => NodeDefinitions[node.type].onUndeploy?.bind(node)({
-                    flow,
-                })
-            )
+    // Load node definitions
+    const NodeDefinitions = await loadNodeDefinitions()
+
+    // Run deploy routine for each node
+    await Promise.all(
+        flowGraph.nodes.map(
+            node => NodeDefinitions[node.type].onUndeploy?.call(node, {
+                flow,
+            })
         )
+    )
 
-        flow.update({ published: false })
-    }
-    catch (error) {
-        console.error(error)
-        return { success: false, error }
-    }
-
-    return { success: true }
+    // Update published field
+    await updateFlow(flowId, { published: false })
 })
 
 
-export const validate = functions.https.onCall((data) => _validate(data.flowId))
-
-
-export const startScheduledRun = functions.tasks.taskQueue().onDispatch(async ({ flowRunId }) => {
+/**
+ * Start a run scheduled previously
+ */
+export const startScheduledRun = onTaskDispatched(async ({ data: { flowRunId } }) => {
     await db.doc(`flowRuns/${flowRunId}`).update({ status: RunStatus.Pending })
 })
 
 
-export const runFromUrl = functions.https.onRequest(async (req, res) => {
-
-    // allow CORS from all origins
-    res.set("Access-Control-Allow-Origin", "*")
+/**
+ * Run a flow from a URL
+ */
+export const runFromUrl = onRequest({
+    cors: "*",
+}, async (req, res) => {
 
     const flowId = req.query.flow_id
 
-    // insert run document
+    // Insert run document
     const runRef = await db.collection("flowRuns").add({
         flow: flowId,
         payload: req.body,
@@ -200,30 +215,39 @@ export const runFromUrl = functions.https.onRequest(async (req, res) => {
 })
 
 
-async function _validate(flowId) {
-    try {
-        const flow = await Flow.fromId(flowId)
+async function _validate(flowId, payload) {
 
-        if (!flow.published)
-            throw new Error("Flow is not enabled")
+    // Load flow
+    const flow = await getFlow(flowId)
+    const flowGraph = await getFlowGraph(flow.graph, {
+        parse: true,
+    })
 
-        const NodeDefinitions = await loadNodeDefinitions()
+    // Ensure flow is enabled
+    if (!flow.published)
+        throw new Error("Flow is not enabled")
 
-        // run validate routine for each node
-        await Promise.all(
-            flow.graph.nodes.map(
-                node => NodeDefinitions[node.type].validate?.bind(node)({
+    const NodeDefinitions = await loadNodeDefinitions()
+
+    // Run validate routine for each node
+    const errors = await Promise.all(
+        flowGraph.nodes.map(async node => {
+            try {
+                await NodeDefinitions[node.type].validate?.call(node, {
                     flow,
+                    payload,
                 })
-            )
-        )
-    }
-    catch (error) {
-        console.error(error)
-        return { valid: false, error }
-    }
+            }
+            catch (err) {
+                return JSON.parse(JSON.stringify(err, Object.getOwnPropertyNames(err)))
+            }
+        })
+    ).then(errors => errors.filter(Boolean))
 
-    return { valid: true }
+    return {
+        valid: !errors.length,
+        errors,
+    }
 }
 
 
@@ -352,43 +376,6 @@ class FlowGraph {
         return this.nodes.find(node => node.id == nodeId)
     }
 }
-
-
-// class FlowRun {
-//     static async fromId(flowRunId, options) {
-//         const flowRun = new FlowRun(flowRunId)
-//         await flowRun.load(options)
-//         return flowRun
-//     }
-
-//     constructor(id) {
-//         this.id = id
-//     }
-
-//     get ref() {
-//         return db.doc(`flowRuns/${this.id}`)
-//     }
-
-//     async load({
-//         includeFlow = true,
-//         flowOptions,
-//     } = {}) {
-//         const flowRunDoc = await this.ref.get()
-
-//         if (!flowRunDoc.exists)
-//             throw new Error(`Flow Run with ID ${this.id} doesn't exist`)
-
-//         Object.entries(flowRunDoc.data())
-//             .forEach(([key, val]) => this[key] = val)
-
-//         if (includeFlow)
-//             this.flow = await Flow.fromId(this.flow, flowOptions)
-//     }
-
-//     update(data) {
-//         return this.ref.update(data)
-//     }
-// }
 
 
 class App {

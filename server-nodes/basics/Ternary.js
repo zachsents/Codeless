@@ -1,4 +1,4 @@
-import { OperationFactory } from "@minus/server-sdk"
+import { OperationFactory } from "@minus/server-lib"
 import { safeMap } from "../arrayUtilities.js"
 
 

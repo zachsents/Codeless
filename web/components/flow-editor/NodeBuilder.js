@@ -97,7 +97,6 @@ export default function NodeBuilder() {
             //     backgroundColor: "white",
             // }}
             />
-            {/* <Toolbar /> */}
             <ReplayPanel />
             <PaneContextMenu />
 

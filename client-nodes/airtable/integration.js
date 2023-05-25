@@ -1,17 +1,15 @@
 import { BrandAirtable } from "tabler-icons-react"
-import { AirTableAuthManager } from "@minus/client-sdk"
-import { OAuthIntegration } from "../components/index"
+import OAuth2Integration from "../components/OAuth2Integration"
 
-
-const id = "integration:AirTable"
 
 export default {
-    id,
-    name: "AirTable",
+    id: "airtable",
+    name: "Airtable",
     icon: BrandAirtable,
     color: "blue",
 
-    manager: AirTableAuthManager,
+    authorizationFunction: "airtable-authorizeApp",
+    checkAuthorizationFunction: "airtable-checkAuthorization",
 
-    render: props => <OAuthIntegration id={id} manager={AirTableAuthManager} {...props} />,
+    renderAccount: OAuth2Integration,
 }

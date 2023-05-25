@@ -1,39 +1,9 @@
-import { google } from "googleapis"
 import { createMimeMessage } from "mimetext"
-import { getGoogleOAuthClient } from "./google.js"
+import { FieldValue } from "firebase-admin/firestore"
 
 
-/**
- * @typedef {import("googleapis").gmail_v1.Gmail} GmailAPI
- */
-
-let gmailApi
-
-export const GmailIntegrationKey = "gmail"
-
-
-
-/**
- * Creates an instance of the Gmail API.
- *
- * @export
- * @param {string} [appId=global.info.appId]
- * @param {object} [options]
- * @param {boolean} [options.cache=false]
- * @return {Promise<GmailAPI>} 
- */
-export async function getGmailAPI(appId = global.info.appId, {
-    cache = false,
-} = {}) {
-
-    if (cache && gmailApi)
-        return gmailApi
-
-    const auth = await getGoogleOAuthClient(appId)
-    gmailApi = google.gmail({ version: "v1", auth })
-
-    return gmailApi
-}
+/** @type {import("firebase-admin").firestore.Firestore} */
+const db = global.db
 
 
 /**
@@ -44,14 +14,15 @@ export async function getGmailAPI(appId = global.info.appId, {
  * @param {object} [options]
  * @param {object} [options.flow]
  */
-export async function watchInbox(gmail, { flow }) {
+export async function watchInbox(gmail, { flow, labelIds = ["INBOX"], labelFilterAction = "include", ...options } = {}) {
 
     // start watching
     const { data: { historyId } } = await gmail.users.watch({
         userId: "me",
-        labelIds: ["INBOX"],
-        labelFilterAction: "include",
+        labelIds,
+        labelFilterAction,
         topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/gmail`,
+        ...options,
     })
 
     // get email address for user
@@ -59,10 +30,20 @@ export async function watchInbox(gmail, { flow }) {
         userId: "me",
     })
 
-    // put email address & history ID in flow document
-    await flow.update({
-        "triggerData_gmailEmailAddress": emailAddress,
-        "triggerData_gmailHistoryId": historyId,
+    // put email address & history ID in trigger data document
+    await db.collection("triggerData").doc(flow.id).set({
+        gmailEmailAddress: emailAddress,
+        gmailHistoryId: historyId,
+        gmailLabelIds: labelIds,
+    }, { merge: true })
+}
+
+
+export async function unwatchInbox(gmail, { flow }) {
+    // remove email address & history ID from trigger data document
+    await db.collection("triggerData").doc(flow.id).update({
+        gmailEmailAddress: FieldValue.delete(),
+        gmailHistoryId: FieldValue.delete(),
     })
 }
 
@@ -199,7 +180,18 @@ export function parseFromHeader(fromHeader) {
  * @return {string} 
  */
 export function cleanTextBody(textBody) {
-    return textBody
-        .replaceAll(/<http.+?>/g, "")   // remove links
+    let cleaned = textBody
+        .replaceAll(/<http.+?>/g, "")   // remove links in <brackets>
         .replaceAll(/\n{3,}/g, "\n\n")  // shrink more than 3 line breaks
+        .replaceAll(/&\w{3,5};/g, "")   // remove HTML entities
+        .replaceAll(/@media.+?{.+}/gs, "") // remove media queries
+
+    // if there's more than 5 URLs >80 characters in the email, remove them all
+    // these are probably product links with marketing tags
+    const urlPattern = /https?:\/\/\S{80,}/g
+    const urls = cleaned.match(urlPattern)?.length ?? 0
+    if (urls > 5)
+        cleaned = cleaned.replaceAll(urlPattern, "")
+
+    return cleaned
 }

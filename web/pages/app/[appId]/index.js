@@ -1,16 +1,17 @@
 import {
     ActionIcon,
-    Badge, Box, Button, Card, Center, Divider, Grid, Group, Loader, Menu,
+    Badge, Box, Button, Card, Center, Chip, Collapse, Divider, Grid, Group, Loader, Menu,
     SimpleGrid,
     Space,
     Stack, Tabs, Text, ThemeIcon, Title,
     Tooltip,
     useMantineTheme
 } from "@mantine/core"
-import { useHover } from "@mantine/hooks"
+import { useDisclosure, useHover } from "@mantine/hooks"
 import { openContextModal } from "@mantine/modals"
 import { Integrations, TriggerNodeDefinitions } from "@minus/client-nodes"
-import { useFlowsForAppRealtime, usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
+import { functionUrl, useFlowsForAppRealtime, usePublishFlow, useUnpublishFlow, useUpdateApp } from "@minus/client-sdk"
+import { plural } from "@minus/util"
 import EditableText from "@web/components/EditableText"
 import FlowControlButton from "@web/components/FlowControlButton"
 import GlassButton from "@web/components/GlassButton"
@@ -25,7 +26,8 @@ import { useActionQuery, useAppRenaming, useFlowRenaming, useMustBeSignedIn, use
 import { useSearch } from "@web/modules/search"
 import { jc, stopPropagation } from "@web/modules/util"
 import Link from "next/link"
-import { TbArrowRight, TbChartDots3, TbConfetti, TbConfettiOff, TbDots, TbPencil, TbPlug, TbPlus, TbReportMoney, TbTrash } from "react-icons/tb"
+import { useEffect, useState } from "react"
+import { TbArrowRight, TbChartDots3, TbChevronUp, TbConfetti, TbConfettiOff, TbDots, TbPencil, TbPlug, TbPlus, TbReportMoney, TbTrash } from "react-icons/tb"
 
 
 export default function AppOverviewPage() {
@@ -62,6 +64,9 @@ function AppOverview() {
         selector: flow => flow.name,
         highlight: true,
     })
+
+    // keep track of "integration" param so we can show this one at the top of the list
+    const [integrationParam] = useQueryParam("integration")
 
 
     return (
@@ -156,9 +161,13 @@ function AppOverview() {
                                     </Title>
 
                                     <SimpleGrid cols={1}>
-                                        {Object.values(Integrations).map(integration =>
-                                            <IntegrationCard integration={integration} appColor={color} key={integration.id} />
-                                        )}
+                                        {Object.values(Integrations)
+                                            // put integration param on top
+                                            .sort((a, b) => a.id == integrationParam ? -1 : b.id == integrationParam ? 1 : 0)
+                                            // map to cards
+                                            .map(integration =>
+                                                <IntegrationCard integration={integration} key={integration.id} />
+                                            )}
                                     </SimpleGrid>
                                 </Stack>
                             </Tabs.Panel>
@@ -245,7 +254,6 @@ function FlowCard({ flow, displayNameParts }) {
 
     // edit url
     const editUrl = `/app/${app?.id}/flow/${flow.id}/edit`
-
 
     /**
      * Trials & tribulations for making the text overflow properly:
@@ -354,22 +362,146 @@ function FlowCard({ flow, displayNameParts }) {
 }
 
 
-function IntegrationCard({ integration, appColor }) {
+function IntegrationCard({ integration }) {
 
+    // App from context
     const { app } = useAppContext()
+
+    // Collapse state
+    const [opened, handlers] = useDisclosure(false)
+
+    // Count accounts to show in label
+    const accountsQuantity = app?.integrations?.[integration.id]?.length
+
+    // Multiple scope sets
+    const [selectedScopes, setSelectedScopes] = useState(integration.scopeSets?.map(set => set.id))
+
+    // Connect an account
+    const handleConnectAccount = () => {
+        const params = new URLSearchParams({ app_id: app?.id })
+
+        // Optionally add selected scopes
+        integration.scopeSets && params.append(
+            "scopes",
+            selectedScopes.flatMap(setId => integration.scopeSets.find(s => s.id == setId).scopes).join(",")
+        )
+
+        // Open the authorization function in a new window
+        window.open(`${functionUrl(integration.authorizationFunction)}?${params.toString()}`)
+    }
+
+    // Side-effect: when query param "integration" changes, open the card
+    const [integrationParam] = useQueryParam("integration")
+    useEffect(() => {
+        integrationParam == integration.id && handlers.open()
+    }, [integrationParam])
 
     return (
         <Card withBorder shadow="xs">
-            <Group position="apart">
+            <Group position="apart" className="cursor-pointer" onClick={handlers.toggle}>
                 <Group>
-                    <ThemeIcon color={integration.color || appColor} size="xl">
+                    <ThemeIcon
+                        color={integration.color || app?.color} size="xl"
+                        className={jc(integration.color == "white" && "base-border")}
+                    >
                         <integration.icon size={22} />
                     </ThemeIcon>
                     <Text weight={500}>{integration.name}</Text>
                 </Group>
 
-                <integration.render app={app} />
+                <Group>
+                    <Text color="dimmed" size="sm">
+                        {accountsQuantity || "No"} {plural("account", accountsQuantity)}
+                    </Text>
+                    <Center className={`${opened ? "rotate-180" : ""} transition-transform`}>
+                        <TbChevronUp />
+                    </Center>
+                </Group>
             </Group>
+
+            <Collapse in={opened}>
+                <Stack pt="xl">
+                    <Divider />
+
+                    {app?.integrations?.[integration.id]?.map(accountId =>
+                        <AccountRow accountId={accountId} integration={integration} key={accountId} />
+                    )}
+
+                    <Stack spacing="xxs">
+                        {integration.scopeSets &&
+                            <Group spacing="xxs">
+                                <Chip.Group
+                                    multiple value={selectedScopes ?? []} onChange={setSelectedScopes}
+                                >
+                                    {integration.scopeSets.map(set =>
+                                        <Chip
+                                            variant="light"
+                                            value={set.id}
+                                            color={set.color} size="xs"
+                                            classNames={{ label: "flex" }}
+                                            key={set.id}
+                                        >
+                                            <Group noWrap spacing="xxxs">
+                                                <span>{set.name}</span>
+                                                <set.icon color="currentColor" size="0.75rem" />
+                                            </Group>
+                                        </Chip>
+                                    )}
+                                </Chip.Group>
+                            </Group>}
+
+                        <Button
+                            onClick={handleConnectAccount}
+                            disabled={integration.scopeSets && !selectedScopes?.length}
+                            leftIcon={<TbPlus />} fullWidth size="xs"
+                        >
+                            Connect account {integration.scopeSets && selectedScopes?.length > 0 &&
+                                `for ${selectedScopes.length} ${plural("service", selectedScopes.length)}`}
+                        </Button>
+                    </Stack>
+                </Stack>
+            </Collapse>
         </Card>
+    )
+}
+
+function AccountRow({ accountId, integration }) {
+
+    const { app } = useAppContext()
+
+    // State for editing nickname
+    const [editingNickname, setEditingNickname] = useState(false)
+    const nickname = app?.accountNicknames?.[accountId] || accountId.split(":")[1]
+
+    // Update nickname
+    const updateApp = useUpdateApp(app?.id)
+    const handleEdit = newNickname => {
+        updateApp({ [`accountNicknames.${accountId}`]: newNickname })
+        setEditingNickname(false)
+    }
+
+    return (
+        <integration.renderAccount {...{ ...integration, app, accountId }}>
+            {editingNickname ?
+                <EditableText
+                    highlight
+                    initialValue={nickname}
+                    onEdit={handleEdit}
+                    onCancel={() => setEditingNickname(false)}
+                    size="xs"
+                /> :
+                <Group>
+                    <Text size="xs" ff="monospace">
+                        {nickname}
+                    </Text>
+
+                    <Tooltip label="Edit Nickname">
+                        <ActionIcon onClick={() => setEditingNickname(true)} size="sm">
+                            <TbPencil size="0.75rem" />
+                        </ActionIcon>
+                    </Tooltip>
+
+                </Group>}
+        </integration.renderAccount>
     )
 }

@@ -1,4 +1,4 @@
-import { sheets } from "@minus/server-sdk"
+import { google } from "@minus/server-lib"
 
 
 export default {
@@ -12,11 +12,11 @@ export default {
 
     /**
      * @param {object} inputs
-     * @param {import("@minus/server-sdk").sheets.Sheet} inputs.$sheet
+     * @param {import("@minus/server-lib").sheets.Sheet} inputs.$sheet
      */
     async onInputsReady({ $sheetName, $range }) {
 
-        const sheetsApi = await sheets.getGoogleSheetsAPI()
+        const sheetsApi = await google.getGoogleAPIFromNode(this, "sheets", "v4")
 
         const sheet = sheetsApi.spreadsheet(this.state.spreadsheetId).sheet($sheetName)
 

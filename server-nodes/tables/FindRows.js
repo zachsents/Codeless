@@ -8,8 +8,8 @@ export default {
 
     /**
      * @param {object} inputs
-     * @param {import("@minus/server-sdk/airtable/airtable.js").Table | 
-     *  import("@minus/server-sdk/google/sheets.js").Table} inputs.$table
+     * @param {import("@minus/server-lib/airtable/index.js").Table | 
+     *  import("@minus/server-lib/google").sheets.Table} inputs.$table
      * @param {Operation[]} inputs.filters
      */
     async onInputsReady({ $table, filters, limit }) {

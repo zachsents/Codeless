@@ -1,0 +1,16 @@
+{
+    "clientId": "883292264721-fakvek729bjtdu0enlgibhfj0uuhr5n6.apps.googleusercontent.com",
+    "callbackUrl": [
+        "http://localhost:5001/minus-dev/us-central1/google-appAuthorizationRedirect",
+        "https://us-central1-minus-dev.cloudfunctions.net/google-appAuthorizationRedirect"
+    ],
+    "projectId": "minus-dev",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "javascript_origins": [
+        "http://localhost:3000",
+        "https://dev.minuscode.app"
+    ],
+    "environment": "dev"
+}

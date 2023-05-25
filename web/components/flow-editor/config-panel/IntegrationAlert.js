@@ -1,52 +1,62 @@
-import { Alert, Group, Loader, Center, Button } from "@mantine/core"
+import { Button, Divider, Group, Select, Stack, Text, ThemeIcon } from "@mantine/core"
+import { Integrations } from "@minus/client-nodes"
+import { useIntegrationAccounts } from "@minus/client-nodes/hooks/nodes"
+import { useAppContext } from "@web/modules/context"
+import { useEffect } from "react"
+import { TbPlus } from "react-icons/tb"
 
-import { useAppId } from "../../../modules/hooks"
 
+export default function IntegrationAlert({ id }) {
 
-export default function IntegrationAlert({ integration: int }) {
+    const integration = Integrations[id]
 
-    const appId = useAppId()
+    const { app } = useAppContext()
+    const { selectAccount: _select, selectedAccounts: _selected, availableAccounts: _available } = useIntegrationAccounts(null, app)
+    const select = accountId => _select(id, accountId)
+    const selected = _selected[id]
+    const available = _available[id]
 
-    if (int.status.isFetching)
-        return (
-            <Alert
-                title={<Group>
-                    <Loader size="sm" />
-                    <AlertTitle name={int.name} icon={<int.icon />} />
-                </Group>}
-                color="gray"
-                p="xs"
-                pb={0}
-                key={int.id}
-            />
-        )
-
-    if (int.status.data)
-        return (
-            <Alert
-                p="xs"
-                pb={0}
-                title={<AlertTitle name={int.name} icon={<int.icon />} prefix="Connected to " />}
-                color="green"
-                key={int.id}
-            />
-        )
-
-    const connectIntegration = () => int.manager.oneClickAuth(appId)
+    // Side-effect: select the only available account
+    useEffect(() => {
+        if (available.length == 1 && !selected)
+            select(available[0].id)
+    }, [JSON.stringify(available)])
 
     return (
-        <Alert title="Integration Required!" color="red" key={int.id}>
-            This node uses <b>{int.name}</b>.
-            <Center mt="xs">
-                <Button compact color={int.color} onClick={connectIntegration}>
-                    <AlertTitle name={int.name} icon={<int.icon />} prefix="Connect " />
-                </Button>
-            </Center>
-        </Alert>
+        <>
+            <Divider />
+
+            <Group position="apart" align="flex-start">
+                <Group spacing="xs">
+                    <ThemeIcon color={integration.color}>
+                        <integration.icon size="0.9rem" />
+                    </ThemeIcon>
+                    <Text size="sm" weight={500} >
+                        {integration.name}
+                    </Text>
+                </Group>
+
+                <Stack spacing="xxxs">
+                    {available.length > 0 && <Select
+                        data={available.map(account => ({ value: account.id, label: account.nickname }))}
+                        value={selected}
+                        onChange={select}
+                        placeholder="Select an account"
+                        size="xs" withinPortal
+                    />}
+
+                    <Button
+                        component="a"
+                        href={`/app/${app?.id}?tab=integrations&integration=${id}`}
+                        target="_blank"
+                        variant="subtle"
+                        color={integration.color} size="xs" compact
+                        leftIcon={<TbPlus />}
+                    >
+                        Connect {available.length > 0 ? "another" : ""} account
+                    </Button>
+                </Stack>
+            </Group>
+        </>
     )
-}
-
-
-function AlertTitle({ icon, name, prefix = "" }) {
-    return <Group spacing={5}>{prefix}{icon} {name}</Group>
 }

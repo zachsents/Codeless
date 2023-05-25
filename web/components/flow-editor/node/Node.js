@@ -5,14 +5,13 @@ import { useEffect } from "react"
 
 import { useAppContext } from "@web/modules/context"
 import {
-    getNodeIntegrationsStatus,
     selectNode,
     useNodeConnections,
     useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
 
 import { NodeDefinitions } from "@minus/client-nodes"
-import { NodeProvider, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { NodeProvider, useIntegrationAccounts, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppId, useFlowId } from "@web/modules/hooks"
 import { useReactFlow } from "reactflow"
 import ConfigPopover from "./ConfigPopover"
@@ -31,10 +30,9 @@ export default function Node({ id, type: typeDefId, selected }) {
 
     const typeDefinition = NodeDefinitions[typeDefId]
 
-    // #region - Integrations (satisfaction, loading, etc.)
-    const { integrations: appIntegrations } = useAppContext()
-    const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
-    const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
+    // #region - Integrations (satisfaction)
+    const { app } = useAppContext()
+    const { missingSelections } = useIntegrationAccounts(id, app)
     // #endregion
 
     // #region - Hover states for showing handle labels 
@@ -59,7 +57,7 @@ export default function Node({ id, type: typeDefId, selected }) {
         inputConnections,
         outputConnections,
         connections: { ...inputConnections, ...outputConnections },
-        integrationsSatisfied,
+        integrationsSatisfied: !missingSelections,
     }
     // #endregion
 
