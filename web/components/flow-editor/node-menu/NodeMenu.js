@@ -173,7 +173,7 @@ function Suggestions() {
         refetchOnReconnect: false,
     })
 
-    return suggestions && <>
+    return suggestions && suggestions.length > 0 && <>
         <Text size="xxs" color="dimmed">Suggested</Text>
 
         {suggestions.map(sugg =>
