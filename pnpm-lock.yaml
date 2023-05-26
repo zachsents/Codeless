@@ -174,18 +174,22 @@ importers:
       '@minus/auth-lib': workspace:*
       airtable: ^0.11.6
       firebase-admin: ^11.5.0
+      firebase-functions: ^4.4.0
       googleapis: ^111.0.0
       mimetext: ^2.1.1
       nanoid: ^4.0.1
       node-fetch: ^3.3.0
+      openai: ^3.1.0
     dependencies:
       '@minus/auth-lib': link:../auth-lib
       airtable: 0.11.6
       firebase-admin: 11.5.0
+      firebase-functions: 4.4.0_firebase-admin@11.5.0
       googleapis: 111.0.0
       mimetext: 2.1.1
       nanoid: 4.0.1
       node-fetch: 3.3.0
+      openai: 3.2.0
 
   server-nodes:
     specifiers:
@@ -193,6 +197,7 @@ importers:
       '@minus/server-lib': workspace:*
       chalk: ^5.2.0
       firebase-admin: ^11.5.0
+      firebase-functions: ^4.4.0
       glob: ^9.2.1
       isolated-vm: ^4.4.2
       lodash: ^4.17.21
@@ -203,6 +208,7 @@ importers:
       '@minus/server-lib': link:../server-lib
       chalk: 5.2.0
       firebase-admin: 11.5.0
+      firebase-functions: 4.4.0_firebase-admin@11.5.0
       glob: 9.3.5
       isolated-vm: 4.4.2
       lodash: 4.17.21
@@ -2516,7 +2522,7 @@ packages:
   /@types/cors/2.8.13:
     resolution: {integrity: sha512-RG8AStHlUiV5ysZQKq97copd2UmVYw3/pRMLefISZ3S1hK104Cwm7iLQ3fTKx+lsUH2CE8FlLaYeEA2LSeqYUA==}
     dependencies:
-      '@types/node': 18.15.11
+      '@types/node': 20.2.3
     dev: false
 
   /@types/d3-array/3.0.4:
@@ -2778,7 +2784,7 @@ packages:
   /@types/jsonwebtoken/9.0.1:
     resolution: {integrity: sha512-c5ltxazpWabia/4UzhIoaDcIza4KViOQhdbjRlfcIGVnsE3c3brkz9Z+F/EeJIECOQP7W7US2hNE930cWWkPiw==}
     dependencies:
-      '@types/node': 18.15.11
+      '@types/node': 20.2.3
     dev: false
 
   /@types/linkify-it/3.0.2:

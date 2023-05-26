@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Cloud Functions for Firebase",
     "scripts": {
+        "predev": "Kill-ProcessByPort 4000 || true",
         "dev": "firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
         "devdebug": "set DEBUG=\"firebase-functions:*\" && firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
         "shell": "firebase functions:shell --port 5002",

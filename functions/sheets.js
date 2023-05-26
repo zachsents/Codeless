@@ -1,8 +1,13 @@
-import { sheets } from "@minus/server-lib"
+import { sheets, google } from "@minus/server-lib"
 import functions from "firebase-functions"
 
 
-export const getSpreadsheetDetails = functions.https.onCall(async ({ accountId, spreadsheetId }) => {
+const withSecret = functions.runWith({
+    secrets: [google.googleOAuthClientSecret]
+})
+
+
+export const getSpreadsheetDetails = withSecret.https.onCall(async ({ accountId, spreadsheetId }) => {
 
     // Check params
     if (!accountId || !spreadsheetId)

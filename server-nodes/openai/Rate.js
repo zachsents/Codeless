@@ -1,5 +1,5 @@
 import { safeMap } from "../arrayUtilities.js"
-import openaiApi from "./api.js"
+import { openai } from "@minus/server-lib"
 
 
 export default {
@@ -20,7 +20,7 @@ export default {
         this.publish({
             result: await safeMap(async (text, property, scale) => {
                 // call API
-                const resp = await openaiApi.createCompletion(
+                const resp = await openai.createCompletion(
                     createPrompt(text, property, scale)
                 )
 

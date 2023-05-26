@@ -1,11 +1,6 @@
-import admin from "firebase-admin"
-import * as dotenv from "dotenv"
-import { registerImportedPackage } from "@minus/gee3"
 import { PubSub } from "@google-cloud/pubsub"
-
-dotenv.config({
-    path: process.env.FUNCTIONS_EMULATOR ? ".env.local" : ".env",
-})
+import { registerImportedPackage } from "@minus/gee3"
+import admin from "firebase-admin"
 
 
 // initialize firebase app globalize/export

@@ -10,7 +10,11 @@ export class ServerAirtableManager extends ServerOAuth2Manager {
      * @memberof ServerAirtableManager
      */
     constructor(options) {
-        super({
+        super(options)
+
+        // Setting defaults like this because we can't use the spread operator -- we
+        // need to preserve getters & setters for Firebase secrets to work
+        Object.assign(this.options, {
             authorizationEndpoint: "https://airtable.com/oauth2/v1/authorize",
             tokenEndpoint: "https://airtable.com/oauth2/v1/token",
             whoamiEndpoint: "https://api.airtable.com/v0/meta/whoami",
@@ -19,7 +23,6 @@ export class ServerAirtableManager extends ServerOAuth2Manager {
             codeVerifierLength: 64,
             closeWindowOnSuccess: true,
             debugPrefix: "Airtable",
-            ...options,
         })
     }
 

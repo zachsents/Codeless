@@ -11,26 +11,27 @@ export class ServerGoogleManager extends ServerOAuth2Manager {
      * @memberof ServerGoogleManager
      */
     constructor(options) {
-        super({
-            whoamiEndpoint: "https://api.airtable.com/v0/meta/whoami",
+        super(options)
+
+        // Setting defaults like this because we can't use the spread operator -- we
+        // need to preserve getters & setters for Firebase secrets to work
+        Object.assign(this.options, {
             stateLength: 24,
             closeWindowOnSuccess: true,
             debugPrefix: "Google",
-            ...options,
+            scopes: [
+                ...this.options.scopes,
+                "https://www.googleapis.com/auth/userinfo.email",
+            ],
         })
-
-        this.options.scopes = [
-            ...this.options.scopes,
-            "https://www.googleapis.com/auth/userinfo.email",
-        ]
     }
 
 
     getGoogleOAuth2Client(refreshToken) {
         const client = new google.auth.OAuth2(
             this.options.clientId,
-            process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-            this.options.callbackUrl[process.env.FUNCTIONS_EMULATOR ? 0 : 1]
+            this.options.clientSecret,
+            this.options.callbackUrl
         )
 
         refreshToken && client.setCredentials({

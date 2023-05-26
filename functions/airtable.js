@@ -3,10 +3,15 @@ import functions from "firebase-functions"
 import fetch from "node-fetch"
 
 
+const withSecret = functions.runWith({
+    secrets: [airtable.airtableOAuthClientSecret]
+})
+
+
 /**
  * Authorize Airtable by redirecting to auth URL
  */
-export const authorizeApp = functions.https.onRequest(async (request, response) => {
+export const authorizeApp = withSecret.https.onRequest(async (request, response) => {
 
     // Verify params -- must include app ID
     if (!request.query.app_id) {
@@ -24,7 +29,7 @@ export const authorizeApp = functions.https.onRequest(async (request, response) 
 /**
  * Handle authorization callback from Airtable
  */
-export const appAuthorizationRedirect = functions.https.onRequest(
+export const appAuthorizationRedirect = withSecret.https.onRequest(
     airtable.authManager.handleAuthorizationCallback.bind(airtable.authManager)
 )
 
@@ -32,7 +37,7 @@ export const appAuthorizationRedirect = functions.https.onRequest(
 /**
  * Check if Airtable is authorized
  */
-export const checkAuthorization = functions.https.onCall(
+export const checkAuthorization = withSecret.https.onCall(
     ({ accountId }) => airtable.authManager.isAuthorized(accountId)
 )
 
@@ -40,7 +45,7 @@ export const checkAuthorization = functions.https.onCall(
 /**
  * Get table name given base ID and table ID
  */
-export const getTableNameFromId = functions.https.onCall(async ({ accountId, baseId, tableId }) => {
+export const getTableNameFromId = withSecret.https.onCall(async ({ accountId, baseId, tableId }) => {
 
     // check params
     if (!accountId || !baseId || !tableId)

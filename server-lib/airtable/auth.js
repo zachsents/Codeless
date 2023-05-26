@@ -1,26 +1,42 @@
 import { FirestoreStrategy, ServerAirtableManager } from "@minus/auth-lib"
-import { loadProfile } from "../oauth-profiles/util.js"
 import { FieldValue } from "firebase-admin/firestore"
+import { defineSecret, defineString } from "firebase-functions/params"
 
 
 /** @type {import("firebase-admin").firestore.Firestore} */
 const db = global.db
 
 
-/** 
- * Load OAuth profile
- * @type {{ clientId: string, callbackUrl: string, scopes: string[] }} 
+/**
+ * Airtable Parameters
+ * 
+ * https://firebase.google.com/docs/functions/config-env?gen=1st
  */
-const oauthProfile = await loadProfile("airtable", {
-    differentLocal: true,
+const airtableOAuthClientId = defineString("AIRTABLE_OAUTH_CLIENT_ID", {
+    description: "Airtable OAuth client ID",
+})
+
+const airtableOAuthCallbackURL = defineString("AIRTABLE_OAUTH_CALLBACK_URL", {
+    description: "Airtable OAuth callback URL",
+})
+
+const airtableOAuthScopes = defineString("AIRTABLE_OAUTH_SCOPES", {
+    description: "Airtable OAuth scopes",
+    default: "data.records:read,data.records:write,webhook:manage,schema.bases:read",
+})
+
+export const airtableOAuthClientSecret = defineSecret("AIRTABLE_OAUTH_CLIENT_SECRET", {
+    description: "Airtable OAuth client secret",
 })
 
 
 // Set up OAuth manager
 export const authManager = new ServerAirtableManager({
-    // client ID, callback URL, and scopes
-    ...oauthProfile,
-    clientSecret: process.env.AIRTABLE_OAUTH_CLIENT_SECRET,
+    clientId: airtableOAuthClientId.value(),
+    callbackUrl: airtableOAuthCallbackURL.value(),
+    scopes: airtableOAuthScopes.value(),
+
+    get clientSecret() { return airtableOAuthClientSecret.value() },
 })
 
 

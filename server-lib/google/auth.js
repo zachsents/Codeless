@@ -1,25 +1,37 @@
 import { FirestoreStrategy, ServerGoogleManager } from "@minus/auth-lib"
-import { loadProfile } from "../oauth-profiles/util.js"
 import { FieldValue } from "firebase-admin/firestore"
+import { defineSecret, defineString } from "firebase-functions/params"
 
 
 /** @type {import("firebase-admin").firestore.Firestore} */
 const db = global.db
 
 
-/** 
- * Load OAuth profile
- * @type {{ clientId: string, callbackUrl: string[] }} 
+/**
+ * Google Parameters
+ * 
+ * https://firebase.google.com/docs/functions/config-env?gen=1st
  */
-const oauthProfile = await loadProfile("google")
+const googleOAuthClientId = defineString("GOOGLE_OAUTH_CLIENT_ID", {
+    description: "Google OAuth client ID",
+})
+
+const googleOAuthCallbackURL = defineString("GOOGLE_OAUTH_CALLBACK_URL", {
+    description: "Google OAuth callback URL",
+})
+
+export const googleOAuthClientSecret = defineSecret("GOOGLE_OAUTH_CLIENT_SECRET", {
+    description: "Google OAuth client secret",
+})
 
 
 // Set up OAuth manager
 export const authManager = new ServerGoogleManager({
-    // client ID, callback URL, and scopes
-    ...oauthProfile,
-    clientSecret: process.env.AIRTABLE_OAUTH_CLIENT_SECRET,
+    clientId: googleOAuthClientId.value(),
+    callbackUrl: googleOAuthCallbackURL.value(),
     scopes: [],
+
+    get clientSecret() { return googleOAuthClientSecret.value() },
 })
 
 

@@ -1,6 +1,6 @@
 import { ArrayMode } from "@minus/gee3"
 import { safeMap } from "../arrayUtilities.js"
-import openaiApi from "./api.js"
+import { openai } from "@minus/server-lib"
 
 
 export default {
@@ -23,7 +23,7 @@ export default {
         this.publish({
             category: await safeMap(async text => {
                 // call API
-                const resp = await openaiApi.createCompletion(
+                const resp = await openai.createCompletion(
                     createPrompt(text, categories)
                 )
 

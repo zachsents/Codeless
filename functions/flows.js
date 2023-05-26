@@ -1,5 +1,5 @@
 import { Graph } from "@minus/gee3"
-import { RunStatus, getFlow, getFlowGraph, updateFlow } from "@minus/server-lib"
+import { RunStatus, airtable, getFlow, getFlowGraph, google, openai, updateFlow } from "@minus/server-lib"
 import { loadNodeDefinitions } from "@minus/server-nodes"
 import { FieldValue } from "firebase-admin/firestore"
 import { getFunctions } from "firebase-admin/functions"
@@ -7,7 +7,16 @@ import functions from "firebase-functions"
 import { db } from "./init.js"
 
 
-export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {
+const withSecret = functions.runWith({
+    secrets: [
+        airtable.airtableOAuthClientSecret,
+        google.googleOAuthClientSecret,
+        openai.openaiSecretKey,
+    ]
+})
+
+
+export const runWritten = withSecret.firestore.document("flowRuns/{flowRunId}").onWrite(async (change) => {
 
     // Quit if document is deleted
     if (!change.after.exists)
@@ -112,10 +121,11 @@ export const runWritten = functions.firestore.document("flowRuns/{flowRunId}").o
     }
 })
 
+
 /**
  * Publish a flow
  */
-export const publish = functions.https.onCall(async ({ flowId }) => {
+export const publish = withSecret.https.onCall(async ({ flowId }) => {
 
     // Load flow
     const flow = await getFlow(flowId)
@@ -143,7 +153,7 @@ export const publish = functions.https.onCall(async ({ flowId }) => {
 /**
  * Unpublish a flow
  */
-export const unpublish = functions.https.onCall(async ({ flowId }) => {
+export const unpublish = withSecret.https.onCall(async ({ flowId }) => {
 
     // Load flow
     const flow = await getFlow(flowId)
@@ -171,7 +181,7 @@ export const unpublish = functions.https.onCall(async ({ flowId }) => {
 /**
  * Start a run scheduled previously
  */
-export const startScheduledRun = functions.tasks.taskQueue().onDispatch(async ({ flowRunId }) => {
+export const startScheduledRun = withSecret.tasks.taskQueue().onDispatch(async ({ flowRunId }) => {
     await db.doc(`flowRuns/${flowRunId}`).update({ status: RunStatus.Pending })
 })
 
@@ -179,7 +189,7 @@ export const startScheduledRun = functions.tasks.taskQueue().onDispatch(async ({
 /**
  * Run a flow from a URL
  */
-export const runFromUrl = functions.https.onRequest(async (req, res) => {
+export const runFromUrl = withSecret.https.onRequest(async (req, res) => {
 
     // allow CORS from all origins
     res.set("Access-Control-Allow-Origin", "*")

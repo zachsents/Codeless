@@ -44,6 +44,10 @@ export class ServerOAuth2Manager {
      */
     constructor(options) {
         this.options = options
+
+        // Split scopes by comma or space
+        if (typeof this.options.scopes === "string")
+            this.options.scopes = this.options.scopes.split(/[, ]/)
     }
 
     /**
@@ -322,10 +326,7 @@ export class ServerOAuth2Manager {
      */
     use(strategy) {
         // Merge options
-        this.options = {
-            ...this.options,
-            ...strategy.useOptions(),
-        }
+        Object.assign(this.options, strategy.useOptions())
 
         // Merge functions
         Object.entries(

@@ -5,6 +5,8 @@ export { google }
 export const gmail = google.gmail
 export const sheets = google.sheets
 
+export * as openai from "./openai/index.js"
+
 export * from "./types/index.js"
 export * from "./integrations.js"
 export * from "./logger.js"

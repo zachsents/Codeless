@@ -7,7 +7,12 @@ const HISTORY_UPDATE_FOR_FLOW_TOPIC = "gmail-history-update-for-flow"
 const EXCLUDED_LABELS = ["DRAFT", "SENT", "TRASH", "SPAM"]
 
 
-export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (message) => {
+const withSecret = functions.runWith({
+    secrets: [google.googleOAuthClientSecret]
+})
+
+
+export const handleMessage = withSecret.pubsub.topic("gmail").onPublish(async (message) => {
 
     if (!message.data)
         throw new Error("No message data in PubSub message from Gmail topic")
@@ -37,7 +42,7 @@ export const handleMessage = functions.pubsub.topic("gmail").onPublish(async (me
 })
 
 
-export const handleHistoryUpdateForFlow = functions.pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).onPublish(async (message) => {
+export const handleHistoryUpdateForFlow = withSecret.pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).onPublish(async (message) => {
 
     const { flowId, newHistoryId } = JSON.parse(message.data)
 
@@ -117,7 +122,7 @@ export const handleHistoryUpdateForFlow = functions.pubsub.topic(HISTORY_UPDATE_
 })
 
 
-export const refreshWatches = functions.pubsub.schedule("every day 00:00").onRun(async () => {
+export const refreshWatches = withSecret.pubsub.schedule("every day 00:00").onRun(async () => {
 
     // Get triggerData documents with Gmail email attached
     const querySnapshot = await db.collection("triggerData")
@@ -129,7 +134,7 @@ export const refreshWatches = functions.pubsub.schedule("every day 00:00").onRun
         querySnapshot.docs.map(doc => doc.data().gmailEmailAddress)
     )]
 
-    console.log(`Refreshing Gmail watch for ${emailAddresses.length} email addresses.`)
+    console.debug(`Refreshing Gmail watch for ${emailAddresses.length} email addresses.`)
 
     emailAddresses.map(async emailAddress => {
         // Get Gmail API

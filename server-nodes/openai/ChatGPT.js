@@ -1,5 +1,5 @@
 import { safeMap } from "../arrayUtilities.js"
-import openaiApi from "./api.js"
+import { openai } from "@minus/server-lib"
 
 
 export default {
@@ -10,7 +10,7 @@ export default {
     async onInputsReady({ prompt, temperature }) {
 
         const response = await safeMap(
-            (prompt, temperature) => openaiApi.createChatCompletion(prompt, {
+            (prompt, temperature) => openai.createChatCompletion(prompt, {
                 temperature,
             }),
             prompt, temperature
