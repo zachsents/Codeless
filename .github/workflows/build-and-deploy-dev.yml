@@ -41,7 +41,6 @@ jobs:
         uses: w9jds/setup-firebase@main
         with:
           gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
-          # project_id: ${{vars.FIREBASE_PROJECT_ID}}
           project_id: dev
       
       - name: Build & Deploy

@@ -41,13 +41,7 @@ jobs:
         uses: w9jds/setup-firebase@main
         with:
           gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{vars.FIREBASE_PROJECT_ID}}
-
-      - name: Write functions environment variables
-        run: |
-          echo "OPENAI_SECRET_KEY=${{secrets.OPENAI_SECRET_KEY}}" >> functions/.env
-          echo "GOOGLE_OAUTH_CLIENT_SECRET=${{secrets.GOOGLE_OAUTH_CLIENT_SECRET}}" >> functions/.env
-          echo "AIRTABLE_OAUTH_CLIENT_SECRET=${{secrets.AIRTABLE_OAUTH_CLIENT_SECRET}}" >> functions/.env
+          project_id: prod
       
       - name: Build & Deploy
         run: pnpm run deploy
