@@ -57,7 +57,7 @@ const SearchInput = forwardRef(({
 
                 // blur when escape is pressed
                 onKeyDown={event => {
-                    event.key === "Escape" && ref.current?.blur()
+                    event.key === "Escape" && inputRef.current?.blur()
                     onKeyDown?.(event)
                 }}
             />
