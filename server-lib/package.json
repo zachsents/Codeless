@@ -18,6 +18,7 @@
         "mimetext": "^2.1.1",
         "nanoid": "^4.0.1",
         "node-fetch": "^3.3.0",
-        "openai": "^3.1.0"
+        "openai": "^3.1.0",
+        "twilio": "^4.11.1"
     }
 }

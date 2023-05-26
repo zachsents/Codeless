@@ -1,6 +1,9 @@
 import _ from "lodash"
 
 
+export * from "./safe-map.js"
+
+
 /**
  * A utility function that converts an array of paths to an object.
  * Created in order to make it easier to use useQueries with nested

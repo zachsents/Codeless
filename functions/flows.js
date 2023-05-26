@@ -1,5 +1,5 @@
 import { Graph } from "@minus/gee3"
-import { RunStatus, airtable, getFlow, getFlowGraph, google, openai, updateFlow } from "@minus/server-lib"
+import { RunStatus, airtable, getFlow, getFlowGraph, google, openai, twilio, updateFlow } from "@minus/server-lib"
 import { loadNodeDefinitions } from "@minus/server-nodes"
 import { FieldValue } from "firebase-admin/firestore"
 import { getFunctions } from "firebase-admin/functions"
@@ -12,6 +12,7 @@ const withSecret = functions.runWith({
         airtable.airtableOAuthClientSecret,
         google.googleOAuthClientSecret,
         openai.openaiSecretKey,
+        twilio.twilioAuthToken,
     ]
 })
 

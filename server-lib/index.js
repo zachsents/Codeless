@@ -6,6 +6,7 @@ export const gmail = google.gmail
 export const sheets = google.sheets
 
 export * as openai from "./openai/index.js"
+export * as twilio from "./twilio/index.js"
 
 export * from "./types/index.js"
 export * from "./integrations.js"
