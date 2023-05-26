@@ -132,6 +132,7 @@ importers:
       '@minus/gee3': workspace:*
       '@minus/server-lib': workspace:*
       '@minus/server-nodes': workspace:*
+      '@minus/util': workspace:*
       chalk: ^5.2.0
       dotenv: ^16.0.3
       firebase-admin: ^11.3.0
@@ -143,12 +144,19 @@ importers:
       '@minus/gee3': link:../graph-execution-engine-3
       '@minus/server-lib': link:../server-lib
       '@minus/server-nodes': link:../server-nodes
+      '@minus/util': link:../util
       dotenv: 16.0.3
       firebase-admin: 11.5.0
       firebase-functions: 4.4.0_firebase-admin@11.5.0
       node-fetch: 3.3.0
     devDependencies:
       chalk: 5.2.0
+
+  gee4:
+    specifiers:
+      rxjs: ^7.8.1
+    dependencies:
+      rxjs: 7.8.1
 
   graph-execution-engine-2:
     specifiers: {}
@@ -6336,7 +6344,7 @@ packages:
       mute-stream: 0.0.8
       ora: 5.4.1
       run-async: 2.4.1
-      rxjs: 7.8.0
+      rxjs: 7.8.1
       string-width: 4.2.3
       strip-ansi: 6.0.1
       through: 2.3.8
@@ -9379,6 +9387,12 @@ packages:
 
   /rxjs/7.8.0:
     resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}
+    dependencies:
+      tslib: 2.5.0
+    dev: false
+
+  /rxjs/7.8.1:
+    resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
       tslib: 2.5.0
 
