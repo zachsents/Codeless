@@ -8,6 +8,10 @@ export default {
     description: "Triggered when URL is accessed.",
     icon: Link,
 
+    tags: ["Trigger"],
+    showMainTag: true,
+    showSettingsIcon: false,
+
     inputs: [],
     outputs: [
         {

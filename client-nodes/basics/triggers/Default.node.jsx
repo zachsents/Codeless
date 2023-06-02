@@ -12,7 +12,7 @@ export default {
     icon: Run,
 
     tags: ["Trigger"],
-    showMainTag: false,
+    showMainTag: true,
     showSettingsIcon: false,
 
     inputs: [],

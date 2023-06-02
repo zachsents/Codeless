@@ -29,7 +29,8 @@ export default {
     icon: Mailbox,
     color: "red",
 
-    tags: ["Gmail", "Trigger"],
+    tags: ["Trigger", "Gmail"],
+    showMainTag: true,
 
     inputs: [
         {
