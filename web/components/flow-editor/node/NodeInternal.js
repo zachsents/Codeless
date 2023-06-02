@@ -1,10 +1,15 @@
-import { Divider, Group, Stack, Text, ThemeIcon } from "@mantine/core"
-import { useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { ActionIcon, Divider, Group, Stack, Text, ThemeIcon } from "@mantine/core"
+import { useNodeId, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { TbSettings } from "react-icons/tb"
+
 
 export default function NodeInternal({ displayProps }) {
 
+    const id = useNodeId()
     const typeDefinition = useTypeDefinition()
     // const [mainColor] = useColors(null, ["primary"])
+
+    const [, setContextMenu] = useStoreProperty("contextMenu")
 
     return (
         <Stack spacing="xs" h="100%">
@@ -21,7 +26,16 @@ export default function NodeInternal({ displayProps }) {
                         <Text size="sm" weight={500}>
                             <typeDefinition.renderName {...displayProps} />
                         </Text>
+
                     </Group>
+
+                    {typeDefinition.showSettingsIcon &&
+                        <ActionIcon
+                            size="sm" radius="sm" variant="light" className="nodrag"
+                            onClick={() => setContextMenu(id)}
+                        >
+                            <TbSettings size="0.75em" />
+                        </ActionIcon>}
                 </Group>}
 
             {!!(typeDefinition.renderName && (typeDefinition.renderTextContent || typeDefinition.renderContent)) &&

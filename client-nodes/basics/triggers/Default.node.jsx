@@ -13,6 +13,7 @@ export default {
 
     tags: ["Trigger"],
     showMainTag: false,
+    showSettingsIcon: false,
 
     inputs: [],
     outputs: [

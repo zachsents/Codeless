@@ -87,6 +87,7 @@ export default function Node({ id, type: typeDefId, selected }) {
 
     // #region - Node context menu
     const [, setContextMenu] = useStoreProperty("contextMenu")
+
     // disabling this for now because it happens before the popover
     // animation finishes
     // const clickOutsideRef = useClickOutside(() => setContextMenu(null), ["click"])
