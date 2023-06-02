@@ -5,7 +5,7 @@ import { SiGooglesheets } from "react-icons/si"
 import { TbExternalLink } from "react-icons/tb"
 import TextControl from "../../components/TextControl"
 import { useSyncWithNodeState } from "../../hooks"
-import { InputMode, useInputMode, useInputValue, useInternalState } from "../../hooks/nodes"
+import { InputMode, useInputMode, useInputValue, useInternalState, useSelectedIntegrationAccount } from "../../hooks/nodes"
 
 
 export const SheetsURLRegex = /d\/([0-9A-Za-z_-]{40,})\/edit/
