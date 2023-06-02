@@ -7,6 +7,7 @@ export default {
     name: "Number",
     description: "Just a plain ol' number.",
     icon: Numbers,
+    color: "gray",
 
     tags: ["Math", "Basics"],
     showMainTag: false,

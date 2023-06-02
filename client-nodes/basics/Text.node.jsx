@@ -11,6 +11,7 @@ export default {
     name: "Text",
     description: "Just a plain ol' text.",
     icon: AlphabetLatin,
+    color: "gray",
 
     tags: ["Text", "Basics"],
     showMainTag: false,
