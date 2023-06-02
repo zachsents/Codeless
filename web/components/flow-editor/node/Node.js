@@ -1,4 +1,4 @@
-import { Box, Card, Group, useMantineTheme } from "@mantine/core"
+import { Badge, Box, Card, Group, Stack, useMantineTheme } from "@mantine/core"
 import { useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
@@ -114,58 +114,70 @@ export default function Node({ id, type: typeDefId, selected }) {
                     }}
                     ref={hoverRef}
                 >
-                    <Group spacing={0} align="stretch" p="xs">
+                    <Stack spacing="xxxs" px="xs" py="xxxs">
 
-                        {/* Input Handles */}
-                        <HandleStack>
-                            {typeDefinition.inputs.map(input =>
-                                input.listMode ?
-                                    <ListHandle
-                                        {...handleProps(input.id)}
-                                        component={InputHandle}
-                                        key={input.id}
-                                    /> :
-                                    <InputHandle
-                                        {...handleProps(input.id)}
-                                        key={input.id}
-                                    />
-                            )}
-                        </HandleStack>
+                        {/* Tags */}
+                        {typeDefinition.tags[0] && typeDefinition.showMainTag &&
+                            <Group position="apart">
+                                <Badge size="sm" radius="sm" color={typeDefinition.color} >
+                                    {typeDefinition.tags[0]}
+                                </Badge>
 
-                        <ConfigPopover>
-                            {typeDefinition.renderCard ?
-                                <Card
-                                    px="md" py="xs"
-                                    shadow={selected ? "sm" : "xs"}
-                                    className="ofv border-1 border-solid border-dark-400"
-                                // sx={{ borderRadius: "1.25rem" }}
-                                >
-                                    <NodeInternal displayProps={displayProps} />
-                                </Card>
-                                :
-                                <Box>
-                                    <NodeInternal displayProps={displayProps} />
-                                </Box>}
-                        </ConfigPopover>
+                                <ErrorIcon />
+                            </Group>}
 
-                        {/* Output Handles */}
-                        <HandleStack>
-                            {typeDefinition.outputs.map(output =>
-                                output.listMode ?
-                                    <ListHandle
-                                        {...handleProps(output.id)}
-                                        component={OutputHandle}
-                                        key={output.id}
-                                    /> :
-                                    <OutputHandle
-                                        {...handleProps(output.id)}
-                                        key={output.id}
-                                    />
-                            )}
-                        </HandleStack>
-                    </Group>
+                        <Group spacing={0} align="stretch">
 
-                    <ErrorIcon />
+                            {/* Input Handles */}
+                            <HandleStack>
+                                {typeDefinition.inputs.map(input =>
+                                    input.listMode ?
+                                        <ListHandle
+                                            {...handleProps(input.id)}
+                                            component={InputHandle}
+                                            key={input.id}
+                                        /> :
+                                        <InputHandle
+                                            {...handleProps(input.id)}
+                                            key={input.id}
+                                        />
+                                )}
+                            </HandleStack>
+
+                            <ConfigPopover>
+                                {typeDefinition.renderCard ?
+                                    <Card
+                                        px="md" py="xs"
+                                        shadow={selected ? "sm" : "xs"}
+                                        className="ofv border-1 border-solid border-dark-400"
+                                    // sx={{ borderRadius: "1.25rem" }}
+                                    >
+                                        <NodeInternal displayProps={displayProps} />
+                                    </Card>
+                                    :
+                                    <Box>
+                                        <NodeInternal displayProps={displayProps} />
+                                    </Box>}
+                            </ConfigPopover>
+
+                            {/* Output Handles */}
+                            <HandleStack>
+                                {typeDefinition.outputs.map(output =>
+                                    output.listMode ?
+                                        <ListHandle
+                                            {...handleProps(output.id)}
+                                            component={OutputHandle}
+                                            key={output.id}
+                                        /> :
+                                        <OutputHandle
+                                            {...handleProps(output.id)}
+                                            key={output.id}
+                                        />
+                                )}
+                            </HandleStack>
+                        </Group>
+                    </Stack>
+
                 </motion.div>
             </Box>
 
