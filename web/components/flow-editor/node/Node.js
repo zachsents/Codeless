@@ -14,9 +14,9 @@ import { NodeDefinitions } from "@minus/client-nodes"
 import { NodeProvider, useIntegrationAccounts, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppId, useFlowId } from "@web/modules/hooks"
 import { useReactFlow } from "reactflow"
-import ConfigPopover from "./ConfigPopover"
 import ErrorIcon from "./ErrorIcon"
 import NodeInternal from "./NodeInternal"
+import SelectedControls from "./SelectedControls"
 import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
@@ -104,54 +104,53 @@ export default function Node({ id, type: typeDefId, selected }) {
                 onContextMenu={handleContextMenu}
             // ref={clickOutsideRef}
             >
-                <motion.div
-                    variants={wrapperAnimVariants}
-                    initial="initial"
-                    animate={selected ? "selected" : hovered ? "hovered" : "idle"}
-                    transition={{ duration: 0.1 }}
-                    style={{
-                        borderRadius: theme.radius.md,
-                        cursor: "pointer",
-                    }}
-                    ref={hoverRef}
-                >
-                    <Stack spacing="xxxs" px="xs" py="xxxs">
+                <SelectedControls>
+                    <motion.div
+                        variants={wrapperAnimVariants}
+                        initial="initial"
+                        animate={selected ? "selected" : hovered ? "hovered" : "idle"}
+                        transition={{ duration: 0.1 }}
+                        style={{
+                            borderRadius: theme.radius.md,
+                            cursor: "pointer",
+                        }}
+                        ref={hoverRef}
+                    >
+                        <Stack spacing="xxxs" px="xs" py="xxxs">
 
-                        {/* Tags */}
-                        {typeDefinition.tags[0] && typeDefinition.showMainTag &&
-                            <Group position="apart">
-                                <Badge size="sm" radius="sm" color={typeDefinition.color} >
-                                    {typeDefinition.tags[0]}
-                                </Badge>
+                            {/* Tags */}
+                            {typeDefinition.tags[0] && typeDefinition.showMainTag &&
+                                <Group position="apart">
+                                    <Badge size="sm" radius="sm" color={typeDefinition.color} >
+                                        {typeDefinition.tags[0]}
+                                    </Badge>
 
-                                <ErrorIcon />
-                            </Group>}
+                                    <ErrorIcon />
+                                </Group>}
 
-                        <Group spacing={0} align="stretch">
+                            <Group spacing={0} align="stretch">
 
-                            {/* Input Handles */}
-                            <HandleStack>
-                                {typeDefinition.inputs.map(input =>
-                                    input.listMode ?
-                                        <ListHandle
-                                            {...handleProps(input.id)}
-                                            component={InputHandle}
-                                            key={input.id}
-                                        /> :
-                                        <InputHandle
-                                            {...handleProps(input.id)}
-                                            key={input.id}
-                                        />
-                                )}
-                            </HandleStack>
+                                {/* Input Handles */}
+                                <HandleStack>
+                                    {typeDefinition.inputs.map(input =>
+                                        input.listMode ?
+                                            <ListHandle
+                                                {...handleProps(input.id)}
+                                                component={InputHandle}
+                                                key={input.id}
+                                            /> :
+                                            <InputHandle
+                                                {...handleProps(input.id)}
+                                                key={input.id}
+                                            />
+                                    )}
+                                </HandleStack>
 
-                            <ConfigPopover>
                                 {typeDefinition.renderCard ?
                                     <Card
                                         px="md" py="xs"
                                         shadow={selected ? "sm" : "xs"}
                                         className="ofv border-1 border-solid border-dark-400"
-                                    // sx={{ borderRadius: "1.25rem" }}
                                     >
                                         <NodeInternal displayProps={displayProps} />
                                     </Card>
@@ -159,27 +158,27 @@ export default function Node({ id, type: typeDefId, selected }) {
                                     <Box>
                                         <NodeInternal displayProps={displayProps} />
                                     </Box>}
-                            </ConfigPopover>
 
-                            {/* Output Handles */}
-                            <HandleStack>
-                                {typeDefinition.outputs.map(output =>
-                                    output.listMode ?
-                                        <ListHandle
-                                            {...handleProps(output.id)}
-                                            component={OutputHandle}
-                                            key={output.id}
-                                        /> :
-                                        <OutputHandle
-                                            {...handleProps(output.id)}
-                                            key={output.id}
-                                        />
-                                )}
-                            </HandleStack>
-                        </Group>
-                    </Stack>
+                                {/* Output Handles */}
+                                <HandleStack>
+                                    {typeDefinition.outputs.map(output =>
+                                        output.listMode ?
+                                            <ListHandle
+                                                {...handleProps(output.id)}
+                                                component={OutputHandle}
+                                                key={output.id}
+                                            /> :
+                                            <OutputHandle
+                                                {...handleProps(output.id)}
+                                                key={output.id}
+                                            />
+                                    )}
+                                </HandleStack>
+                            </Group>
+                        </Stack>
 
-                </motion.div>
+                    </motion.div>
+                </SelectedControls>
             </Box>
 
             <Presence />

@@ -13,6 +13,7 @@ export const mantineTheme = {
     },
     fontSizes: {
         xxs: "0.625rem",
+        xxxs: "0.5rem",
     },
     spacing: {
         xxs: "0.5rem",

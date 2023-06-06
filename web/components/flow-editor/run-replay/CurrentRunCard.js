@@ -34,9 +34,12 @@ export default function CurrentRunCard() {
     }, [runs?.map(run => run.id).join()])
 
     return (
-        <SlidingCard opened={!!run} withBorder miw="12rem" p="xs" shadow="md" key={run?.id}>
+        <SlidingCard opened={!!run}
+            withBorder miw="12rem" p="xs" shadow="md" className="pointer-events-auto"
+            key={run?.id}
+        >
             <Stack>
-                <Group position="apart" align="start">
+                <Group position="apart" align="start" noWrap>
                     <Stack spacing="xs">
                         <Box>
                             <Text size="sm" weight={500}>

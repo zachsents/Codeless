@@ -1,4 +1,4 @@
-import { Box, Group, ScrollArea, Stack, Text, useMantineTheme } from "@mantine/core"
+import { Group, ScrollArea, Stack, Text, useMantineTheme } from "@mantine/core"
 import { useReactFlow } from "reactflow"
 
 import { addNodeAtCenter, openNodePalette } from "@web/modules/graph-util"
@@ -66,75 +66,73 @@ export default function NodeMenu() {
     }
 
     return (
-        <Box className="absolute top-0 left-0 pointer-events-none">
-            <Group p="xs" spacing={0} noWrap align="flex-start">
-                <Stack
-                    w="14rem"
-                    className="pointer-events-auto"
-                >
+        <Group p="xs" spacing={0} noWrap align="flex-start">
+            <Stack
+                w="18rem"
+                className="pointer-events-auto"
+            >
 
-                    <SearchInput
-                        noun="node"
-                        quantity={NodeDefList.length}
-                        hotkeys={["/"]}
-                        value={query}
-                        onChange={event => setQuery(event.currentTarget.value)}
-                        onClear={() => setQuery("")}
-                        onKeyDown={handleSearchKeyDown}
+                <SearchInput
+                    noun="node"
+                    quantity={NodeDefList.length}
+                    hotkeys={["/"]}
+                    value={query}
+                    onChange={event => setQuery(event.currentTarget.value)}
+                    onClear={() => setQuery("")}
+                    onKeyDown={handleSearchKeyDown}
 
-                        // if search is focused, show "Start typing..." placeholder
-                        {...(searchFocused && { placeholder: "Start typing..." })}
-                        ref={searchInputRef}
-                        // this makes the input line up with the node cards
-                        mr="xxs"
-                    />
+                    // if search is focused, show "Start typing..." placeholder
+                    {...(searchFocused && { placeholder: "Start typing..." })}
+                    ref={searchInputRef}
+                    // this makes the input line up with the node cards
+                    mr="xs"
+                />
 
-                    {(query.length > 0 || searchFocused) &&
-                        <ScrollArea.Autosize
-                            mah="80vh" offsetScrollbars scrollbarSize={theme.spacing.xxs}
-                            viewportRef={scrollAreaRef}
-                        >
-                            <Stack spacing="xxs">
-                                {query.length > 0 ?
-                                    filteredNodeDefs.slice(0, 20).map((nodeDefDef, i) =>
-                                        <DraggableNodeButton
-                                            id={nodeDefDef.id}
-                                            showDescription bgOnHover
-                                            pinned={preferences?.pinned?.includes(nodeDefDef.id)}
-                                            onPin={() => setPreference("pinned", arrayUnion(nodeDefDef.id))}
-                                            onUnpin={() => setPreference("pinned", arrayRemove(nodeDefDef.id))}
-                                            cardProps={{
-                                                className: jc(i === selectedResultIndex && "!border-primary-600 bg-primary-100"),
-                                            }}
-                                            key={nodeDefDef.id}
-                                        />
-                                    ) :
-                                    <>
-                                        {/* <Group>
+                {(query.length > 0 || searchFocused) &&
+                    <ScrollArea.Autosize
+                        mah="80vh" offsetScrollbars scrollbarSize={theme.spacing.xs}
+                        viewportRef={scrollAreaRef}
+                    >
+                        <Stack spacing="xs">
+                            {query.length > 0 ?
+                                filteredNodeDefs.slice(0, 20).map((nodeDefDef, i) =>
+                                    <DraggableNodeButton
+                                        id={nodeDefDef.id}
+                                        showDescription bgOnHover
+                                        pinned={preferences?.pinned?.includes(nodeDefDef.id)}
+                                        onPin={() => setPreference("pinned", arrayUnion(nodeDefDef.id))}
+                                        onUnpin={() => setPreference("pinned", arrayRemove(nodeDefDef.id))}
+                                        cardProps={{
+                                            className: jc(i === selectedResultIndex && "!border-primary-600 bg-primary-100"),
+                                        }}
+                                        key={nodeDefDef.id}
+                                    />
+                                ) :
+                                <>
+                                    {/* <Group>
                                         <Badge>
                                             TO DO: add category search
                                         </Badge>
                                     </Group> */}
-                                        <Suggestions />
-                                    </>}
-                            </Stack>
-                        </ScrollArea.Autosize>}
-                </Stack>
+                                    <Suggestions />
+                                </>}
+                        </Stack>
+                    </ScrollArea.Autosize>}
+            </Stack>
 
-                <Group spacing="xxs" className="flex-1">
-                    {preferences?.pinned?.map(pinnedId =>
-                        <DraggableNodeButton
-                            id={pinnedId}
-                            pinned
-                            onUnpin={() => setPreference("pinned", arrayRemove(pinnedId))}
-                            bgOnHover
-                            scaleOnHover
-                            key={pinnedId}
-                        />
-                    )}
-                </Group>
+            <Group spacing="xs" className="flex-1">
+                {preferences?.pinned?.map(pinnedId =>
+                    <DraggableNodeButton
+                        id={pinnedId}
+                        pinned
+                        onUnpin={() => setPreference("pinned", arrayRemove(pinnedId))}
+                        bgOnHover
+                        scaleOnHover
+                        key={pinnedId}
+                    />
+                )}
             </Group>
-        </Box>
+        </Group>
     )
 }
 
@@ -174,7 +172,7 @@ function Suggestions() {
     })
 
     return suggestions && suggestions.length > 0 && <>
-        <Text size="xxs" color="dimmed">Suggested</Text>
+        <Text size="xs" color="dimmed">Suggested</Text>
 
         {suggestions.map(sugg =>
             <DraggableNodeButton

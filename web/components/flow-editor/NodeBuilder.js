@@ -1,4 +1,4 @@
-import { useMantineTheme } from "@mantine/core"
+import { Group, useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
 import { useEffect, useMemo } from "react"
@@ -14,6 +14,8 @@ import Node from "./node/Node"
 import { useStoreProperty } from "@minus/client-nodes/hooks/nodes"
 import 'reactflow/dist/style.css'
 import PaneContextMenu from "./PaneContextMenu"
+import NodeConfigPanel from "./config-panel/NodeConfigPanel"
+import NodeMenu from "./node-menu/NodeMenu"
 import ReplayPanel from "./run-replay/ReplayPanel"
 
 
@@ -97,7 +99,18 @@ export default function NodeBuilder() {
             //     backgroundColor: "white",
             // }}
             />
-            <ReplayPanel />
+
+
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-10">
+                <Group position="apart" align="stretch" className="h-full" noWrap>
+                    <NodeMenu />
+
+                    <Group spacing="xxs" p="xxs" align="stretch" className="h-full" noWrap>
+                        <ReplayPanel />
+                        <NodeConfigPanel />
+                    </Group>
+                </Group>
+            </div>
             <PaneContextMenu />
 
             <ChangeWatcher onChange={setGraph} />

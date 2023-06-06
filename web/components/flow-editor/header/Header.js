@@ -7,16 +7,13 @@ import { TriggerNodeDefinitions } from "@minus/client-nodes"
 import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
 import FlowControlButton from "@web/components/FlowControlButton"
 import { useFlowContext } from "@web/modules/context"
-import { deselectAll } from "@web/modules/graph-util"
 import { useActionQuery } from "@web/modules/hooks"
-import { useReactFlow } from "reactflow"
 import RunReplayPopover from "../run-replay/RunReplayPopover"
 import FlowTitle from "./FlowTitle"
 
 
 export default function Header() {
 
-    const rf = useReactFlow()
     const { query: { appId } } = useRouter()
     const { flow, dirty: isFlowUnsaved } = useFlowContext()
 
@@ -44,17 +41,17 @@ export default function Header() {
 
     return (
         <MantineHeader
-            onClick={() => deselectAll(rf)}
-            fixed={false} px="xs" py="0.5rem" zIndex={200}
+            // onClick={() => deselectAll(rf)}
+            fixed={false} px="sm" py="xs" zIndex={200}
             className="ofv"
         >
             <Group position="apart">
                 <Group>
                     <Link href={`/app/${appId}?tab=flows`}>
                         <Tooltip label="Back to All Workflows">
-                            <Button color="gray" variant="light" size="xs">
+                            <Button color="gray" variant="light" size="sm">
                                 <Group spacing="xs">
-                                    <TbArrowLeft size={16} /><TbLayoutList size={20} />
+                                    <TbArrowLeft size="1em" /><TbLayoutList size="1.2em" />
                                 </Group>
                             </Button>
                         </Tooltip>
@@ -67,7 +64,7 @@ export default function Header() {
 
                     {/* Saving Indicator */}
                     <Badge
-                        color="gray" variant="light" size="sm"
+                        color="gray" variant="light" size="md"
                         leftSection={<Text color={saveStatus.color} size="xl">&bull;</Text>}
                     >
                         {saveStatus.label}
@@ -93,19 +90,20 @@ export default function Header() {
                     {/* Publishing */}
                     {(isEnabling || isDisabling) ?
                         <Group>
-                            <Loader size="xs" />
-                            <Text size="xs" color="dimmed">Working on it...</Text>
+                            <Loader size="sm" />
+                            <Text size="sm" color="dimmed">Working on it...</Text>
                         </Group> :
                         <Group>
                             <Badge
                                 color={publishStatus.color}
                                 variant="light" leftSection={<Text color={publishStatus.color} size="xl">&bull;</Text>}
+                                size="lg"
                             >
                                 {publishStatus.label}
                             </Badge>
                             <Switch
                                 color="green"
-                                size="xs"
+                                size="sm"
                                 checked={flow?.published}
                                 onChange={flow?.published ? disableFlow : enableFlow}
                             />

@@ -1,10 +1,12 @@
-import { ActionIcon, Button, Tooltip } from "@mantine/core"
+import { ActionIcon, Button, Tooltip, useMantineTheme } from "@mantine/core"
 import { useState } from "react"
 import { TbCheck, TbMoodSad } from "react-icons/tb"
 import { useQuery } from "react-query"
 
 
-export default function FlowControlButton({ flow, appId, id, label, icon, small, showStatus, onActivate, bigProps = {}, smallProps = {}, iconSize = "1.2em" }) {
+export default function FlowControlButton({ flow, appId, id, label, icon, small, showStatus, onActivate, bigProps = {}, smallProps = {} }) {
+
+    const theme = useMantineTheme()
 
     // timeout for showing status
     const [currentlyShowingStatus, setCurrentlyShowingStatus] = useState(false)
@@ -31,15 +33,16 @@ export default function FlowControlButton({ flow, appId, id, label, icon, small,
         <Tooltip label={label} withinPortal>
             <ActionIcon
                 onClick={() => refetch()}
-                color={color} size="lg" variant="light" loading={isLoading}
+                color={color} size="xl" variant="light" loading={isLoading}
                 {...smallProps}
             >
-                <Icon size={iconSize} />
+                <Icon size={smallProps?.size ?? theme.fontSizes.xl} />
             </ActionIcon>
         </Tooltip> :
         <Button
             onClick={() => refetch()}
-            color={color} size="sm" variant="light" leftIcon={<Icon size={iconSize} />} loading={isLoading}
+            color={color} size="sm" variant="light" loading={isLoading}
+            leftIcon={<Icon size={bigProps?.size ?? theme.fontSizes.sm} />}
             {...bigProps}
         >
             {label}

@@ -28,12 +28,12 @@ export default function RunReplayPopover() {
                         disabled={hasNoRuns}
                         color={!hasNoRuns && runStatusColor(runs[0].status)}
                         processing={!hasNoRuns && isPending(runs[0].status)}
-                        size={12} offset={2} mr="sm"
+                        size="0.75rem" offset={2} mr="sm"
                     >
                         <Button
                             onClick={popoverHandlers.toggle}
                             color={hasNoRuns && "gray"}
-                            variant="light" size="xs" leftIcon={<TbClockPlay size="1rem" />}
+                            variant="light" size="sm" leftIcon={<TbClockPlay size="1rem" />}
                         >
                             View Runs
                         </Button>

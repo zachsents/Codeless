@@ -38,7 +38,7 @@ const SearchInput = forwardRef(({
         // hover ref goes on wrapper so right section doesn't interfere with hover detection
         <div ref={hoverAndFocusRef}>
             <TextInput
-                size="xs" icon={<TbSearch />}
+                size="sm" icon={<TbSearch />}
                 placeholder={(noun != null & quantity != null) ?
                     `Search ${quantity ?? ""} ${noun}${quantity == 1 ? "" : "s"}` :
                     undefined}

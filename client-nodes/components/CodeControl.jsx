@@ -47,7 +47,7 @@ export default function CodeControl({ inputId, inputProps = {}, language }) {
             {modalOpened &&
                 <Portal>
                     <div className="absolute top-0 left-0 w-screen h-screen z-[1000]">
-                        <Container size="sm" className="relative z-10 h-full">
+                        <Container size="md" className="relative z-10 h-full">
                             <Center h="100%">
                                 <Stack w="100%" h="75vh" ref={clickOutsideRef}>
                                     <div className="flex-1 rounded-md bg-white py-xs">

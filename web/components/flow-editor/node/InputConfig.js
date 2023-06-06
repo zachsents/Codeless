@@ -1,7 +1,7 @@
-import { Button, Center, Divider, Group, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
-import { InputMode, useHandleDefinition, useInputMode, useNodeContext, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { ActionIcon, Center, Divider, Group, Menu, Stack, Text, ThemeIcon, Tooltip, useMantineTheme } from "@mantine/core"
+import { InputMode, useColors, useHandleDefinition, useInputMode, useNodeContext, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { formatHandleName } from "@web/modules/graph-util"
-import { TbInfoCircle } from "react-icons/tb"
+import { TbChartDots3, TbCursorText, TbDots, TbInfoCircle } from "react-icons/tb"
 import ListConfig from "./ListConfig"
 
 
@@ -11,6 +11,7 @@ export default function InputConfig({ id, divider = true }) {
 
     const { definition } = useHandleDefinition(null, id)
     const typeDefinition = useTypeDefinition()
+    const [lightColor] = useColors(null, [0])
 
     // Input Mode
     const [inputMode, setInputMode] = useInputMode(null, id)
@@ -28,54 +29,75 @@ export default function InputConfig({ id, divider = true }) {
             {divider &&
                 <Divider color="gray.2" />}
 
-            <Group spacing="sm" noWrap>
-                <Stack spacing="xxxs" w={(isConfig || isList) ? "10rem" : "auto"}>
-                    <Group spacing="xs" noWrap>
+            <Stack spacing="xs">
+                <Group spacing="xs" noWrap pr="xxs">
+                    <ThemeIcon
+                        size="md" radius="xl"
+                        color={isHandle ? typeDefinition.color : "gray"}
+                        variant={isHandle ? "outline" : "light"}
+                        bg={isHandle ? lightColor : "transparent"}
+                    >
+                        {definition.icon &&
+                            <definition.icon size={theme.fontSizes.md} />}
+                    </ThemeIcon>
 
-                        {isHandle ?
-                            <ThemeIcon variant="outline" size="md" radius="xl" color={typeDefinition.color}>
-                                {definition.icon &&
-                                    <definition.icon size={theme.fontSizes.md} />}
-                            </ThemeIcon> :
-                            <ThemeIcon variant="light" size="md" radius="xl" color="gray" bg="transparent">
-                                {definition.icon &&
-                                    <definition.icon size={theme.fontSizes.md} />}
-                            </ThemeIcon>}
+                    <Stack spacing={0} className="flex-1">
+                        <Group spacing="xs" noWrap>
+                            <Text>
+                                {definition.name || formatHandleName(definition.id)}
+                            </Text>
 
-                        <Text size="xs">
-                            {definition.name || formatHandleName(definition.id)}
-                        </Text>
+                            {definition.tooltip && definition.tooltip != definition.description &&
+                                <Tooltip
+                                    withinPortal
+                                    label={<Text sx={{ overflowWrap: "anywhere" }}>{definition.tooltip}</Text>}
+                                    // position="left"
+                                    multiline
+                                    maw="17rem"
+                                >
+                                    <Center>
+                                        <TbInfoCircle color={theme.colors.gray[6]} />
+                                    </Center>
+                                </Tooltip>}
+                        </Group>
 
-                        {definition.tooltip && definition.tooltip != definition.description &&
-                            <Tooltip
-                                withinPortal
-                                label={<Text sx={{ overflowWrap: "anywhere" }}>{definition.tooltip}</Text>}
-                                // position="left"
-                                multiline
-                                maw="17rem"
-                            >
-                                <Center>
-                                    <TbInfoCircle color={theme.colors.gray[6]} />
-                                </Center>
-                            </Tooltip>}
-                    </Group>
+                        {definition.description &&
+                            <Text size="xs" color="dimmed">
+                                {definition.description}
+                            </Text>}
+                    </Stack>
 
-                    <Group spacing="xs">
-                        {canChangeMode && isHandle &&
-                            <Button size="xs" compact variant="light" color="gray" onClick={() => setInputMode(InputMode.Config)}>
-                                Configure Here
-                            </Button>}
-
-                        {canChangeMode && isConfig &&
-                            <Button size="xs" compact variant="light" color="gray" onClick={() => setInputMode(InputMode.Handle)}>
-                                Add as Input
-                            </Button>}
-                    </Group>
-
-                    <Text size="xs" color="dimmed">
-                        {definition.description}
-                    </Text>
-                </Stack>
+                    {canChangeMode &&
+                        <Menu shadow="sm" withinPortal>
+                            <Menu.Target>
+                                <ActionIcon size="sm" radius="sm" variant="light">
+                                    <TbDots />
+                                </ActionIcon>
+                            </Menu.Target>
+                            <Menu.Dropdown maw="16rem">
+                                {canChangeMode &&
+                                    (isHandle ?
+                                        <Menu.Item
+                                            icon={<TbCursorText />}
+                                            onClick={() => setInputMode(InputMode.Config)}
+                                        >
+                                            <Text>Configure Here</Text>
+                                            <Text size="xs" color="dimmed">
+                                                Enter a fixed value for this input.
+                                            </Text>
+                                        </Menu.Item> :
+                                        <Menu.Item
+                                            icon={<TbChartDots3 />}
+                                            onClick={() => setInputMode(InputMode.Handle)}
+                                        >
+                                            <Text>Show on Node</Text>
+                                            <Text size="xs" color="dimmed">
+                                                Show this input on the node, and allow it to be connected to other nodes.
+                                            </Text>
+                                        </Menu.Item>)}
+                            </Menu.Dropdown>
+                        </Menu>}
+                </Group>
 
                 {(isConfig || isList) &&
                     <Stack justify="center" className="flex-1 self-stretch">
@@ -85,7 +107,7 @@ export default function InputConfig({ id, divider = true }) {
                         {isList &&
                             <ListConfig handleId={id} />}
                     </Stack>}
-            </Group>
+            </Stack>
         </>
     )
 }
