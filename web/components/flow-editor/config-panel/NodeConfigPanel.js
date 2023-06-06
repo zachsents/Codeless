@@ -58,7 +58,7 @@ export default function NodeConfigPanel() {
                             // https://stackoverflow.com/questions/41674979/flex-child-is-growing-out-of-parent
                             className="flex flex-col gap-xxs flex-1 min-h-0"
                             classNames={{
-                                item: "pointer-events-auto bg-white base-border shadow-xs !m-0 " +
+                                item: "pointer-events-auto bg-white base-border shadow-sm !m-0 " +
                                     "flex flex-col h-full",
                                 panel: "min-h-0 [&>div]:h-full",
                                 content: "h-full p-0",
@@ -182,7 +182,7 @@ function TitleCard() {
 
     return typeDefinition &&
         <Card
-            withBorder shadow="xs" px="sm" py="xxs"
+            withBorder shadow="sm" px="sm" py="xxs"
             className="pointer-events-auto shrink-0"
 
             component={motion.div}

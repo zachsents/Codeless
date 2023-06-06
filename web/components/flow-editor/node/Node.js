@@ -156,7 +156,9 @@ export default function Node({ id, type: typeDefId, selected }) {
                                     <Card
                                         px="md" py="xs"
                                         shadow={selected ? "sm" : "xs"}
-                                        className="ofv border-1 border-solid border-dark-400"
+                                        // shadow={selected ? "sm" : false}
+                                        // className="ofv border-1 border-solid border-dark-400"
+                                        className="ofv base-border"
                                     >
                                         <NodeInternal displayProps={displayProps} />
                                     </Card>

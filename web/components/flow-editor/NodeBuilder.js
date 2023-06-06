@@ -88,16 +88,18 @@ export default function NodeBuilder() {
             id="node-editor"
         >
             <Background
+                id="1"
                 variant="lines"
                 gap={25}
                 size={1}
                 color={theme.colors.gray[0]}
 
-            // color="transparent"
-            // style={{
-            //     // backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
-            //     backgroundColor: "white",
-            // }}
+                // color="transparent"
+                style={{
+                    // backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
+                    // backgroundColor: "white",
+                    backgroundColor: theme.colors.gray[0],
+                }}
             />
 
 
