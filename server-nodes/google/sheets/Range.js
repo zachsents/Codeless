@@ -1,4 +1,4 @@
-import { google } from "@minus/server-lib"
+import { sheets } from "@minus/server-lib"
 
 
 export default {
@@ -16,7 +16,7 @@ export default {
      */
     async onInputsReady({ $sheetName, $range }) {
 
-        const sheetsApi = await google.getGoogleAPIFromNode(this, "sheets", "v4")
+        const sheetsApi = await sheets.getGoogleSheetsAPIFromNode(this)
 
         const sheet = sheetsApi.spreadsheet(this.state.spreadsheetId).sheet($sheetName)
 
