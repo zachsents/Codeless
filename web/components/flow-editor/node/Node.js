@@ -1,4 +1,4 @@
-import { Badge, Box, Card, Group, Stack, useMantineTheme } from "@mantine/core"
+import { Badge, Box, Card, Center, Group, Stack, useMantineTheme } from "@mantine/core"
 import { useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
@@ -13,6 +13,7 @@ import {
 import { NodeDefinitions } from "@minus/client-nodes"
 import { NodeProvider, useIntegrationAccounts, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppId, useFlowId } from "@web/modules/hooks"
+import { TbLock } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
 import ErrorIcon from "./ErrorIcon"
 import NodeInternal from "./NodeInternal"
@@ -120,10 +121,15 @@ export default function Node({ id, type: typeDefId, selected }) {
 
                             {/* Tags */}
                             {typeDefinition.tags[0] && typeDefinition.showMainTag &&
-                                <Group position="apart">
-                                    <Badge size="sm" radius="sm" color={typeDefinition.color} >
-                                        {typeDefinition.tags[0]}
-                                    </Badge>
+                                <Group position="apart" spacing="xs">
+                                    <Group spacing="xxxs">
+                                        <Badge size="sm" radius="sm" color={typeDefinition.color} >
+                                            {typeDefinition.tags[0]}
+                                        </Badge>
+
+                                        {typeDefinition.trigger &&
+                                            <Center ><TbLock color={theme.fn.primaryColor()} size={theme.fontSizes.sm} /></Center>}
+                                    </Group>
 
                                     <ErrorIcon />
                                 </Group>}
