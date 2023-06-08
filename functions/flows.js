@@ -1,10 +1,11 @@
 import { Graph } from "@minus/gee3"
 import { RunStatus, airtable, getFlow, getFlowGraph, google, openai, twilio, updateFlow } from "@minus/server-lib"
 import { loadNodeDefinitions } from "@minus/server-nodes"
-import { FieldValue } from "firebase-admin/firestore"
+import { FieldValue, Timestamp } from "firebase-admin/firestore"
 import { getFunctions } from "firebase-admin/functions"
 import functions from "firebase-functions"
 import { db } from "./init.js"
+import { getNextDateFromSchedule } from "@minus/util"
 
 
 const withSecret = functions.runWith({
@@ -183,7 +184,30 @@ export const unpublish = withSecret.https.onCall(async ({ flowId }) => {
  * Start a run scheduled previously
  */
 export const startScheduledRun = withSecret.tasks.taskQueue().onDispatch(async ({ flowRunId }) => {
-    await db.doc(`flowRuns/${flowRunId}`).update({ status: RunStatus.Pending })
+
+    const currentDocRef = db.doc(`flowRuns/${flowRunId}`)
+
+    await db.runTransaction(async t => {
+        // Get the current run document
+        const current = await t.get(currentDocRef).then(doc => doc.data())
+
+        // Make sure this run is still Scheduled
+        if (current.status !== RunStatus.Scheduled)
+            throw new Error("Run is not scheduled. This probably means it was cancelled.")
+
+        // Update this run from Scheduled to Pending
+        await t.update(currentDocRef, { status: RunStatus.Pending })
+
+        // If this is a recurring schedule, create a new run
+        if (current.recurring) {
+            const newRunRef = db.collection("flowRuns").doc()
+            await t.set(newRunRef, {
+                ...current,
+                status: RunStatus.Scheduled,
+                scheduledFor: Timestamp.fromDate(getNextDateFromSchedule(current.schedule, current.scheduledFor.toDate())),
+            })
+        }
+    })
 })
 
 

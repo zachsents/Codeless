@@ -1,5 +1,5 @@
 import { useRealtime } from "./firestore-util"
-import { createLatestRunQuery, createRunQuery } from "./run-actions"
+import { createLatestRunQuery, createRunQuery, createScheduledRunsQuery } from "./run-actions"
 
 
 /**
@@ -27,6 +27,19 @@ export function useRunsRealtime(flowId, options = {
     limit: 10,
 }) {
     return useRealtime(createRunQuery(flowId, options), {
-        dependencies: [flowId, ...Object.values(options)]
+        dependencies: [flowId, ...Object.values(options)],
+    })
+}
+
+
+/**
+ * Hook that provides a real-time list of scheduled runs.
+ *
+ * @export
+ * @param {string} flowId
+ */
+export function useScheduledRuns(flowId) {
+    return useRealtime(createScheduledRunsQuery(flowId), {
+        dependencies: [flowId],
     })
 }

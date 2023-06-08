@@ -1,9 +1,8 @@
-import { useState } from "react"
 import { Button, Group, Stack, TextInput } from "@mantine/core"
-import { useRouter } from "next/router"
-import { useCreateApp } from "@minus/client-sdk"
-import { useActionQuery } from "@web/modules/hooks"
 import { notifications } from "@mantine/notifications"
+import { useActionQuery, useCreateApp } from "@minus/client-sdk"
+import { useRouter } from "next/router"
+import { useState } from "react"
 
 
 export default function CreateAppModal({ context, id, /*  innerProps */ }) {

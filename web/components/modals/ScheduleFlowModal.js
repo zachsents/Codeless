@@ -1,7 +1,6 @@
 import { Button, Group, Stack, Text, useMantineTheme } from "@mantine/core"
 import { DateTimePicker } from "@mantine/dates"
 import { useForm } from "@mantine/form"
-import { scheduleFlowRun as _scheduleFlowRun } from "@minus/client-sdk"
 import { TbCheck } from "react-icons/tb"
 import { useQuery } from "react-query"
 
@@ -24,7 +23,8 @@ export default function ScheduleFlowModal({ context, id, innerProps: { flowId } 
 
     const { isLoading, refetch: scheduleFlowRun } = useQuery({
         queryKey: ["scheduleFlow", flowId, form.values.datetime?.toISOString()],
-        queryFn: () => _scheduleFlowRun(flowId, form.values.datetime),
+        // queryFn: () => _scheduleFlowRun(flowId, form.values.datetime),
+        queryFn: () => console.log("oops. This is disabled"),
         onSuccess: () => context.closeModal(id),
         enabled: false,
         retry: false,

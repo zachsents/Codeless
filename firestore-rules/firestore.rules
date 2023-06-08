@@ -56,7 +56,8 @@ service cloud.firestore {
         match /flowRuns/{runId} {
             allow read: if isFlowRunOwner(resource);
             allow create: if isFlowRunOwner(request.resource) && (request.resource.data.status == "pending" || request.resource.data.status == "scheduled");
-            allow update, delete: if false;
+            allow update: if isFlowRunOwner(request.resource) && request.resource.data.status == "failed";
+            allow delete: if false;
         }
 
         // Users

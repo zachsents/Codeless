@@ -2,8 +2,7 @@ import { useDebouncedValue, useTimeout } from "@mantine/hooks"
 import { useAuthState, useRenameApp, useRenameFlow } from "@minus/client-sdk"
 import fuzzy from "fuzzy"
 import { useRouter } from "next/router"
-import { useEffect, useId, useMemo, useState } from "react"
-import { useQuery } from "react-query"
+import { useEffect, useMemo, useState } from "react"
 import { useNodes, useReactFlow } from "reactflow"
 
 
@@ -72,22 +71,6 @@ export function useSearch(list, selector, searchQueryArg) {
     )
 
     return [filtered, searchQuery, setSearchQuery]
-}
-
-
-export function useActionQuery(queryFn, queryKey, queryProps = {}) {
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    queryKey ??= [useId()]
-
-    const { refetch, ...result } = useQuery({
-        queryKey,
-        queryFn,
-        enabled: false,
-        ...queryProps,
-    })
-
-    return [refetch, result]
 }
 
 

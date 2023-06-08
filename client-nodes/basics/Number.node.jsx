@@ -38,8 +38,9 @@ export default {
                     value={state.$}
                     onChange={val => setState({ $: val })}
                     placeholder="Pick a number..."
-                    size="lg"
-                    w={220}
+                    size="md"
+                    // w={`${(state.$ ?? 5).toString().length + 5}ch`}
+                    w="15ch"
                     controls
                     classNames={{
                         input: "nodrag"

@@ -4,10 +4,8 @@ import { useRouter } from "next/router"
 import { TbArrowLeft, TbLayoutList } from "react-icons/tb"
 
 import { TriggerNodeDefinitions } from "@minus/client-nodes"
-import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
-import FlowControlButton from "@web/components/FlowControlButton"
+import { useActionQuery, usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
 import { useFlowContext } from "@web/modules/context"
-import { useActionQuery } from "@web/modules/hooks"
 import RunReplayPopover from "../run-replay/RunReplayPopover"
 import FlowTitle from "./FlowTitle"
 
@@ -58,6 +56,14 @@ export default function Header() {
                     </Link>
 
                     <FlowTitle />
+
+                    {/* Flow Controls */}
+                    {flow?.published &&
+                        <Group ml="xl">
+                            {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
+                                <control.render {...{ appId, flow }} key={control.id} />
+                            )}
+                        </Group>}
                 </Group>
 
                 <Group spacing="lg">
@@ -71,21 +77,6 @@ export default function Header() {
                     </Badge>
 
                     <Divider orientation="vertical" />
-
-                    {/* Flow Controls */}
-                    {flow?.published && <>
-                        <Group>
-                            {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
-                                <FlowControlButton
-                                    {...control}
-                                    appId={appId}
-                                    flow={flow}
-                                    key={control.id}
-                                />
-                            )}
-                        </Group>
-                        <Divider orientation="vertical" />
-                    </>}
 
                     {/* Publishing */}
                     {(isEnabling || isDisabling) ?

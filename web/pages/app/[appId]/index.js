@@ -10,10 +10,9 @@ import {
 import { useDisclosure, useHover } from "@mantine/hooks"
 import { openContextModal } from "@mantine/modals"
 import { Integrations, TriggerNodeDefinitions } from "@minus/client-nodes"
-import { functionUrl, useFlowsForAppRealtime, usePublishFlow, useUnpublishFlow, useUpdateApp } from "@minus/client-sdk"
+import { functionUrl, useActionQuery, useFlowsForAppRealtime, usePublishFlow, useUnpublishFlow, useUpdateApp } from "@minus/client-sdk"
 import { plural } from "@minus/util"
 import EditableText from "@web/components/EditableText"
-import FlowControlButton from "@web/components/FlowControlButton"
 import GlassButton from "@web/components/GlassButton"
 import SearchInput from "@web/components/SearchInput"
 import Section from "@web/components/Section"
@@ -22,7 +21,7 @@ import AppPageHead from "@web/components/dashboard/AppPageHead"
 import Header from "@web/components/dashboard/Header"
 import Footer from "@web/components/landing/Footer"
 import { AppProvider, useAppContext } from "@web/modules/context"
-import { useActionQuery, useAppRenaming, useFlowRenaming, useMustBeSignedIn, useQueryParam } from "@web/modules/hooks"
+import { useAppRenaming, useFlowRenaming, useMustBeSignedIn, useQueryParam } from "@web/modules/hooks"
 import { useSearch } from "@web/modules/search"
 import { jc, stopPropagation } from "@web/modules/util"
 import Link from "next/link"
@@ -300,20 +299,21 @@ function FlowCard({ flow, displayNameParts }) {
                         </Group>
                     </Stack>
 
-                    {flow?.published && <Group spacing="xs" onClick={stopPropagation}>
-                        {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
-                            <FlowControlButton
-                                {...control}
-                                appId={app?.id}
-                                flow={flow}
-                                key={control.id}
-                            />
-                        )}
-                    </Group>}
+                    {/* {flow?.published &&
+                        <Group spacing="xs" onClick={stopPropagation}>
+                            {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
+                                <FlowControlButton
+                                    {...control}
+                                    appId={app?.id}
+                                    flow={flow}
+                                    key={control.id}
+                                />
+                            )}
+                        </Group>} */}
                 </Group>
 
                 <Group position="apart" className="translate-y-1">
-                    <Menu withinPortal>
+                    <Menu withinPortal shadow="md">
                         <Menu.Target>
                             <ActionIcon onClick={stopPropagation}>
                                 <TbDots />

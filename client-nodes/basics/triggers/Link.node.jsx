@@ -1,4 +1,6 @@
-import { TbCopy, TbExternalLink } from "react-icons/tb"
+import { Button } from "@mantine/core"
+import { notifications } from "@mantine/notifications"
+import { TbCheck, TbCopy, TbExternalLink } from "react-icons/tb"
 import { Link } from "tabler-icons-react"
 
 
@@ -34,9 +36,28 @@ export default {
             small: true,
             showStatus: true,
 
-            onActivate: ({ flow }) => {
-                navigator.clipboard.writeText(generateUrl(flow))
-            },
+            render: ({ flow, buttonProps = {} }) => {
+
+                const copy = () => {
+                    navigator.clipboard.writeText(generateUrl(flow))
+
+                    notifications.show({
+                        title: "Copied!",
+                        color: "green",
+                        icon: <TbCheck />,
+                    })
+                }
+
+                return (
+                    <Button
+                        leftIcon={<TbCopy />} variant="light"
+                        onClick={copy}
+                        {...buttonProps}
+                    >
+                        Copy URL
+                    </Button>
+                )
+            }
         },
         {
             id: "open-url",
@@ -45,9 +66,22 @@ export default {
             small: true,
             showStatus: false,
 
-            onActivate: ({ flow }) => {
-                window.open(generateUrl(flow), "_blank")
-            },
+            render: ({ flow, buttonProps = {} }) => {
+
+                const openInNewTab = () => {
+                    window.open(generateUrl(flow), "_blank")
+                }
+
+                return (
+                    <Button
+                        leftIcon={<TbExternalLink />} variant="light"
+                        onClick={openInNewTab}
+                        {...buttonProps}
+                    >
+                        Open URL
+                    </Button>
+                )
+            }
         },
     ],
 }

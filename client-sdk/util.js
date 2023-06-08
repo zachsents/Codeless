@@ -1,4 +1,5 @@
-import { useCallback } from "react"
+import { useCallback, useId } from "react"
+import { useQuery } from "react-query"
 
 
 export function useCallbackWithRequirements(callback, deps = [], {
@@ -18,4 +19,19 @@ export function safelyCall(func, ...args) {
     if (args.some(arg => arg == null))
         return
     return func?.(...args)
+}
+
+
+export function useActionQuery(queryFn, queryKey, queryProps = {}) {
+
+    queryKey ??= [useId()]
+
+    const { refetch, ...result } = useQuery({
+        queryKey,
+        queryFn,
+        enabled: false,
+        ...queryProps,
+    })
+
+    return [refetch, result]
 }
