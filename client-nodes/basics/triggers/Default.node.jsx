@@ -245,7 +245,9 @@ export default {
                                         <ScrollArea.Autosize mah="20rem">
                                             <Stack spacing="sm">
                                                 {scheduledRuns ?
-                                                    scheduledRuns.map(run => <RunRow run={run} key={run.id} />) :
+                                                    scheduledRuns.length > 0 ?
+                                                        scheduledRuns.map(run => <RunRow run={run} key={run.id} />) :
+                                                        <Text size="sm" color="dimmed" align="center">No runs scheduled</Text> :
                                                     <Center>
                                                         <Loader size="sm" />
                                                     </Center>}
