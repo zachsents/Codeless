@@ -30,7 +30,7 @@ export default function NodeConfigPanel() {
     const selectedNode = useCurrentlySelectedNode()
 
     // Integrations
-    const { needsAccounts, missingSelections } = useIntegrationAccounts(selectedNode?.id, app)
+    const { needsAccounts, missingSelections } = useIntegrationAccounts(selectedNode?.id ?? false, app)
 
     // Accordion state
     const defaultAccordionState = (needsAccounts && missingSelections) ? ["inputs", "integrations"] : ["inputs", "outputs"]
