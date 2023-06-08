@@ -30,7 +30,7 @@ export function getStartDateFromSchedule(schedule) {
     switch (schedule.intervalUnit) {
         case "minute":
             // first execution is in 1 minute
-            nextScheduledFor.setMinutes(now.getMinutes() + 1)
+            nextScheduledFor.setMinutes(now.getMinutes() + schedule.interval)
             break
         case "hour":
             // set minute
