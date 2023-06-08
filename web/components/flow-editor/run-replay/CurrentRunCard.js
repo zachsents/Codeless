@@ -3,7 +3,7 @@ import { runFlow } from "@minus/client-sdk"
 import SlidingCard from "@web/components/SlidingCard"
 import { useReplayContext } from "@web/modules/context"
 import { useFlowId } from "@web/modules/hooks"
-import { formatRunStatus, runStatusColor, runStatusIcon, shortRunId } from "@web/modules/runs"
+import { RunStatusIcon, formatRunStatus, runStatusColor, shortRunId } from "@web/modules/runs"
 import { useEffect, useState } from "react"
 import { TbPlayerPlay, TbX } from "react-icons/tb"
 
@@ -55,8 +55,8 @@ export default function CurrentRunCard() {
                             </Text>
                         </Box>
                         <Group spacing="xs">
-                            <ThemeIcon color={runStatusColor(run.status)} size="xs" radius="xl">
-                                {runStatusIcon(run.status)}
+                            <ThemeIcon color={runStatusColor(run.status)} size="sm" radius="xl">
+                                <RunStatusIcon status={run.status} />
                             </ThemeIcon>
                             <Text size="xs" color="dimmed">
                                 {formatRunStatus(run.status)}

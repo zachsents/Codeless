@@ -2,7 +2,7 @@ import { Button, Center, Indicator, Popover, ScrollArea, Stack, Table, Text, The
 import { useClickOutside, useDisclosure } from "@mantine/hooks"
 import { isPending } from "@minus/client-sdk"
 import { useReplayContext } from "@web/modules/context"
-import { formatRunStatus, runStatusColor, runStatusIcon, shortRunId } from "@web/modules/runs"
+import { RunStatusIcon, formatRunStatus, runStatusColor, shortRunId } from "@web/modules/runs"
 import { TbClockPlay } from "react-icons/tb"
 import styles from "./RunReplayPopover.module.css"
 
@@ -95,7 +95,7 @@ export default function RunReplayPopover() {
                                                                         color={runStatusColor(run.status)}
                                                                         size="sm" radius="xl"
                                                                     >
-                                                                        {runStatusIcon(run.status)}
+                                                                        <RunStatusIcon status={run.status} />
                                                                     </ThemeIcon>
                                                                 </Tooltip>
                                                             </Center>

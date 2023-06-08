@@ -22,7 +22,7 @@ const _runStatusIcon = {
     [RunStatus.Scheduled]: TbClock,
 }
 
-export function runStatusIcon(status, props = {}) {
+export function RunStatusIcon({ status, ...props }) {
     const Icon = _runStatusIcon[status]
     return <Icon {...props} />
 }
