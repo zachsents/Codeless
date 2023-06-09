@@ -100,6 +100,10 @@ export const tailwindTheme = {
         ...DEFAULT_THEME.spacing,
         ...mantineTheme.spacing,
     },
+    fontFamily: {
+        sans: [mantineTheme.fontFamily, "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+    },
 }
 
 // Adds primary colors as CSS variables

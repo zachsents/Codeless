@@ -1,3 +1,4 @@
+import PhoneNumberControl from "../components/PhoneNumberControl"
 import { DeviceMobile, DeviceMobileMessage, Message, Users } from "tabler-icons-react"
 import { LineDotted, Mail, TextCaption, User } from "tabler-icons-react"
 
@@ -15,6 +16,7 @@ export default {
             tooltip: "The phone number to send the SMS to.",
             icon: User,
             allowedModes: ["config", "handle"],
+            renderConfiguration: PhoneNumberControl,
         },
         {
             id: "body",
