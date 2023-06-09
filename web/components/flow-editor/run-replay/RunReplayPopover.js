@@ -106,9 +106,9 @@ export default function RunReplayPopover() {
                                         </tbody>
                                     </Table>
 
-                                    {runLimit < 20 &&
+                                    {(runs?.length ?? 0) == runLimit &&
                                         <Button
-                                            onClick={() => setRunLimit(20)}
+                                            onClick={() => setRunLimit(runLimit + 10)}
                                             variant="subtle" size="xs"
                                         >
                                             Load More
