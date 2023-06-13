@@ -124,7 +124,8 @@ export async function getMessage(gmail, id, {
         return message
 
     if (format == "clean") {
-        const { name, emailAddress } = parseFromHeader(getHeader(message, "From"))
+        const fromHeader = getHeader(message, "From")
+        const { name, emailAddress } = parseFromHeader(fromHeader)
         const plainText = decodeEmailBody(
             message.payload.body.data ??
             message.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
@@ -137,7 +138,7 @@ export async function getMessage(gmail, id, {
             subject: getHeader(message, "Subject"),
             date: new Date(getHeader(message, "Date")),
             plainText,
-            simpleText: cleanTextBody(plainText),
+            simpleText: cleanTextBody(plainText, { from: fromHeader }),
             html: decodeEmailBody(
                 message.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
             ),
@@ -146,11 +147,24 @@ export async function getMessage(gmail, id, {
 }
 
 
+/**
+ * Gets a header from a message.
+ *
+ * @export
+ * @param {{ payload: {headers: Array<{name: string, value: string}>} }} messageData
+ * @param {string} name
+ */
 export function getHeader(messageData, name) {
     return messageData.payload.headers.find(h => h.name == name)?.value
 }
 
 
+/**
+ * Decodes the body of an email from base64.
+ *
+ * @export
+ * @param {string} data Base64-encoded email body
+ */
 export function decodeEmailBody(data) {
     return Buffer.from(
         data,
@@ -177,21 +191,43 @@ export function parseFromHeader(fromHeader) {
  * Cleans up the text body of an email.
  *
  * @param {string} textBody
+ * @param {object} [options] Additional information from the email
+ * @param {string} [options.from] The "From" header of the email
  * @return {string} 
  */
-export function cleanTextBody(textBody) {
+export function cleanTextBody(textBody, {
+    from,
+} = {}) {
     let cleaned = textBody
         .replaceAll(/<http.+?>/g, "")   // remove links in <brackets>
         .replaceAll(/\n{3,}/g, "\n\n")  // shrink more than 3 line breaks
         .replaceAll(/&\w{3,5};/g, "")   // remove HTML entities
         .replaceAll(/@media.+?{.+}/gs, "") // remove media queries
 
-    // if there's more than 5 URLs >80 characters in the email, remove them all
-    // these are probably product links with marketing tags
+    /**
+     * If there's more than 5 URLs >80 characters in the email, remove them
+     * all. These are probably product links with marketing tags.
+     */
     const urlPattern = /https?:\/\/\S{80,}/g
     const urls = cleaned.match(urlPattern)?.length ?? 0
     if (urls > 5)
         cleaned = cleaned.replaceAll(urlPattern, "")
+
+    /**
+     * Remove reply text. It looks like this:
+     * On Tue, Jun 13, 2023 at 12:29 PM Zach Sents <zachsents@gmail.com> wrote:
+     * > This is reply text
+     * > This is more reply text
+     * > This is even more reply text
+     */
+    if (from) {
+        cleaned = cleaned
+            .replaceAll(new RegExp(`^On.+${from}.+`, "gm"), "")
+            .replaceAll(/^>.*/gm, "")
+    }
+
+    // Trim whitespace
+    cleaned = cleaned.trim()
 
     return cleaned
 }
