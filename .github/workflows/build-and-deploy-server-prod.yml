@@ -1,9 +1,9 @@
-name: Build & Deploy Server (Development)
+name: Build & Deploy Server (Production)
 
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - 'auth-lib/**'
       - 'functions/**'
@@ -18,7 +18,7 @@ env:
 jobs:
   build-and-deploy-server:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: main
 
     steps:
       - name: Checkout code
@@ -48,7 +48,7 @@ jobs:
         uses: w9jds/setup-firebase@main
         with:
           gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: dev
+          project_id: prod
       
       - name: Build & Deploy
         run: turbo run deploy --filter=functions
