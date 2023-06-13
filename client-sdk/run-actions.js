@@ -2,22 +2,11 @@ import { Timestamp, addDoc, collection, doc, limit, onSnapshot, orderBy, query, 
 import { firestore } from "./firebase-init.js"
 import { docDataWithId } from "./firestore-util.js"
 import { assertFlowId } from "./flow-actions"
-import { getStartDateFromSchedule } from "@minus/util"
+import { RunStatus, getStartDateFromSchedule } from "@minus/util"
 
 
 export const RunsCollectionPath = "flowRuns"
 export const RunsCollection = () => collection(firestore, RunsCollectionPath)
-
-
-export const RunStatus = {
-    Pending: "pending",
-    Scheduled: "scheduled",
-    Validated: "validated",
-    FailedValidation: "failed-validation",
-    Finished: "finished",
-    FinishedWithErrors: "finished-with-errors",
-    Failed: "failed",
-}
 
 
 /**

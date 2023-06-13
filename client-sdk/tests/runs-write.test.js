@@ -1,8 +1,9 @@
 import { addDoc, deleteDoc, updateDoc } from "firebase/firestore"
 import { createApp } from "../app-actions.js"
 import { createFlow } from "../flow-actions.js"
-import { RunStatus, RunsCollection, getRunRef, startFlowRun } from "../run-actions.js"
+import { RunsCollection, getRunRef, startFlowRun } from "../run-actions.js"
 import { OtherUserId, TestEnvironment, UserId, setAuthenticatedContext, setUnauthenticatedContext } from "./test-init.js"
+import { RunStatus } from "@minus/util"
 
 let userAppRef, otherUserAppRef, userFlowRef, otherUserFlowRef, runId
 

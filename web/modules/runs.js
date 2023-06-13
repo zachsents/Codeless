@@ -1,4 +1,4 @@
-import { RunStatus } from "@minus/client-sdk"
+import { RunStatus } from "@minus/util"
 import { TbActivity, TbAlertTriangle, TbCheck, TbClock, TbExclamationMark } from "react-icons/tb"
 
 export function formatRunStatus(status) {

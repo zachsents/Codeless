@@ -1,6 +1,7 @@
-import { RunStatus, getFlowGraphForFlow, getFlowTriggerData, gmail, google, updateFlowTriggerData } from "@minus/server-lib"
+import { getFlowGraphForFlow, getFlowTriggerData, gmail, google, updateFlowTriggerData } from "@minus/server-lib"
 import functions from "firebase-functions"
 import { db, pubsub } from "./init.js"
+import { RunStatus } from "@minus/util"
 
 
 const HISTORY_UPDATE_FOR_FLOW_TOPIC = "gmail-history-update-for-flow"
