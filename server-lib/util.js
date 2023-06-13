@@ -32,8 +32,8 @@ export function deepFlat(arr) {
  */
 export function regexFromObject(obj) {
     return new RegExp(
-        obj.source,
-        Object.entries(obj.flags)
+        obj?.source,
+        Object.entries(obj?.flags ?? {})
             .filter(([, enabled]) => enabled)
             .map(([flag]) => flag)
             .join("")
