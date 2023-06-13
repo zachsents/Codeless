@@ -14,13 +14,8 @@ const withSecret = functions.runWith({
 
 export const handleMessage = withSecret.pubsub.topic("gmail").onPublish(async (message) => {
 
-    if (!message.data)
-        throw new Error("No message data in PubSub message from Gmail topic")
-
     // Parse out message data
-    const { emailAddress, historyId: newHistoryId } = JSON.parse(
-        Buffer.from(message.data, "base64").toString()
-    )
+    const { emailAddress, historyId: newHistoryId } = parsePubSubMessage(message)
 
     // Query for flows involving this email address
     const querySnapshot = await db.collection("triggerData")
@@ -44,7 +39,7 @@ export const handleMessage = withSecret.pubsub.topic("gmail").onPublish(async (m
 
 export const handleHistoryUpdateForFlow = withSecret.pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).onPublish(async (message) => {
 
-    const { flowId, newHistoryId } = JSON.parse(message.data)
+    const { flowId, newHistoryId } = parsePubSubMessage(message)
 
     // Load in flow graph and find trigger
     const flowGraph = await getFlowGraphForFlow(flowId, { parse: true })
@@ -155,3 +150,15 @@ export const refreshWatches = withSecret.pubsub.schedule("every day 00:00").onRu
         })
     })
 })
+
+
+/**
+ * Parses a PubSub message. The data is usually base64-encoded JSON.
+ *
+ * @param {{ data: string } | string} messageOrData Either a PubSub message object with a data property, or just the data property itself.
+ */
+function parsePubSubMessage(messageOrData) {
+    return JSON.parse(
+        Buffer.from(messageOrData.data ?? messageOrData, "base64").toString()
+    )
+}
