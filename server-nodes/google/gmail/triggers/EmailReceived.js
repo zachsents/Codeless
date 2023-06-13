@@ -32,7 +32,7 @@ export default {
     validate({ payload }) {
         const subjectFilter = this.data["InputValue.subjectFilter"]
 
-        if (!subjectFilter || !subjectFilter.source)
+        if (!subjectFilter && !subjectFilter.source)
             return  // no filter, so no validation needed
 
         if (typeof subjectFilter === "string" && !payload.subject.includes(subjectFilter))
