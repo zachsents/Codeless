@@ -1,0 +1,34 @@
+name: Deploy Firestore Rules (Production)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'firestore-rules/**'
+
+env:
+  NEXT_PUBLIC_FIREBASE_API_KEY: ${{secrets.NEXT_PUBLIC_FIREBASE_API_KEY}}
+
+jobs:
+  deploy-rules:
+    runs-on: ubuntu-latest
+    environment: main
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Set up Firebase
+        uses: w9jds/setup-firebase@main
+        with:
+          gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: prod
+      
+      - name: Deploy
+        run: firebase deploy --only firestore:rules
