@@ -8,7 +8,9 @@
         "devdebug": "set DEBUG=\"firebase-functions:*\" && firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
         "shell": "firebase functions:shell --port 5002",
         "logs": "firebase functions:log",
-        "deploy": "node ./buildDeps.js && firebase deploy --only functions && node ./cleanupBuild.js"
+        "predeploy": "node ./buildDeps.js",
+        "deploy": "firebase deploy --only functions",
+        "postdeploy": "node ./cleanupBuild.js"
     },
     "engines": {
         "node": "18"

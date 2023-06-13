@@ -267,7 +267,7 @@ async function _validate(flowId, payload) {
     const errors = await Promise.all(
         flowGraph.nodes.map(async node => {
             try {
-                await NodeDefinitions[node.type].validate?.call(node, {
+                return await NodeDefinitions[node.type].validate?.call(node, {
                     flow,
                     payload,
                 })
