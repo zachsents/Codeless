@@ -35,8 +35,11 @@ export default {
         if (!subjectFilter && !subjectFilter.source)
             return  // no filter, so no validation needed
 
-        if (typeof subjectFilter === "string" && !payload.subject.includes(subjectFilter))
-            throw new Error("Subject does not match filter")
+        if (typeof subjectFilter === "string") {
+            if (!payload.subject.includes(subjectFilter))
+                throw new Error("Subject does not match filter")
+            return
+        }
 
         if (!safeRegex(subjectFilter).test(payload.subject))
             throw new Error("Subject does not match filter")
