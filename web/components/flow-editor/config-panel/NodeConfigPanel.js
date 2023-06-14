@@ -26,12 +26,23 @@ const DELAY = 0.05
 
 export default function NodeConfigPanel() {
 
-    const { app } = useAppContext()
     const selectedNode = useCurrentlySelectedNode()
-    const displayProps = useNodeDisplayProps(selectedNode?.id)
+
+    return (
+        <AnimatePresence>
+            {selectedNode?.id && <NodeConfigPanelInternal id={selectedNode.id} />}
+        </AnimatePresence>
+    )
+}
+
+
+function NodeConfigPanelInternal({ id }) {
+
+    const { app } = useAppContext()
+    const displayProps = useNodeDisplayProps(id)
 
     // Integrations
-    const { needsAccounts, missingSelections } = useIntegrationAccounts(selectedNode?.id ?? false, app)
+    const { needsAccounts, missingSelections } = useIntegrationAccounts(id ?? false, app)
 
     // Accordion state
     const defaultAccordionState = (needsAccounts && missingSelections) ? ["inputs", "integrations"] : ["inputs", "outputs"]
@@ -47,81 +58,78 @@ export default function NodeConfigPanel() {
     const { run } = useReplayContext()
 
     return (
-        <AnimatePresence>
-            {selectedNode &&
-                <NodeProvider id={selectedNode?.id} displayProps={displayProps}>
-                    <Stack spacing="xxs" w="24rem" className="h-full">
-                        <TitleCard />
+        <NodeProvider id={id} displayProps={displayProps}>
+            <Stack spacing="xxs" w="24rem" className="h-full">
+                <TitleCard />
 
-                        <Accordion
-                            variant="separated" multiple
-                            // I simply have no idea why min-h-0 is needed here, but it works.
-                            // https://stackoverflow.com/questions/41674979/flex-child-is-growing-out-of-parent
-                            className="flex flex-col gap-xxs flex-1 min-h-0"
-                            classNames={{
-                                item: "pointer-events-auto bg-white base-border shadow-sm !m-0 " +
-                                    "flex flex-col h-full",
-                                panel: "min-h-0 [&>div]:h-full",
-                                content: "h-full p-0",
-                                label: "py-xxxs",
-                            }}
-                            styles={{
-                                item: {
-                                    // When the Accordion opens and closes, it sets the height of the panel to 0.
-                                    // This fixes that.
-                                    "&[data-active=\"true\"] > div": { height: "auto !important" }
-                                }
-                            }}
-                            value={accordionState}
-                            onChange={setAccordionState}
+                <Accordion
+                    variant="separated" multiple
+                    // I simply have no idea why min-h-0 is needed here, but it works.
+                    // https://stackoverflow.com/questions/41674979/flex-child-is-growing-out-of-parent
+                    className="flex flex-col gap-xxs flex-1 min-h-0"
+                    classNames={{
+                        item: "pointer-events-auto bg-white base-border shadow-sm !m-0 " +
+                            "flex flex-col h-full",
+                        panel: "min-h-0 [&>div]:h-full",
+                        content: "h-full p-0",
+                        label: "py-xxxs",
+                    }}
+                    styles={{
+                        item: {
+                            // When the Accordion opens and closes, it sets the height of the panel to 0.
+                            // This fixes that.
+                            "&[data-active=\"true\"] > div": { height: "auto !important" }
+                        }
+                    }}
+                    value={accordionState}
+                    onChange={setAccordionState}
+                >
+
+                    <AnimAccordionItem
+                        title="Inputs"
+                        value="inputs"
+                        icon={<TbArrowBarToRight />}
+                    >
+                        <InputsPanel />
+                    </AnimAccordionItem>
+
+                    <AnimAccordionItem
+                        title="Outputs"
+                        value="outputs"
+                        icon={<TbArrowBarRight />}
+                    >
+                        <OutputsPanel />
+                    </AnimAccordionItem>
+
+                    {needsAccounts &&
+                        <AnimAccordionItem
+                            title="Integrations"
+                            value="integrations"
+                            icon={<TbPlugConnected />}
                         >
+                            <IntegrationsPanel />
+                        </AnimAccordionItem>}
 
-                            <AnimAccordionItem
-                                title="Inputs"
-                                value="inputs"
-                                icon={<TbArrowBarToRight />}
-                            >
-                                <InputsPanel />
-                            </AnimAccordionItem>
+                    {run && <>
+                        <AnimAccordionItem
+                            title={<>Inputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
+                            value="run-inputs"
+                            icon={<RunInputsIcon />}
+                        >
+                            <RunInputsPanel />
+                        </AnimAccordionItem>
 
-                            <AnimAccordionItem
-                                title="Outputs"
-                                value="outputs"
-                                icon={<TbArrowBarRight />}
-                            >
-                                <OutputsPanel />
-                            </AnimAccordionItem>
-
-                            {needsAccounts &&
-                                <AnimAccordionItem
-                                    title="Integrations"
-                                    value="integrations"
-                                    icon={<TbPlugConnected />}
-                                >
-                                    <IntegrationsPanel />
-                                </AnimAccordionItem>}
-
-                            {run && <>
-                                <AnimAccordionItem
-                                    title={<>Inputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
-                                    value="run-inputs"
-                                    icon={<RunInputsIcon />}
-                                >
-                                    <RunInputsPanel />
-                                </AnimAccordionItem>
-
-                                <AnimAccordionItem
-                                    title={<>Outputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
-                                    value="run-outputs"
-                                    icon={<RunOutputsIcon />}
-                                >
-                                    <RunOutputsPanel />
-                                </AnimAccordionItem>
-                            </>}
-                        </Accordion>
-                    </Stack>
-                </NodeProvider>}
-        </AnimatePresence>
+                        <AnimAccordionItem
+                            title={<>Outputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
+                            value="run-outputs"
+                            icon={<RunOutputsIcon />}
+                        >
+                            <RunOutputsPanel />
+                        </AnimAccordionItem>
+                    </>}
+                </Accordion>
+            </Stack>
+        </NodeProvider>
     )
 }
 
