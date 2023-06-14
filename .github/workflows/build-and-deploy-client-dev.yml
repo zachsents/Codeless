@@ -1,0 +1,47 @@
+name: Build & Deploy Client (Development)
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'client-nodes/**'
+      - 'client-sdk/**'
+      - 'util/.**'
+      - 'web/**'
+
+env:
+  NEXT_PUBLIC_FIREBASE_API_KEY: ${{secrets.NEXT_PUBLIC_FIREBASE_API_KEY}}
+
+jobs:
+  build-and-deploy-client:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install Turbo
+        run: pnpm install -g turbo
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Set up Firebase
+        uses: w9jds/setup-firebase@main
+        with:
+          gcp_sa_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: dev
+      
+      - name: Build & Deploy
+        run: turbo run deploy --filter=web

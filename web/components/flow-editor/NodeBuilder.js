@@ -1,4 +1,4 @@
-import { useMantineTheme } from "@mantine/core"
+import { Group, useMantineTheme } from "@mantine/core"
 import { useDebouncedValue } from "@mantine/hooks"
 import { useUpdateFlowGraph } from "@minus/client-sdk"
 import { useEffect, useMemo } from "react"
@@ -14,6 +14,8 @@ import Node from "./node/Node"
 import { useStoreProperty } from "@minus/client-nodes/hooks/nodes"
 import 'reactflow/dist/style.css'
 import PaneContextMenu from "./PaneContextMenu"
+import NodeConfigPanel from "./config-panel/NodeConfigPanel"
+import NodeMenu from "./node-menu/NodeMenu"
 import ReplayPanel from "./run-replay/ReplayPanel"
 
 
@@ -86,19 +88,31 @@ export default function NodeBuilder() {
             id="node-editor"
         >
             <Background
+                id="1"
                 variant="lines"
                 gap={25}
                 size={1}
                 color={theme.colors.gray[0]}
 
-            // color="transparent"
-            // style={{
-            //     // backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
-            //     backgroundColor: "white",
-            // }}
+                // color="transparent"
+                style={{
+                    // backgroundColor: app?.theme?.editorBackgroundColor ?? theme.colors.gray[2],
+                    // backgroundColor: "white",
+                    backgroundColor: theme.colors.gray[0],
+                }}
             />
-            {/* <Toolbar /> */}
-            <ReplayPanel />
+
+
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-10">
+                <Group position="apart" align="stretch" className="h-full" noWrap>
+                    <NodeMenu />
+
+                    <Group spacing="xxs" p="xxs" align="stretch" className="h-full" noWrap>
+                        <ReplayPanel />
+                        <NodeConfigPanel />
+                    </Group>
+                </Group>
+            </div>
             <PaneContextMenu />
 
             <ChangeWatcher onChange={setGraph} />

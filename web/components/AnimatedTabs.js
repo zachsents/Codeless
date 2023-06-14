@@ -39,7 +39,7 @@ export default function AnimatedTabs({
                             ref={el => tabRefs.current[tab] = el}
                             align="center" size={size} weight={600} ff="Rubik" py={size}
                             tt="uppercase" color={active == tab ? "dark" : "gray"}
-                            className="nosel hover:bg-gray-100 cursor-pointer rounded-sm"
+                            className="nosel hover:bg-gray-50 cursor-pointer rounded-sm"
                             key={tab}
                         >
                             {tab}

@@ -1,19 +1,18 @@
-import { ActionIcon, Box, Button, Card, Group, Loader, SegmentedControl, Select, Stack, Text, TextInput, Tooltip } from "@mantine/core"
+import { ActionIcon, Box, Button, Card, Loader, SegmentedControl, Select, Space, Stack, Text, TextInput, Title, Tooltip } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { TriggerCategories, TriggerNodeDefinitions } from "@minus/client-nodes"
-import { useCreateFlow, useFlowCountForApp, usePlan } from "@minus/client-sdk"
-import Link from "next/link"
-import { useRouter } from "next/router"
-import { useEffect, useMemo, useState } from "react"
-import { TbArrowNarrowRight } from "react-icons/tb"
-
+import { useCreateFlow, useFlowCountForApp, usePlan, useActionQuery } from "@minus/client-sdk"
+import Section from "@web/components/Section"
+import AppPageHead from "@web/components/dashboard/AppPageHead"
+import Header from "@web/components/dashboard/Header"
 import { AppProvider, useAppContext } from "@web/modules/context"
+import { serializeGraph } from "@web/modules/graph-util"
+import { useMustBeSignedIn } from "@web/modules/hooks"
+import { useRouter } from "next/router"
+import { useEffect, useMemo } from "react"
+import { TbArrowNarrowRight } from "react-icons/tb"
 import { ArrowLeft } from "tabler-icons-react"
-import AppDashboard from "../../../../components/AppDashboard"
-import FormSection from "../../../../components/forms/FormSection"
-import FormSubsection from "../../../../components/forms/FormSubsection"
-import { serializeGraph } from "../../../../modules/graph-util"
-import { useMustBeSignedIn } from "../../../../modules/hooks"
+
 
 export default function CreateFlowPage() {
 
@@ -32,13 +31,13 @@ function CreateFlow() {
     const { flowCount } = useFlowCountForApp(app?.id)
     const createFlow = useCreateFlow(app?.id)
 
-    // check if user is maxed out on flows
+    // Side-effect: redirect if user is maxed out on flows
     useEffect(() => {
         if (plan && flowCount != null && plan.flowCount <= flowCount)
-            router.push(`/app/${app?.id}/flows`)
+            router.replace(`/app/${app?.id}`)
     }, [plan, flowCount])
 
-    // look up trigger types and map to data the SegmentedControl can use
+    // Look up trigger types and map to data the SegmentedControl can use
     const triggerTypes = Object.entries(TriggerCategories).map(([catId, cat]) => {
         return {
             label: <TriggerCard label={cat.title} icon={<cat.icon />} />,
@@ -46,7 +45,7 @@ function CreateFlow() {
         }
     })
 
-    // form hook & handlers
+    // Form hook & handlers
     const form = useForm({
         initialValues: {
             name: "",
@@ -59,20 +58,18 @@ function CreateFlow() {
             trigger: value => !value,
         },
     })
-    const [formLoading, setFormLoading] = useState(false)
 
-    // submission
-    const handleSubmit = async values => {
-        setFormLoading(true)
+    // Submission query
+    const [handleSubmit, { isFetching: isFormLoading }] = useActionQuery(async () => {
         const [{ id: newFlowId }] = await createFlow({
-            name: values.name,
-            trigger: values.trigger,
-            initialGraph: createGraphWithTrigger(values.trigger),
+            name: form.values.name,
+            trigger: form.values.trigger,
+            initialGraph: createGraphWithTrigger(form.values.trigger),
         })
-        router.push(`/app/${app?.id}/flow/${newFlowId}/edit`)
-    }
+        await router.push(`/app/${app?.id}/flow/${newFlowId}/edit`)
+    })
 
-    // when trigger type is changed
+    // When trigger type is changed
     const triggers = useMemo(() => {
 
         // reset trigger value
@@ -95,84 +92,94 @@ function CreateFlow() {
 
 
     return (
-        <AppDashboard pageTitle="Create a flow">
-            <Group position="apart">
-                <Link href={`/app/${app?.id}/flows`}>
-                    <Tooltip position="right" label="Cancel">
-                        <ActionIcon variant="light" size="xl"><ArrowLeft /></ActionIcon>
-                    </Tooltip>
-                </Link>
-            </Group>
+        <>
+            <AppPageHead title="Create a Workflow" />
+
+            <Header />
+
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <FormSection title="New Flow">
-                    <FormSubsection label="Choose a name for your flow">
-                        <TextInput
-                            placeholder="Launches a rocket when a link is clicked"
-                            disabled={formLoading}
-                            {...form.getInputProps("name")}
-                            sx={{ width: 400 }}
-                        />
-                    </FormSubsection>
-                </FormSection>
-                <FormSection title="Trigger">
-                    <FormSubsection label="Choose a trigger type">
-                        <SegmentedControl
-                            data={triggerTypes ?? []}
-                            disabled={formLoading}
-                            {...form.getInputProps("triggerType")}
-                            styles={triggerTypesStyles}
-                        />
-                    </FormSubsection>
-                    <FormSubsection label="Choose a trigger">
-                        <Select
-                            placeholder="When..."
-                            disabled={formLoading}
-                            data={triggers ?? []}
-                            {...form.getInputProps("trigger")}
-                            sx={{ width: 400 }}
-                        />
-                    </FormSubsection>
-                </FormSection>
-                <FormSection>
-                    {form.isValid() ?
-                        formLoading ?
+                <Section py="xl"
+                    stack stackProps={{ align: "center" }}
+                    size="xs" containerProps={{ className: "relative" }}
+                >
+
+                    <div className="absolute top-0 left-0">
+                        <Tooltip position="right" label="Go Back">
+                            <ActionIcon onClick={router.back} variant="subtle" size="xl"><ArrowLeft /></ActionIcon>
+                        </Tooltip>
+                    </div>
+
+                    <Title>New Workflow</Title>
+
+                    <Text color="dimmed">Choose a name for your flow</Text>
+
+                    <TextInput
+                        placeholder="Handle customer email requests"
+                        disabled={isFormLoading}
+                        {...form.getInputProps("name")}
+                        w="20rem"
+                    />
+
+                    <Space h={0} />
+
+                    <div>
+                        <Text color="dimmed" align="center">Choose a trigger</Text>
+                        <Text color="dimmed" size="xs" align="center">
+                            This is what will start your workflow.
+                        </Text>
+                    </div>
+
+                    <SegmentedControl
+                        variant=""
+                        data={triggerTypes ?? []}
+                        disabled={isFormLoading}
+                        {...form.getInputProps("triggerType")}
+                        classNames={{
+                            root: "bg-transparent",
+                            control: "!border-none",
+                            indicator: "hidden",
+                        }}
+                        styles={theme => ({
+                            controlActive: {
+                                "& .triggerCard": {
+                                    background: theme.colors.yellow[6],
+                                    borderColor: theme.colors.dark[6],
+                                }
+                            }
+                        })}
+                    />
+
+                    <Select
+                        placeholder="When..."
+                        disabled={isFormLoading}
+                        data={triggers ?? []}
+                        {...form.getInputProps("trigger")}
+                        sx={{ width: 400 }}
+                    />
+
+                    <Space h={0} />
+
+                    {form.isValid() &&
+                        (isFormLoading ?
                             <Loader size="sm" /> :
-                            <Button type="submit" rightIcon={<TbArrowNarrowRight />}>Start Building</Button>
-                        :
-                        <></>
-                    }
-                </FormSection>
+                            <Button
+                                type="submit" radius="xl"
+                                rightIcon={<TbArrowNarrowRight />}
+                            >
+                                Start Building
+                            </Button>)}
+                </Section>
             </form>
-        </AppDashboard>
+        </>
     )
 }
 
 
-const triggerTypesStyles = theme => ({
-    root: {
-        backgroundColor: "transparent",
-    },
-    active: { display: "none", },
-    control: { border: "none !important" },
-    label: {
-        // padding: 2,
-    },
-    labelActive: {
-        "& .triggerCard": {
-            outline: "3px solid " + theme.colors[theme.primaryColor][theme.primaryShade.light]
-        }
-    },
-})
-
 function TriggerCard({ label, icon }) {
     return (
-        <Card radius="md" m={0} withBorder className="triggerCard" sx={{
-            overflow: "visible",
-            width: 110,
-            height: 110,
-        }}>
+        <Card w="5.5rem" className="triggerCard aspect-square ofv base-border rounded-md m-0 transition-colors">
             <Stack spacing={0} justify="center" sx={{ height: "100%" }}>
-                <Box sx={{ fontSize: 28 }}>{icon}</Box>
+                <Box fz="xl">{icon}</Box>
                 <Text>{label}</Text>
             </Stack>
         </Card>

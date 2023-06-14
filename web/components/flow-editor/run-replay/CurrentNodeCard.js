@@ -15,8 +15,12 @@ export default function CurrentNodeCard() {
     const selectedNode = useCurrentlySelectedNode()
     const typeDefinition = useTypeDefinition(selectedNode?.id)
 
+    // WILO: moving this to the config panel accordion
+
     return (
-        <SlidingCard opened={!!selectedNode} withBorder p="xs" shadow="md" w="15rem">
+        <SlidingCard opened={!!selectedNode}
+            withBorder p="xs" shadow="md" w="15rem" className="pointer-events-auto"
+        >
             <Stack spacing="xs">
                 <Box>
                     <Text size="xs" color="dimmed">Run Data</Text>

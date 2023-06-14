@@ -6,6 +6,7 @@ import { useQueryParam } from "@web/modules/hooks"
 import { jc } from "@web/modules/util"
 import { TbCheck, TbSquare, TbStack, TbStack2, TbStack3 } from "react-icons/tb"
 import { notifications } from "@mantine/notifications"
+import Link from "next/link"
 
 
 export default function PricingPage() {
@@ -120,6 +121,12 @@ function PlanCard({ plan: planKey, emph = false, annual = false }) {
 
     // const [, setSelectedPlan] = useQueryParam("upgrade_app")
 
+    const showFreeNotif = () => notifications.show({
+        title: "Everything is free!",
+        message: "All features are free during the beta period. Go get your hands dirty!",
+        autoClose: 2500,
+    })
+
     return (
         <Stack className={jc("relative", emph && "scale-105")}>
             {emph &&
@@ -143,17 +150,21 @@ function PlanCard({ plan: planKey, emph = false, annual = false }) {
                     </Box>
 
                     <Box>
-                        <Button
-                            fullWidth radius="xl" size="xs" variant={emph ? "filled" : "light"}
-                            // onClick={() => setSelectedPlan(planKey)}
-                            onClick={() => notifications.show({
-                                title: "Everything is free!",
-                                message: "All features are free during the beta period. Go get your hands dirty!",
-                                autoClose: 2500,
-                            })}
-                        >
-                            {isFree ? "Start Now" : "Upgrade an App"}
-                        </Button>
+                        {isFree ?
+                            <Link href="/login">
+                                <Button
+                                    fullWidth radius="xl" size="xs" variant={emph ? "filled" : "light"}
+                                >
+                                    Start Now
+                                </Button>
+                            </Link> :
+                            <Button
+                                fullWidth radius="xl" size="xs" variant={emph ? "filled" : "light"}
+                                // onClick={() => setSelectedPlan(planKey)}
+                                onClick={showFreeNotif}
+                            >
+                                {isFree ? "Start Now" : "Upgrade an App"}
+                            </Button>}
 
                         <Space h="xl" />
 

@@ -23,15 +23,15 @@ export default function FlowTitle() {
                     initialValue={flow?.name}
                     onEdit={onRename}
                     onCancel={onRenameCancel}
-                    size="xs"
+                    size="sm"
                 /> :
                 <>
-                    <Text size="md" weight={500} color={theme.primaryColor}>
+                    <Text size="xl" weight={500} color={theme.primaryColor}>
                         {flow?.name}
                     </Text>
                     <Tooltip label="Rename Workflow">
-                        <ActionIcon size="sm" onClick={startRenaming} variant="subtle">
-                            <TbPencil size="0.75em" />
+                        <ActionIcon size="md" onClick={startRenaming} variant="subtle">
+                            <TbPencil />
                         </ActionIcon>
                     </Tooltip>
                 </>}

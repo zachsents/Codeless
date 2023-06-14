@@ -42,5 +42,5 @@ export default {
     ],
     outputs: [],
 
-    requiredIntegrations: ["integration:Gmail"],
+    requiredIntegrations: ["google"],
 }

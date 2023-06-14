@@ -7,6 +7,7 @@ export default {
     name: "Number",
     description: "Just a plain ol' number.",
     icon: Numbers,
+    color: "gray",
 
     tags: ["Math", "Basics"],
     showMainTag: false,
@@ -15,7 +16,7 @@ export default {
     outputs: [
         {
             id: "$",
-            name: "Number",
+            // name: "Number",
             description: "The number.",
             tooltip: "The number.",
             icon: Numbers,
@@ -29,7 +30,7 @@ export default {
         const theme = useMantineTheme()
         const [state, setState] = useInternalState()
         return (
-            <Group spacing={0} py={5} mr={2}>
+            <Group spacing={0} py="xxxs" pr="xxxs">
                 <Center px="xs">
                     <GridDots color={theme.colors.gray[5]} size="1em" />
                 </Center>
@@ -37,8 +38,9 @@ export default {
                     value={state.$}
                     onChange={val => setState({ $: val })}
                     placeholder="Pick a number..."
-                    size="lg"
-                    w={220}
+                    size="md"
+                    // w={`${(state.$ ?? 5).toString().length + 5}ch`}
+                    w="15ch"
                     controls
                     classNames={{
                         input: "nodrag"

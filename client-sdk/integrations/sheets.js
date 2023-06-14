@@ -8,24 +8,24 @@ import { functions } from "../firebase-init.js"
  * for authentication.
  *
  * @export
- * @param {string} appId Minus App ID
+ * @param {string} accountId Integration account ID
  * @param {string} spreadsheetId Google Sheets Spreadsheet ID
  * @return {Promise<{ name: string, sheets: string[] }>} 
  */
-export async function getSpreadsheetDetails(appId, spreadsheetId) {
+export async function getSpreadsheetDetails(accountId, spreadsheetId) {
 
-    if (!appId || !spreadsheetId)
-        throw new Error("Must provide app ID and spreadsheet ID")
+    if (!accountId || !spreadsheetId)
+        throw new Error("Must provide account ID and spreadsheet ID")
 
-    const { data } = await httpsCallable(functions, "sheets-getSpreadsheetDetails")({ appId, spreadsheetId })
+    const { data } = await httpsCallable(functions, "sheets-getSpreadsheetDetails")({ accountId, spreadsheetId })
     return data
 }
 
 
-export function useSpreadsheetDetails(appId, spreadsheetId) {
+export function useSpreadsheetDetails(accountId, spreadsheetId) {
     return useQuery({
-        queryKey: ["googlesheets-spreadsheet-details", appId, spreadsheetId],
-        queryFn: () => getSpreadsheetDetails(appId, spreadsheetId),
+        queryKey: ["googlesheets-spreadsheet-details", accountId, spreadsheetId],
+        queryFn: () => getSpreadsheetDetails(accountId, spreadsheetId),
         retry: false,
     })
 }

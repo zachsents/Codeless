@@ -1,5 +1,5 @@
-import { ActionIcon, Center, Divider, Group, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
-import { useHandleDefinition, useOutputShowing, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { ActionIcon, Button, Center, Divider, Group, Stack, Text, Tooltip, useMantineTheme } from "@mantine/core"
+import { useColors, useHandleDefinition, useOutputShowing, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { formatHandleName } from "@web/modules/graph-util"
 import { TbEye, TbInfoCircle } from "react-icons/tb"
 import ListConfig from "./ListConfig"
@@ -10,6 +10,7 @@ export default function OutputConfig({ id, divider = true }) {
 
     const { definition } = useHandleDefinition(null, id)
     const typeDefinition = useTypeDefinition()
+    const [lightColor] = useColors(null, [0])
 
     // Showing
     const [showing, setShowing] = useOutputShowing(null, id)
@@ -21,46 +22,58 @@ export default function OutputConfig({ id, divider = true }) {
         <>
             {divider &&
                 <Divider color="gray.2" />}
+
             <Stack spacing="xs">
-                <Group position="apart" noWrap>
-                    <Group spacing="xs" noWrap>
+                <Group spacing="xs" noWrap>
 
-                        <Tooltip label="Toggle Visibility" withinPortal>
-                            <ActionIcon
-                                onClick={() => setShowing(!showing)}
-                                size="md" radius="xl"
-                                color={showing ? typeDefinition.color : "gray"}
-                                variant={showing ? "filled" : "outline"}
-                            >
-                                {definition.icon ?
-                                    <definition.icon size={theme.fontSizes.md} /> :
-                                    <TbEye />}
-                            </ActionIcon>
-                        </Tooltip>
+                    <Tooltip label="Toggle Visibility" withinPortal>
+                        <ActionIcon
+                            onClick={() => setShowing(!showing)}
+                            size="md" radius="xl"
+                            color={typeDefinition.color}
+                            variant={showing ? "outline" : "subtle"}
+                            bg={showing ? lightColor : undefined}
+                        >
+                            {definition.icon ?
+                                <definition.icon size={theme.fontSizes.md} /> :
+                                <TbEye />}
+                        </ActionIcon>
+                    </Tooltip>
 
-                        <Text>
-                            {definition.name || formatHandleName(definition.id)}
-                        </Text>
+                    <Stack spacing={0} className="flex-1">
+                        <Group spacing="xs" noWrap>
+                            <Text>
+                                {definition.name || formatHandleName(definition.id)}
+                            </Text>
 
-                        {definition.tooltip &&
-                            <Tooltip
-                                withinPortal
-                                label={<Text sx={{ overflowWrap: "anywhere" }}>{definition.tooltip}</Text>}
-                                // position="left"
-                                multiline
-                                maw={300}
-                            >
-                                <Center>
-                                    <TbInfoCircle color={theme.colors.gray[6]} />
-                                </Center>
-                            </Tooltip>}
-                    </Group>
+                            {definition.tooltip && definition.tooltip != definition.description &&
+                                <Tooltip
+                                    withinPortal
+                                    label={<Text sx={{ overflowWrap: "anywhere" }}>{definition.tooltip}</Text>}
+                                    // position="left"
+                                    multiline
+                                    maw={300}
+                                >
+                                    <Center>
+                                        <TbInfoCircle color={theme.colors.gray[6]} />
+                                    </Center>
+                                </Tooltip>}
+                        </Group>
 
-                    <Group spacing="xs">
-                        <Text color="dimmed" size="sm" mx="md">
+                        {definition.description &&
+                            <Text size="xs" color="dimmed">
+                                {definition.description}
+                            </Text>}
+                    </Stack>
+
+                    <Tooltip label={showing ? "Hide?" : "Show?"} withinPortal>
+                        <Button
+                            size="xs" compact variant="subtle" color="gray" w="5rem"
+                            onClick={() => setShowing(!showing)}
+                        >
                             {showing ? "Showing" : "Hidden"}
-                        </Text>
-                    </Group>
+                        </Button>
+                    </Tooltip>
                 </Group>
 
                 {isList &&

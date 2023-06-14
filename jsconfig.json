@@ -6,5 +6,8 @@
                 "web/*"
             ]
         }
-    }
+    },
+    "exclude": [
+        "**/node_modules/*"
+    ]
 }

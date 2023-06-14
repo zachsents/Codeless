@@ -5,7 +5,7 @@ import { SiGooglesheets } from "react-icons/si"
 import { TbExternalLink } from "react-icons/tb"
 import TextControl from "../../components/TextControl"
 import { useSyncWithNodeState } from "../../hooks"
-import { InputMode, useInputMode, useInputValue, useInternalState } from "../../hooks/nodes"
+import { InputMode, useInputMode, useInputValue, useInternalState, useSelectedIntegrationAccount } from "../../hooks/nodes"
 
 
 export const SheetsURLRegex = /d\/([0-9A-Za-z_-]{40,})\/edit/
@@ -87,7 +87,7 @@ export function SheetNameControl({ inputId }) {
 }
 
 
-export function useGoogleSheetNode({ appId, integrationsSatisfied }) {
+export function useGoogleSheetNode({ integrationsSatisfied }) {
 
     const [state, setState] = useInternalState()
     const [spreadsheetUrl] = useInputValue(null, "$spreadsheetUrl")
@@ -99,7 +99,8 @@ export function useGoogleSheetNode({ appId, integrationsSatisfied }) {
     }, [spreadsheetUrl])
 
     // fetch spreadsheet details
-    const { data: details, isLoading } = useSpreadsheetDetails(integrationsSatisfied && appId, state.spreadsheetId)
+    const accountId = useSelectedIntegrationAccount(null, "google")
+    const { data: details, isLoading } = useSpreadsheetDetails(integrationsSatisfied && accountId, state.spreadsheetId)
 
     // sync details into node state
     useSyncWithNodeState({

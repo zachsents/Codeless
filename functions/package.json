@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Cloud Functions for Firebase",
     "scripts": {
+        "predev": "Kill-ProcessByPort 4000 || true",
         "dev": "firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
         "devdebug": "set DEBUG=\"firebase-functions:*\" && firebase emulators:start --only functions,firestore --import=./.firebase-local --export-on-exit",
         "shell": "firebase functions:shell --port 5002",
@@ -14,13 +15,15 @@
     },
     "main": "index.js",
     "dependencies": {
+        "@google-cloud/pubsub": "^3.6.0",
+        "@minus/auth-lib": "workspace:*",
         "@minus/gee3": "workspace:*",
+        "@minus/server-lib": "workspace:*",
         "@minus/server-nodes": "workspace:*",
-        "@minus/server-sdk": "workspace:*",
+        "@minus/util": "workspace:*",
         "dotenv": "^16.0.3",
         "firebase-admin": "^11.3.0",
-        "firebase-admin-callable-functions": "workspace:*",
-        "firebase-functions": "^4.2.1",
+        "firebase-functions": "^4.4.0",
         "node-fetch": "^3.3.0"
     },
     "devDependencies": {

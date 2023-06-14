@@ -135,7 +135,7 @@ function AppCard({ app, displayNameParts }) {
 
     // display name assembly
     const displayName = displayNameParts ?
-        displayNameParts.map((part, i) => i % 2 == 0 ? part : <span className="text-yellow-900" key={i}>{part}</span>) :
+        displayNameParts.map((part, i) => i % 2 == 0 ? part : <span className="text-yellow-800" key={i}>{part}</span>) :
         app.name
 
     const cardComponent = (

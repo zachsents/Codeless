@@ -15,7 +15,7 @@ export default {
     outputs: [
         {
             id: "$",
-            name: "True / False",
+            // name: "True / False",
             description: "The switch's value.",
             tooltip: "The switch's value.",
             icon: CircuitSwitchOpen,
@@ -29,7 +29,7 @@ export default {
 
     renderContent: () => {
         const [state, setState] = useInternalState()
-        return <Box p="md">
+        return <Box py="sm" px="xxxs">
             <Switch
                 checked={state.$ ?? false}
                 onChange={event => setState({ $: event.currentTarget.checked })}

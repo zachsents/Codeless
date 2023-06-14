@@ -7,7 +7,7 @@ import TextAreaControl from "../components/TextAreaControl"
 
 export default {
     id: "text:Join",
-    name: "Join",
+    name: "Join Text",
     description: "Converts a list into text using custom parameters.",
     icon: AlphabetLatin,
 
@@ -56,7 +56,8 @@ export default {
     outputs: [
         {
             id: "joinedText",
-            name: "Joined Text",
+            name: "Joined",
+            type: "text",
             description: "The joined text.",
             tooltip: "The joined text.",
             icon: Dots,

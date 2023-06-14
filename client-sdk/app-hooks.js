@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { useQueries, useQuery } from "react-query"
+import { useQuery } from "react-query"
 import { createApp, createAppsForUserQuery, deleteApp, getAppDetails, getAppDetailsForUser, getAppRef, renameApp, updateApp } from "./app-actions.js"
 import { useAuthState } from "./auth-hooks.js"
 import { auth } from "./firebase-init.js"
@@ -124,31 +124,3 @@ export function useAppDetailsForUserRealtime(userId) {
     return useRealtime(createAppsForUserQuery(userId))
 }
 
-
-/**
- * Hook that queries the integration status of the app's connected
- * integrations.
- *
- * @export
- * @param {object} app
- * @param {object} integrations
- */
-export function useAppIntegrations(app, integrations) {
-    const intList = Object.values(integrations)
-
-    const intIds = []
-    const queries = app && Object.keys(app.integrations ?? {}).flatMap(integrationKey => {
-        return intList.filter(int => int.manager.name == integrationKey).map(int => {
-            intIds.push(int.id)
-
-            return {
-                queryKey: ["app-integration", app?.id, int.id],
-                queryFn: () => int.manager.isAppAuthorized(app),
-            }
-        })
-    })
-
-    const results = useQueries(queries || [])
-
-    return Object.fromEntries(results.map((res, i) => [intIds[i], res]))
-}

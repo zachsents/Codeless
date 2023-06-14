@@ -23,6 +23,10 @@ a {
     text-decoration: none;
 }
 
+p {
+    margin: 0;
+}
+
 .rubik {
     font-family: 'Rubik', sans-serif !important;
 }

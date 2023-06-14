@@ -1,4 +1,4 @@
-import { Operation } from "@minus/server-sdk"
+import { Operation } from "@minus/server-lib"
 import { safeMap } from "../../arrayUtilities.js"
 
 

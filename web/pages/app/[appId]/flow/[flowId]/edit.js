@@ -7,7 +7,6 @@ import { ReactFlowProvider } from "reactflow"
 
 import NodeBuilder from "@web/components/flow-editor/NodeBuilder"
 import Header from "@web/components/flow-editor/header/Header"
-import NodeMenu from "@web/components/flow-editor/node-menu/NodeMenu"
 import { AppProvider, FlowProvider, ReplayProvider, useFlowContext } from "@web/modules/context"
 import { useFlowId, useMustBeSignedIn } from "@web/modules/hooks"
 
@@ -17,23 +16,27 @@ export default function EditFlow() {
     useMustBeSignedIn()
 
     return (
-        <AppProvider redirectOnNotExist="/apps">
-            <FlowProvider redirectOnNotExist="/apps">
-                <ReplayProvider>
-                    <PageTitle />
-                    <ReactFlowProvider>
-                        <Stack h="100vh" spacing={0} sx={{ overflow: "hidden" }}>
-                            <Header />
-                            <Box pos="relative" sx={{ flexGrow: 1 }}>
-                                <NodeBuilder />
-                                <NodeMenu />
-                            </Box>
-                        </Stack>
-                        <LastEdited />
-                    </ReactFlowProvider>
-                </ReplayProvider>
-            </FlowProvider>
-        </AppProvider>
+        <>
+            <AppProvider redirectOnNotExist="/apps">
+                <FlowProvider redirectOnNotExist="/apps">
+                    <ReplayProvider>
+                        <PageTitle />
+                        <ReactFlowProvider>
+                            <Stack h="100vh" spacing={0} sx={{ overflow: "hidden" }}>
+                                <Header />
+                                <Box pos="relative" sx={{ flexGrow: 1 }}>
+                                    <NodeBuilder />
+                                </Box>
+                            </Stack>
+                            <LastEdited />
+                        </ReactFlowProvider>
+                    </ReplayProvider>
+                </FlowProvider>
+            </AppProvider>
+
+            {/* Scale everything down for this page */}
+            <style>{`html {font-size: 16px;}`}</style>
+        </>
     )
 }
 

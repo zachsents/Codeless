@@ -1,24 +1,23 @@
-import { Box, Card, Group, useMantineTheme } from "@mantine/core"
+import { Badge, Box, Card, Center, Group, Stack, useMantineTheme } from "@mantine/core"
 import { useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
 
 import { useAppContext } from "@web/modules/context"
 import {
-    getNodeIntegrationsStatus,
     selectNode,
     useNodeConnections,
     useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
 
 import { NodeDefinitions } from "@minus/client-nodes"
-import { NodeProvider, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { NodeProvider, useIntegrationAccounts, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppId, useFlowId } from "@web/modules/hooks"
+import { TbLock } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
-import ConfigPopover from "./ConfigPopover"
 import ErrorIcon from "./ErrorIcon"
 import NodeInternal from "./NodeInternal"
-import HandleStack from "./handle/HandleStack"
+import SelectedControls from "./SelectedControls"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
 import OutputHandle from "./handle/OutputHandle"
@@ -31,10 +30,9 @@ export default function Node({ id, type: typeDefId, selected }) {
 
     const typeDefinition = NodeDefinitions[typeDefId]
 
-    // #region - Integrations (satisfaction, loading, etc.)
-    const { integrations: appIntegrations } = useAppContext()
-    const nodeIntegrations = getNodeIntegrationsStatus(typeDefinition, appIntegrations)
-    const integrationsSatisfied = nodeIntegrations.every(int => int.status.data)
+    // #region - Integrations (satisfaction)
+    const { app } = useAppContext()
+    const { missingSelections } = useIntegrationAccounts(id, app)
     // #endregion
 
     // #region - Hover states for showing handle labels 
@@ -59,7 +57,7 @@ export default function Node({ id, type: typeDefId, selected }) {
         inputConnections,
         outputConnections,
         connections: { ...inputConnections, ...outputConnections },
-        integrationsSatisfied,
+        integrationsSatisfied: !missingSelections,
     }
     // #endregion
 
@@ -89,6 +87,7 @@ export default function Node({ id, type: typeDefId, selected }) {
 
     // #region - Node context menu
     const [, setContextMenu] = useStoreProperty("contextMenu")
+
     // disabling this for now because it happens before the popover
     // animation finishes
     // const clickOutsideRef = useClickOutside(() => setContextMenu(null), ["click"])
@@ -105,70 +104,124 @@ export default function Node({ id, type: typeDefId, selected }) {
                 onContextMenu={handleContextMenu}
             // ref={clickOutsideRef}
             >
-                <motion.div
-                    variants={wrapperAnimVariants}
-                    initial="initial"
-                    animate={selected ? "selected" : hovered ? "hovered" : "idle"}
-                    transition={{ duration: 0.1 }}
-                    style={{
-                        borderRadius: theme.radius.md,
-                        cursor: "pointer",
-                    }}
-                    ref={hoverRef}
-                >
-                    <Group spacing={0} align="stretch" p="xs">
+                <SelectedControls>
+                    <motion.div
+                        variants={wrapperAnimVariants}
+                        initial="initial"
+                        animate={selected ? "selected" : hovered ? "hovered" : "idle"}
+                        transition={{ duration: 0.1 }}
+                        style={{
+                            borderRadius: theme.radius.md,
+                            cursor: "pointer",
+                        }}
+                        ref={hoverRef}
+                    >
+                        <Stack spacing="xxxs" px="xs" py="xxxs">
 
-                        {/* Input Handles */}
-                        <HandleStack>
-                            {typeDefinition.inputs.map(input =>
-                                input.listMode ?
-                                    <ListHandle
-                                        {...handleProps(input.id)}
-                                        component={InputHandle}
-                                        key={input.id}
-                                    /> :
-                                    <InputHandle
-                                        {...handleProps(input.id)}
-                                        key={input.id}
-                                    />
-                            )}
-                        </HandleStack>
+                            {/* Tags */}
+                            {typeDefinition.tags[0] && typeDefinition.showMainTag &&
+                                <Group position="apart" spacing="xs">
+                                    <Group spacing="xxxs">
+                                        <Badge size="sm" radius="sm" color={typeDefinition.color} >
+                                            {typeDefinition.tags[0]}
+                                        </Badge>
 
-                        <ConfigPopover>
-                            {typeDefinition.renderCard ?
-                                <Card
-                                    px="md" py="xs"
-                                    shadow={selected ? "sm" : "xs"}
-                                    className="ofv border-1 border-solid border-dark-400"
-                                // sx={{ borderRadius: "1.25rem" }}
-                                >
-                                    <NodeInternal displayProps={displayProps} />
-                                </Card>
-                                :
-                                <Box>
-                                    <NodeInternal displayProps={displayProps} />
-                                </Box>}
-                        </ConfigPopover>
+                                        {typeDefinition.trigger &&
+                                            <Center ><TbLock color={theme.fn.primaryColor()} size={theme.fontSizes.sm} /></Center>}
+                                    </Group>
 
-                        {/* Output Handles */}
-                        <HandleStack>
-                            {typeDefinition.outputs.map(output =>
-                                output.listMode ?
-                                    <ListHandle
-                                        {...handleProps(output.id)}
-                                        component={OutputHandle}
-                                        key={output.id}
-                                    /> :
-                                    <OutputHandle
-                                        {...handleProps(output.id)}
-                                        key={output.id}
-                                    />
-                            )}
-                        </HandleStack>
-                    </Group>
+                                    <ErrorIcon />
+                                </Group>}
 
-                    <ErrorIcon />
-                </motion.div>
+                            <Group spacing={0}>
+
+                                {/* Input Handles */}
+                                {!typeDefinition.renderCard &&
+                                    <Stack>
+                                        {typeDefinition.inputs.map(input =>
+                                            input.listMode ?
+                                                <ListHandle
+                                                    {...handleProps(input.id)}
+                                                    component={InputHandle}
+                                                    key={input.id}
+                                                /> :
+                                                <InputHandle
+                                                    {...handleProps(input.id)}
+                                                    key={input.id}
+                                                />
+                                        )}
+                                    </Stack>}
+
+                                {typeDefinition.renderCard ?
+                                    <Card
+                                        px="md" py="xs"
+                                        shadow={selected ? "sm" : "xs"}
+                                        // shadow={selected ? "sm" : false}
+                                        // className="ofv border-1 border-solid border-dark-300"
+                                        className="ofv base-border"
+                                    >
+                                        <Stack>
+                                            <NodeInternal displayProps={displayProps} />
+
+                                            <Group position="apart" noWrap spacing="lg" className="-mx-6">
+                                                <Stack spacing="xxxs">
+                                                    {typeDefinition.inputs.map(input =>
+                                                        input.listMode ?
+                                                            <ListHandle
+                                                                {...handleProps(input.id)}
+                                                                component={InputHandle}
+                                                                key={input.id}
+                                                            /> :
+                                                            <InputHandle
+                                                                {...handleProps(input.id)}
+                                                                key={input.id}
+                                                            />
+                                                    )}
+                                                </Stack>
+
+                                                <Stack spacing="xxxs">
+                                                    {typeDefinition.outputs.map(output =>
+                                                        output.listMode ?
+                                                            <ListHandle
+                                                                {...handleProps(output.id)}
+                                                                component={OutputHandle}
+                                                                key={output.id}
+                                                            /> :
+                                                            <OutputHandle
+                                                                {...handleProps(output.id)}
+                                                                key={output.id}
+                                                            />
+                                                    )}
+                                                </Stack>
+                                            </Group>
+                                        </Stack>
+                                    </Card>
+                                    :
+                                    <Box>
+                                        <NodeInternal displayProps={displayProps} />
+                                    </Box>}
+
+                                {/* Output Handles */}
+                                {!typeDefinition.renderCard &&
+                                    <Stack>
+                                        {typeDefinition.outputs.map(output =>
+                                            output.listMode ?
+                                                <ListHandle
+                                                    {...handleProps(output.id)}
+                                                    component={OutputHandle}
+                                                    key={output.id}
+                                                /> :
+                                                <OutputHandle
+                                                    {...handleProps(output.id)}
+                                                    key={output.id}
+                                                />
+                                        )}
+                                    </Stack>}
+                            </Group>
+                        </Stack>
+
+                    </motion.div>
+                </SelectedControls>
             </Box>
 
             <Presence />

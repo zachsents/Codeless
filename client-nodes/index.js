@@ -1,9 +1,8 @@
 import { SiGooglesheets } from "react-icons/si"
-import { AlphabetLatin, BracketsContain, BrandAirtable, BrandGmail, Database, Link as LinkIcon, Math, Run as RunIcon, Table as TableIcon, Variable as VariableIcon } from "tabler-icons-react"
+import { AlphabetLatin, BracketsContain, BrandAirtable, BrandGmail, Clock, ClockPlay, Database, Link as LinkIcon, Math, Run as RunIcon, Table as TableIcon, Variable as VariableIcon } from "tabler-icons-react"
 import DefaultTemplate, { DefaultInput, DefaultOutput } from "./DefaultTemplate"
 import AirTableIntegration from "./airtable/integration"
-import GmailIntegration from "./google/gmail/integration"
-import GoogleSheetsIntegration from "./google/sheets/integration"
+import GoogleIntegration from "./google/integration"
 import rawNodeDefinitions from "./nodes-barrel.js"
 
 
@@ -39,8 +38,8 @@ export const TriggerNodeDefinitions = createObject(nodeDefinitions.filter(node =
 
 export const TriggerCategories = {
     Default: {
-        title: "Default",
-        icon: RunIcon,
+        title: "Time",
+        icon: ClockPlay,
         members: [
             "basic:DefaultTrigger",
         ],
@@ -63,8 +62,7 @@ export const TriggerCategories = {
 
 
 export const Integrations = createObject([
-    GmailIntegration,
-    GoogleSheetsIntegration,
+    GoogleIntegration,
     AirTableIntegration,
 ])
 

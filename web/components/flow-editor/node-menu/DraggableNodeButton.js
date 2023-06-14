@@ -83,7 +83,7 @@ export default function DraggableNodeButton({
                 <Menu opened={includeMenu && menuOpened} onChange={setMenuOpened} shadow="sm">
                     <Menu.Target>
                         <Card
-                            withBorder pl="xxs" py="xxxs" pr="xs"
+                            withBorder pl="xs" py="xxs" pr="sm"
                             {...cardProps}
                             className={jc(
                                 "pointer-events-auto nosel cursor-pointer",
@@ -129,16 +129,16 @@ export default function DraggableNodeButton({
                             }}
                         >
 
-                            <Stack spacing="xxxs">
+                            <Stack spacing="xxs">
                                 <Group spacing="sm" noWrap>
                                     <Center>
                                         <nodeDef.icon strokeWidth={1.5} color={theme.colors[nodeDef.color][theme.fn.primaryShade()]} />
                                     </Center>
-                                    <Text size="xs" weight={500}>{nodeDef.name}</Text>
+                                    <Text size="sm" weight={500}>{nodeDef.name}</Text>
                                 </Group>
 
                                 {showDescription &&
-                                    <Text size="xxs" color="dimmed">
+                                    <Text size="xs" color="dimmed">
                                         {nodeDef.description}
                                     </Text>}
                             </Stack>

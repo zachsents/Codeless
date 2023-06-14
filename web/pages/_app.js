@@ -12,10 +12,9 @@ import { DataViewerModal, DataViewerModalName } from "@web/components/modals/Dat
 import DeleteAppModal from "@web/components/modals/DeleteAppModal"
 import DeleteFlowModal from "@web/components/modals/DeleteFlowModal"
 import RenameFlowModal from "@web/components/modals/RenameFlowModal"
-import ScheduleFlowModal from "@web/components/modals/ScheduleFlowModal"
 
-import { initializeFirebase } from "@minus/client-sdk"
 import { Notifications } from "@mantine/notifications"
+import { initializeFirebase } from "@minus/client-sdk"
 initializeFirebase()
 
 
@@ -32,7 +31,7 @@ export default function MyApp({ Component, pageProps }) {
                         <Component {...pageProps} />
                     </div>
                     <RouterTransition />
-                    <Notifications />
+                    <Notifications autoClose={4000} />
                 </ModalsProvider>
             </MantineProvider>
         </QueryClientProvider>
@@ -45,7 +44,7 @@ const modals = {
     DeleteApp: DeleteAppModal,
     RenameFlow: RenameFlowModal,
     DeleteFlow: DeleteFlowModal,
-    ScheduleFlow: ScheduleFlowModal,
+    // ScheduleFlow: ScheduleFlowModal,
     NodePalette: NodePalette,
     [DataViewerModalName]: DataViewerModal,
 }

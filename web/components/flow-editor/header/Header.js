@@ -4,31 +4,22 @@ import { useRouter } from "next/router"
 import { TbArrowLeft, TbLayoutList } from "react-icons/tb"
 
 import { TriggerNodeDefinitions } from "@minus/client-nodes"
-import { usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
-import FlowControlButton from "@web/components/FlowControlButton"
+import { useActionQuery, usePublishFlow, useUnpublishFlow } from "@minus/client-sdk"
 import { useFlowContext } from "@web/modules/context"
-import { deselectAll } from "@web/modules/graph-util"
-import { useState } from "react"
-import { useReactFlow } from "reactflow"
 import RunReplayPopover from "../run-replay/RunReplayPopover"
 import FlowTitle from "./FlowTitle"
 
 
 export default function Header() {
 
-    const rf = useReactFlow()
     const { query: { appId } } = useRouter()
     const { flow, dirty: isFlowUnsaved } = useFlowContext()
 
-    const publishFlow = usePublishFlow(flow?.id)
-    const unpublishFlow = useUnpublishFlow(flow?.id)
-    const [isPublishing, setIsPublishing] = useState(false)
-
-    const handlePublishChange = async value => {
-        setIsPublishing(true)
-        await (value ? publishFlow : unpublishFlow)()
-        setIsPublishing(false)
-    }
+    // Enabling/disabling a flow
+    const _publishFlow = usePublishFlow(flow?.id)
+    const _unpublishFlow = useUnpublishFlow(flow?.id)
+    const [enableFlow, { isFetching: isEnabling }] = useActionQuery(_publishFlow, ["publish", flow?.id])
+    const [disableFlow, { isFetching: isDisabling }] = useActionQuery(_unpublishFlow, ["unpublish", flow?.id])
 
     const publishStatus = flow?.published ? {
         label: "Enabled",
@@ -48,30 +39,38 @@ export default function Header() {
 
     return (
         <MantineHeader
-            onClick={() => deselectAll(rf)}
-            fixed={false} px="xs" py="0.5rem" zIndex={200}
+            // onClick={() => deselectAll(rf)}
+            fixed={false} px="sm" py="xs" zIndex={200}
             className="ofv"
         >
             <Group position="apart">
                 <Group>
                     <Link href={`/app/${appId}?tab=flows`}>
                         <Tooltip label="Back to All Workflows">
-                            <Button color="gray" variant="light" size="xs">
+                            <Button color="gray" variant="light" size="sm">
                                 <Group spacing="xs">
-                                    <TbArrowLeft size={16} /><TbLayoutList size={20} />
+                                    <TbArrowLeft size="1em" /><TbLayoutList size="1.2em" />
                                 </Group>
                             </Button>
                         </Tooltip>
                     </Link>
 
                     <FlowTitle />
+
+                    {/* Flow Controls */}
+                    {flow?.published &&
+                        <Group ml="xl">
+                            {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
+                                <control.render {...{ appId, flow }} key={control.id} />
+                            )}
+                        </Group>}
                 </Group>
 
                 <Group spacing="lg">
 
                     {/* Saving Indicator */}
                     <Badge
-                        color="gray" variant="light" size="sm"
+                        color="gray" variant="light" size="md"
                         leftSection={<Text color={saveStatus.color} size="xl">&bull;</Text>}
                     >
                         {saveStatus.label}
@@ -79,39 +78,25 @@ export default function Header() {
 
                     <Divider orientation="vertical" />
 
-                    {/* Flow Controls */}
-                    {flow?.published && <>
-                        <Group>
-                            {TriggerNodeDefinitions[flow.trigger].flowControls.map(control =>
-                                <FlowControlButton
-                                    {...control}
-                                    appId={appId}
-                                    flow={flow}
-                                    key={control.id}
-                                />
-                            )}
-                        </Group>
-                        <Divider orientation="vertical" />
-                    </>}
-
                     {/* Publishing */}
-                    {isPublishing ?
+                    {(isEnabling || isDisabling) ?
                         <Group>
-                            <Loader size="xs" />
-                            <Text size="xs" color="dimmed">Working on it...</Text>
+                            <Loader size="sm" />
+                            <Text size="sm" color="dimmed">Working on it...</Text>
                         </Group> :
                         <Group>
                             <Badge
                                 color={publishStatus.color}
                                 variant="light" leftSection={<Text color={publishStatus.color} size="xl">&bull;</Text>}
+                                size="lg"
                             >
                                 {publishStatus.label}
                             </Badge>
                             <Switch
                                 color="green"
-                                size="xs"
+                                size="sm"
                                 checked={flow?.published}
-                                onChange={event => handlePublishChange(event.currentTarget.checked)}
+                                onChange={flow?.published ? disableFlow : enableFlow}
                             />
                         </Group>}
 

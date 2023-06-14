@@ -1,18 +1,21 @@
+import { sheets, google } from "@minus/server-lib"
 import functions from "firebase-functions"
-import { sheets } from "@minus/server-sdk"
 
 
-export const getSpreadsheetDetails = functions.https.onCall(async (data) => {
+const withSecret = functions.runWith({
+    secrets: [google.googleOAuthClientSecret]
+})
 
-    const { appId, spreadsheetId } = data
 
-    // check params
-    if (!appId || !spreadsheetId)
-        throw new functions.https.HttpsError("invalid-argument", "Must include Minus app ID and Google Sheets spreadsheet ID")
+export const getSpreadsheetDetails = withSecret.https.onCall(async ({ accountId, spreadsheetId }) => {
 
-    // get sheets API
-    const sheetsApi = await sheets.getGoogleSheetsAPI(appId)
+    // Check params
+    if (!accountId || !spreadsheetId)
+        throw new functions.https.HttpsError("invalid-argument", "Must include an integration account ID and Google Sheets spreadsheet ID")
 
-    // get spreadsheet details
+    // Get Sheets API
+    const sheetsApi = await sheets.getGoogleSheetsAPI(accountId)
+
+    // Get spreadsheet details
     return await sheetsApi.spreadsheet(spreadsheetId).getDetails()
 })

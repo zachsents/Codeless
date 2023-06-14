@@ -2,7 +2,7 @@ import { Button, Center, Indicator, Popover, ScrollArea, Stack, Table, Text, The
 import { useClickOutside, useDisclosure } from "@mantine/hooks"
 import { isPending } from "@minus/client-sdk"
 import { useReplayContext } from "@web/modules/context"
-import { formatRunStatus, runStatusColor, runStatusIcon, shortRunId } from "@web/modules/runs"
+import { RunStatusIcon, formatRunStatus, runStatusColor, shortRunId } from "@web/modules/runs"
 import { TbClockPlay } from "react-icons/tb"
 import styles from "./RunReplayPopover.module.css"
 
@@ -28,12 +28,12 @@ export default function RunReplayPopover() {
                         disabled={hasNoRuns}
                         color={!hasNoRuns && runStatusColor(runs[0].status)}
                         processing={!hasNoRuns && isPending(runs[0].status)}
-                        size={12} offset={2} mr="sm"
+                        size="0.75rem" offset={2} mr="sm"
                     >
                         <Button
                             onClick={popoverHandlers.toggle}
                             color={hasNoRuns && "gray"}
-                            variant="light" size="xs" leftIcon={<TbClockPlay size="1rem" />}
+                            variant="light" size="sm" leftIcon={<TbClockPlay size="1rem" />}
                         >
                             View Runs
                         </Button>
@@ -95,7 +95,7 @@ export default function RunReplayPopover() {
                                                                         color={runStatusColor(run.status)}
                                                                         size="sm" radius="xl"
                                                                     >
-                                                                        {runStatusIcon(run.status)}
+                                                                        <RunStatusIcon status={run.status} />
                                                                     </ThemeIcon>
                                                                 </Tooltip>
                                                             </Center>
@@ -106,9 +106,9 @@ export default function RunReplayPopover() {
                                         </tbody>
                                     </Table>
 
-                                    {runLimit < 20 &&
+                                    {(runs?.length ?? 0) == runLimit &&
                                         <Button
-                                            onClick={() => setRunLimit(20)}
+                                            onClick={() => setRunLimit(runLimit + 10)}
                                             variant="subtle" size="xs"
                                         >
                                             Load More

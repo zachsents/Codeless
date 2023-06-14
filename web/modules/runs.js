@@ -1,4 +1,4 @@
-import { RunStatus } from "@minus/client-sdk"
+import { RunStatus } from "@minus/util"
 import { TbActivity, TbAlertTriangle, TbCheck, TbClock, TbExclamationMark } from "react-icons/tb"
 
 export function formatRunStatus(status) {
@@ -22,7 +22,7 @@ const _runStatusIcon = {
     [RunStatus.Scheduled]: TbClock,
 }
 
-export function runStatusIcon(status, props = {}) {
+export function RunStatusIcon({ status, ...props }) {
     const Icon = _runStatusIcon[status]
     return <Icon {...props} />
 }

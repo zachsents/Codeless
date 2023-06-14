@@ -1,6 +1,5 @@
 import { Button, Group, Stack, Text, TextInput } from "@mantine/core"
-import { useDeleteApp } from "@minus/client-sdk"
-import { useActionQuery } from "@web/modules/hooks"
+import { useDeleteApp, useActionQuery } from "@minus/client-sdk"
 import { useState } from "react"
 import { TbTrash } from "react-icons/tb"
 

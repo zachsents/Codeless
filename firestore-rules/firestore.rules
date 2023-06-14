@@ -55,8 +55,9 @@ service cloud.firestore {
         // - can't be updated or deleted
         match /flowRuns/{runId} {
             allow read: if isFlowRunOwner(resource);
-            allow create: if isFlowRunOwner(request.resource) && request.resource.data.status == "pending";
-            allow update, delete: if false;
+            allow create: if isFlowRunOwner(request.resource) && (request.resource.data.status == "pending" || request.resource.data.status == "scheduled");
+            allow update: if isFlowRunOwner(request.resource) && request.resource.data.status == "failed";
+            allow delete: if false;
         }
 
         // Users

@@ -139,6 +139,16 @@ export class Node {
     }
 
     /**
+     * Gets the account ID for a specified integration.
+     *
+     * @param {string} integrationId
+     * @memberof Node
+     */
+    getAccountId(integrationId) {
+        return this.rfNode.data.selectedAccounts?.[integrationId]
+    }
+
+    /**
      * Whether or not the node has enough values on all its inputs
      * to run.
      * @type {boolean}

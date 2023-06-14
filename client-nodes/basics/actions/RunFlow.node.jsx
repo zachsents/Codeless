@@ -1,5 +1,5 @@
 import { ArrowForward, BoxSeam, ChartDots3, Run } from "tabler-icons-react"
-import { OtherFlowsControl } from "../../components/index"
+import OtherFlowsControl from "../../components/OtherFlowsControl"
 
 /**
  * @type {import("../../DefaultTemplate.jsx").NodeTypeDefinition}

@@ -24,6 +24,7 @@ import { useTypeDefinition } from "./hooks/nodes"
  * @property {string[]} tags Tags are used for searching and filtering nodes. The first tag is used as the main tag, which
  * is displayed on the node if no custom rendering is provided.
  * @property {boolean} showMainTag If true, the main tag is displayed on the node if no custom rendering is provided.
+ * @property {boolean} showSettingsIcon If true, the settings icon will be shown in the node header.
  * @property {boolean} trigger If true, the node will be treated as a trigger node. Trigger nodes are not deletable and
  * cannot be moved.
  * @property {boolean} creatable If true, the node can be created by the user.
@@ -130,7 +131,7 @@ export default {
     description: "Node Description",
 
     // Colors, icons, etc.
-    color: "gray",
+    color: "primary",
     icon: Square,
 
     // Tags
@@ -159,4 +160,5 @@ export default {
     creatable: true,
     deletable: true,
     flowControls: [],
+    showSettingsIcon: true,
 }

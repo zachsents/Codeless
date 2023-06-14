@@ -12,7 +12,7 @@ export default function TextAreaControl({ inputId, inputProps = {} }) {
         autosize
         minRows={1}
         maxRows={15}
-        size="xxs"
+        size="xs"
         {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
     />
 }

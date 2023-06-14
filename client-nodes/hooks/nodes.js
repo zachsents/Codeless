@@ -118,10 +118,10 @@ export function useColors(id, shades = []) {
 
     return shades.map(shade => {
         if (typeof shade === "number")
-            return theme.colors[typeDefinition.color][shade]
+            return theme.colors[typeDefinition?.color]?.[shade]
 
         if (shade === "primary")
-            return theme.colors[typeDefinition.color][theme.primaryShade.light]
+            return theme.colors[typeDefinition?.color]?.[theme.primaryShade.light]
     })
 }
 
@@ -186,7 +186,7 @@ export function useInternalState(id) {
     // set default state
     useEffect(() => {
         if (state === undefined || isDefaultObject(state))
-            setState(typeDefinition.defaultState ?? {})
+            setState(typeDefinition?.defaultState ?? {})
     }, [])
 
     // return curried setter that merges
@@ -434,4 +434,37 @@ export function useDeselectAfter(nodeId) {
     }, [selected, shouldDeselect])
 
     return () => setShouldDeselect(true)
+}
+
+
+export function useIntegrationAccounts(nodeId, app) {
+
+    const typeDef = useTypeDefinition(nodeId)
+
+    const [selectedAccounts, setSelectedAccounts] = useNodeProperty(nodeId, ["data", "selectedAccounts"], true)
+
+    return {
+        needsAccounts: typeDef?.requiredIntegrations?.length > 0,
+        selectedAccounts: selectedAccounts ?? {},
+        selectAccount: (integrationId, accountId) => setSelectedAccounts({
+            ...selectedAccounts,
+            [integrationId]: accountId
+        }),
+        availableAccounts: Object.fromEntries(
+            typeDef?.requiredIntegrations?.map(integrationId => [
+                integrationId,
+                app?.integrations?.[integrationId]?.map(accountId => ({
+                    id: accountId,
+                    nickname: app?.accountNicknames?.[accountId] || accountId.split(":")[1],
+                })) ?? []
+            ]) ?? []
+        ),
+        missingSelections: !typeDef?.requiredIntegrations?.every(integrationId => selectedAccounts?.[integrationId] != null),
+        requiredIntegrations: typeDef?.requiredIntegrations ?? [],
+    }
+}
+
+
+export function useSelectedIntegrationAccount(nodeId, integrationId) {
+    return useNodeProperty(nodeId, ["data", "selectedAccounts", integrationId])
 }

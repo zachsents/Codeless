@@ -13,6 +13,7 @@ export const mantineTheme = {
     },
     fontSizes: {
         xxs: "0.625rem",
+        xxxs: "0.5rem",
     },
     spacing: {
         xxs: "0.5rem",
@@ -99,6 +100,10 @@ export const tailwindTheme = {
         ...DEFAULT_THEME.spacing,
         ...mantineTheme.spacing,
     },
+    fontFamily: {
+        sans: [mantineTheme.fontFamily, "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+    },
 }
 
 // Adds primary colors as CSS variables
@@ -110,7 +115,7 @@ export const additionalCSSVariables = DEFAULT_THEME.colors.dark.map((_, i) => {
 function colorArrayToTailwindObject(arr) {
     return {
         ...Object.fromEntries(
-            arr.map((hex, i) => [`${i + 1}00`, hex])
+            arr.map((hex, i) => [i == 0 ? "50" : `${i}00`, hex])
         ),
         DEFAULT: arr[DEFAULT_THEME.primaryShade.light]
     }
