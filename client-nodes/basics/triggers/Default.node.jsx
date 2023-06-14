@@ -3,7 +3,7 @@ import { openContextModal } from "@mantine/modals"
 import { useClickOutside, useDisclosure } from "@mantine/hooks"
 import { cancelScheduledRun, runFlow, scheduleFlowRun, useActionQuery, useScheduledRuns } from "@minus/client-sdk"
 import { useEffect } from "react"
-import { TbAlertTriangle, TbArrowBounce, TbCalendar, TbClock, TbClockEdit, TbClockPlay, TbConfetti, TbDots, TbMoodSad, TbPlus, TbRotateClockwise2, TbRun, TbTrash, TbX } from "react-icons/tb"
+import { TbAlertTriangle, TbArrowBounce, TbBoxSeam, TbCalendar, TbClock, TbClockEdit, TbClockPlay, TbConfetti, TbDots, TbMoodSad, TbPlus, TbRotateClockwise2, TbRun, TbTrash, TbX } from "react-icons/tb"
 import { notifications } from "@mantine/notifications"
 import { Run } from "tabler-icons-react"
 import { useForm } from "@mantine/form"
@@ -27,6 +27,7 @@ export default {
         {
             id: "$",
             name: "Payload",
+            icon: TbBoxSeam,
             description: "The payload of the flow run.",
             tooltip: "The payload of the flow run.",
             defaultShowing: false,

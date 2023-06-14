@@ -1,27 +1,23 @@
-import { ActionIcon, Box, Card, Group, Stack, Text } from "@mantine/core"
+import { ActionIcon, Stack, Text } from "@mantine/core"
 import { AnimatePresence, motion } from "framer-motion"
 import { useReactFlow } from "reactflow"
 
-import { HandleType, InputMode, useHandleDefinition, useHandleSuggestions, useIsNodeConnecting, useNodeId, useNodeProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
-import { openNodePalette as _openNodePalette, addNeighborNode, formatHandleName } from "@web/modules/graph-util"
+import { HandleType, InputMode, useHandleDefinition, useHandleSuggestions, useIsNodeConnecting, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { openNodePalette as _openNodePalette, addNeighborNode } from "@web/modules/graph-util"
+import { jc } from "@web/modules/util"
 import { TbPlus } from "react-icons/tb"
-import styles from "./Handle.module.css"
 import Suggestion from "./Suggestion"
 
 
-export default function HandleTooltip({ id, label, nodeHovered, handleHovered }) {
+export default function HandleTooltip({ id, handleHovered }) {
 
     const nodeTypeDefinition = useTypeDefinition()
 
-    const { type, definition } = useHandleDefinition(null, id)
+    const { type } = useHandleDefinition(null, id)
     const currentlyConnecting = useIsNodeConnecting()
-
-    label ||= definition.name || formatHandleName(id)
 
     const rf = useReactFlow()
     const nodeId = useNodeId()
-
-    const nodeSelected = useNodeProperty(null, "selected")
 
     // suggestions
     const suggestions = useHandleSuggestions(null, id)
@@ -90,10 +86,12 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
     return (
         <AnimatePresence>
             {
-                !currentlyConnecting &&
-                (nodeHovered || handleHovered || nodeSelected) &&
-                <Box
-                    className={`${styles.tooltipWrapper} ${styles[type]} nodrag`}
+                !currentlyConnecting && handleHovered &&
+                <div
+                    className={jc(
+                        "absolute top-1/2 -translate-y-1/2 px-xs",
+                        type == HandleType.Input ? "right-full" : "left-full",
+                    )}
 
                     /**
                      * This is a hack to prevent clicks here from selecting the node.
@@ -109,48 +107,30 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
                         exit={{ scale: 0, opacity: 0, transition: { duration: 0.1 } }}
                         transition={{ duration: 0.2 }}
                     >
-                        <Stack spacing={5} align={type == HandleType.Input ? "end" : "start"} p="md" >
+                        <ActionIcon
+                            radius="xl" size="sm" variant="filled" color="primary"
+                            className="shadow-xs z-10 hover:scale-125 active:scale-110 transition-transform"
+                            onClick={openNodePalette}
+                        >
+                            <TbPlus size="0.75rem" />
+                        </ActionIcon>
+                    </motion.div>
 
-                            <Group
-                                spacing="xs"
-                                noWrap
-                                sx={{ flexDirection: type == HandleType.Input ? "row-reverse" : "row" }}
-                            >
-                                {label &&
-                                    <Card p={0} withBorder radius="xl" shadow="xs">
-                                        <Group spacing="0.5rem" noWrap className="px-[0.4rem] py-[0.1rem]" >
-                                            <Text className={styles.tooltip}>{label}</Text>
-                                            {definition.type &&
-                                                <Text
-                                                    tt="capitalize"
-                                                    color="dimmed"
-                                                    className={styles.tooltip}
-                                                >
-                                                    ({definition.type})
-                                                </Text>}
-                                        </Group>
-                                    </Card>}
-
-                                <ActionIcon
-                                    radius="xl"
-                                    size="sm"
-                                    variant="filled"
-                                    color=""
-                                    onClick={openNodePalette}
-                                    sx={theme => ({ boxShadow: theme.shadows.xs })}
-                                >
-                                    <TbPlus size="0.75rem" />
-                                </ActionIcon>
-                            </Group>
-
+                    {/* Provides an extra hitbox */}
+                    <div className={jc(
+                        "absolute top-full -mt-px",
+                        type == HandleType.Input ? "right-0 pr-lg -mr-lg" : "left-0 pl-lg -ml-lg",
+                    )}>
+                        <Stack
+                            spacing="xxxs" px="xs" py="xxxs"
+                            align={type == HandleType.Input ? "end" : "start"}
+                        >
                             {suggestions.length > 0 &&
-                                <Text size={8} color="dimmed" mb={-2} sx={{ whiteSpace: "nowrap" }}>
-                                    {handleHovered ?
-                                        "Suggested Nodes:" :
-                                        `${suggestions.length} Suggested Node${suggestions.length == 1 ? "" : "s"}`}
+                                <Text size="xxxs" color="dimmed" className="whitespace-nowrap -mb-1">
+                                    Suggestions
                                 </Text>}
 
-                            {handleHovered && visibleSuggestions.map((suggestion, i) =>
+                            {visibleSuggestions.map((suggestion, i) =>
                                 <Suggestion
                                     nodeTypeDefId={suggestion.node}
                                     handleId={suggestion.handle}
@@ -162,8 +142,8 @@ export default function HandleTooltip({ id, label, nodeHovered, handleHovered })
                                 />
                             )}
                         </Stack>
-                    </motion.div>
-                </Box>}
+                    </div>
+                </div>}
         </AnimatePresence>
     )
 }

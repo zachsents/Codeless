@@ -8,7 +8,7 @@ export default function NodeInternal({ displayProps }) {
     // const [mainColor] = useColors(null, ["primary"])
 
     return (
-        <Stack spacing="xs" h="100%">
+        <Stack spacing="xs" >
             {typeDefinition.renderName &&
                 <Group position="apart" spacing="xl" className="flex-auto">
                     <Group>

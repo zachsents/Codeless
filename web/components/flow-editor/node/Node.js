@@ -18,7 +18,6 @@ import { useReactFlow } from "reactflow"
 import ErrorIcon from "./ErrorIcon"
 import NodeInternal from "./NodeInternal"
 import SelectedControls from "./SelectedControls"
-import HandleStack from "./handle/HandleStack"
 import InputHandle from "./handle/InputHandle"
 import ListHandle from "./handle/ListHandle"
 import OutputHandle from "./handle/OutputHandle"
@@ -134,23 +133,24 @@ export default function Node({ id, type: typeDefId, selected }) {
                                     <ErrorIcon />
                                 </Group>}
 
-                            <Group spacing={0} align="stretch">
+                            <Group spacing={0}>
 
                                 {/* Input Handles */}
-                                <HandleStack>
-                                    {typeDefinition.inputs.map(input =>
-                                        input.listMode ?
-                                            <ListHandle
-                                                {...handleProps(input.id)}
-                                                component={InputHandle}
-                                                key={input.id}
-                                            /> :
-                                            <InputHandle
-                                                {...handleProps(input.id)}
-                                                key={input.id}
-                                            />
-                                    )}
-                                </HandleStack>
+                                {!typeDefinition.renderCard &&
+                                    <Stack>
+                                        {typeDefinition.inputs.map(input =>
+                                            input.listMode ?
+                                                <ListHandle
+                                                    {...handleProps(input.id)}
+                                                    component={InputHandle}
+                                                    key={input.id}
+                                                /> :
+                                                <InputHandle
+                                                    {...handleProps(input.id)}
+                                                    key={input.id}
+                                                />
+                                        )}
+                                    </Stack>}
 
                                 {typeDefinition.renderCard ?
                                     <Card
@@ -160,7 +160,41 @@ export default function Node({ id, type: typeDefId, selected }) {
                                         // className="ofv border-1 border-solid border-dark-400"
                                         className="ofv base-border"
                                     >
-                                        <NodeInternal displayProps={displayProps} />
+                                        <Stack>
+                                            <NodeInternal displayProps={displayProps} />
+
+                                            <Group position="apart" noWrap spacing="lg" className="-mx-6">
+                                                <Stack spacing="xxxs">
+                                                    {typeDefinition.inputs.map(input =>
+                                                        input.listMode ?
+                                                            <ListHandle
+                                                                {...handleProps(input.id)}
+                                                                component={InputHandle}
+                                                                key={input.id}
+                                                            /> :
+                                                            <InputHandle
+                                                                {...handleProps(input.id)}
+                                                                key={input.id}
+                                                            />
+                                                    )}
+                                                </Stack>
+
+                                                <Stack spacing="xxxs">
+                                                    {typeDefinition.outputs.map(output =>
+                                                        output.listMode ?
+                                                            <ListHandle
+                                                                {...handleProps(output.id)}
+                                                                component={OutputHandle}
+                                                                key={output.id}
+                                                            /> :
+                                                            <OutputHandle
+                                                                {...handleProps(output.id)}
+                                                                key={output.id}
+                                                            />
+                                                    )}
+                                                </Stack>
+                                            </Group>
+                                        </Stack>
                                     </Card>
                                     :
                                     <Box>
@@ -168,20 +202,21 @@ export default function Node({ id, type: typeDefId, selected }) {
                                     </Box>}
 
                                 {/* Output Handles */}
-                                <HandleStack>
-                                    {typeDefinition.outputs.map(output =>
-                                        output.listMode ?
-                                            <ListHandle
-                                                {...handleProps(output.id)}
-                                                component={OutputHandle}
-                                                key={output.id}
-                                            /> :
-                                            <OutputHandle
-                                                {...handleProps(output.id)}
-                                                key={output.id}
-                                            />
-                                    )}
-                                </HandleStack>
+                                {!typeDefinition.renderCard &&
+                                    <Stack>
+                                        {typeDefinition.outputs.map(output =>
+                                            output.listMode ?
+                                                <ListHandle
+                                                    {...handleProps(output.id)}
+                                                    component={OutputHandle}
+                                                    key={output.id}
+                                                /> :
+                                                <OutputHandle
+                                                    {...handleProps(output.id)}
+                                                    key={output.id}
+                                                />
+                                        )}
+                                    </Stack>}
                             </Group>
                         </Stack>
 

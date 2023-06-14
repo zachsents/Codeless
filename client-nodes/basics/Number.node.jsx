@@ -16,7 +16,7 @@ export default {
     outputs: [
         {
             id: "$",
-            name: "Number",
+            // name: "Number",
             description: "The number.",
             tooltip: "The number.",
             icon: Numbers,
@@ -30,7 +30,7 @@ export default {
         const theme = useMantineTheme()
         const [state, setState] = useInternalState()
         return (
-            <Group spacing={0} py={5} mr={2}>
+            <Group spacing={0} py="xxxs" pr="xxxs">
                 <Center px="xs">
                     <GridDots color={theme.colors.gray[5]} size="1em" />
                 </Center>

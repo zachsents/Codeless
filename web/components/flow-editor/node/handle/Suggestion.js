@@ -1,13 +1,12 @@
 import { Button, Text } from "@mantine/core"
 import { motion } from "framer-motion"
-import { TbPlus } from "react-icons/tb"
 
 import { NodeDefinitions } from "@minus/client-nodes"
 import { getHandleDefinition, getHandleDefinitionId } from "@minus/client-nodes/hooks/nodes"
 import { formatHandleName } from "@web/modules/graph-util"
 
 
-export default function Suggestion({ nodeTypeDefId, handleId, showHandle = false, index, children, icon = <TbPlus />, ...props }) {
+export default function Suggestion({ nodeTypeDefId, handleId, showHandle = false, index, children, ...props }) {
 
     const nodeTypeDef = NodeDefinitions[nodeTypeDefId]
     const definition = getHandleDefinition(nodeTypeDefId, getHandleDefinitionId(handleId))
@@ -17,16 +16,14 @@ export default function Suggestion({ nodeTypeDefId, handleId, showHandle = false
     return (
         <motion.div initial="hide" animate="show" variants={suggestionAnimVariants(index)} >
             <Button
-                size="xs"
-                compact
-                variant="light"
-                color="gray"
-                leftIcon={icon}
-                styles={suggestionStyles}
+                size="xs" compact variant="light" color="gray" radius="sm"
+                leftIcon={<nodeTypeDef.icon size="0.75em" />}
+                className="bg-gray-200 transition-colors hover:base-border hover:bg-white hover:text-dark"
+                classNames={{ icon: "mr-xxxs" }}
                 {...props}
             >
                 {nodeTypeDef &&
-                    <Text size={10} weight={400}>
+                    <Text size="xxxs" weight={400}>
                         {nodeTypeDef.name}{showHandle ? ` - ${label}` : ""}
                     </Text>}
 
@@ -49,10 +46,4 @@ const suggestionAnimVariants = index => ({
             delay: index * 0.05,
         },
     },
-})
-
-const suggestionStyles = ({
-    inner: {
-        justifyContent: "flex-start",
-    }
 })
