@@ -38,6 +38,8 @@ export default function Footer({ showCompanies = true }) {
                             <NavLink href="/pricing" weight={500} size="sm" className="text-primary-200 hover:text-white">Pricing</NavLink>
                             <NavLink href="/team" weight={500} size="sm" className="text-primary-200 hover:text-white">Team</NavLink>
                             <NavLink href="/docs" weight={500} size="sm" className="text-primary-200 hover:text-white">Docs</NavLink>
+                            <NavLink href="/terms-of-service" weight={500} size="sm" className="text-primary-200 hover:text-white">Terms of Service</NavLink>
+                            <NavLink href="/privacy-policy" weight={500} size="sm" className="text-primary-200 hover:text-white">Privacy Policy</NavLink>
                         </Group>
                     </Stack>
 
