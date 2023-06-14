@@ -1,12 +1,14 @@
 import { useDebouncedValue } from "@mantine/hooks"
-import { useOtherRunnableFlowsRealtime } from "@minus/client-sdk"
+import { useOtherRunnableFlowsRealtime, useRunnableFlowsRealtime } from "@minus/client-sdk"
 import { useEffect, useMemo, useState } from "react"
 
 
-export function useOtherFlows(flowId, appId, setFlow) {
+export function useOtherFlows(flowId, appId, setFlow, allowSelf = false) {
 
     // grab schedulable flows that aren't this one
-    const [otherFlows] = useOtherRunnableFlowsRealtime(flowId, appId)
+    const [otherFlows] = allowSelf ?
+        useRunnableFlowsRealtime(flowId, appId) :
+        useOtherRunnableFlowsRealtime(flowId, appId)
 
     // transform to what Mantine Selects like
     const otherFlowsData = useMemo(

@@ -252,10 +252,28 @@ export async function unpublishFlow(flowId) {
 
 /**
  * Creates a query that looks for flows that can be ran
+ * manually, including the one given.
+ *
+ * @export
+ * @param {string} flowId
+ * @param {string} appId
+ */
+export function createRunnableFlowsQuery(flowId, appId) {
+    return flowId && query(
+        FlowsCollection(),
+        where("trigger", "==", "basic:DefaultTrigger"),
+        where("app", "==", appId)
+    )
+}
+
+
+/**
+ * Creates a query that looks for flows that can be ran
  * manually, excluding the one given.
  *
  * @export
  * @param {string} flowId
+ * @param {string} appId
  */
 export function createOtherRunnableFlowsQuery(flowId, appId) {
     return flowId && query(
