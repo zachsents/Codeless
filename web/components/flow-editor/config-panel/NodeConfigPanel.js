@@ -389,13 +389,15 @@ function DataTable({ data: rawData, definitions, emptyMessage = "No Data" }) {
     return data.length > 0 ?
         <Table>
             <thead>
-                <th className={jc(thClasses, "rounded-l-md")}>Input</th>
+                <tr>
+                    <th className={jc(thClasses, "rounded-l-md")}>Input</th>
 
-                {longestLength == 1 ?
-                    <th className={thClasses}>Value</th> :
-                    Array(longestLength).fill().map((_, i) =>
-                        <th className={thClasses} key={i}>Value {i + 1}</th>
-                    )}
+                    {longestLength == 1 ?
+                        <th className={thClasses}>Value</th> :
+                        Array(longestLength).fill().map((_, i) =>
+                            <th className={thClasses} key={i}>Value {i + 1}</th>
+                        )}
+                </tr>
             </thead>
             <tbody>
                 {data.map(item =>
