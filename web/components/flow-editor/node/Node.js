@@ -157,7 +157,7 @@ export default function Node({ id, type: typeDefId, selected }) {
                                         px="md" py="xs"
                                         shadow={selected ? "sm" : "xs"}
                                         // shadow={selected ? "sm" : false}
-                                        // className="ofv border-1 border-solid border-dark-400"
+                                        // className="ofv border-1 border-solid border-dark-300"
                                         className="ofv base-border"
                                     >
                                         <Stack>

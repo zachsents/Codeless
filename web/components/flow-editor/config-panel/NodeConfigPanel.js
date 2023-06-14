@@ -384,7 +384,7 @@ function DataTable({ data: rawData, definitions, emptyMessage = "No Data" }) {
     // Find the longest array of values
     const longestLength = Math.max(...data.map(item => item.values.length))
 
-    const thClasses = "text-xs text-left px-xs py-xxs whitespace-nowrap bg-gray-200 last:rounded-r-md"
+    const thClasses = "text-xs text-left px-xs py-xxs whitespace-nowrap bg-gray-100 last:rounded-r-md"
 
     return data.length > 0 ?
         <Table>
@@ -399,7 +399,7 @@ function DataTable({ data: rawData, definitions, emptyMessage = "No Data" }) {
             </thead>
             <tbody>
                 {data.map(item =>
-                    <tr className="border-solid border-0 border-b-1 border-gray-400 last:border-b-0" key={item.key}>
+                    <tr className="border-solid border-0 border-b-1 border-gray-300 last:border-b-0" key={item.key}>
                         <td className="whitespace-nowrap !border-none w-0 !pr-lg">{item.label ?? item.key}</td>
 
                         {item.values.map((value, i) =>

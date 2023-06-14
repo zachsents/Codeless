@@ -53,7 +53,7 @@ export default function Login() {
                             color="gray"
                             radius="xl"
                             leftIcon={<FcGoogle />}
-                            className="base-border hover:bg-gray-100"
+                            className="base-border hover:bg-gray-50"
                             onClick={() => {
                                 setSignInMethod(SignInMethod.Google)
                                 signInWithGoogle().then(handleLogin).catch(() => setSignInMethod(null))

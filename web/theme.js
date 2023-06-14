@@ -115,7 +115,7 @@ export const additionalCSSVariables = DEFAULT_THEME.colors.dark.map((_, i) => {
 function colorArrayToTailwindObject(arr) {
     return {
         ...Object.fromEntries(
-            arr.map((hex, i) => [`${i + 1}00`, hex])
+            arr.map((hex, i) => [i == 0 ? "50" : `${i}00`, hex])
         ),
         DEFAULT: arr[DEFAULT_THEME.primaryShade.light]
     }

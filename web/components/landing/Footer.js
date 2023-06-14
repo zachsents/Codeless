@@ -35,14 +35,14 @@ export default function Footer({ showCompanies = true }) {
                         <Brand variant="white-shiny" />
 
                         <Group>
-                            <NavLink href="/pricing" weight={500} size="sm" className="text-primary-300 hover:text-white">Pricing</NavLink>
-                            <NavLink href="/team" weight={500} size="sm" className="text-primary-300 hover:text-white">Team</NavLink>
-                            <NavLink href="/docs" weight={500} size="sm" className="text-primary-300 hover:text-white">Docs</NavLink>
+                            <NavLink href="/pricing" weight={500} size="sm" className="text-primary-200 hover:text-white">Pricing</NavLink>
+                            <NavLink href="/team" weight={500} size="sm" className="text-primary-200 hover:text-white">Team</NavLink>
+                            <NavLink href="/docs" weight={500} size="sm" className="text-primary-200 hover:text-white">Docs</NavLink>
                         </Group>
                     </Stack>
 
                     <Box>
-                        <Text className="text-primary-200" size="sm">Questions, comments, suggestions?</Text>
+                        <Text className="text-primary-100" size="sm">Questions, comments, suggestions?</Text>
                         <Text
                             component="a" color="white" size="sm" weight={600}
                             href="mailto:info@minuscode.app?subject=Minus%20Inquiry"

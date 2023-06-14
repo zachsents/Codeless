@@ -48,4 +48,4 @@ export default function Header(props) {
     )
 }
 
-const mobileNavLinkClass = "text-center hover:bg-gray-100 py-md rounded-md"
+const mobileNavLinkClass = "text-center hover:bg-gray-50 py-md rounded-md"

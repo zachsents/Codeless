@@ -18,7 +18,7 @@ export default function Suggestion({ nodeTypeDefId, handleId, showHandle = false
             <Button
                 size="xs" compact variant="light" color="gray" radius="sm"
                 leftIcon={<nodeTypeDef.icon size="0.75em" />}
-                className="bg-gray-200 transition-colors hover:base-border hover:bg-white hover:text-dark"
+                className="bg-gray-100 transition-colors hover:base-border hover:bg-white hover:text-dark"
                 classNames={{ icon: "mr-xxxs" }}
                 {...props}
             >

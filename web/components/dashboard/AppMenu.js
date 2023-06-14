@@ -68,7 +68,7 @@ function SwatchArray({ colors, shade = 5, onChange, value }) {
                 onClick={() => onChange?.(color)}
                 className={jc(
                     "cursor-pointer hover:scale-125 active:scale-110 transition",
-                    color == value && "scale-125 ring-2 ring-offset-2 ring-offset-white ring-gray-500"
+                    color == value && "scale-125 ring-2 ring-offset-2 ring-offset-white ring-gray-400"
                 )}
                 key={color}
             />

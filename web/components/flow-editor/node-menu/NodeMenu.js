@@ -103,7 +103,7 @@ export default function NodeMenu() {
                                         onPin={() => setPreference("pinned", arrayUnion(nodeDefDef.id))}
                                         onUnpin={() => setPreference("pinned", arrayRemove(nodeDefDef.id))}
                                         cardProps={{
-                                            className: jc(i === selectedResultIndex && "!border-primary-600 bg-primary-100"),
+                                            className: jc(i === selectedResultIndex && "!border-primary-500 bg-primary-50"),
                                         }}
                                         key={nodeDefDef.id}
                                     />
