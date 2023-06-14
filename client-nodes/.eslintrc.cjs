@@ -1,6 +1,7 @@
+
 module.exports = {
     root: true,
-    extends: ["custom", "react"],
+    extends: ["custom", "plugin:react/recommended"],
     env: {
         browser: true,
     },
@@ -8,9 +9,10 @@ module.exports = {
         "react-hooks/exhaustive-deps": 0,
         "react/no-unescaped-entities": 0,
     },
-    // settings: {
-    //     react: {
-    //         version: "detect",
-    //     }
-    // }
+    plugins: ["react"],
+    settings: {
+        react: {
+            version: "detect",
+        }
+    },
 }
