@@ -130,10 +130,9 @@ export async function deleteFlow(flowId) {
 
     const { graph: flowGraphId } = await getFlow(flowId)
 
-    return Promise.all([
-        deleteDoc(getFlowRef(flowId)),
-        deleteDoc(getFlowGraphRef(flowGraphId))
-    ])
+    // Delete graph first so we don't have to worry about orphaned graphs
+    await deleteDoc(getFlowGraphRef(flowGraphId))
+    await deleteDoc(getFlowRef(flowId))
 }
 
 
