@@ -5,6 +5,7 @@ export * from "./safe-map.js"
 export * from "./schedules.js"
 export * from "./run-status.js"
 export * from "./async-map.js"
+export * from "./sync-type.js"
 
 
 /**

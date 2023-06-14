@@ -2,6 +2,7 @@ import { Group, NumberInput, Select, Text } from "@mantine/core"
 import { useEffect, useState } from "react"
 import { DateTimePicker, TimeInput } from "@mantine/dates"
 import { useListState } from "@mantine/hooks"
+import { syncType } from "@minus/util"
 
 
 export default function ScheduleBuilder({ onChange }) {
@@ -33,8 +34,8 @@ export default function ScheduleBuilder({ onChange }) {
             <Group>
                 <Text>Every</Text>
                 <NumberInput
-                    value={valueFallback(interval, "number", interval, "")}
-                    onChange={newValue => setInterval(valueFallback(newValue, "number", newValue, null))}
+                    value={syncType(interval, "number", interval, "")}
+                    onChange={newValue => setInterval(syncType(newValue, "number", newValue, null))}
                     min={1} max={100} w="4rem"
                 />
                 <Select data={INTERVAL_UNITS(interval != 1)} value={intervalUnit} onChange={setIntervalUnit} w="10rem" />
@@ -73,8 +74,8 @@ function AtMinutes({ value, onChange }) {
             <NumberInput
                 min={0} max={59}
                 // defaultValue={0}
-                value={valueFallback(value, "number", value, "")}
-                onChange={newValue => onChange?.(valueFallback(newValue, "number", newValue, null))}
+                value={syncType(value, "number", value, "")}
+                onChange={newValue => onChange?.(syncType(newValue, "number", newValue, null))}
             />
             <Text>minutes</Text>
         </Group>
@@ -87,8 +88,8 @@ function AtTime({ value, onChange }) {
         <Group>
             <Text>at</Text>
             <TimeInput
-                value={valueFallback(value, "string", value, "")}
-                onChange={event => onChange?.(valueFallback(event.currentTarget.value, "string", x => x || null, null))}
+                value={syncType(value, "string", value, "")}
+                onChange={event => onChange?.(syncType(event.currentTarget.value, "string", x => x || null, null))}
             />
         </Group>
     )
@@ -102,9 +103,9 @@ function OnWeekday({ value, onChange }) {
             <Select
                 data={WEEKDAYS}
                 // defaultValue="monday"
-                value={valueFallback(value, "number", x => WEEKDAYS[x].value, null)}
+                value={syncType(value, "number", x => WEEKDAYS[x].value, null)}
                 onChange={newValue => onChange?.(
-                    valueFallback(newValue, "string", x => WEEKDAYS.findIndex(y => y.value == x), null)
+                    syncType(newValue, "string", x => WEEKDAYS.findIndex(y => y.value == x), null)
                 )}
             />
         </Group>
@@ -133,9 +134,9 @@ function OnDay({ value, onChange }) {
                     return `${value}th`
                 }}
                 // defaultValue={1}
-                value={valueFallback(value, "number", value, "")}
+                value={syncType(value, "number", value, "")}
                 onChange={newValue => onChange?.(
-                    valueFallback(newValue, "number", newValue, null)
+                    syncType(newValue, "number", newValue, null)
                 )}
             />
             <Text>day</Text>
@@ -162,11 +163,3 @@ const WEEKDAYS = [
     { value: "friday", label: "Friday" },
     { value: "saturday", label: "Saturday" },
 ]
-
-
-function valueFallback(value, type, truthy, falsy) {
-    if ((typeof value === type && value !== null) || (value === null && type == "null"))
-        return typeof truthy === "function" ? truthy(value) : truthy
-
-    return typeof falsy === "function" ? falsy(value) : falsy
-}

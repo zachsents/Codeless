@@ -25,7 +25,7 @@ export default {
             batch.set(docRef, {
                 flow,
                 payload,
-                scheduledFor: Timestamp.fromMillis(new Date(time).valueOf()),
+                scheduledFor: Timestamp.fromDate(new Date(time)),
                 status: "scheduled",
                 source: "flow",
             })
