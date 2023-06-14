@@ -110,7 +110,6 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
  * @param {string} id
  * @param {object} [options]
  * @param {"clean" | "raw"} [options.format="clean"]
- * @return {*} 
  */
 export async function getMessage(gmail, id, {
     format = "clean",
@@ -125,15 +124,16 @@ export async function getMessage(gmail, id, {
 
     if (format == "clean") {
         const fromHeader = getHeader(message, "From")
-        const { name, emailAddress } = parseFromHeader(fromHeader)
+        const sender = parseFromHeader(fromHeader)
+        const recipient = parseFromHeader(getHeader(message, "To"))
         const plainText = decodeEmailBody(
             message.payload.body.data ??
             message.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
         )
 
         return {
-            senderName: name,
-            senderEmailAddress: emailAddress,
+            senderName: sender.name,
+            senderEmailAddress: sender.emailAddress,
             replyTo: getHeader(message, "Reply-To"),
             subject: getHeader(message, "Subject"),
             date: new Date(getHeader(message, "Date")),
@@ -142,6 +142,8 @@ export async function getMessage(gmail, id, {
             html: decodeEmailBody(
                 message.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
             ),
+            recipientName: recipient.name,
+            recipientEmailAddress: recipient.emailAddress,
         }
     }
 }
