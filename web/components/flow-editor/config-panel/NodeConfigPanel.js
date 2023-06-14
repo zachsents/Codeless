@@ -1,7 +1,7 @@
 import { Accordion, ActionIcon, Button, Card, Group, ScrollArea, Stack, Table, Text, useMantineTheme } from "@mantine/core"
 import { NodeProvider, useColors, useIntegrationAccounts, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppContext, useReplayContext } from "@web/modules/context"
-import { deselectAll, formatHandleName, useCurrentlySelectedNode } from "@web/modules/graph-util"
+import { deselectAll, formatHandleName, useCurrentlySelectedNode, useNodeDisplayProps } from "@web/modules/graph-util"
 import { shortRunId } from "@web/modules/runs"
 import { jc } from "@web/modules/util"
 import { AnimatePresence, motion } from "framer-motion"
@@ -28,6 +28,7 @@ export default function NodeConfigPanel() {
 
     const { app } = useAppContext()
     const selectedNode = useCurrentlySelectedNode()
+    const displayProps = useNodeDisplayProps(selectedNode?.id)
 
     // Integrations
     const { needsAccounts, missingSelections } = useIntegrationAccounts(selectedNode?.id ?? false, app)
@@ -48,7 +49,7 @@ export default function NodeConfigPanel() {
     return (
         <AnimatePresence>
             {selectedNode &&
-                <NodeProvider value={{ id: selectedNode?.id }}>
+                <NodeProvider id={selectedNode?.id} displayProps={displayProps}>
                     <Stack spacing="xxs" w="24rem" className="h-full">
                         <TitleCard />
 

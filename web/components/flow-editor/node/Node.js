@@ -3,16 +3,14 @@ import { useHover, useSetState } from "@mantine/hooks"
 import { motion } from "framer-motion"
 import { useEffect } from "react"
 
-import { useAppContext } from "@web/modules/context"
 import {
     selectNode,
-    useNodeConnections,
+    useNodeDisplayProps,
     useSmoothlyUpdateNode
 } from "@web/modules/graph-util"
 
 import { NodeDefinitions } from "@minus/client-nodes"
-import { NodeProvider, useIntegrationAccounts, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
-import { useAppId, useFlowId } from "@web/modules/hooks"
+import { NodeProvider, useNodeContext, useStoreProperty, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { TbLock } from "react-icons/tb"
 import { useReactFlow } from "reactflow"
 import ErrorIcon from "./ErrorIcon"
@@ -30,11 +28,6 @@ export default function Node({ id, type: typeDefId, selected }) {
 
     const typeDefinition = NodeDefinitions[typeDefId]
 
-    // #region - Integrations (satisfaction)
-    const { app } = useAppContext()
-    const { missingSelections } = useIntegrationAccounts(id, app)
-    // #endregion
-
     // #region - Hover states for showing handle labels 
     const { hovered, ref: hoverRef } = useHover()
     const [handlesHovered, setHandlesHovered] = useSetState({})
@@ -49,17 +42,7 @@ export default function Node({ id, type: typeDefId, selected }) {
     })
     // #endregion
 
-    // #region - Render override components props
-    const [inputConnections, outputConnections] = useNodeConnections(id)
-    const displayProps = {
-        appId: useAppId(),
-        flowId: useFlowId(),
-        inputConnections,
-        outputConnections,
-        connections: { ...inputConnections, ...outputConnections },
-        integrationsSatisfied: !missingSelections,
-    }
-    // #endregion
+    const displayProps = useNodeDisplayProps(id)
 
     // #region - Periodically update node internals
     const stopUpdating = useSmoothlyUpdateNode(id, [], {
@@ -99,7 +82,7 @@ export default function Node({ id, type: typeDefId, selected }) {
     // #endregion
 
     return (
-        <NodeProvider value={{ id, displayProps }}>
+        <NodeProvider id={id} displayProps={displayProps}>
             <Box
                 onContextMenu={handleContextMenu}
             // ref={clickOutsideRef}
