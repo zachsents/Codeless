@@ -47,7 +47,7 @@ export default function Handle({ id, label, nodeHovered, onHover }) {
                     noWrap spacing="xxxs" px="xxxs" py="0.1rem"
                     className={jc(
                         "w-full pointer-events-none",
-                        type == HandleType.Output && "flex-row-reverse justify-end",
+                        type == HandleType.Output && "flex-row-reverse",
                     )}
                 >
                     {definition.showHandleIcon && definition.icon &&
