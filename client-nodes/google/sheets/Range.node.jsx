@@ -1,9 +1,11 @@
 import { useEffect } from "react"
-import { BoxAlignTopLeft, FileSpreadsheet, Link, Numbers } from "tabler-icons-react"
+import { BoxAlignTopLeft, Numbers } from "tabler-icons-react"
 import B from "../../components/B"
 import TextControl from "../../components/TextControl"
 import { useInputValue, useInternalState } from "../../hooks/nodes"
-import { SheetNameControl, SheetNameTooltip, SheetsIcon, SpreadsheetURLControl, SpreadsheetURLTooltip, useGoogleSheetNode } from "./shared"
+import { useGoogleSheetNode } from "./shared/hooks"
+import { SheetNameInput, SpreadsheetURLInput } from "./shared/inputs"
+import { SheetsIcon } from "./shared/misc"
 
 
 /** 
@@ -19,26 +21,8 @@ export default {
     tags: ["Google Sheets"],
 
     inputs: [
-        {
-            id: "$spreadsheetUrl",
-            name: "Spreadsheet URL",
-            description: "The URL of the spreadsheet you want to get data from.",
-            tooltip: SpreadsheetURLTooltip,
-            icon: Link,
-            allowedModes: ["handle", "config"],
-            defaultMode: "config",
-            renderConfiguration: SpreadsheetURLControl,
-        },
-        {
-            id: "$sheetName",
-            name: "Sheet Name",
-            description: "The name of the sheet you want to get data from.",
-            tooltip: SheetNameTooltip,
-            icon: FileSpreadsheet,
-            allowedModes: ["handle", "config"],
-            defaultMode: "config",
-            renderConfiguration: SheetNameControl,
-        },
+        SpreadsheetURLInput,
+        SheetNameInput,
         {
             id: "$range",
             description: "The range of cells you want to get data from.",
