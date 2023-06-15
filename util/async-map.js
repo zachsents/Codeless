@@ -4,8 +4,9 @@
  * Maps an array to a Promise and returns the result
  *
  * @export
- * @param {any[]} array
- * @param {Function} callback
+ * @template T
+ * @param {Array<T>} array
+ * @param {(element: T, index: number, array: Array<T>) => Promise} callback
  */
 export function asyncMap(array, callback) {
     return Promise.all(array.map(callback))
@@ -17,8 +18,8 @@ export function asyncMap(array, callback) {
  * any falsy values removed.
  *
  * @export
- * @param {any[]} array
- * @param {Function} callback
+ * @param {Array<T>} array
+ * @param {(element: T, index: number, array: Array<T>) => Promise} callback
  */
 export function asyncMapFilterBlanks(array, callback) {
     return Promise.all(array.map(callback))
