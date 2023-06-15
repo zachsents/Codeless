@@ -21,6 +21,7 @@
         "@mantine/nprogress": "^6.0.6",
         "@minus/client-nodes": "workspace:*",
         "@minus/util": "workspace:*",
+        "@minus/ui": "workspace:*",
         "@minus/client-sdk": "workspace:*",
         "@monaco-editor/react": "^4.5.1",
         "embla-carousel-react": "^7.0.5",

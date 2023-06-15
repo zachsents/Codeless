@@ -7,7 +7,7 @@ const nextConfig = {
         unoptimized: true,
     },
     productionBrowserSourceMaps: true,
-    transpilePackages: ["@minus/client-nodes"],
+    transpilePackages: ["@minus/client-nodes", "@minus/ui"],
     // async redirects() {
     //     return [
     //         {

@@ -45,6 +45,7 @@ importers:
       '@mantine/modals': ^6.0.6
       '@mantine/notifications': ^6.0.6
       '@minus/client-sdk': workspace:*
+      '@minus/ui': workspace:*
       '@minus/util': workspace:*
       eslint-plugin-react: ^7.32.2
       firebase: ^9.17.1
@@ -70,6 +71,7 @@ importers:
       '@mantine/modals': 6.0.6_feqrfkte3oaz5jjghkdwfk53i4
       '@mantine/notifications': 6.0.6_feqrfkte3oaz5jjghkdwfk53i4
       '@minus/client-sdk': link:../client-sdk
+      '@minus/ui': link:../ui
       '@minus/util': link:../util
       firebase: 9.17.1
       framer-motion: 7.10.3_biqbaboplfbrettd7655fr4n2y
@@ -231,6 +233,18 @@ importers:
       node-fetch: 3.3.0
       openai: 3.2.0
 
+  ui:
+    specifiers:
+      '@mantine/core': ^6.0.6
+      '@mantine/hooks': ^6.0.6
+      react: ^18.2.0
+      react-icons: ^4.9.0
+    dependencies:
+      '@mantine/core': 6.0.6_tjs6jx7whoqyta3fgicriqgbjy
+      '@mantine/hooks': 6.0.6_react@18.2.0
+      react: 18.2.0
+      react-icons: 4.9.0_react@18.2.0
+
   util:
     specifiers:
       lodash: ^4.17.21
@@ -251,6 +265,7 @@ importers:
       '@mantine/nprogress': ^6.0.6
       '@minus/client-nodes': workspace:*
       '@minus/client-sdk': workspace:*
+      '@minus/ui': workspace:*
       '@minus/util': workspace:*
       '@monaco-editor/react': ^4.5.1
       autoprefixer: ^10.4.14
@@ -287,6 +302,7 @@ importers:
       '@mantine/nprogress': 6.0.6_feqrfkte3oaz5jjghkdwfk53i4
       '@minus/client-nodes': link:../client-nodes
       '@minus/client-sdk': link:../client-sdk
+      '@minus/ui': link:../ui
       '@minus/util': link:../util
       '@monaco-editor/react': 4.5.1_gesakegkf6ivhdtrwoiybdd3ni
       embla-carousel-react: 7.0.9_react@18.2.0
@@ -8949,6 +8965,14 @@ packages:
 
   /react-icons/4.8.0_react@18.2.0:
     resolution: {integrity: sha512-N6+kOLcihDiAnj5Czu637waJqSnwlMNROzVZMhfX68V/9bu9qHaMIJC4UdozWoOk57gahFCNHwVvWzm0MTzRjg==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /react-icons/4.9.0_react@18.2.0:
+    resolution: {integrity: sha512-ijUnFr//ycebOqujtqtV9PFS7JjhWg0QU6ykURVHuL4cbofvRCf3f6GMn9+fBktEFQOIVZnuAYLZdiyadRQRFg==}
     peerDependencies:
       react: '*'
     dependencies:

@@ -1,0 +1,18 @@
+{
+    "name": "@minus/ui",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@mantine/core": "^6.0.6",
+        "@mantine/hooks": "^6.0.6",
+        "react": "^18.2.0",
+        "react-icons": "^4.9.0"
+    }
+}
