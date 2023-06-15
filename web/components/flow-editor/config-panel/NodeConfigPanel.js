@@ -83,6 +83,7 @@ function NodeConfigPanelInternal({ id }) {
                     }}
                     value={accordionState}
                     onChange={setAccordionState}
+                    transitionDuration={0}
                 >
 
                     <AnimAccordionItem
