@@ -1,24 +1,24 @@
-import { ClipboardData } from "tabler-icons-react"
+import { ClipboardData, ListCheck } from "tabler-icons-react"
 import InferControl from "../../components/InferControl"
-import { RowsInput } from "./shared/inputs"
+import { SheetInput } from "./shared/inputs"
 import { SheetsIcon } from "./shared/misc"
 
 
 export default {
-    id: "googlesheets:UpdateRows",
-    name: "Update Row(s)",
-    description: "Updates rows in a Google Sheet.",
+    id: "googlesheets:AddRows",
+    name: "Add Row(s)",
+    description: "Adds rows to a Google Sheet.",
     icon: SheetsIcon,
     color: "green",
 
     tags: ["Google Sheets", "Tables", "Database"],
 
     inputs: [
-        RowsInput("The rows to update."),
+        SheetInput,
         {
             id: "data",
-            description: "The data to update the row with.",
-            tooltip: "The data to update the row with.",
+            description: "The data to add to the rows.",
+            tooltip: "The data to add to the rows.",
             icon: ClipboardData,
             listMode: "named",
             defaultList: 1,
@@ -27,6 +27,15 @@ export default {
             renderConfiguration: props => <InferControl {...props} inputProps={{
                 placeholder: "Cell Value",
             }} />,
+        },
+    ],
+    outputs: [
+        {
+            id: "addedRows",
+            description: "The rows that were added.",
+            tooltip: "The rows that were added.",
+            icon: ListCheck,
+            defaultShowing: false,
         },
     ],
 }

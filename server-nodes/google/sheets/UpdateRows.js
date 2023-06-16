@@ -12,6 +12,7 @@ export default {
      * 
      * @param {object} inputs
      * @param {import("google-spreadsheet").GoogleSpreadsheetRow[]} inputs.rows
+     * @param {Object.<string, any[]>} inputs.data
      */
     async onInputsReady({ rows, data }) {
 
