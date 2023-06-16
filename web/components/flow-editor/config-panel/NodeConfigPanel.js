@@ -27,16 +27,21 @@ const DELAY = 0.05
 export default function NodeConfigPanel() {
 
     const selectedNode = useCurrentlySelectedNode()
+    const [accordionState, setAccordionState] = useState(["inputs", "outputs"])
 
     return (
         <AnimatePresence>
-            {selectedNode?.id && <NodeConfigPanelInternal id={selectedNode.id} />}
+            {selectedNode?.id &&
+                <NodeConfigPanelInternal
+                    id={selectedNode.id}
+                    {...{ accordionState, setAccordionState }}
+                />}
         </AnimatePresence>
     )
 }
 
 
-function NodeConfigPanelInternal({ id }) {
+function NodeConfigPanelInternal({ id, accordionState, setAccordionState }) {
 
     const { app } = useAppContext()
     const displayProps = useNodeDisplayProps(id)
@@ -46,7 +51,6 @@ function NodeConfigPanelInternal({ id }) {
 
     // Accordion state
     const defaultAccordionState = (needsAccounts && missingSelections) ? ["inputs", "integrations"] : ["inputs", "outputs"]
-    const [accordionState, setAccordionState] = useState(defaultAccordionState)
 
     // Side-effect: Open the Integrations tab if there are missing selections
     useEffect(() => {
