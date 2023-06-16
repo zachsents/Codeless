@@ -11,7 +11,7 @@ export default {
      * Not scalable!!!
      * 
      * @param {object} inputs
-     * @param {import("google-spreadsheet").GoogleSpreadsheetRow[]} inputs.rows
+     * @param {import("./shared.js").GoogleSpreadsheetCellRow[]} inputs.rows
      */
     async onInputsReady({ rows }) {
 

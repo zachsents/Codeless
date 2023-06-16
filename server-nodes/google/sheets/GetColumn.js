@@ -1,6 +1,6 @@
-import { GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
-import { MAX_ROWS, trimEmptyValues } from "./shared.js"
+import { GoogleSpreadsheetWorksheet } from "google-spreadsheet"
 import { letterToColumn } from "google-spreadsheet/lib/utils.js"
+import { GoogleSpreadsheetCellRow, MAX_ROWS, trimEmptyValues } from "./shared.js"
 
 
 export default {
@@ -10,7 +10,7 @@ export default {
 
     /**
      * @param {object} inputs
-     * @param {GoogleSpreadsheetRow[] | [GoogleSpreadsheetWorksheet]} inputs.rowsOrSheet
+     * @param {GoogleSpreadsheetCellRow[] | [GoogleSpreadsheetWorksheet]} inputs.rowsOrSheet
      * @param {string} inputs.$column
      */
     async onInputsReady({ rowsOrSheet, $column }) {
@@ -23,8 +23,9 @@ export default {
             return
 
         // If this is an array of rows...
-        if (rowsOrSheet.every(row => row instanceof GoogleSpreadsheetRow)) {
+        if (rowsOrSheet.every(row => row instanceof GoogleSpreadsheetCellRow)) {
 
+            /** @type {GoogleSpreadsheetCellRow[]} */
             const rows = rowsOrSheet
 
             // Figure out column name
@@ -43,7 +44,7 @@ export default {
                 throw new Error(`Column "${$column}" not found`)
 
             return this.publish({
-                values: rowsOrSheet.map(row => row[columnName]),
+                values: rows.map(row => row.data[columnName].value),
             })
         }
 

@@ -1,4 +1,4 @@
-import { asyncMap } from "@minus/util"
+import { GoogleSpreadsheetCellRow } from "./shared.js"
 
 
 export default {
@@ -16,25 +16,8 @@ export default {
         // Validate
         if (!$sheet) throw new Error("Must provide a Google Sheet")
 
-        // Get rows
-        const row = await asyncMap(index, async i => {
-
-            if (i < $sheet._headerRowIndex)
-                throw new Error(`Can't get row ${i} because it's before the header row`)
-
-            // If this is the header row, return the header row
-            if (i == $sheet._headerRowIndex)
-                return $sheet.headerValues
-
-            // Otherwise, return the row
-            const result = await $sheet.getRows({
-                offset: i - $sheet._headerRowIndex - 1,
-                limit: 1,
-            })
-
-            return result[0]
+        this.publish({
+            row: await GoogleSpreadsheetCellRow.fromRowIndexes($sheet, index)
         })
-
-        this.publish({ row })
     }
 }

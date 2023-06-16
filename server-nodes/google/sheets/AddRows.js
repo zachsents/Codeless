@@ -1,5 +1,5 @@
 import { unzipObject } from "../../arrayUtilities.js"
-import "./shared.js"
+import { GoogleSpreadsheetCellRow } from "./shared.js"
 
 
 export default {
@@ -20,6 +20,9 @@ export default {
         // Add rows
         const addedRows = await $sheet.addRows(unzipObject(data))
 
-        this.publish({ addedRows })
+        // Convert to CellRows
+        this.publish({
+            addedRows: await GoogleSpreadsheetCellRow.fromRows(addedRows),
+        })
     },
 }

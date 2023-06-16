@@ -12,7 +12,7 @@ export default {
      * Not scalable!!!
      * 
      * @param {object} inputs
-     * @param {import("google-spreadsheet").GoogleSpreadsheetRow[]} inputs.rows
+     * @param {import("./shared.js").GoogleSpreadsheetCellRow[]} inputs.rows
      * @param {Object.<string, any[]>} inputs.data
      */
     async onInputsReady({ rows, data }) {
@@ -21,22 +21,15 @@ export default {
         if (!rows.length)
             return
 
-        // Map rows to update objects
-        const updates = safeMap((row, data) => ({
-            values: [row._sheet.headerValues.map(header => data[header])],
-            range: row.a1Range,
-            majorDimension: "ROWS",
-        }), rows, unzipObject(data))
+        // Update each row
+        safeMap((row, data) => {
+            Object.entries(data).forEach(([header, value]) => {
+                if (row.data[header])
+                    row.data[header].value = value
+            })
+        }, rows, unzipObject(data))
 
-        // Set up request body
-        const requestBody = {
-            valueInputOption: "USER_ENTERED",
-            includeValuesInResponse: false,
-            responseValueRenderOption: "UNFORMATTED_VALUE",
-            data: updates,
-        }
-
-        // Make request
-        await rows[0]._sheet._spreadsheet.axios.post("/values:batchUpdate", requestBody)
+        // Save updates
+        await rows[0]._sheet.saveUpdatedCells()
     },
 }

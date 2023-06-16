@@ -1,3 +1,5 @@
+import "./shared.js"
+
 
 export default {
     id: "googlesheets:GetCell",

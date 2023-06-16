@@ -1,4 +1,4 @@
-import { MAX_ROWS } from "./shared.js"
+import { GoogleSpreadsheetCellRow, MAX_ROWS } from "./shared.js"
 
 
 export default {
@@ -16,9 +16,9 @@ export default {
         if (!$sheet) throw new Error("Must provide a Google Sheet")
 
         this.publish({
-            rows: await $sheet.getRows({
+            rows: await GoogleSpreadsheetCellRow.fromRows(await $sheet.getRows({
                 limit: MAX_ROWS,
-            }),
+            })),
         })
     },
 }

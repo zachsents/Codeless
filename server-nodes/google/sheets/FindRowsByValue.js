@@ -1,4 +1,4 @@
-import { MAX_ROWS } from "./shared.js"
+import { GoogleSpreadsheetCellRow, MAX_ROWS } from "./shared.js"
 
 
 export default {
@@ -26,6 +26,8 @@ export default {
         // Filter rows
         const filteredRows = rows.filter(row => row[$column] == $value)
 
-        this.publish({ rows: filteredRows })
+        this.publish({
+            rows: await GoogleSpreadsheetCellRow.fromRows(filteredRows),
+        })
     }
 }

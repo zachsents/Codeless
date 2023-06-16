@@ -1,4 +1,6 @@
 import { safeMap } from "../../arrayUtilities.js"
+import "./shared.js"
+
 
 export default {
     id: "googlesheets:SetCell",
