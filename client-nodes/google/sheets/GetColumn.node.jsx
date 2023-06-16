@@ -1,6 +1,7 @@
 import { ClipboardData, Columns, List } from "tabler-icons-react"
 import { InputMode, useInputMode, useInputValue } from "../../hooks/nodes"
 import { SheetsIcon } from "./shared/misc"
+import InferControl from "../../components/InferControl"
 
 
 export default {
@@ -22,16 +23,18 @@ export default {
         },
         {
             id: "$column",
-            description: "The column to get.",
-            tooltip: "The column to get.",
+            description: 'The column to get. Either a column name from a column header ("First Name", "Last Name", etc.), a column letter ("A", "B", "AA", etc.), or a column index (1, 2, 27, etc.).',
+            tooltip: 'The column to get. Either a column name from a column header ("First Name", "Last Name", etc.), a column letter ("A", "B", "AA", etc.), or a column index (1, 2, 27, etc.).',
             icon: Columns,
             allowedModes: ["handle", "config"],
             defaultMode: "config",
+            renderConfiguration: InferControl,
         },
     ],
     outputs: [
         {
             id: "values",
+            name: "Value(s)",
             description: "The values in the column.",
             tooltip: "The values in the column.",
             icon: ClipboardData,

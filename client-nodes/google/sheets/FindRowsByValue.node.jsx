@@ -20,6 +20,7 @@ export default {
         SheetInput,
         {
             id: "$column",
+            name: "Column Name",
             description: "The column to look in.",
             tooltip: "The column to look in.",
             icon: Columns,

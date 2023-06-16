@@ -1,5 +1,6 @@
 import { GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from "google-spreadsheet"
 import { MAX_ROWS, trimEmptyValues } from "./shared.js"
+import { letterToColumn } from "google-spreadsheet/lib/utils.js"
 
 
 export default {
@@ -17,21 +18,54 @@ export default {
         // Validate
         if (!$column) throw new Error("Must provide a column")
 
+        // Skip empty arrays
+        if (rowsOrSheet.length === 0)
+            return
+
         // If this is an array of rows...
-        if (rowsOrSheet.every(row => row instanceof GoogleSpreadsheetRow))
+        if (rowsOrSheet.every(row => row instanceof GoogleSpreadsheetRow)) {
+
+            const rows = rowsOrSheet
+
+            // Figure out column name
+            let columnName
+            const isHeaderName = rows[0]._sheet.headerValues.includes($column)
+            const isColumnLetter = typeof $column === "string" && $column.match(/[A-Z]+/)
+            const isColumnIndex = typeof $column === "number"
+
+            if (isHeaderName)
+                columnName = $column
+            else if (isColumnLetter)
+                columnName = rows[0]._sheet.headerValues[letterToColumn($column) - 1] // 1-based index
+            else if (isColumnIndex)
+                columnName = rows[0]._sheet.headerValues[$column - 1] // 1-based index
+            else
+                throw new Error(`Column "${$column}" not found`)
+
             return this.publish({
-                values: rowsOrSheet.map(row => row[$column]),
+                values: rowsOrSheet.map(row => row[columnName]),
             })
+        }
 
         // If this is a single sheet...
         if (rowsOrSheet[0] instanceof GoogleSpreadsheetWorksheet) {
 
             const sheet = rowsOrSheet[0]
 
-            // Find index of column
-            const columnIndex = sheet.headerValues.indexOf($column)
-            if (columnIndex === -1)
-                throw new Error(`Column "${$column}" not found in sheet "${sheet.title}"`)
+            // Figure out column index
+            let columnIndex
+            const isHeaderName = sheet.headerValues.includes($column)
+            const isColumnLetter = typeof $column === "string" && $column.match(/[A-Z]+/)
+            const isColumnIndex = typeof $column === "number"
+
+            if (isHeaderName)
+                columnIndex = sheet.headerValues.indexOf($column)
+            else if (isColumnLetter)
+                columnIndex = letterToColumn($column) - 1 // 1-based index
+            else if (isColumnIndex)
+                columnIndex = $column - 1 // 1-based index
+            else
+                throw new Error(`Column "${$column}" not found`)
 
             // Load in values
             const startRowIndex = sheet._headerRowIndex

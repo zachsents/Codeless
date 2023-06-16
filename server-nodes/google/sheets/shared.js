@@ -37,3 +37,4 @@ export function trimEmptyValues(values) {
         newArr.pop()
     return newArr
 }
+
