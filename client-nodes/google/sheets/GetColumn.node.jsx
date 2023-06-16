@@ -1,4 +1,5 @@
 import { ClipboardData, Columns, List } from "tabler-icons-react"
+import { InputMode, useInputMode, useInputValue } from "../../hooks/nodes"
 import { SheetsIcon } from "./shared/misc"
 
 
@@ -36,4 +37,11 @@ export default {
             icon: ClipboardData,
         },
     ],
+
+    renderName: () => {
+        const [column] = useInputValue(null, "$column")
+        const [columnMode] = useInputMode(null, "$column")
+
+        return `Get Column${columnMode == InputMode.Config && column ? ` "${column}"` : ""}`
+    },
 }
