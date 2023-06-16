@@ -304,10 +304,11 @@ function RunInputsPanel() {
     const nodeId = useNodeId()
     const typeDefinition = useTypeDefinition()
 
-    return <DataTable
-        data={run?.inputs?.[nodeId] ?? {}}
-        definitions={Object.fromEntries(typeDefinition.inputs.map(input => [input.id, input]))}
-    />
+    return typeDefinition &&
+        <DataTable
+            data={run?.inputs?.[nodeId] ?? {}}
+            definitions={Object.fromEntries(typeDefinition.inputs.map(input => [input.id, input]))}
+        />
 }
 
 
@@ -317,10 +318,11 @@ function RunOutputsPanel() {
     const nodeId = useNodeId()
     const typeDefinition = useTypeDefinition()
 
-    return <DataTable
-        data={run?.outputs?.[nodeId] ?? {}}
-        definitions={Object.fromEntries(typeDefinition.outputs.map(output => [output.id, output]))}
-    />
+    return typeDefinition &&
+        <DataTable
+            data={run?.outputs?.[nodeId] ?? {}}
+            definitions={Object.fromEntries(typeDefinition.outputs.map(output => [output.id, output]))}
+        />
 }
 
 
