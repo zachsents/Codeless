@@ -6,7 +6,7 @@ import { SheetsIcon } from "./shared/misc"
 
 export default {
     id: "googlesheets:UpdateRows",
-    name: "Update Rows",
+    name: "Update Row(s)",
     description: "Updates rows in a Google Sheet.",
     icon: SheetsIcon,
     color: "green",

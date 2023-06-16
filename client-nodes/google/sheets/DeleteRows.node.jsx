@@ -4,7 +4,7 @@ import { SheetsIcon } from "./shared/misc"
 
 export default {
     id: "googlesheets:DeleteRows",
-    name: "Delete Rows",
+    name: "Delete Row(s)",
     description: "Deletes the Google Sheets rows.",
     icon: SheetsIcon,
     color: "green",
