@@ -1,6 +1,6 @@
 import { SheetNameControl, SpreadsheetURLControl } from "./controls"
 import { Center, Image, Text } from "@mantine/core"
-import { FileSpreadsheet, Link, Table } from "tabler-icons-react"
+import { FileSpreadsheet, Link, List, Table } from "tabler-icons-react"
 
 
 export const SpreadsheetURLInput = {
@@ -50,3 +50,11 @@ export const SheetInput = {
     tooltip: "The Google Sheet. Use the Load Sheet node to load a sheet.",
     icon: Table,
 }
+
+
+export const RowsInput = (description, tooltip) => ({
+    id: "rows",
+    description,
+    tooltip: tooltip ?? description,
+    icon: List,
+})

@@ -1,4 +1,4 @@
-import { List } from "tabler-icons-react"
+import { RowsInput } from "./shared/inputs"
 import { SheetsIcon } from "./shared/misc"
 
 
@@ -11,12 +11,5 @@ export default {
 
     tags: ["Google Sheets", "Tables", "Database"],
 
-    inputs: [
-        {
-            id: "rows",
-            description: "The rows.",
-            tooltip: "The rows.",
-            icon: List,
-        },
-    ],
+    inputs: [RowsInput("The rows to delete.")],
 }
