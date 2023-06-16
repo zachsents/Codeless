@@ -28,5 +28,10 @@ export default {
 
         // Save updates
         await rows[0]._sheet.saveUpdatedCells()
+
+        // Publish updated rows
+        this.publish({
+            updatedRows: rows,
+        })
     },
 }

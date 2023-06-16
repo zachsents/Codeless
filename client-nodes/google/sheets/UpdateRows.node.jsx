@@ -1,4 +1,4 @@
-import { ClipboardData } from "tabler-icons-react"
+import { ClipboardData, ListCheck } from "tabler-icons-react"
 import InferControl from "../../components/InferControl"
 import { RowsInput } from "./shared/inputs"
 import { SheetsIcon } from "./shared/misc"
@@ -27,6 +27,15 @@ export default {
             renderConfiguration: props => <InferControl {...props} inputProps={{
                 placeholder: "Cell Value",
             }} />,
+        },
+    ],
+    outputs: [
+        {
+            id: "updatedRows",
+            description: "The rows that were updated.",
+            tooltip: "The rows that were updated.",
+            icon: ListCheck,
+            defaultShowing: false,
         },
     ],
 }
