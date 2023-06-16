@@ -1,3 +1,4 @@
+import "./shared.js"
 
 
 const compareFns = {
