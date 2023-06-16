@@ -30,6 +30,10 @@ export default {
             }
         }))
 
+        // Sort requests by row index descending - this makes sure things get deleted
+        // in the right order
+        requests.sort((a, b) => b.deleteDimension.range.startIndex - a.deleteDimension.range.startIndex)
+
         // Make request
         await rows[0]._sheet._spreadsheet._makeBatchUpdateRequest(requests)
     },
