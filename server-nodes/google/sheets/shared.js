@@ -29,3 +29,11 @@ GoogleSpreadsheetWorksheet.prototype.getCellsInRange = async function (a1Range, 
 }
 
 export const MAX_ROWS = 3000
+
+
+export function trimEmptyValues(values) {
+    const newArr = [...values]
+    while (newArr.at(-1) == null)
+        newArr.pop()
+    return newArr
+}
