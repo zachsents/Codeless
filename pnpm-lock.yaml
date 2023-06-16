@@ -189,7 +189,7 @@ importers:
       firebase-admin: ^11.5.0
       firebase-functions: ^4.4.0
       googleapis: ^111.0.0
-      mimetext: ^2.1.1
+      mimetext: ^3.0.13
       nanoid: ^4.0.1
       node-fetch: ^3.3.0
       openai: ^3.1.0
@@ -201,7 +201,7 @@ importers:
       firebase-admin: 11.5.0
       firebase-functions: 4.4.0_firebase-admin@11.5.0
       googleapis: 111.0.0
-      mimetext: 2.1.1
+      mimetext: 3.0.13
       nanoid: 4.0.1
       node-fetch: 3.3.0
       openai: 3.2.0
@@ -2508,6 +2508,18 @@ packages:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
     optional: true
+
+  /@tsconfig/esm/1.0.3:
+    resolution: {integrity: sha512-Gp56rIc3R8ab032nXMUitmc7YIb4nAi8DQ6Qt47tuL0Ssn9LIOm+o2FQmqPu3jX4z0TsqgzWwkmVygxcq+yHYg==}
+    dev: false
+
+  /@tsconfig/node18/2.0.1:
+    resolution: {integrity: sha512-UqdfvuJK0SArA2CxhKWwwAWfnVSXiYe63bVpMutc27vpngCntGUZQETO24pEJ46zU6XM+7SpqYoMgcO3bM11Ew==}
+    dev: false
+
+  /@tsconfig/strictest/2.0.1:
+    resolution: {integrity: sha512-7JHHCbyCsGUxLd0pDbp24yz3zjxw2t673W5oAP6HCEdr/UUhaRhYd3SSnUsGCk+VnPVJVA4mXROzbhI+nyIk+w==}
+    dev: false
 
   /@types/aria-query/5.0.1:
     resolution: {integrity: sha512-XTIieEY+gvJ39ChLcB4If5zHtPxt3Syj5rgZR+e1ctpmK8NjPf0zFqsz4JpLJT0xla9GFDKjy8Cpu331nrmE1Q==}
@@ -7272,6 +7284,10 @@ packages:
     resolution: {integrity: sha512-v6BN7fuPVfG9XIxcPT2jzyAg5EmA/mtNeJEXJ7d31Wz7fFOqOZeN8mPtNJYQmnuAIxJII7EcURcbZ7qXs9a4kA==}
     dev: false
 
+  /js-base64/3.7.5:
+    resolution: {integrity: sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==}
+    dev: false
+
   /js-sdsl/4.4.0:
     resolution: {integrity: sha512-FfVSdx6pJ41Oa+CF7RDaFmTnCaFhua+SNYQX74riGOpl96x+2jQCqEfQ2bnXu/5DPCqlRuiqyvTJM0Qjz26IVg==}
 
@@ -7838,11 +7854,17 @@ packages:
     dev: false
     optional: true
 
-  /mimetext/2.1.1:
-    resolution: {integrity: sha512-B5NpXeZ6LOOJclD31KQKAECaEijPt/J666uEh04FQKHB4sbKt7sVV6ZVgp+5B7ykkcBGSMf97jIWQWuNMXUGnA==}
+  /mimetext/3.0.13:
+    resolution: {integrity: sha512-QZng4L+DFgwTv1BkKnRetmI6dCEvcy6Ab6i2iS9Du+ZejzUE9v2XoluOS9nv0REVEFiCIHi5dcFiNMEDGjNYDw==}
     dependencies:
       '@babel/runtime': 7.21.0
       '@babel/runtime-corejs3': 7.21.0
+      '@tsconfig/esm': 1.0.3
+      '@tsconfig/node18': 2.0.1
+      '@tsconfig/strictest': 2.0.1
+      '@types/node': 20.2.3
+      js-base64: 3.7.5
+      mime-types: 2.1.35
     dev: false
 
   /mimic-fn/2.1.0:

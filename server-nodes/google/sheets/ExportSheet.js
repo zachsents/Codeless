@@ -17,33 +17,32 @@ export default {
         if (!$sheet) throw new Error("Must provide a Google Sheet")
 
         // Create blob
-        let blob
+        let file
         switch ($format) {
             case "csv":
-                blob = new Blob([await $sheet.downloadAsCSV()], { type: "text/csv" })
+                file = new File(`${$sheet.title}.csv`, "text/csv", await $sheet.downloadAsCSV())
                 break
             case "pdf":
-                blob = new Blob([await $sheet.downloadAsPDF()], { type: "application/pdf" })
+                file = new File(`${$sheet.title}.pdf`, "application/pdf", await $sheet.downloadAsPDF())
                 break
             case "tsv":
-                blob = new Blob([await $sheet.downloadAsTSV()], { type: "text/tab-separated-values" })
+                file = new File(`${$sheet.title}.tsv`, "text/tab-separated-values", await $sheet.downloadAsTSV())
                 break
         }
 
-        this.publish({
-            file: new File(`${$sheet.title}.${$format}`, blob)
-        })
+        this.publish({ file })
     },
 }
 
 
 class File {
-    constructor(name, blob) {
-        this.name = name
-        this.blob = blob
+    constructor(name, contentType, data) {
+        this.filename = name
+        this.contentType = contentType
+        this.data = data
     }
 
     toString() {
-        return this.name
+        return this.filename
     }
 }

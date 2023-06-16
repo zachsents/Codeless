@@ -1,5 +1,5 @@
 import { LineDotted, Mail, User, Users } from "tabler-icons-react"
-import { HTMLBodyInput, PlainTextBodyInput } from "./shared"
+import { AttachmentInput, HTMLBodyInput, PlainTextBodyInput } from "./shared"
 
 
 export default {
@@ -39,6 +39,7 @@ export default {
         },
         PlainTextBodyInput,
         HTMLBodyInput,
+        AttachmentInput,
     ],
     outputs: [],
 

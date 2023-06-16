@@ -60,9 +60,10 @@ export async function unwatchInbox(gmail, { flow }) {
  * @param {string} [params.plainText]
  * @param {string} [params.html]
  * @param {string[][]} [params.headers]
+ * @param {{ filename: string, contentType: string, data: string | Buffer }} [params.attachments]
  * @param {object} [requestBody]
  */
-export async function sendEmail(gmail, { to, cc, subject, plainText, html, headers = [] } = {}, requestBody = {}) {
+export async function sendEmail(gmail, { to, cc, subject, plainText, html, headers = [], attachments = [] } = {}, requestBody = {}) {
 
     // get sender email address
     const { data: { emailAddress: senderEmailAddress } } = await gmail.users.getProfile({
@@ -79,12 +80,23 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
     cc && msg.setCc(cc)
 
     // add content
-    plainText && msg.setMessage("text/plain", plainText)
-    html && msg.setMessage("text/html", html)
+    plainText && msg.addMessage({
+        contentType: "text/plain",
+        data: plainText,
+    })
+    html && msg.setMessage({
+        contentType: "text/html",
+        data: html,
+    })
 
     // add headers
     msg.setHeader("X-Triggered-By", "Minus")
     headers.forEach(([name, value]) => msg.setHeader(name, value))
+
+    // add attachments
+    attachments.forEach(attachment => {
+        msg.addAttachment(attachment)
+    })
 
     // encode message
     const encodedMessage = Buffer.from(msg.asRaw()).toString("base64url")
