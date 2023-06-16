@@ -7,9 +7,6 @@ export default {
     inputs: ["rows"],
 
     /**
-     * Can't use the GoogleSpreadsheetRow.delete method because it doesn't do batches.
-     * Not scalable!!!
-     * 
      * @param {object} inputs
      * @param {import("./shared.js").GoogleSpreadsheetCellRow[]} inputs.rows
      */
