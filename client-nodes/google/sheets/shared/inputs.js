@@ -54,6 +54,7 @@ export const SheetInput = {
 
 export const RowsInput = (description, tooltip) => ({
     id: "rows",
+    name: "Row(s)",
     description,
     tooltip: tooltip ?? description,
     icon: List,
