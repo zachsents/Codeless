@@ -14,7 +14,8 @@ export default {
 
     /**
      * @param {object} inputs
-     * @param {import("@minus/server-lib").sheets.Sheet} inputs.$sheet
+     * @param {string} inputs.$sheetName
+     * @param {number} inputs.$headerRow
      */
     async onInputsReady({ $sheetName, $headerRow }) {
 

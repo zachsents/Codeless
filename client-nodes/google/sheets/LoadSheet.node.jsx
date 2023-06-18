@@ -3,7 +3,7 @@ import ErrorText from "../../components/ErrorText"
 import NodeBodyTable from "../../components/NodeBodyTable"
 import NumberControl from "../../components/NumberControl"
 import { useInputValue, useInternalState } from "../../hooks/nodes"
-import { useGoogleSheetNode } from "./shared/hooks"
+import { useSpreadsheetDetailsInNode, useSpreadsheetURL } from "./shared/hooks"
 import { SheetNameInput, SpreadsheetURLInput } from "./shared/inputs"
 import { SheetsIcon } from "./shared/misc"
 
@@ -26,9 +26,9 @@ export default {
         {
             id: "$headerRow",
             type: "number",
-            description: "The row of the table which contains the headers (column names) for the table. Headers are required.",
+            description: "The row of the table which contains the headers (column names) for the table. Headers are required for row operations.",
             tooltip: <>
-                The row of the table which contains the headers (column names) for the table. <br /> <b>Headers are required.</b>
+                The row of the table which contains the headers (column names) for the table. <br /> <b>Headers are required for row operations.</b>
             </>,
             icon: BoxAlignTop,
             allowedModes: ["handle", "config"],
@@ -65,7 +65,10 @@ export default {
 
     requiredIntegrations: ["google"],
 
-    useNodePresent: useGoogleSheetNode,
+    useNodePresent: props => {
+        useSpreadsheetURL()
+        useSpreadsheetDetailsInNode(props)
+    },
 
     renderContent: () => {
         const [state] = useInternalState()

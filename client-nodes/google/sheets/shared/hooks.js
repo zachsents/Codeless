@@ -6,9 +6,8 @@ import { SHEETS_URL_REGEX } from "./misc"
 import { SpreadsheetURLInput } from "./inputs"
 
 
-export function useGoogleSheetNode({ integrationsSatisfied }) {
-
-    const [state, setState] = useInternalState()
+export function useSpreadsheetURL() {
+    const [, setState] = useInternalState()
     const [spreadsheetUrl] = useInputValue(null, SpreadsheetURLInput.id)
 
     // Extract Spreadsheet ID when Spreadsheet URL changes
@@ -16,6 +15,21 @@ export function useGoogleSheetNode({ integrationsSatisfied }) {
         const [, spreadsheetId] = spreadsheetUrl?.match(SHEETS_URL_REGEX) ?? []
         setState({ spreadsheetId })
     }, [spreadsheetUrl])
+}
+
+
+/**
+ * Hook that gets spreadsheet details from the backend. This hook assumes
+ * that the node state contains the `spreadsheetId` property. Use useSpreadsheetURL
+ * to extract the spreadsheet ID from the URL.
+ *
+ * @param {object} options
+ * @param {boolean} options.integrationsSatisfied
+ * @export
+ */
+export function useSpreadsheetDetailsInNode({ integrationsSatisfied }) {
+
+    const [state, setState] = useInternalState()
 
     // Fetch spreadsheet details
     const accountId = useSelectedIntegrationAccount(null, "google")

@@ -2,6 +2,7 @@ import { ClipboardData, Columns, List } from "tabler-icons-react"
 import { InputMode, useInputMode, useInputValue } from "../../hooks/nodes"
 import { SheetsIcon } from "./shared/misc"
 import InferControl from "../../components/InferControl"
+import ErrorText from "../../components/ErrorText"
 
 
 export default {
@@ -46,5 +47,12 @@ export default {
         const [columnMode] = useInputMode(null, "$column")
 
         return `Get Column${columnMode == InputMode.Config && column ? ` "${column}"` : ""}`
+    },
+
+    renderContent: () => {
+        const [column] = useInputValue(null, "$column")
+        const [columnMode] = useInputMode(null, "$column")
+
+        if (columnMode == InputMode.Config && !column) return <ErrorText>No column provided</ErrorText>
     },
 }
