@@ -57,6 +57,7 @@ import { useTypeDefinition } from "./hooks/nodes"
  * multiple handles with no names. If "named", the input will have multiple handles with names.
  * @property {number | Object[]} [defaultList] Default list of items for the input. If a number is provided, the input will have that many unnamed handles. An ID will be added to each item.
  * @property {string} listNamePlaceholder Placeholder text for the list item name input.
+ * @property {string} listNameLabel Label for the list item.
  * @property {React.ReactNode} [tooltip] Tooltip that is displayed when the user hovers over the input's info icon.
  * @property {boolean} showHandleIcon If true, the handle icon will be displayed.
  * @property {React.ComponentType} icon Try to use a Tabler icon if applicable.
@@ -98,6 +99,7 @@ export const DefaultInput = {
     listMode: false,
     defaultList: [],
     listNamePlaceholder: "Name",
+    listNameLabel: "Item",
     showHandleIcon: true,
     required: false,
     allowedModes: ["handle"],

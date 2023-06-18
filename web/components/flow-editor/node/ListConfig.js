@@ -97,7 +97,7 @@ function Item({ handleId, item, i }) {
                             />
                         </Grid.Col> :
                         <Grid.Col span="auto">
-                            <Text>Item {i + 1}</Text>
+                            <Text>{definition.listNameLabel} {i + 1}</Text>
                         </Grid.Col>}
 
                     <Grid.Col span="content">
