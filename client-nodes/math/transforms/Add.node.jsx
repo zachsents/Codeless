@@ -16,6 +16,7 @@ export default {
             tooltip: "The inputs to add together. Lists are computed element-wise.",
             icon: ArrowNarrowRight,
             listMode: "unnamed",
+            listNameLabel: "Operand",
             defaultList: 2,
         }
     ],
