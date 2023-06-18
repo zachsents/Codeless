@@ -1,13 +1,12 @@
-import { FcGoogle } from "react-icons/fc"
-import { BrandGmail } from "tabler-icons-react"
-import { SiGooglesheets } from "react-icons/si"
-import OAuth2Integration from "../components/OAuth2Integration"
-import { useQuery } from "react-query"
-import { httpsCallable } from "firebase/functions"
-import { disconnectIntegration, functions } from "@minus/client-sdk"
 import { Box, Button, Group, Loader, Stack, Text, ThemeIcon, Tooltip } from "@mantine/core"
-import { TbExclamationMark } from "react-icons/tb"
+import { disconnectIntegration, functions } from "@minus/client-sdk"
+import { httpsCallable } from "firebase/functions"
 import { useEffect, useState } from "react"
+import { FcGoogle } from "react-icons/fc"
+import { SiGooglesheets } from "react-icons/si"
+import { TbExclamationMark, TbForms } from "react-icons/tb"
+import { useQuery } from "react-query"
+import { BrandGmail } from "tabler-icons-react"
 
 
 export default {
@@ -36,6 +35,15 @@ export default {
             color: "green",
             scopes: [
                 "https://www.googleapis.com/auth/spreadsheets",
+            ],
+        },
+        {
+            id: "forms",
+            name: "Forms",
+            icon: TbForms,
+            color: "violet",
+            scopes: [
+                "https://www.googleapis.com/auth/forms.body",
             ],
         },
     ],
