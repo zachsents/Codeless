@@ -28,6 +28,9 @@ export default {
             case "tsv":
                 file = new File(`${$sheet.title}.tsv`, "text/tab-separated-values", await $sheet.downloadAsTSV())
                 break
+            case "xlsx":
+                // Excel says the file is corrupt -- been disabled in the frontend for now.
+                file = new File(`${$sheet._spreadsheet.title}.xlsx`, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", await $sheet._spreadsheet.downloadAsXLSX())
         }
 
         this.publish({ file })

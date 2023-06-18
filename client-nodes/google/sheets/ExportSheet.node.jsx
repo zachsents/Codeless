@@ -32,6 +32,7 @@ export default {
             renderConfiguration: props => <SlideOptionsControl data={[
                 { value: "csv", label: "CSV" },
                 { value: "tsv", label: "TSV" },
+                // { value: "xlsx", label: "Excel" },
                 // { value: "pdf", label: "PDF" },
             ]} {...props} />,
         },
