@@ -4,6 +4,7 @@ import * as google from "./google/index.js"
 export { google }
 export const gmail = google.gmail
 export const sheets = google.sheets
+export const forms = google.forms
 
 export * as openai from "./openai/index.js"
 export * as twilio from "./twilio/index.js"

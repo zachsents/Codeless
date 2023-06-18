@@ -177,8 +177,8 @@ function CreateFlow() {
 
 function TriggerCard({ label, icon }) {
     return (
-        <Card w="5.5rem" className="triggerCard aspect-square ofv base-border rounded-md m-0 transition-colors">
-            <Stack spacing={0} justify="center" sx={{ height: "100%" }}>
+        <Card h="5.5rem" miw="5.5rem" className="triggerCard ofv base-border rounded-md m-0 transition-colors">
+            <Stack spacing={0} justify="center" className="h-full">
                 <Box fz="xl">{icon}</Box>
                 <Text>{label}</Text>
             </Stack>

@@ -4,7 +4,7 @@ import { httpsCallable } from "firebase/functions"
 import { useEffect, useState } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { SiGooglesheets } from "react-icons/si"
-import { TbExclamationMark, TbForms } from "react-icons/tb"
+import { TbExclamationMark, TbList } from "react-icons/tb"
 import { useQuery } from "react-query"
 import { BrandGmail } from "tabler-icons-react"
 
@@ -40,7 +40,7 @@ export default {
         {
             id: "forms",
             name: "Forms",
-            icon: TbForms,
+            icon: TbList,
             color: "violet",
             scopes: [
                 "https://www.googleapis.com/auth/forms.body",

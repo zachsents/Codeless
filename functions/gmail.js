@@ -2,6 +2,7 @@ import { getFlowGraphForFlow, getFlowTriggerData, gmail, google, updateFlowTrigg
 import { RunStatus, asyncMapFilterBlanks } from "@minus/util"
 import functions from "firebase-functions"
 import { db, pubsub } from "./init.js"
+import { parsePubSubMessage } from "./util.js"
 
 
 const HISTORY_UPDATE_FOR_FLOW_TOPIC = "gmail-history-update-for-flow"
@@ -153,13 +154,3 @@ export const refreshWatches = withSecret.pubsub.schedule("every day 00:00").onRu
 })
 
 
-/**
- * Parses a PubSub message. The data is usually base64-encoded JSON.
- *
- * @param {{ data: string } | string} messageOrData Either a PubSub message object with a data property, or just the data property itself.
- */
-function parsePubSubMessage(messageOrData) {
-    return JSON.parse(
-        Buffer.from(messageOrData.data ?? messageOrData, "base64").toString()
-    )
-}
