@@ -9,7 +9,7 @@ export default {
     /**
      * @param {object} inputs
      * @param {import("google-spreadsheet").GoogleSpreadsheetWorksheet} inputs.$sheet
-     * @param {string} inputs.cell
+     * @param {string[]} inputs.cell
      */
     async onInputsReady({ $sheet, cell }) {
 

@@ -3,17 +3,17 @@ import "./shared.js"
 
 
 export default {
-    id: "googlesheets:SetCell",
+    id: "googlesheets:AddNoteToCell",
 
-    inputs: ["$sheet", "cell", "value"],
+    inputs: ["$sheet", "cell", "note"],
 
     /**
      * @param {object} inputs
      * @param {import("google-spreadsheet").GoogleSpreadsheetWorksheet} inputs.$sheet
      * @param {string[]} inputs.cell
-     * @param {*[]} inputs.value
+     * @param {string[]} inputs.note
      */
-    async onInputsReady({ $sheet, cell, value }) {
+    async onInputsReady({ $sheet, cell, note }) {
 
         // Validate
         if (!$sheet) throw new Error("Must provide a Google Sheet")
@@ -22,9 +22,9 @@ export default {
         await $sheet.loadCells(cell)
 
         // Set cell values
-        safeMap((cell, value) => {
-            $sheet.getCellByA1(cell).value = value
-        }, cell, value)
+        safeMap((cell, note) => {
+            $sheet.getCellByA1(cell).note = note
+        }, cell, note)
 
         // Save changes
         await $sheet.saveUpdatedCells()

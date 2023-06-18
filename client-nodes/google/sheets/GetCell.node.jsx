@@ -2,6 +2,7 @@ import { ClipboardData, SquareAsterisk } from "tabler-icons-react"
 import { SheetInput } from "./shared/inputs"
 import { SheetsIcon } from "./shared/misc"
 import { InputMode, useInputMode, useInputValue } from "../../hooks/nodes"
+import ErrorText from "../../components/ErrorText"
 
 
 export default {
@@ -38,5 +39,12 @@ export default {
         const [cellMode] = useInputMode(null, "cell")
 
         return `Get Cell${cellMode == InputMode.Config && cell ? ` ${cell}` : ""}`
+    },
+
+    renderContent: () => {
+        const [cell] = useInputValue(null, "cell")
+        const [cellMode] = useInputMode(null, "cell")
+
+        if (cellMode == InputMode.Config && !cell) return <ErrorText>No cell provided</ErrorText>
     },
 }

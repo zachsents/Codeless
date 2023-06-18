@@ -1,15 +1,15 @@
-import { ClipboardData, SquareAsterisk } from "tabler-icons-react"
+import { Message, SquareAsterisk } from "tabler-icons-react"
+import TextAreaControl from "../../components/TextAreaControl"
+import { InputMode, useInputMode, useInputValue } from "../../hooks/nodes"
 import { SheetInput } from "./shared/inputs"
 import { SheetsIcon } from "./shared/misc"
-import InferControl from "../../components/InferControl"
-import { InputMode, useInputMode, useInputValue } from "../../hooks/nodes"
 import ErrorText from "../../components/ErrorText"
 
 
 export default {
-    id: "googlesheets:SetCell",
-    name: "Set Cell",
-    description: "Set a cell's value in a Google Sheet.",
+    id: "googlesheets:AddNoteToCell",
+    name: "Add Note to Cell",
+    description: "Add a note to a cell in a Google Sheet.",
     icon: SheetsIcon,
     color: "green",
 
@@ -19,20 +19,20 @@ export default {
         SheetInput,
         {
             id: "cell",
-            description: "The cell to set the value in. e.g. A1, B2, etc.",
-            tooltip: "The cell to set the value in. e.g. A1, B2, etc.",
+            description: "The cell to add a note to. e.g. A1, B2, etc.",
+            tooltip: "The cell to add a note to. e.g. A1, B2, etc.",
             icon: SquareAsterisk,
             allowedModes: ["handle", "config"],
             defaultMode: "config",
         },
         {
-            id: "value",
-            description: "The value to set the cell as.",
-            tooltip: "The value to set the cell as.",
-            icon: ClipboardData,
+            id: "note",
+            description: "The note to add to the cell.",
+            tooltip: "The note to add to the cell.",
+            icon: Message,
             allowedModes: ["handle", "config"],
             defaultMode: "handle",
-            renderConfiguration: InferControl,
+            renderConfiguration: TextAreaControl,
         },
     ],
 
@@ -40,7 +40,7 @@ export default {
         const [cell] = useInputValue(null, "cell")
         const [cellMode] = useInputMode(null, "cell")
 
-        return `Set Cell${cellMode == InputMode.Config && cell ? ` ${cell}` : ""}`
+        return `Add Note to Cell${cellMode == InputMode.Config && cell ? ` ${cell}` : ""}`
     },
 
     renderContent: () => {
