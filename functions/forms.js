@@ -9,12 +9,14 @@ const withSecret = functions.runWith({
 })
 
 
-export const handleFormSubmissions = withSecret.pubsub.topic("googleforms-submit").onPublish(async (message) => {
+export const handleFormSubmissions = functions.pubsub.topic("forms-submit").onPublish(async (message) => {
 
     // Parse out message data
     const parsed = parsePubSubMessage(message)
 
     console.log(parsed)
+
+    // WILO: need to figure out the shape of the data coming in from the pubsub message
 
     // Query for flows involving this email address
     // const querySnapshot = await db.collection("triggerData")

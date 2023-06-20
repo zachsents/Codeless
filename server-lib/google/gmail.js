@@ -10,14 +10,14 @@ const db = global.db
  * Watches a Gmail inbox.
  *
  * @export
- * @param {GmailAPI} gmail
+ * @param {import("googleapis").gmail_v1.Gmail} gmailApi
  * @param {object} [options]
  * @param {object} [options.flow]
  */
-export async function watchInbox(gmail, { flow, labelIds = ["INBOX"], labelFilterAction = "include", ...options } = {}) {
+export async function watchInbox(gmailApi, { flow, labelIds = ["INBOX"], labelFilterAction = "include", ...options } = {}) {
 
     // start watching
-    const { data: { historyId } } = await gmail.users.watch({
+    const { data: { historyId } } = await gmailApi.users.watch({
         userId: "me",
         labelIds,
         labelFilterAction,
@@ -26,7 +26,7 @@ export async function watchInbox(gmail, { flow, labelIds = ["INBOX"], labelFilte
     })
 
     // get email address for user
-    const { data: { emailAddress } } = await gmail.users.getProfile({
+    const { data: { emailAddress } } = await gmailApi.users.getProfile({
         userId: "me",
     })
 
@@ -52,7 +52,7 @@ export async function unwatchInbox(gmail, { flow }) {
  * Sends an email with the Gmail API from the authenticated user's address.
  *
  * @export
- * @param {GmailAPI} gmail
+ * @param {import("googleapis").gmail_v1.Gmail} gmail
  * @param {object} params
  * @param {string | string[]} params.to
  * @param {string | string[]} [params.cc]
@@ -118,7 +118,7 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
  * Gets a message from the Gmail API given the message ID.
  *
  * @export
- * @param {GmailAPI} gmail
+ * @param {import("googleapis").gmail_v1.Gmail} gmail
  * @param {string} id
  * @param {object} [options]
  * @param {"clean" | "raw"} [options.format="clean"]

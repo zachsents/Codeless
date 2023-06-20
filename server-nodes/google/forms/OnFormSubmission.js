@@ -18,7 +18,7 @@ export default {
 
         await forms.watchForm(formsApi, {
             flow,
-            formId: this.state.formId,
+            formId: this.data.state.formId,
         })
     },
 
@@ -30,7 +30,7 @@ export default {
 
         await forms.unwatchForm(formsApi, {
             flow,
-            formId: this.state.formId,
+            formId: this.data.state.formId,
         })
     },
 }

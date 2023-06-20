@@ -19,7 +19,7 @@ export async function watchForm(formsApi, { flow, formId } = {}) {
             watch: {
                 target: {
                     topic: {
-                        topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/googleforms-submit`
+                        topicName: `projects/${process.env.GCLOUD_PROJECT}/topics/forms-submit`
                     }
                 },
                 eventType: "RESPONSES",
