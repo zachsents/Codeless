@@ -24,6 +24,10 @@
         "cleanUrls": true,
         "rewrites": [
             {
+                "source": "/api/google-auth-redirect",
+                "function": "google-appAuthorizationRedirect"
+            },
+            {
                 "regex": "^/app/([^/]+?)(?:/)?$",
                 "destination": "/app/[appId].html"
             },

@@ -10,6 +10,7 @@ on:
       - 'ui/**'
       - 'util/.**'
       - 'web/**'
+      - 'firebase.json'
 
 env:
   NEXT_PUBLIC_FIREBASE_API_KEY: ${{secrets.NEXT_PUBLIC_FIREBASE_API_KEY}}
