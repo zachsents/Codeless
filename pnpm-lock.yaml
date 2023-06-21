@@ -28,12 +28,12 @@ importers:
     specifiers:
       airtable: ^0.11.6
       firebase-admin: ^11.8.0
-      googleapis: ^111.0.0
+      googleapis: ^118.0.0
       nanoid: ^4.0.1
     dependencies:
       airtable: 0.11.6
       firebase-admin: 11.8.0
-      googleapis: 111.0.0
+      googleapis: 118.0.0
       nanoid: 4.0.1
 
   client-nodes:
@@ -147,7 +147,7 @@ importers:
       dotenv: ^16.0.3
       firebase-admin: ^11.3.0
       firebase-functions: ^4.4.0
-      googleapis: ^111.0.0
+      googleapis: ^118.0.0
       node-fetch: ^3.3.0
     dependencies:
       '@google-cloud/pubsub': 3.6.0
@@ -159,7 +159,7 @@ importers:
       dotenv: 16.0.3
       firebase-admin: 11.5.0
       firebase-functions: 4.4.0_firebase-admin@11.5.0
-      googleapis: 111.0.0
+      googleapis: 118.0.0
       node-fetch: 3.3.0
     devDependencies:
       chalk: 5.2.0
@@ -190,7 +190,7 @@ importers:
       airtable: ^0.11.6
       firebase-admin: ^11.5.0
       firebase-functions: ^4.4.0
-      googleapis: ^111.0.0
+      googleapis: ^118.0.0
       mimetext: ^3.0.13
       nanoid: ^4.0.1
       node-fetch: ^3.3.0
@@ -202,7 +202,7 @@ importers:
       airtable: 0.11.6
       firebase-admin: 11.5.0
       firebase-functions: 4.4.0_firebase-admin@11.5.0
-      googleapis: 111.0.0
+      googleapis: 118.0.0
       mimetext: 3.0.13
       nanoid: 4.0.1
       node-fetch: 3.3.0
@@ -6084,8 +6084,8 @@ packages:
       - supports-color
     dev: false
 
-  /googleapis/111.0.0:
-    resolution: {integrity: sha512-nIIH+J/o/xjIscJcv3H3BCYgsFiI5ziM3Nbh2lHOWglYGqXE0Nqdt2lfCt4hX257QHEyC1y1iODDkmAMPWDYlw==}
+  /googleapis/118.0.0:
+    resolution: {integrity: sha512-Ny6zJOGn5P/YDT6GQbJU6K0lSzEu4Yuxnsn45ZgBIeSQ1RM0FolEjUToLXquZd89DU9wUfqA5XYHPEctk1TFWg==}
     engines: {node: '>=12.0.0'}
     dependencies:
       google-auth-library: 8.7.0

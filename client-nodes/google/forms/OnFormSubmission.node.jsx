@@ -42,11 +42,12 @@ export default {
     outputs: [
         {
             id: "fields",
-            name: "Fields",
-            description: "The fields of the form. Must match exactly what is on the form.",
+            name: "Responses",
+            description: "The responses from the form.",
             icon: Forms,
-            listMode: "named",
+            listMode: "unnamed",
             defaultList: 1,
+            listNameLabel: "Response",
         },
     ],
 

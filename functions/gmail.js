@@ -1,5 +1,5 @@
 import { getFlowGraphForFlow, getFlowTriggerData, gmail, google, updateFlowTriggerData } from "@minus/server-lib"
-import { RunStatus, asyncMapFilterBlanks } from "@minus/util"
+import { RunStatus, asyncMap, asyncMapFilterBlanks } from "@minus/util"
 import functions from "firebase-functions"
 import { db, pubsub } from "./init.js"
 import { parsePubSubMessage } from "./util.js"
@@ -133,7 +133,7 @@ export const refreshWatches = withSecret.pubsub.schedule("every day 00:00").onRu
 
     console.debug(`Refreshing Gmail watch for ${emailAddresses.length} email addresses.`)
 
-    emailAddresses.map(async emailAddress => {
+    await asyncMap(emailAddresses, async emailAddress => {
         // Get Gmail API
         const gmailApi = google.authManager.getAPI(`google:${emailAddress}`, {
             api: "gmail",

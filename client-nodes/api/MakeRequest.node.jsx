@@ -1,9 +1,9 @@
-import { Api, BoxSeam, CodeDots, FileArrowRight, FileCode2, Link, Search, Settings } from "tabler-icons-react"
+import { Text } from "@mantine/core"
+import { Api, BoxSeam, CodeDots, FileArrowRight, Link, Search, Settings } from "tabler-icons-react"
 import CodeControl from "../components/CodeControl"
 import SlideOptionsControl from "../components/SlideOptionsControl"
 import TextControl from "../components/TextControl"
 import { useInputValue } from "../hooks/nodes"
-import { Text } from "@mantine/core"
 
 
 export default {

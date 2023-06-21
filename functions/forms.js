@@ -1,7 +1,11 @@
-import { getFlowGraph, google } from "@minus/server-lib"
+import { getFlowGraphForFlow, getFlowTriggerData, google, updateFlowTriggerData } from "@minus/server-lib"
+import { RunStatus, asyncMap } from "@minus/util"
 import functions from "firebase-functions"
-import { db } from "./init.js"
+import { db, pubsub } from "./init.js"
 import { parsePubSubMessage } from "./util.js"
+
+
+const HISTORY_UPDATE_FOR_FLOW_TOPIC = "forms-history-update-for-flow"
 
 
 const withSecret = functions.runWith({
@@ -12,67 +16,112 @@ const withSecret = functions.runWith({
 export const handleFormSubmissions = functions.pubsub.topic("forms-submit").onPublish(async (message) => {
 
     // Parse out message data
-    const parsed = parsePubSubMessage(message)
+    const { attributes: { watchId }, publishTime } = parsePubSubMessage(message)
 
-    console.log(parsed)
+    // Query for flows involving this watch ID
+    const querySnapshot = await db.collection("triggerData")
+        .where("formsWatchId", "==", watchId)
+        .get()
 
-    // WILO: need to figure out the shape of the data coming in from the pubsub message
+    console.debug(`Received Google Form reponse submission event (Watch ID: ${watchId}). Fanning out for ${querySnapshot.size} flow(s).`)
 
-    // Query for flows involving this email address
-    // const querySnapshot = await db.collection("triggerData")
-    //     .where("gmailEmailAddress", "==", emailAddress)
-    //     .get()
+    // Loop through involved flows and fan out -- each flow involved will
+    // have its own history to deal with
+    await Promise.all(
+        querySnapshot.docs.map(
+            async doc => pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).publishJSON({
+                flowId: doc.id,
+                newHistoryId: publishTime,
+            })
+        )
+    )
+})
 
-    // console.debug(`Received Gmail event for ${emailAddress}. Fanning out for ${querySnapshot.size} flow(s).`)
 
-    // // Loop through involved flows and fan out -- each flow involved will
-    // // have its own history to deal with
-    // await Promise.all(
-    //     querySnapshot.docs.map(
-    //         async doc => pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).publishJSON({
-    //             flowId: doc.id,
-    //             newHistoryId,
-    //         })
-    //     )
-    // )
+export const handleHistoryUpdateForFlow = withSecret.pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).onPublish(async (pubsubMessage) => {
+
+    const { flowId, newHistoryId } = parsePubSubMessage(pubsubMessage)
+
+    // Load in flow graph and find trigger
+    const flowGraph = await getFlowGraphForFlow(flowId, { parse: true })
+    const triggerNode = flowGraph.nodes.find(node => node.id === "trigger")
+
+    // Get Forms API
+    /** @type {import("googleapis").forms_v1.Forms} */
+    const formsApi = await google.authManager.getAPI(triggerNode.data.selectedAccounts.google, {
+        api: "forms",
+        version: "v1",
+    })
+
+    /**
+     * Fetch and update flow's old history ID -- it's important this happens
+     * in a transaction so we don't get repeat messages.
+     */
+    const { formsHistoryId: startHistoryId, formsFormId } = await db.runTransaction(async transaction => {
+        const triggerData = await getFlowTriggerData(flowId, { transaction })
+
+        await updateFlowTriggerData(flowId, {
+            formsHistoryId: Math.max(new Date(newHistoryId).getTime(), new Date(triggerData.formsHistoryId).getTime()),
+        }, { transaction })
+
+        return triggerData
+    })
+
+    // Fetch responses in history
+    const { data: { responses } } = await formsApi.forms.responses.list({
+        formId: formsFormId,
+        filter: `timestamp > ${startHistoryId}`
+    })
+
+    // WILO: everything's looking good, just need to fetch questions and put answers in order
+
+    console.debug(`Found ${responses.length} responses added in history. (Flow ID: ${flowId})`)
+
+    // Start a flow run for each message -- in a batched write
+    const batch = db.batch()
+    responses?.forEach(response => {
+        const docRef = db.collection("flowRuns").doc()
+        batch.set(docRef, {
+            flow: flowId,
+            payload: response,
+            status: RunStatus.Pending,
+            source: "forms",
+        })
+    })
+    await batch.commit()
 })
 
 
 export const refreshWatches = withSecret.pubsub.schedule("every day 00:05").onRun(async () => {
 
-    // Get all published flows with a Google Forms trigger
-    const querySnapshot = await db.collection("flows")
-        .where("trigger", "==", "googleforms:OnFormSubmission")
-        .where("published", "==", true)
+    // Get triggerData documents with watch ID property
+    const querySnapshot = await db.collection("triggerData")
+        .orderBy("formsWatchId")
         .get()
 
-    const flows = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    // Create a unique set of watch IDs
+    const watchIds = [...new Set(
+        querySnapshot.docs.map(doc => doc.data().formsWatchId)
+    )]
 
-    console.debug(`Refreshing Google Forms watch for ${flows.length} flows.`)
+    console.debug(`Renewing Google Forms watches for ${watchIds.length} forms.`)
 
-    flows.map(async flow => {
+    // Loop through watch IDs and renew each one
+    await asyncMap(watchIds, async watchId => {
+        // Get trigger data
+        const triggerData = querySnapshot.docs.find(doc => doc.data().formsWatchId === watchId).data()
 
-        // Get flow graph
-        const flowGraph = await getFlowGraph(flow.graph, {
-            parse: true,
-        })
-
-        // Pull connected account and form ID from trigger node
-        const triggerNode = flowGraph.nodes.find(node => node.id === "trigger")
-        const connectedAccount = triggerNode.data.selectedAccounts.google
-        const formId = triggerNode.data.state.formId
-
-        // Authorize Forms API with trigger's connected account
+        // Get Forms API
         /** @type {import("googleapis").forms_v1.Forms} */
-        const formsApi = google.authManager.getAPI(connectedAccount, {
+        const formsApi = google.authManager.getAPI(triggerData.formsAccount, {
             api: "forms",
             version: "v1",
         })
 
-        // Refresh watch
+        // Renew watch
         await formsApi.forms.watches.renew({
-            formId,
-            watchId: flow.id,
+            formId: triggerData.formsFormId,
+            watchId,
         })
     })
 })

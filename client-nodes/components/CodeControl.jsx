@@ -83,15 +83,3 @@ export default function CodeControl({ inputId, inputProps = {}, language }) {
         </>
     )
 }
-
-const editorStyle = {
-    fontFamily: '"Fira code", "Fira Mono", monospace',
-    fontSize: 12,
-    wordBreak: "break-word",
-    height: "100%",
-}
-
-const wrapperStyle = theme => ({
-    border: "1px solid " + theme.colors.gray[2],
-    borderRadius: theme.radius.md,
-})

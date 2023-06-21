@@ -7,6 +7,8 @@ export default {
     inputs: [],
 
     onStart(setupPayload) {
+
+
         this.publish(setupPayload)
     },
 
@@ -19,6 +21,7 @@ export default {
         await forms.watchForm(formsApi, {
             flow,
             formId: this.data.state.formId,
+            account: this.data.selectedAccounts.google,
         })
     },
 
@@ -30,7 +33,6 @@ export default {
 
         await forms.unwatchForm(formsApi, {
             flow,
-            formId: this.data.state.formId,
         })
     },
 }

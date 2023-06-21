@@ -43,7 +43,7 @@ export default {
             icon: TbList,
             color: "violet",
             scopes: [
-                "https://www.googleapis.com/auth/forms.body",
+                "https://www.googleapis.com/auth/forms.responses.readonly",
             ],
         },
     ],

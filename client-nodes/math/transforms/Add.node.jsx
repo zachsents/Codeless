@@ -11,6 +11,7 @@ export default {
     inputs: [
         {
             id: "input",
+            name: "Operands",
             type: "number",
             description: "The inputs to add together. Lists are computed element-wise.",
             tooltip: "The inputs to add together. Lists are computed element-wise.",
