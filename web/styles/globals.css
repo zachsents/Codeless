@@ -43,6 +43,10 @@ p {
     flex-grow: 1;
 }
 
+.mantine-Switch-track {
+    cursor: pointer;
+}
+
 @layer utilities {
     .base-border {
         border: 0.0625rem solid var(--mantine-color-gray-3);
