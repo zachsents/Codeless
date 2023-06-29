@@ -24,6 +24,7 @@
         "@mantine/modals": "^6.0.6",
         "@mantine/notifications": "^6.0.6",
         "@minus/client-sdk": "workspace:*",
+        "@minus/ui": "workspace:*",
         "@minus/util": "workspace:*",
         "firebase": "^9.17.1",
         "framer-motion": "^7.6.7",
@@ -41,6 +42,7 @@
         "tabler-icons-react": "^1.56.0"
     },
     "devDependencies": {
+        "eslint-plugin-react": "^7.32.2",
         "nodemon": "^2.0.22"
     }
 }

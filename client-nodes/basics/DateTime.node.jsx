@@ -4,8 +4,8 @@ import { useInputValue } from "../hooks/nodes"
 
 export default {
     id: "basic:DateTime",
-    name: "Date & Time",
-    description: "Giving you the time of day.",
+    name: "Fixed Date & Time",
+    description: "A fixed date & time. If you want a date & time relative to the time the workflow runs, use the Relative Date & Time node instead.",
     icon: CalendarTime,
 
     tags: ["Time", "Basics"],
@@ -20,6 +20,7 @@ export default {
             icon: CalendarTime,
             allowedModes: ["config"],
             defaultMode: "config",
+            defaultValue: new Date().toISOString(),
             renderConfiguration: DateTimeControl,
         },
     ],

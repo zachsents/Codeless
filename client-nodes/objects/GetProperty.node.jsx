@@ -1,3 +1,5 @@
+import ErrorText from "../components/ErrorText"
+import { InputMode, useInputMode, useInputValue } from "../hooks/nodes"
 import { Package, Sitemap, SquareX, Target } from "tabler-icons-react"
 
 
@@ -34,4 +36,19 @@ export default {
             icon: Target,
         },
     ],
+
+    renderName: () => {
+        const [property] = useInputValue(null, "property")
+        const [propertyMode] = useInputMode(null, "property")
+
+        return propertyMode == InputMode.Config && property ? `Get Property "${property}"` : "Get Property"
+    },
+
+    renderContent: () => {
+        const [property] = useInputValue(null, "property")
+        const [propertyMode] = useInputMode(null, "property")
+
+        if (propertyMode == InputMode.Config && !property)
+            return <ErrorText>No property provided</ErrorText>
+    }
 }

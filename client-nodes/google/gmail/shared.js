@@ -1,4 +1,4 @@
-import { Calendar, Code, FileCode, FileText, LineDotted, TextSpellcheck, User } from "tabler-icons-react"
+import { Calendar, Code, FileCode, FileDots, FileText, LineDotted, TextSpellcheck, User } from "tabler-icons-react"
 import TextAreaControl from "../../components/TextAreaControl"
 
 
@@ -21,6 +21,14 @@ export const HTMLBodyInput = {
     allowedModes: ["handle", "config"],
     defaultMode: "config",
     renderConfiguration: TextAreaControl,
+}
+
+export const AttachmentInput = {
+    id: "attachment",
+    name: "Attachment",
+    description: "The file to attach to the email.",
+    tooltip: "The file to attach to the email.",
+    icon: FileDots,
 }
 
 export const EmailPayloadOutputs = (defaults) => [

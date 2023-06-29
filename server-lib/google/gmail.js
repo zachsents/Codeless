@@ -60,9 +60,10 @@ export async function unwatchInbox(gmail, { flow }) {
  * @param {string} [params.plainText]
  * @param {string} [params.html]
  * @param {string[][]} [params.headers]
+ * @param {{ filename: string, contentType: string, data: string | Buffer }} [params.attachments]
  * @param {object} [requestBody]
  */
-export async function sendEmail(gmail, { to, cc, subject, plainText, html, headers = [] } = {}, requestBody = {}) {
+export async function sendEmail(gmail, { to, cc, subject, plainText, html, headers = [], attachments = [] } = {}, requestBody = {}) {
 
     // get sender email address
     const { data: { emailAddress: senderEmailAddress } } = await gmail.users.getProfile({
@@ -79,12 +80,23 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
     cc && msg.setCc(cc)
 
     // add content
-    plainText && msg.setMessage("text/plain", plainText)
-    html && msg.setMessage("text/html", html)
+    plainText && msg.addMessage({
+        contentType: "text/plain",
+        data: plainText,
+    })
+    html && msg.setMessage({
+        contentType: "text/html",
+        data: html,
+    })
 
     // add headers
     msg.setHeader("X-Triggered-By", "Minus")
     headers.forEach(([name, value]) => msg.setHeader(name, value))
+
+    // add attachments
+    attachments.forEach(attachment => {
+        msg.addAttachment(attachment)
+    })
 
     // encode message
     const encodedMessage = Buffer.from(msg.asRaw()).toString("base64url")
@@ -110,7 +122,6 @@ export async function sendEmail(gmail, { to, cc, subject, plainText, html, heade
  * @param {string} id
  * @param {object} [options]
  * @param {"clean" | "raw"} [options.format="clean"]
- * @return {*} 
  */
 export async function getMessage(gmail, id, {
     format = "clean",
@@ -125,15 +136,16 @@ export async function getMessage(gmail, id, {
 
     if (format == "clean") {
         const fromHeader = getHeader(message, "From")
-        const { name, emailAddress } = parseFromHeader(fromHeader)
+        const sender = parseFromHeader(fromHeader)
+        const recipient = parseFromHeader(getHeader(message, "To"))
         const plainText = decodeEmailBody(
             message.payload.body.data ??
             message.payload.parts?.find(part => part.mimeType == "text/plain")?.body.data ?? ""
         )
 
         return {
-            senderName: name,
-            senderEmailAddress: emailAddress,
+            senderName: sender.name,
+            senderEmailAddress: sender.emailAddress,
             replyTo: getHeader(message, "Reply-To"),
             subject: getHeader(message, "Subject"),
             date: new Date(getHeader(message, "Date")),
@@ -142,6 +154,8 @@ export async function getMessage(gmail, id, {
             html: decodeEmailBody(
                 message.payload.parts?.find(part => part.mimeType == "text/html")?.body.data ?? ""
             ),
+            recipientName: recipient.name,
+            recipientEmailAddress: recipient.emailAddress,
         }
     }
 }

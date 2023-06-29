@@ -1,11 +1,11 @@
 import { getFlowGraphForFlow, getFlowTriggerData, gmail, google, updateFlowTriggerData } from "@minus/server-lib"
+import { RunStatus, asyncMapFilterBlanks } from "@minus/util"
 import functions from "firebase-functions"
 import { db, pubsub } from "./init.js"
-import { RunStatus } from "@minus/util"
 
 
 const HISTORY_UPDATE_FOR_FLOW_TOPIC = "gmail-history-update-for-flow"
-const EXCLUDED_LABELS = ["DRAFT", "SENT", "TRASH", "SPAM"]
+const EXCLUDED_LABELS = ["DRAFT", "TRASH", "SPAM"]
 
 
 const withSecret = functions.runWith({
@@ -38,9 +38,9 @@ export const handleMessage = withSecret.pubsub.topic("gmail").onPublish(async (m
 })
 
 
-export const handleHistoryUpdateForFlow = withSecret.pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).onPublish(async (message) => {
+export const handleHistoryUpdateForFlow = withSecret.pubsub.topic(HISTORY_UPDATE_FOR_FLOW_TOPIC).onPublish(async (pubsubMessage) => {
 
-    const { flowId, newHistoryId } = parsePubSubMessage(message)
+    const { flowId, newHistoryId } = parsePubSubMessage(pubsubMessage)
 
     // Load in flow graph and find trigger
     const flowGraph = await getFlowGraphForFlow(flowId, { parse: true })
@@ -73,48 +73,48 @@ export const handleHistoryUpdateForFlow = withSecret.pubsub.topic(HISTORY_UPDATE
         historyTypes: ["messageAdded"],
     })
 
-    /**
-     * Grab all message IDs from history, filtering out any that are drafts,
-     * sent mail, trash, spam, etc.
-     */
+    // Grab all the message IDs (excluding certain labels) from the history
     const messageIds = history
-        // this is also important for preventing repeats -- need to make sure we only look within history bounds
-        ?.filter(hist => hist.id < Math.max(startHistoryId, newHistoryId))
-        .map(
-            hist => hist.messagesAdded
-                // exclude drafts, sent mail, trash, spam, etc.
-                ?.filter(({ message }) =>
-                    message.labelIds?.every(label => !EXCLUDED_LABELS.includes(label))
-                )
-                .map(({ message }) => message.id) ?? []
-        )
-        .flat() ?? []
+        // This is important for preventing repeats -- need to make sure we only look within history bounds
+        ?.filter(historyEntry => historyEntry.id < Math.max(startHistoryId, newHistoryId))
+        .flatMap(historyEntry => historyEntry.messagesAdded
+            // Exclude drafts, trash, spam, etc.
+            ?.filter(({ message }) => message.labelIds?.every(label => !EXCLUDED_LABELS.includes(label)))
+            .map(({ message }) => message.id) ?? []
+        ) ?? []
 
-    console.debug(`Found ${messageIds.length} messages added in history. (Flow ID: ${flowId})`)
-
-    // Fetch each message and start a flow run for it
-    await Promise.all(
-        messageIds.map(async messageId => {
-
-            // Fetch message details
-            try {
-                var messageData = await gmail.getMessage(gmailApi, messageId, {
-                    format: "clean",
-                })
-            }
-            catch (err) {
-                return
-            }
-
-            // Add flow run
-            await db.collection("flowRuns").add({
-                flow: flowId,
-                payload: messageData,
-                status: RunStatus.Pending,
-                source: "gmail",
+    // Fetch message details for each message ID
+    let messages = await asyncMapFilterBlanks(messageIds, async messageId => {
+        try {
+            return await gmail.getMessage(gmailApi, messageId, {
+                format: "clean",
             })
+        }
+        catch (err) {
+            console.error(`Error fetching message ${messageId} for flow ${flowId}: ${err.message}`)
+        }
+    })
+
+    // Get the email address from the flow's trigger data
+    const { gmailEmailAddress } = await getFlowTriggerData(flowId)
+
+    // Filter out messages that don't have us as the recipient
+    messages = messages.filter(messageData => messageData.recipientEmailAddress == gmailEmailAddress)
+
+    console.debug(`Found ${messages.length} messages added in history. (Flow ID: ${flowId})`)
+
+    // Start a flow run for each message -- in a batched write
+    const batch = db.batch()
+    messages.forEach(messageData => {
+        const docRef = db.collection("flowRuns").doc()
+        batch.set(docRef, {
+            flow: flowId,
+            payload: messageData,
+            status: RunStatus.Pending,
+            source: "gmail",
         })
-    )
+    })
+    await batch.commit()
 })
 
 

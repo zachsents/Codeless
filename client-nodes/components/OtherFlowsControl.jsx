@@ -3,10 +3,10 @@ import { useOtherFlows } from "../hooks"
 import { useInputValue } from "../hooks/nodes"
 
 
-export default function OtherFlowsControl({ inputId, flowId, appId }) {
+export default function OtherFlowsControl({ inputId, flowId, appId, allowSelf = false }) {
 
     const [value, setValue] = useInputValue(null, inputId)
-    const [otherFlows] = useOtherFlows(flowId, appId, setValue)
+    const [otherFlows] = useOtherFlows(flowId, appId, setValue, allowSelf)
 
     return (
         <Select

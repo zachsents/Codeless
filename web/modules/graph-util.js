@@ -8,7 +8,9 @@ import shallow from "zustand/shallow"
 import { Group, ScrollArea, Text, Title } from "@mantine/core"
 import { openContextModal } from "@mantine/modals"
 import { Integrations, NodeDefinitions } from "@minus/client-nodes"
-import { HandleType, defaultObject, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { HandleType, defaultObject, useIntegrationAccounts, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
+import { useAppId, useFlowId } from "./hooks"
+import { useAppContext } from "./context"
 
 
 export function useNodeConnections(id) {
@@ -48,6 +50,24 @@ export function useConnectedEdges(id) {
             b.map(edge => edge.id)
         )
     )
+}
+
+
+export function useNodeDisplayProps(id) {
+
+    const { app } = useAppContext()
+    const { missingSelections } = useIntegrationAccounts(id, app)
+
+    const [inputConnections, outputConnections] = useNodeConnections(id ?? false)
+
+    return {
+        appId: useAppId(),
+        flowId: useFlowId(),
+        inputConnections,
+        outputConnections,
+        connections: { ...inputConnections, ...outputConnections },
+        integrationsSatisfied: !missingSelections,
+    }
 }
 
 

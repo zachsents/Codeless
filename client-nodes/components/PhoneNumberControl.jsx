@@ -15,7 +15,7 @@ export default function PhoneNumberControl({ inputId, inputProps = {} }) {
             value={value ?? ""}
             onChange={setValue}
             country="US"
-            limitMaxLength
+            // limitMaxLength
             className="text-sm px-xs py-xxs border-1 border-solid border-gray-400 rounded-md focus:outline-none focus:border-primary transition-colors placeholder:text-gray-500 placeholder:opacity-50 font-sans"
             {...(typeof inputProps === "function" ? inputProps(value) : inputProps)}
         />

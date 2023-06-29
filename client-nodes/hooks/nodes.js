@@ -14,7 +14,12 @@ const generateId = customAlphabet(alphanumeric, 10)
 
 const NodeContext = createContext()
 
-export const NodeProvider = NodeContext.Provider
+export const NodeProvider = ({ id, displayProps, children }) => {
+
+    return <NodeContext.Provider value={{ id, displayProps }}>
+        {children}
+    </NodeContext.Provider>
+}
 
 export function useNodeContext() {
     return useContext(NodeContext)

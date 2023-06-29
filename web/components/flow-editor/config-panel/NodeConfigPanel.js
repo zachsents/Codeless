@@ -1,7 +1,7 @@
 import { Accordion, ActionIcon, Button, Card, Group, ScrollArea, Stack, Table, Text, useMantineTheme } from "@mantine/core"
 import { NodeProvider, useColors, useIntegrationAccounts, useNodeId, useTypeDefinition } from "@minus/client-nodes/hooks/nodes"
 import { useAppContext, useReplayContext } from "@web/modules/context"
-import { deselectAll, formatHandleName, useCurrentlySelectedNode } from "@web/modules/graph-util"
+import { deselectAll, formatHandleName, useCurrentlySelectedNode, useNodeDisplayProps } from "@web/modules/graph-util"
 import { shortRunId } from "@web/modules/runs"
 import { jc } from "@web/modules/util"
 import { AnimatePresence, motion } from "framer-motion"
@@ -26,15 +26,31 @@ const DELAY = 0.05
 
 export default function NodeConfigPanel() {
 
-    const { app } = useAppContext()
     const selectedNode = useCurrentlySelectedNode()
+    const [accordionState, setAccordionState] = useState(["inputs", "outputs"])
+
+    return (
+        <AnimatePresence>
+            {selectedNode?.id &&
+                <NodeConfigPanelInternal
+                    id={selectedNode.id}
+                    {...{ accordionState, setAccordionState }}
+                />}
+        </AnimatePresence>
+    )
+}
+
+
+function NodeConfigPanelInternal({ id, accordionState, setAccordionState }) {
+
+    const { app } = useAppContext()
+    const displayProps = useNodeDisplayProps(id)
 
     // Integrations
-    const { needsAccounts, missingSelections } = useIntegrationAccounts(selectedNode?.id ?? false, app)
+    const { needsAccounts, missingSelections } = useIntegrationAccounts(id ?? false, app)
 
     // Accordion state
     const defaultAccordionState = (needsAccounts && missingSelections) ? ["inputs", "integrations"] : ["inputs", "outputs"]
-    const [accordionState, setAccordionState] = useState(defaultAccordionState)
 
     // Side-effect: Open the Integrations tab if there are missing selections
     useEffect(() => {
@@ -46,81 +62,79 @@ export default function NodeConfigPanel() {
     const { run } = useReplayContext()
 
     return (
-        <AnimatePresence>
-            {selectedNode &&
-                <NodeProvider value={{ id: selectedNode?.id }}>
-                    <Stack spacing="xxs" w="24rem" className="h-full">
-                        <TitleCard />
+        <NodeProvider id={id} displayProps={displayProps}>
+            <Stack spacing="xxs" w="24rem" className="h-full">
+                <TitleCard />
 
-                        <Accordion
-                            variant="separated" multiple
-                            // I simply have no idea why min-h-0 is needed here, but it works.
-                            // https://stackoverflow.com/questions/41674979/flex-child-is-growing-out-of-parent
-                            className="flex flex-col gap-xxs flex-1 min-h-0"
-                            classNames={{
-                                item: "pointer-events-auto bg-white base-border shadow-sm !m-0 " +
-                                    "flex flex-col h-full",
-                                panel: "min-h-0 [&>div]:h-full",
-                                content: "h-full p-0",
-                                label: "py-xxxs",
-                            }}
-                            styles={{
-                                item: {
-                                    // When the Accordion opens and closes, it sets the height of the panel to 0.
-                                    // This fixes that.
-                                    "&[data-active=\"true\"] > div": { height: "auto !important" }
-                                }
-                            }}
-                            value={accordionState}
-                            onChange={setAccordionState}
+                <Accordion
+                    variant="separated" multiple
+                    // I simply have no idea why min-h-0 is needed here, but it works.
+                    // https://stackoverflow.com/questions/41674979/flex-child-is-growing-out-of-parent
+                    className="flex flex-col gap-xxs flex-1 min-h-0"
+                    classNames={{
+                        item: "pointer-events-auto bg-white base-border shadow-sm !m-0 " +
+                            "flex flex-col h-full",
+                        panel: "min-h-0 [&>div]:h-full",
+                        content: "h-full p-0",
+                        label: "py-xxxs",
+                    }}
+                    styles={{
+                        item: {
+                            // When the Accordion opens and closes, it sets the height of the panel to 0.
+                            // This fixes that.
+                            "&[data-active=\"true\"] > div": { height: "auto !important" }
+                        }
+                    }}
+                    value={accordionState}
+                    onChange={setAccordionState}
+                    transitionDuration={0}
+                >
+
+                    <AnimAccordionItem
+                        title="Inputs"
+                        value="inputs"
+                        icon={<TbArrowBarToRight />}
+                    >
+                        <InputsPanel />
+                    </AnimAccordionItem>
+
+                    <AnimAccordionItem
+                        title="Outputs"
+                        value="outputs"
+                        icon={<TbArrowBarRight />}
+                    >
+                        <OutputsPanel />
+                    </AnimAccordionItem>
+
+                    {needsAccounts &&
+                        <AnimAccordionItem
+                            title="Integrations"
+                            value="integrations"
+                            icon={<TbPlugConnected />}
                         >
+                            <IntegrationsPanel />
+                        </AnimAccordionItem>}
 
-                            <AnimAccordionItem
-                                title="Inputs"
-                                value="inputs"
-                                icon={<TbArrowBarToRight />}
-                            >
-                                <InputsPanel />
-                            </AnimAccordionItem>
+                    {run && <>
+                        <AnimAccordionItem
+                            title={<>Inputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
+                            value="run-inputs"
+                            icon={<RunInputsIcon />}
+                        >
+                            <RunInputsPanel />
+                        </AnimAccordionItem>
 
-                            <AnimAccordionItem
-                                title="Outputs"
-                                value="outputs"
-                                icon={<TbArrowBarRight />}
-                            >
-                                <OutputsPanel />
-                            </AnimAccordionItem>
-
-                            {needsAccounts &&
-                                <AnimAccordionItem
-                                    title="Integrations"
-                                    value="integrations"
-                                    icon={<TbPlugConnected />}
-                                >
-                                    <IntegrationsPanel />
-                                </AnimAccordionItem>}
-
-                            {run && <>
-                                <AnimAccordionItem
-                                    title={<>Inputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
-                                    value="run-inputs"
-                                    icon={<RunInputsIcon />}
-                                >
-                                    <RunInputsPanel />
-                                </AnimAccordionItem>
-
-                                <AnimAccordionItem
-                                    title={<>Outputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
-                                    value="run-outputs"
-                                    icon={<RunOutputsIcon />}
-                                >
-                                    <RunOutputsPanel />
-                                </AnimAccordionItem>
-                            </>}
-                        </Accordion>
-                    </Stack>
-                </NodeProvider>}
-        </AnimatePresence>
+                        <AnimAccordionItem
+                            title={<>Outputs - Run <Text span color="primary">{shortRunId(run.id)}</Text></>}
+                            value="run-outputs"
+                            icon={<RunOutputsIcon />}
+                        >
+                            <RunOutputsPanel />
+                        </AnimAccordionItem>
+                    </>}
+                </Accordion>
+            </Stack>
+        </NodeProvider>
     )
 }
 
@@ -290,10 +304,11 @@ function RunInputsPanel() {
     const nodeId = useNodeId()
     const typeDefinition = useTypeDefinition()
 
-    return <DataTable
-        data={run?.inputs?.[nodeId] ?? {}}
-        definitions={Object.fromEntries(typeDefinition.inputs.map(input => [input.id, input]))}
-    />
+    return typeDefinition &&
+        <DataTable
+            data={run?.inputs?.[nodeId] ?? {}}
+            definitions={Object.fromEntries(typeDefinition.inputs.map(input => [input.id, input]))}
+        />
 }
 
 
@@ -303,10 +318,11 @@ function RunOutputsPanel() {
     const nodeId = useNodeId()
     const typeDefinition = useTypeDefinition()
 
-    return <DataTable
-        data={run?.outputs?.[nodeId] ?? {}}
-        definitions={Object.fromEntries(typeDefinition.outputs.map(output => [output.id, output]))}
-    />
+    return typeDefinition &&
+        <DataTable
+            data={run?.outputs?.[nodeId] ?? {}}
+            definitions={Object.fromEntries(typeDefinition.outputs.map(output => [output.id, output]))}
+        />
 }
 
 
@@ -389,13 +405,15 @@ function DataTable({ data: rawData, definitions, emptyMessage = "No Data" }) {
     return data.length > 0 ?
         <Table>
             <thead>
-                <th className={jc(thClasses, "rounded-l-md")}>Input</th>
+                <tr>
+                    <th className={jc(thClasses, "rounded-l-md")}>Input</th>
 
-                {longestLength == 1 ?
-                    <th className={thClasses}>Value</th> :
-                    Array(longestLength).fill().map((_, i) =>
-                        <th className={thClasses} key={i}>Value {i + 1}</th>
-                    )}
+                    {longestLength == 1 ?
+                        <th className={thClasses}>Value</th> :
+                        Array(longestLength).fill().map((_, i) =>
+                            <th className={thClasses} key={i}>Value {i + 1}</th>
+                        )}
+                </tr>
             </thead>
             <tbody>
                 {data.map(item =>

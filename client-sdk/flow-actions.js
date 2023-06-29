@@ -130,10 +130,9 @@ export async function deleteFlow(flowId) {
 
     const { graph: flowGraphId } = await getFlow(flowId)
 
-    return Promise.all([
-        deleteDoc(getFlowRef(flowId)),
-        deleteDoc(getFlowGraphRef(flowGraphId))
-    ])
+    // Delete graph first so we don't have to worry about orphaned graphs
+    await deleteDoc(getFlowGraphRef(flowGraphId))
+    await deleteDoc(getFlowRef(flowId))
 }
 
 
@@ -252,10 +251,28 @@ export async function unpublishFlow(flowId) {
 
 /**
  * Creates a query that looks for flows that can be ran
+ * manually, including the one given.
+ *
+ * @export
+ * @param {string} flowId
+ * @param {string} appId
+ */
+export function createRunnableFlowsQuery(flowId, appId) {
+    return flowId && query(
+        FlowsCollection(),
+        where("trigger", "==", "basic:DefaultTrigger"),
+        where("app", "==", appId)
+    )
+}
+
+
+/**
+ * Creates a query that looks for flows that can be ran
  * manually, excluding the one given.
  *
  * @export
  * @param {string} flowId
+ * @param {string} appId
  */
 export function createOtherRunnableFlowsQuery(flowId, appId) {
     return flowId && query(

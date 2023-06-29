@@ -22,7 +22,7 @@ export default {
             allowedModes: ["config", "handle"],
             defaultMode: "config",
             icon: ChartDots3,
-            renderConfiguration: OtherFlowsControl,
+            renderConfiguration: props => <OtherFlowsControl allowSelf={true} {...props} />,
         },
         {
             id: "time",
