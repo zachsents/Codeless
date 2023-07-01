@@ -63,6 +63,10 @@ export class ValueTracker {
         // create plain object from value -- this catches class instances
         const plain = Object.assign({}, value)
 
+        // if value is too large, return "[Object]"
+        if (JSON.stringify(plain).length > 10_000)
+            return "[Object]"
+
         // clean each value in the object
         return Object.fromEntries(
             Object.entries(plain)
