@@ -1,4 +1,4 @@
-import { Calendar, Code, FileCode, FileDots, FileText, LineDotted, TextSpellcheck, User } from "tabler-icons-react"
+import { Calendar, Code, FileCode, FileDots, FileText, LineDotted, Mail, TextSpellcheck, User } from "tabler-icons-react"
 import TextAreaControl from "../../components/TextAreaControl"
 
 
@@ -32,6 +32,14 @@ export const AttachmentInput = {
 }
 
 export const EmailPayloadOutputs = (defaults) => [
+    {
+        id: "messageId",
+        name: "Message ID",
+        description: "The unique ID of the email message. This ID is used to identify the email in other nodes.",
+        tooltip: "The unique ID of the email message. This ID is used to identify the email in other nodes.",
+        icon: Mail,
+        defaultShowing: defaults?.includes("messageId") ?? true,
+    },
     {
         id: "senderEmailAddress",
         name: "Sender Email",
