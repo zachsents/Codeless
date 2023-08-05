@@ -63,7 +63,12 @@ function NodeConfigPanelInternal({ id, accordionState, setAccordionState }) {
 
     return (
         <NodeProvider id={id} displayProps={displayProps}>
-            <Stack spacing="xxs" w="24rem" className="h-full">
+            <Stack spacing="xxs" w="24rem" className="h-full"
+                onKeyDown={ev => {
+                    if (["Backspace", "Delete"].includes(ev.key))
+                        ev.stopPropagation()
+                }}
+            >
                 <TitleCard />
 
                 <Accordion

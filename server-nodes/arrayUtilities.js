@@ -6,7 +6,7 @@ import _ from "lodash"
 
 // Converts single element arrays to that single element
 export function delist(list) {
-    return list.length == 1 ? list[0] : list
+    return list?.length == 1 ? list[0] : list
 }
 
 // Checks whether list array is multi-dimensional

@@ -20,7 +20,7 @@ export default {
 
         // Skip empty arrays
         if (rowsOrSheet.length === 0)
-            return
+            return this.publish({ values: [] })
 
         // If this is an array of rows...
         if (rowsOrSheet.every(row => row instanceof GoogleSpreadsheetCellRow)) {
