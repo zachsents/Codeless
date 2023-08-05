@@ -2,6 +2,11 @@ import { createMimeMessage } from "mimetext"
 import { FieldValue } from "firebase-admin/firestore"
 
 
+/**
+ * @typedef {import("googleapis").gmail_v1.Gmail} GmailAPI
+ */
+
+
 /** @type {import("firebase-admin").firestore.Firestore} */
 const db = global.db
 
@@ -144,6 +149,7 @@ export async function getMessage(gmail, id, {
         )
 
         return {
+            messageId: id,
             senderName: sender.name,
             senderEmailAddress: sender.emailAddress,
             replyTo: getHeader(message, "Reply-To"),
@@ -158,6 +164,33 @@ export async function getMessage(gmail, id, {
             recipientEmailAddress: recipient.emailAddress,
         }
     }
+}
+
+
+/**
+ * Sends an email with the Gmail API from the authenticated user's address.
+ *
+ * @export
+ * @param {GmailAPI} gmail
+ * @param {string} messageId
+ * @param {string[]} addLabelIds
+ * @param {string[]} removeLabelIds
+ */
+export async function modifyLabels(gmail, messageId, addLabelIds = [], removeLabelIds = []) {
+
+    addLabelIds.length > 0 &&
+        console.debug(`Adding labels ${addLabelIds.join(", ")} to message ${messageId}`)
+    removeLabelIds.length > 0 &&
+        console.debug(`Removing labels ${removeLabelIds.join(", ")} from message ${messageId}`)
+
+    await gmail.users.messages.modify({
+        userId: "me",
+        id: messageId,
+        requestBody: {
+            addLabelIds,
+            removeLabelIds,
+        },
+    })
 }
 
 
