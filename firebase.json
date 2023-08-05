@@ -15,6 +15,7 @@
         ]
     },
     "hosting": {
+        "site": "nameless-948a8",
         "public": "web/out",
         "ignore": [
             "firebase.json",
