@@ -175,20 +175,41 @@ export async function getMessage(gmail, id, {
  * @param {string} messageId
  * @param {string[]} addLabelIds
  * @param {string[]} removeLabelIds
+ * @param {boolean} matchExactly
  */
-export async function modifyLabels(gmail, messageId, addLabelIds = [], removeLabelIds = []) {
+export async function modifyLabels(gmail, messageId, addLabelIds = [], removeLabelIds = [], matchExactly = true) {
 
     addLabelIds.length > 0 &&
         console.debug(`Adding labels ${addLabelIds.join(", ")} to message ${messageId}`)
     removeLabelIds.length > 0 &&
         console.debug(`Removing labels ${removeLabelIds.join(", ")} from message ${messageId}`)
 
+    if (matchExactly) {
+        await gmail.users.messages.modify({
+            userId: "me",
+            id: messageId,
+            requestBody: {
+                addLabelIds,
+                removeLabelIds,
+            },
+        })
+    }
+
+    const { data: { labels } } = await gmail.users.labels.list({
+        userId: "me",
+    })
+
+    const findLabel = search => labels.find(label => label.id == search)?.id || labels.find(label => label.name == search)?.id
+
+    const add = addLabelIds.map(findLabel).filter(Boolean)
+    const remove = removeLabelIds.map(findLabel).filter(Boolean)
+
     await gmail.users.messages.modify({
         userId: "me",
         id: messageId,
         requestBody: {
-            addLabelIds,
-            removeLabelIds,
+            addLabelIds: add,
+            removeLabelIds: remove,
         },
     })
 }

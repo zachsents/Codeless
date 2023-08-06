@@ -42,7 +42,7 @@ export default {
             allowedModes: ["config"],
             defaultMode: "config",
             defaultValue: ["INBOX"],
-            renderConfiguration: ({ inputId, ...props }) => {
+            renderConfiguration: ({ inputId }) => {
                 const [value, setValue] = useInputValue(null, inputId)
 
                 return (
