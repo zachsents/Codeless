@@ -26,7 +26,7 @@ export async function createChatCompletion(prompt, {
     checkCharacterLimit(prompt, 8192)
 
     const resp = await api().createChatCompletion({
-        model: "gpt-4",
+        model: "gpt-4-32k",
         messages: [{
             role: "user",
             content: prompt,
