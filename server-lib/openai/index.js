@@ -23,7 +23,7 @@ export async function createChatCompletion(prompt, {
     temperature = 1,
 } = {}) {
 
-    checkCharacterLimit(prompt, 8192)
+    checkCharacterLimit(prompt, 8192 * 3)
 
     const resp = await api().createChatCompletion({
         model: "gpt-4",
@@ -69,5 +69,5 @@ export async function createCompletion(prompt, {
 
 function checkCharacterLimit(prompt, limit = CHARACTER_LIMIT) {
     if (prompt?.length > limit)
-        throw new Error(`Prompt exceeds character limit of ${CHARACTER_LIMIT} characters.`)
+        throw new Error(`Prompt exceeds character limit of ${limit} characters.`)
 }
